@@ -106,15 +106,60 @@ namespace ZASM
     
     class Program
     {
+        static List<string> Keywords = new List<string>
+        {
+            "A", "ADC", "ADD", "AF", "AND", "B", "BC", "BIT", "C", "CALL", "CCF", "CP", "CPD", "CPDR", "CPI",
+            "CPIR", "CPL", "D", "DAA", "DE", "DEC", "DI", "DJNZ", "E", "EI", "EX", "EXX", "F", "H", "HALT",
+            "HL", "I", "IM", "IN", "INC", "IND", "INDR", "INI", "INIR", "IX", "IXH", "IXL", "IY", "IYH",
+            "IYL", "JP", "JR", "L", "LD", "LDD", "LDDR", "LDI", "LDIR", "M", "NC", "NEG", "NOP", "NZ", "OR",
+            "OTDR", "OTIR", "OUT", "OUTD", "OUTI", "P", "PC", "PE", "PO", "POP", "PUSH", "R", "RES", "RET",
+            "RETI", "RETN", "RL", "RLA", "RLC", "RLCA", "RLD", "RR", "RRA", "RRC", "RRCA", "RRD", "RST",
+            "SBC", "SCF", "SET", "SLA", "SLL", "SP", "SPH", "SPL", "SRA", "SRL", "SUB", "XOR", "Z",
+        };
+        
+        //static string[][] Keywords = new string[][]
+        //{
+        //    new string[] 
+        //    {
+        //        "A", "B", "C", "D", "E", "F", "H", "I", "L", "M", "P", "R", "Z",
+        //    },
+
+        //    new string[] 
+        //    {
+        //        "AF", "BC", "CP", "DE", "DI", "EI", "EX", "HL", "IM", "IN", "IX", "IY", "JP", "JR", "LD", "NC",
+        //        "NZ", "OR", "PC", "PE", "PO", "RL", "RR", "SP",
+        //    },
+
+        //    new string[] 
+        //    {
+        //        "ADC", "ADD", "AND", "BIT", "CCF", "CPD", "CPI", "CPL", "DAA", "DEC", "EXX", "INC", "IND", "INI",
+        //        "IXH", "IXL", "IYH", "IYL", "LDD", "LDI", "NEG", "NOP", "OUT", "POP", "RES", "RET", "RLA", "RLC",
+        //        "RLD", "RRA", "RRC", "RRD", "RST", "SBC", "SCF", "SET", "SLA", "SLL", "SPH", "SPL", "SRA", "SRL",
+        //        "SUB", "XOR",
+        //    },
+
+        //    new string[] 
+        //    {
+        //        "CALL", "CPDR", "CPIR", "DJNZ", "HALT", "INDR", "INIR", "LDDR", "LDIR", "OTDR", "OTIR", "OUTD",
+        //        "OUTI", "PUSH", "RETI", "RETN", "RLCA", "RRCA",
+        //    }
+        //};
+        
         static void Main(string[] args)
         {
-            string TestLine = " lable:  LD, ($0AAh)		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
+            string TestLine = " label:  ld, ($0AAh)		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
 
-            System.IO.MemoryStream Data = new System.IO.MemoryStream(UTF8Encoding.UTF8.GetBytes(TestLine));
+            var Data = System.IO.File.OpenRead(@"D:\Test\DCP\Other\SystemDev\AntiMonitor\basic8k78-2.mac");
+            
+            //System.IO.MemoryStream Data = new System.IO.MemoryStream(UTF8Encoding.UTF8.GetBytes(TestLine));
 
             Tokenizer Temp = new Tokenizer(Data);
 
             List<Token> LineData = new List<Token>();
+
+            NameTable Labels = new NameTable();
+
+            int Address = 0;
 
             while (true)
             {
@@ -122,7 +167,17 @@ namespace ZASM
                 if (Current.Type == TokenType.End)
                     break;
 
-                LineData.Add(Current);
+                if(Current.Type == TokenType.Label)
+                    Labels.AddName(Current.ToString(), Address);
+
+                if (Current.Type == TokenType.Identifier)
+                    Labels.AddName(Current.ToString());
+
+                if (Current.Type != TokenType.Comment && Current.Type != TokenType.LineBreak) 
+                    LineData.Add(Current);
+
+                if (Current.Type == TokenType.LineBreak)
+                    Address++;
             };
 
             foreach (Token Current in LineData)
