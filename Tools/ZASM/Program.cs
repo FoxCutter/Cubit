@@ -8,6 +8,9 @@ namespace ZASM
 {
     enum Register
     {
+        // Not used
+        None,
+        
         // 8-bit Registers and Indexs into the register array
         A,
         F,
@@ -53,12 +56,9 @@ namespace ZASM
         Immediate = 0x80,
         ImmediateByte = Immediate,
         ImmediateWord = Immediate,
-
-        // Not used
-        None = 0xFF,
     };
 
-    enum ConditionCode : byte
+    enum ConditionCode
     {
         NZ,     // Non Zero     (Z = 0)
         Z,      // Zero         (Z = 1)
@@ -101,14 +101,23 @@ namespace ZASM
         public Register Reg2;
         public RegParam Reg2Param;
 
-        public Operation Function;
+        public CommandID Function;
     };
 
     class LineInfo
     {
         public Token Label;
         public Token Operator;
-        public List<List<Token>> Paramiters = new List<List<Token>>();
+        public List<Stack<Token>> Params = new List<Stack<Token>>();
+    };
+
+    enum ParseState
+    {
+        StartOfLine,
+        FoundLabel,
+        FoundOperator,
+        Params,
+        End,
     };
     
     class Program
@@ -118,58 +127,210 @@ namespace ZASM
             //string TestLine = " label:  ld, ($0AAh << 8) + 0x55		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
             //System.IO.MemoryStream Data = new System.IO.MemoryStream(UTF8Encoding.UTF8.GetBytes(TestLine));
 
-            var Data = System.IO.File.OpenRead(@"D:\Programing\Code\Cubit\Tools\basic8k78-2.mac");
+            //var Data = System.IO.File.OpenRead(@"D:\Programing\Code\Cubit\Tools\basic8k78-2.mac");
+            var Data = System.IO.File.OpenRead(@"..\..\..\basic8k78-2.mac");
             
 
             Tokenizer Temp = new Tokenizer(Data);
 
-            List<Token> LineData = new List<Token>();
-
             SymbolTable Labels = new SymbolTable();
 
-            int LineNumber = 1;
-
             LineInfo CurrentLine = new LineInfo();
-             
+            ParseState State = ParseState.StartOfLine;
+            Stack<Token> Params = new Stack<Token>();
+            Stack<Token> TempStack = new Stack<Token>();
+            Token TempToken;
+            Token LastToken;
+            LastToken.Type = TokenType.End;
+
+            string ParentID = "";
+            int Depth = 0;
+            bool Memory = false;
+
             while (true)
             {
                 Token Current = Temp.NextToken();
-                if (Current.Type == TokenType.End)
-                    break;
-
-                if (Current.Type == TokenType.Label)
-                    CurrentLine.Label = Current;
-
-                if (Current.Type == TokenType.Keyword)
-                    CurrentLine.Operator = Current;
-
+                
                 if (Current.Type == TokenType.Label || Current.Type == TokenType.Identifier)
                 {
-                    Labels[Current.ToString()].LineIDs.Add(LineNumber);
+                    if (Current.Value[0] == '.')
+                    {
+                        Labels[ParentID + Current.ToString()].LineIDs.Add(Current.Line);
+                    }
+                    else
+                    {
+                        if(Current.Type == TokenType.Label)
+                            ParentID = Current.ToString();
+                        
+                        Labels[Current.ToString()].LineIDs.Add(Current.Line);
+                    }
                 }
 
 
-                //Console.WriteLine(Current.ToString());
-                
-                //if (Current.Type == TokenType.Identifier)
-                //    Labels.AddName(Current.ToString());
+                if (Current.Type == TokenType.LineBreak || Current.Type == TokenType.Comment || Current.Type == TokenType.End)
+                    State = ParseState.End;
 
-                //if (Current.Type != TokenType.Comment && Current.Type != TokenType.LineBreak) 
-                
-                //LineData.Add(Current);
-
-                if (Current.Type == TokenType.LineBreak)
+                switch (State)
                 {
-                    LineNumber += Current.Value.Count;
-                    CurrentLine = new LineInfo();
-                }
-            };
+                    case ParseState.StartOfLine:
+                        if (Current.Type == TokenType.Label)
+                        {
+                            CurrentLine.Label = Current;
+                            State = ParseState.FoundLabel;
+                        }
+                        else
+                        {
+                            goto case ParseState.FoundLabel;                            
+                        }
+                        break;
 
-            //foreach (Token Current in LineData)
-            //{
-            //    if(Current.Type != TokenType.LineBreak)
-            //        Console.WriteLine(" Token Type: {0} Value: {1}", Current.Type.ToString(), Current.ToString());
-            //}
+                    case ParseState.FoundLabel:
+                        if (Current.Type == TokenType.Keyword || Current.Type == TokenType.Identifier)
+                        {
+                            CurrentLine.Operator = Current;
+                            State = ParseState.FoundOperator;
+                        }
+                        else
+                        {
+                            State = ParseState.End;
+                        }
+                        break;
+
+                    case ParseState.FoundOperator:
+                        if (Current.Type == TokenType.Keyword && CurrentLine.Label.Type == TokenType.None && CurrentLine.Operator.Type == TokenType.Identifier)
+                        {
+                            CurrentLine.Label = CurrentLine.Operator;
+                            CurrentLine.Operator = Current;
+
+                            Labels[CurrentLine.Label.ToString()].LineIDs.Add(CurrentLine.Label.Line);
+                        }
+                        else
+                        {
+                            goto case ParseState.Params;  
+                        }
+                        break;
+
+                    case ParseState.Params:
+                        if (Current.Value[0] == ',' && Depth == 0)
+                        {
+                            while (TempStack.Count != 0)
+                                Params.Push(TempStack.Pop());
+
+                            if (Memory)
+                            {
+                                TempToken = Current;
+                                TempToken.Type = TokenType.Symbol;
+                                TempToken.Value[0] = '@';
+                                Params.Push(TempToken);
+                                Memory = false;
+                            }
+
+                            CurrentLine.Params.Add(Params);
+                            Params = new Stack<Token>();
+                            break;
+                        }
+                        else if (Current.Value[0] == '(')
+                        {
+                            if (Params.Count == 0 && TempStack.Count == 0)
+                                Memory = true;
+
+                            TempStack.Push(Current);
+                            Depth++;
+                        }
+                        else if (Current.Value[0] == ')')
+                        {
+                            Depth--;
+
+                            while (TempStack.Count != 0)
+                            {
+                                TempToken = TempStack.Pop();
+                                if (TempToken.Value[0] == '(')
+                                    break;
+
+                                Params.Push(TempToken);
+                            }
+
+                            if (TempStack.Count != 0 && (TempStack.Peek().Type == TokenType.Keyword || TempStack.Peek().Type == TokenType.Identifier) )
+                                Params.Push(TempStack.Pop());
+
+                            if (Depth == 0 && TempStack.Count != 0)
+                                Memory = false;
+
+                        }
+                        else if (Current.Type == TokenType.Symbol || Current.Type == TokenType.Identifier || Current.Type == TokenType.Keyword)
+                        {
+                            // Check for an unarray + and -
+                            if (Current.Value[0] == '-' || Current.Value[0] == '+' )
+                            {
+                                if (Params.Count == 0 && TempStack.Count == 0)
+                                    Current.Type = TokenType.Unarray;
+                                
+                                if (LastToken.Type == TokenType.Symbol)
+                                    Current.Type = TokenType.Unarray;
+                            }
+
+                            TempStack.Push(Current);
+                            LastToken = Current;
+                        }
+                        else
+                        {
+                            Params.Push(Current);
+                            LastToken = Current;
+                        }
+
+                        break;
+                }
+
+
+                if (Current.Type == TokenType.LineBreak || Current.Type == TokenType.End)
+                {
+                    if (Params.Count != 0 || TempStack.Count != 0)
+                    {
+                        while (TempStack.Count != 0)
+                            Params.Push(TempStack.Pop());
+
+                        if (Memory)
+                        {
+                            TempToken = Current;
+                            TempToken.Type = TokenType.Symbol;
+                            TempToken.Value[0] = '@';
+                            Params.Push(TempToken);
+                            Memory = false;
+                        }
+
+                        CurrentLine.Params.Add(Params);
+                    }
+
+                    //if(CurrentLine.Operator.Type == TokenType.Keyword && CurrentLine.Operator.t
+                    
+                    // Process line
+                    if (CurrentLine.Operator.Type != TokenType.None)
+                    {
+                        var x = Ops.EncodingData.Where(e => string.Equals(e.Name, CurrentLine.Operator.ToString(), StringComparison.InvariantCultureIgnoreCase));
+
+                        if (x.Count() != 0)
+                        {
+                            foreach (Stack<Token> Param in CurrentLine.Params)
+                            {
+                                if (Param.Peek().Value[0] == '@')
+                                {
+                                    x = x.Where(e => e.Reg1Param.HasFlag(RegParam.Reference));
+                                }
+                            }
+                        }                           
+                    }
+
+                    
+                    // New Line
+                    CurrentLine = new LineInfo();
+                    Params = new Stack<Token>();
+                    State = ParseState.StartOfLine;
+                    Depth = 0;
+                }
+
+                if (Current.Type == TokenType.End)
+                    break;
+            };
 
             foreach (SymbolTableEntry Entry in Labels)
             {

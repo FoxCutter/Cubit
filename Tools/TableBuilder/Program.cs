@@ -27,8 +27,13 @@ namespace TableBuilder
             string[] Fieldsl = l.Split(',');
             string[] Fieldsr = r.Split(',');
 
-            return string.Compare(Fieldsl[Opcode], Fieldsr[Opcode], true);
-            
+            if (string.Compare(Fieldsl[Opcode], Fieldsr[Opcode], true) != 0)
+                return string.Compare(Fieldsl[Opcode], Fieldsr[Opcode], true);
+
+            if (string.Compare(Fieldsl[Param1], Fieldsr[Param1], true) != 0)
+                return string.Compare(Fieldsl[Param1], Fieldsr[Param1], true);
+
+            return string.Compare(Fieldsl[Param2], Fieldsr[Param2], true);
         }
         
         static void Main(string[] args)
@@ -86,9 +91,9 @@ namespace TableBuilder
                     Res.AppendFormat("                                  Encoding = new byte[] {{ 0x{0:X2} }},\r\n", Code1);
                 else
                     Res.AppendFormat("                                  Encoding = new byte[] {{ 0x{0:X2}, 0x{1:X2} }},\r\n", Code0, Code1);
-                Res.AppendFormat("                                  Reg1 = {0}, Reg1Param = {1},\r\n", ConvertRegs(Fields[Param1], Fields), ConvertParams(Fields[Param1], Fields));
-                Res.AppendFormat("                                  Reg2 = {0}, Reg2Param = {1},\r\n", ConvertRegs(Fields[Param2], Fields), ConvertParams(Fields[Param2], Fields));
-                Res.AppendFormat("                                  Function = Operation.{0} ", Fields[Opcode]);
+                Res.AppendFormat("                                  Reg1 = {0}, Reg1Param = {1},\r\n", ConvertRegs(Fields[Param1], Fields, true), ConvertParams(Fields[Param1], Fields));
+                Res.AppendFormat("                                  Reg2 = {0}, Reg2Param = {1},\r\n", ConvertRegs(Fields[Param2], Fields, true), ConvertParams(Fields[Param2], Fields));
+                Res.AppendFormat("                                  Function = CommandID.{0} ", Fields[Opcode]);
                 Res.AppendFormat("}},");
 
                 OutputZasm.Add(Res.ToString());
@@ -97,8 +102,8 @@ namespace TableBuilder
 
 
                 Res.AppendFormat("                new OpcodeData {{ Name = \"{0}\",\t// {1}{2}: {3} {4} {5}\r\n", Fields[Opcode], Fields[Prefix], Fields[HEX], Fields[Opcode], Fields[Param1], Fields[Param2]);
-                Res.AppendFormat("                                 Reg1 = {0}, Reg1Param = {1},\r\n", ConvertRegs(Fields[Param1], Fields), ConvertParams(Fields[Param1], Fields));
-                Res.AppendFormat("                                 Reg2 = {0}, Reg2Param = {1},\r\n", ConvertRegs(Fields[Param2], Fields), ConvertParams(Fields[Param2], Fields));
+                Res.AppendFormat("                                 Reg1 = {0}, Reg1Param = {1},\r\n", ConvertRegs(Fields[Param1], Fields, false), ConvertParams(Fields[Param1], Fields));
+                Res.AppendFormat("                                 Reg2 = {0}, Reg2Param = {1},\r\n", ConvertRegs(Fields[Param2], Fields, false), ConvertParams(Fields[Param2], Fields));
                 Res.AppendFormat("                                 Function = Operation.{0} ", Fields[Opcode]);
                 Res.AppendFormat("}},");
 
@@ -163,7 +168,7 @@ namespace TableBuilder
 
         }
 
-        static string ConvertRegs(string Param, string[] Fields)
+        static string ConvertRegs(string Param, string[] Fields, bool CommandID)
         {
             if (Param.Length == 0)
                 return "Register.None";
@@ -180,7 +185,7 @@ namespace TableBuilder
             if (Param == "NN")
                 return "Register.ImmediateWord";
 
-            if (Param == "0" || Param == "1" ||Param == "2" || 
+            if (Param == "0" || Param == "1" || Param == "2" || 
                 Param == "3" || Param == "4" || Param == "5" ||
                 Param == "6" || Param == "7"
                 )
@@ -189,7 +194,7 @@ namespace TableBuilder
             }
 
 
-            if (Param == "0H" || Param == "8H" || Param == "10H" ||
+            if (Param == "0H"  || Param == "8H"  || Param == "10H" ||
                 Param == "18H" || Param == "20H" || Param == "28H" ||
                 Param == "30H" || Param == "38H"
                 )

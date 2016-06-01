@@ -21,7 +21,6 @@ namespace ZASM
     class SymbolTable : IEnumerable<SymbolTableEntry>
     {
         Dictionary<string, SymbolTableEntry> NameList = new Dictionary<string, SymbolTableEntry>();
-        SymbolTable Parent = null;
 
         public SymbolTable() 
         {

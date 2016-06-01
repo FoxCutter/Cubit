@@ -44,58 +44,61 @@ namespace ZASM
             { ".INCLUDE",   CommandID.INCLUDE},     { ".MESSAGE",   CommandID.MESSAGE},     { ".ERROR",     CommandID.ERROR},       { ".OPTION",    CommandID.OPTION},
             { ".ORG",       CommandID.ORG},         { ".IF",        CommandID.IF},          { ".ELSE",      CommandID.ELSE},        { ".ELSEIF",    CommandID.ELSEIF},
             { ".ENDIF",     CommandID.ENDIF},       { ".MACRO",     CommandID.MACRO},       { ".ENDMACRO",  CommandID.ENDMACRO},    { ".PROC",      CommandID.PROC},
-            { ".ENDPROC",   CommandID.ENDPROC},     { ".PHASE",     CommandID.PHASE},       { ".ENDPHASE",  CommandID.ENDPHASE},    { "EQU",        CommandID.EQU},   
+            { ".ENDPROC",   CommandID.ENDPROC},     { ".PHASE",     CommandID.PHASE},       { ".ENDPHASE",  CommandID.ENDPHASE},    { ".EQU",       CommandID.EQU},   
+            { ".DS",	    CommandID.DEFS },       { "EQU",        CommandID.EQU},         { "PROC",       CommandID.PROC},        { "ENDPROC",    CommandID.ENDPROC},     
+            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DC",	        CommandID.DC },         { "DS",	        CommandID.DEFS },
+            { "END",	    CommandID.END },        { ".END",	    CommandID.END },        { ".Z80",       CommandID.Z80},         { ".8080",      CommandID.i8080},
         };
 
-        public static CharacterType[] CharacterData = new CharacterType[]
+        public static TokenType[] CharacterData = new TokenType[]
         {
-            CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown,
-            CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown,
+            TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown,
+            TokenType.Unknown, TokenType.Unknown, TokenType.Unknown,
 
-            CharacterType.WhiteSpace,   // Tab
+            TokenType.WhiteSpace,   // Tab
 
-            CharacterType.LineBreak, CharacterType.Unknown, CharacterType.Unknown, CharacterType.LineBreak, CharacterType.Unknown, CharacterType.Unknown,
-            CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown,
-            CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown,
-            CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown, CharacterType.Unknown,
+            TokenType.LineBreak, TokenType.Unknown, TokenType.Unknown, TokenType.LineBreak, TokenType.Unknown, TokenType.Unknown,
+            TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown,
+            TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown,
+            TokenType.Unknown, TokenType.Unknown, TokenType.Unknown, TokenType.Unknown,
 
-            CharacterType.WhiteSpace,   // Space
+            TokenType.WhiteSpace,   // Space
             
-            // !"#$%&'()*+,-./
-            CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol,
-            CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol,
-            CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol,
+            // !"#$% &'()* +,-./
+            TokenType.Symbol, TokenType.String, TokenType.Symbol, TokenType.Number, TokenType.Symbol,
+            TokenType.Symbol, TokenType.String, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol,
+            TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Identifier, TokenType.Symbol,
             
             // 0-9
-            CharacterType.Number, CharacterType.Number, CharacterType.Number, CharacterType.Number, CharacterType.Number,
-            CharacterType.Number, CharacterType.Number, CharacterType.Number, CharacterType.Number, CharacterType.Number,
+            TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number,
+            TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number,
 
-            // :;<=>?@
-            CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol,
-            CharacterType.Symbol, CharacterType.Symbol,
+            // :;<=> ?@
+            TokenType.Symbol, TokenType.Comment, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol,
+            TokenType.Symbol, TokenType.Symbol,
 
             // A-Z
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier,
 
-            // [\]^_`
-            CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol,
-            CharacterType.Symbol,
+            // [\]^_ `
+            TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol,
+            TokenType.Symbol,
             
             // a-z
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter, CharacterType.Letter,
-            CharacterType.Letter,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
+            TokenType.Identifier,
 
             // {|}~
-            CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Symbol, CharacterType.Unknown,
+            TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Unknown,
         };
     }
 }
