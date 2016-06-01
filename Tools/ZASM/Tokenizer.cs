@@ -182,23 +182,30 @@ namespace ZASM
                     else if (DataStream.PeekChar() == '.' || DataStream.PeekChar() == '@')
                         Ret.Type = TokenType.Identifier;
 
-                    else if (DataStream.PeekChar() == '"')
+                    else if (DataStream.PeekChar() == '"' || DataStream.PeekChar() == '\'')
                         Ret.Type = TokenType.String;
                         
                     else
                         Ret.Type = TokenType.Symbol;
 
                     Ret.Value.Add(DataStream.ReadChar());
+
+                    if (Ret.Value[0] == '<' && (DataStream.PeekChar() == '<' || DataStream.PeekChar() == '='))
+                        Ret.Value.Add(DataStream.ReadChar());
+
+                    if (Ret.Value[0] == '>' && (DataStream.PeekChar() == '>' || DataStream.PeekChar() == '='))
+                        Ret.Value.Add(DataStream.ReadChar());
                     
                     break;
 
                 case CharacterType.LineBreak:
                     Ret.Type = TokenType.LineBreak;
+                    Ret.Value.Add(DataStream.ReadChar());
                     break;
             }
 
 
-            if (Ret.Type == TokenType.End || Ret.Type == TokenType.Symbol)
+            if (Ret.Type == TokenType.End || Ret.Type == TokenType.Symbol || Ret.Type == TokenType.LineBreak)
                 return Ret;
 
             switch (Ret.Type)

@@ -103,86 +103,81 @@ namespace ZASM
 
         public Operation Function;
     };
+
+    class LineInfo
+    {
+        public Token Label;
+        public Token Operator;
+        public List<List<Token>> Paramiters = new List<List<Token>>();
+    };
     
     class Program
     {
-        static List<string> Keywords = new List<string>
-        {
-            "A", "ADC", "ADD", "AF", "AND", "B", "BC", "BIT", "C", "CALL", "CCF", "CP", "CPD", "CPDR", "CPI",
-            "CPIR", "CPL", "D", "DAA", "DE", "DEC", "DI", "DJNZ", "E", "EI", "EX", "EXX", "F", "H", "HALT",
-            "HL", "I", "IM", "IN", "INC", "IND", "INDR", "INI", "INIR", "IX", "IXH", "IXL", "IY", "IYH",
-            "IYL", "JP", "JR", "L", "LD", "LDD", "LDDR", "LDI", "LDIR", "M", "NC", "NEG", "NOP", "NZ", "OR",
-            "OTDR", "OTIR", "OUT", "OUTD", "OUTI", "P", "PC", "PE", "PO", "POP", "PUSH", "R", "RES", "RET",
-            "RETI", "RETN", "RL", "RLA", "RLC", "RLCA", "RLD", "RR", "RRA", "RRC", "RRCA", "RRD", "RST",
-            "SBC", "SCF", "SET", "SLA", "SLL", "SP", "SPH", "SPL", "SRA", "SRL", "SUB", "XOR", "Z",
-        };
-        
-        //static string[][] Keywords = new string[][]
-        //{
-        //    new string[] 
-        //    {
-        //        "A", "B", "C", "D", "E", "F", "H", "I", "L", "M", "P", "R", "Z",
-        //    },
-
-        //    new string[] 
-        //    {
-        //        "AF", "BC", "CP", "DE", "DI", "EI", "EX", "HL", "IM", "IN", "IX", "IY", "JP", "JR", "LD", "NC",
-        //        "NZ", "OR", "PC", "PE", "PO", "RL", "RR", "SP",
-        //    },
-
-        //    new string[] 
-        //    {
-        //        "ADC", "ADD", "AND", "BIT", "CCF", "CPD", "CPI", "CPL", "DAA", "DEC", "EXX", "INC", "IND", "INI",
-        //        "IXH", "IXL", "IYH", "IYL", "LDD", "LDI", "NEG", "NOP", "OUT", "POP", "RES", "RET", "RLA", "RLC",
-        //        "RLD", "RRA", "RRC", "RRD", "RST", "SBC", "SCF", "SET", "SLA", "SLL", "SPH", "SPL", "SRA", "SRL",
-        //        "SUB", "XOR",
-        //    },
-
-        //    new string[] 
-        //    {
-        //        "CALL", "CPDR", "CPIR", "DJNZ", "HALT", "INDR", "INIR", "LDDR", "LDIR", "OTDR", "OTIR", "OUTD",
-        //        "OUTI", "PUSH", "RETI", "RETN", "RLCA", "RRCA",
-        //    }
-        //};
-        
         static void Main(string[] args)
         {
-            string TestLine = " label:  ld, ($0AAh)		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
-
-            var Data = System.IO.File.OpenRead(@"D:\Test\DCP\Other\SystemDev\AntiMonitor\basic8k78-2.mac");
-            
+            //string TestLine = " label:  ld, ($0AAh << 8) + 0x55		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
             //System.IO.MemoryStream Data = new System.IO.MemoryStream(UTF8Encoding.UTF8.GetBytes(TestLine));
+
+            var Data = System.IO.File.OpenRead(@"D:\Programing\Code\Cubit\Tools\basic8k78-2.mac");
+            
 
             Tokenizer Temp = new Tokenizer(Data);
 
             List<Token> LineData = new List<Token>();
 
-            NameTable Labels = new NameTable();
+            SymbolTable Labels = new SymbolTable();
 
-            int Address = 0;
+            int LineNumber = 1;
 
+            LineInfo CurrentLine = new LineInfo();
+             
             while (true)
             {
                 Token Current = Temp.NextToken();
                 if (Current.Type == TokenType.End)
                     break;
 
-                if(Current.Type == TokenType.Label)
-                    Labels.AddName(Current.ToString(), Address);
+                if (Current.Type == TokenType.Label)
+                    CurrentLine.Label = Current;
 
-                if (Current.Type == TokenType.Identifier)
-                    Labels.AddName(Current.ToString());
+                if (Current.Type == TokenType.Keyword)
+                    CurrentLine.Operator = Current;
 
-                if (Current.Type != TokenType.Comment && Current.Type != TokenType.LineBreak) 
-                    LineData.Add(Current);
+                if (Current.Type == TokenType.Label || Current.Type == TokenType.Identifier)
+                {
+                    Labels[Current.ToString()].LineIDs.Add(LineNumber);
+                }
+
+
+                //Console.WriteLine(Current.ToString());
+                
+                //if (Current.Type == TokenType.Identifier)
+                //    Labels.AddName(Current.ToString());
+
+                //if (Current.Type != TokenType.Comment && Current.Type != TokenType.LineBreak) 
+                
+                //LineData.Add(Current);
 
                 if (Current.Type == TokenType.LineBreak)
-                    Address++;
+                {
+                    LineNumber += Current.Value.Count;
+                    CurrentLine = new LineInfo();
+                }
             };
 
-            foreach (Token Current in LineData)
+            //foreach (Token Current in LineData)
+            //{
+            //    if(Current.Type != TokenType.LineBreak)
+            //        Console.WriteLine(" Token Type: {0} Value: {1}", Current.Type.ToString(), Current.ToString());
+            //}
+
+            foreach (SymbolTableEntry Entry in Labels)
             {
-                Console.WriteLine(" Token Type: {0} Value: \"{1}\"", Current.Type.ToString(), Current.ToString());
+                Console.WriteLine(" Symbol: {0} Line:", Entry.Symbol);
+                foreach (int line in Entry.LineIDs)
+                {
+                    Console.WriteLine("     {0}", line);
+                }
             }
         }
     }

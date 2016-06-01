@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTables.cs" />
-    <Compile Include="NameTable.cs" />
+    <Compile Include="SymbolTable.cs" />
     <Compile Include="Opcodes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
