@@ -8,6 +8,24 @@ namespace ZASM
 {
     class DataTables
     {
+        public static Dictionary<TokenType, int> PrecedenceMap = new Dictionary<TokenType, int>()
+        {
+            { TokenType.High,               21 },   { TokenType.Low,                21 },
+            { TokenType.UnarrayPlus,        31 },   { TokenType.UnarrayMinus,       31 },   { TokenType.LogicalNot,     31 },   { TokenType.BitwiseNot,     31 },   { TokenType.Address,    31 },
+            { TokenType.Multiplication,     50 },   { TokenType.Division,           50 },   { TokenType.Remainder,      50 },   
+            { TokenType.Plus,               60 },   { TokenType.Minus,              60 },
+            { TokenType.LeftShift,          70 },   { TokenType.RightShift,         70 },
+            { TokenType.LessThen,           80 },   { TokenType.LessEqual,          80 },   { TokenType.GreaterThen,    80 },   { TokenType.GreaterEqual,   80 },
+            { TokenType.Equal,              90 },   { TokenType.NotEqual,           90 },
+            { TokenType.BitwiseAnd,         100 },   
+            { TokenType.BitwiseXOR,         111 },   
+            { TokenType.BitwiseOR,          120 },   
+            { TokenType.LogicalAnd,         130 },   
+            { TokenType.LogicalOR,          140 },   
+            { TokenType.Ternary,            151 },   
+            { TokenType.Comma,              160 },   
+        };
+        
         //static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
         public static SortedList<string, CommandID> Commands = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
         {
@@ -65,17 +83,17 @@ namespace ZASM
             TokenType.WhiteSpace,   // Space
             
             // !"#$% &'()* +,-./
-            TokenType.Symbol, TokenType.String, TokenType.Symbol, TokenType.Number, TokenType.Symbol,
-            TokenType.Symbol, TokenType.String, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol,
-            TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Identifier, TokenType.Symbol,
+            TokenType.LogicalNot, TokenType.String, TokenType.Symbol, TokenType.Number, TokenType.Remainder,
+            TokenType.BitwiseAnd, TokenType.String, TokenType.ParenthesesLeft, TokenType.ParenthesesRight, TokenType.Multiplication,
+            TokenType.Plus, TokenType.Comma, TokenType.Minus, TokenType.Identifier, TokenType.Division,
             
             // 0-9
             TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number,
             TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number,
 
             // :;<=> ?@
-            TokenType.Symbol, TokenType.Comment, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol,
-            TokenType.Symbol, TokenType.Symbol,
+            TokenType.Label, TokenType.Comment, TokenType.LessThen, TokenType.Equal, TokenType.GreaterThen,
+            TokenType.Symbol, TokenType.Address,
 
             // A-Z
             TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
@@ -86,8 +104,8 @@ namespace ZASM
             TokenType.Identifier,
 
             // [\]^_ `
-            TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol,
-            TokenType.Symbol,
+            TokenType.BracketLeft, TokenType.Symbol, TokenType.BracketRight, TokenType.BitwiseXOR, TokenType.Identifier,
+            TokenType.String,
             
             // a-z
             TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier, TokenType.Identifier,
@@ -98,7 +116,7 @@ namespace ZASM
             TokenType.Identifier,
 
             // {|}~
-            TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Symbol, TokenType.Unknown,
+            TokenType.GroupLeft, TokenType.BitwiseOR, TokenType.GroupRight, TokenType.BitwiseNot, TokenType.Unknown,
         };
     }
 }

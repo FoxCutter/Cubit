@@ -23,10 +23,51 @@ namespace ZASM
         String,
         Label,
 
-        Unarray,
+        Operator,
 
+
+        
         // Symbol Types
+        GroupLeft,
+        GroupRight,
+        ParenthesesLeft,
+        ParenthesesRight,
 
+        BracketLeft,
+        BracketRight,
+        High,
+        Low,
+
+        UnarrayPlus,
+        UnarrayMinus,
+        LogicalNot,
+        BitwiseNot,
+        Address,
+
+        Multiplication,
+        Division,
+        Remainder,
+        Plus,
+        Minus,
+        LeftShift,
+        RightShift,
+
+        LessThen,
+        GreaterThen,
+        LessEqual,
+        GreaterEqual,
+
+        Equal,
+        NotEqual,
+
+        BitwiseAnd,
+        BitwiseOR,
+        BitwiseXOR,
+        LogicalAnd,
+        LogicalOR,
+
+        Ternary,
+        Comma,
     }
 
     /*
@@ -67,6 +108,52 @@ namespace ZASM
         public int Character;
         public long Pos;
 
+        public bool IsEmpty()
+        {
+            return Type == TokenType.None;
+        }
+
+        public bool IsEnd()
+        {
+            return Type == TokenType.LineBreak;
+        }
+
+        public bool IsBreak()
+        {
+            return Type == TokenType.End || Type == TokenType.LineBreak;
+        }
+
+        public bool IsLabel()
+        {
+            return Type == TokenType.Label;
+        }
+
+        public bool IsCommand()
+        {
+            return Type == TokenType.Keyword || Type == TokenType.Identifier;
+        }
+
+        public bool IsOperator()
+        {
+            return Type > TokenType.Operator;
+        }
+
+        public bool IsGroupLeft()
+        {
+            return Type == TokenType.ParenthesesLeft || Type == TokenType.BracketLeft;
+        }
+
+        public bool IsGroupRight()
+        {
+            return Type == TokenType.ParenthesesRight || Type == TokenType.BracketRight;
+        }
+
+        public bool IsGroup()
+        {
+            return IsGroupLeft() || IsGroupRight();
+        }
+
+        
         override public string ToString()
         {
             if(Value == null || Value.Count == 0)
@@ -126,7 +213,7 @@ namespace ZASM
     enum CommandID
     {
         // Not used
-        None = 0xFF,
+        None,
 
         // 8-bit Registers and Indexs into the register array
         A,
@@ -174,16 +261,7 @@ namespace ZASM
         ImmediateByte = Immediate,
         ImmediateWord = Immediate, 
         
-        //// Register
-        //A, F, B, C, D, E, H, L, I, R, AF, BC, DE, HL, IX, IY, PC, SP,
-        //SPH, SPL, IXH, IXL, IYH, IYL,
-
         RegisterMax = 0xFF,
-
-        //// Dummy Index Registers
-        //HD, HX, XH, XL, ImmediateByte, ImmediateWord,
-
-        //DummyRegisterMax,
 
         // Flags
         CY, NC, Z, NZ, PE, PO, P, M,
@@ -320,7 +398,7 @@ namespace ZASM
                 char CurrentValue = ReadNextCharacter();
                 Data.Value.Add(CurrentValue);
 
-                if (Current == TokenType.Symbol && CurrentValue == Data.Value[0])
+                if (Current == TokenType.String && CurrentValue == Data.Value[0])
                     break;
             }
 
@@ -378,60 +456,10 @@ namespace ZASM
             SkipWhitespaces();
 
             Ret.Type = PeakNextTokenType();
+            if (Ret.Type == TokenType.End)
+                return Ret;
 
-            // Decide what token we have based on the type of the current character
-            switch (Ret.Type)
-            {
-                case TokenType.End:
-                    Ret.Type = TokenType.End;
-                    return Ret;
-
-                case TokenType.Number:
-                    Ret.Value.Add(ReadNextCharacter());
-                    break;
-
-                case TokenType.Identifier:
-                    Ret.Value.Add(ReadNextCharacter());
-                    break;
-
-                case TokenType.Symbol:
-                    Ret.Value.Add(ReadNextCharacter());
-
-                    if (Ret.Value[0] == '?' && PeakNextTokenType() == TokenType.Identifier)
-                        Ret.Type = TokenType.Identifier;
-
-                    else
-                    {
-                        if (Ret.Value[0] == '<' && (PeakNextCharacter() == '<' || PeakNextCharacter() == '='))
-                            Ret.Value.Add(ReadNextCharacter());
-
-                        if (Ret.Value[0] == '>' && (PeakNextCharacter() == '>' || PeakNextCharacter() == '='))
-                            Ret.Value.Add(ReadNextCharacter());
-
-                        if (Ret.Value[0] == '=' && PeakNextCharacter() == '=')
-                            Ret.Value.Add(ReadNextCharacter());
-
-                        if (Ret.Value[0] == '!' && PeakNextCharacter() == '=')
-                            Ret.Value.Add(ReadNextCharacter());
-
-                        return Ret;
-                    }
-                    
-                    break;
-
-                case TokenType.LineBreak:
-                    Ret.Type = TokenType.LineBreak;
-                    Ret.Value.Add(ReadNextCharacter());
-
-                    // Handle CR/LF
-                    if (Ret.Value[0] == '\r' && PeakNextCharacter() == '\n')
-                        Ret.Value.Add(ReadNextCharacter());
-
-                    CurrentLine++;
-                    CurrentCharacter = 1;
-                    return Ret;
-            }
-
+            Ret.Value.Add(ReadNextCharacter());
 
             switch (Ret.Type)
             {
@@ -453,23 +481,111 @@ namespace ZASM
                     ReadString(ref Ret);
                     break;
 
-                default:
-                    while (PeakNextTokenType() == Ret.Type)
+                case TokenType.Symbol:
+                    break;
+
+                case TokenType.LessThen:
+                    if (PeakNextTokenType() == TokenType.Equal)              // <=
+                    {
+                        Ret.Type = TokenType.LessEqual;
                         Ret.Value.Add(ReadNextCharacter());
+                    }
+                    else if (PeakNextTokenType() == TokenType.LessThen)     // <<
+                    {
+                        Ret.Type = TokenType.LeftShift;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    else if (PeakNextTokenType() == TokenType.GreaterThen)  // <>
+                    {
+                        Ret.Type = TokenType.NotEqual;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    break;
+
+                case TokenType.GreaterThen:     // >=
+                    if (PeakNextTokenType() == TokenType.Equal)
+                    {
+                        Ret.Type = TokenType.GreaterEqual;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    else if (PeakNextTokenType() == TokenType.GreaterThen)  // >>
+                    {
+                        Ret.Type = TokenType.RightShift;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    break;
+
+                case TokenType.BitwiseNot:      // !=
+                    if (PeakNextTokenType() == TokenType.Equal)
+                    {
+                        Ret.Type = TokenType.NotEqual;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    break;
+
+                case TokenType.Equal:           // ==
+                    if (PeakNextTokenType() == TokenType.Equal)
+                    {
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    break;
+
+                case TokenType.BitwiseAnd:           // &&
+                    if (PeakNextTokenType() == TokenType.BitwiseAnd)
+                    {
+                        Ret.Type = TokenType.LogicalAnd;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    break;
+
+                case TokenType.BitwiseOR:           // ||
+                    if (PeakNextTokenType() == TokenType.BitwiseOR)
+                    {
+                        Ret.Type = TokenType.LogicalOR;
+                        Ret.Value.Add(ReadNextCharacter());
+                    }
+                    break;
+
+                case TokenType.LineBreak:
+                    Ret.Type = TokenType.LineBreak;
+                    Ret.Value.Add(ReadNextCharacter());
+
+                    // Handle CR/LF
+                    if (Ret.Value[0] == '\r' && PeakNextCharacter() == '\n')
+                        Ret.Value.Add(ReadNextCharacter());
+
+                    CurrentLine++;
+                    CurrentCharacter = 1;
+                    return Ret;
+
+                default:
+                    if (Ret.Type < TokenType.Operator)
+                    {
+                        while (PeakNextTokenType() == Ret.Type)
+                            Ret.Value.Add(ReadNextCharacter());
+                    }
                     break;
             }
 
             if (Ret.Type == TokenType.Identifier)
             {
-                if (StartOfLine && PeakNextTokenType() == TokenType.Symbol && PeakNextCharacter() == ':')
+                if (StartOfLine && PeakNextTokenType() == TokenType.Label)
                 {
                     Ret.Type = TokenType.Label;
                     ReadNextCharacter();
                 }
                 else if (DataTables.Commands.ContainsKey(Ret.ToString()))
-                {
-                    Ret.Type = TokenType.Keyword;
+                {                    
                     CommandID ID = DataTables.Commands[Ret.ToString()];
+
+                    if (ID == CommandID.LOW)
+                        Ret.Type = TokenType.Low;
+                 
+                    else if (ID == CommandID.HIGH)
+                        Ret.Type = TokenType.High;
+
+                    else
+                        Ret.Type = TokenType.Keyword;
                 }
             }
             
