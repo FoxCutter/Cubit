@@ -170,8 +170,12 @@ namespace TableBuilder
 
         static string ConvertRegs(string Param, string[] Fields, bool CommandID)
         {
+            string Base = "Register";
+            if (CommandID)
+                Base = "CommandID";
+            
             if (Param.Length == 0)
-                return "Register.None";
+                return Base + ".None";
 
             Param = Param.ToUpper();
             if (Param[0] == '(')
@@ -180,17 +184,17 @@ namespace TableBuilder
             }
 
             if (Param == "N" || Param == "E-2")
-                return "Register.ImmediateByte";
+                return Base + ".ImmediateByte";
 
             if (Param == "NN")
-                return "Register.ImmediateWord";
+                return Base + ".ImmediateWord";
 
             if (Param == "0" || Param == "1" || Param == "2" || 
                 Param == "3" || Param == "4" || Param == "5" ||
                 Param == "6" || Param == "7"
                 )
             {
-                return "(Register)" + Param;
+                return "(" + Base + ")" + Param;
             }
 
 
@@ -200,7 +204,7 @@ namespace TableBuilder
                 )
             {
                 Param = Param.Substring(0, Param.Length - 1);
-                return "(Register)0x" + Param;
+                return "(" + Base + ")0x" + Param;
             }
 
             if (Param == "NZ" || Param == "Z" || Param == "NC" ||
@@ -208,25 +212,29 @@ namespace TableBuilder
                 Param == "P" || Param == "M"
                 )
             {
-                return "(Register)ConditionCode." + Param;
+
+                if (CommandID)
+                    return "CommandID." + Param;
+                else
+                    return "(Register)ConditionCode." + Param;
             }
 
             if (Param == "HL")
             {
                 if (Fields[IX_IY] == "Y - No Displacment")
-                    return "Register.HX";
+                    return Base + ".HX";
 
                 else if (Fields[IX_IY] == "Y")
-                    return "Register.HD";
+                    return Base + ".HD";
             }
 
             if (Param == "H")
-                return "Register.XH";
+                return Base + ".XH";
 
             if (Param == "L")
-                return "Register.XL";
+                return Base + ".XL";
 
-            return "Register." + Param;
+            return Base + "." + Param;
         }
 
         static string ConvertParams(string Param, string[] Fields)

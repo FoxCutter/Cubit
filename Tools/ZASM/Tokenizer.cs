@@ -18,14 +18,19 @@ namespace ZASM
         LineBreak,
         Identifier,
         Keyword,
+        Command,
+        Register,
+        Flag,
         Number,
+        Result,
         Symbol,
         String,
         Label,
 
+        Period, 
+        Colon,
+        Comma,
         Operator,
-
-
         
         // Symbol Types
         GroupLeft,
@@ -67,13 +72,11 @@ namespace ZASM
         LogicalOR,
 
         Ternary,
-        Comma,
     }
 
     /*
-     *      Left-to-right 
-     * 2:   Displacment [, ]
-     *      HIGH, LOW
+     *      Right-to-left 
+     * 2:   HIGH, LOW
      * 
      *      Right-to-left 
      * 3:   Unary plus and minus
@@ -102,12 +105,33 @@ namespace ZASM
     struct Token
     {
         public TokenType Type;
+        public CommandID CommandID;
         public List<char> Value;
 
+        public int NumaricValue;
         public int Line;
         public int Character;
         public long Pos;
 
+        public bool CanHaveFlag()
+        {
+            if(!IsKeyword())
+                return false;
+
+            return (CommandID == CommandID.JR || CommandID == CommandID.JP || CommandID == CommandID.CALL || CommandID == CommandID.RET);
+        }
+        
+        public bool RightToLeft()
+        {
+            return  Type == TokenType.UnarrayMinus ||
+                    Type == TokenType.UnarrayPlus ||
+                    Type == TokenType.LogicalNot ||
+                    Type == TokenType.BitwiseNot ||
+                    Type == TokenType.High ||
+                    Type == TokenType.Low ||
+                    Type == TokenType.Ternary;
+        }
+        
         public bool IsEmpty()
         {
             return Type == TokenType.None;
@@ -128,9 +152,34 @@ namespace ZASM
             return Type == TokenType.Label;
         }
 
+        public bool IsKeyword()
+        {
+            return Type == TokenType.Keyword;
+        }
+
+        public bool IsRegister()
+        {
+            return Type == TokenType.Register;
+        }
+
+        public bool IsFlag()
+        {
+            return Type == TokenType.Flag;
+        }
+
         public bool IsCommand()
         {
-            return Type == TokenType.Keyword || Type == TokenType.Identifier;
+            return Type == TokenType.Command;
+        }
+
+        public bool IsIdentifier()
+        {
+            return Type == TokenType.Identifier;
+        }
+
+        public bool IsString()
+        {
+            return Type == TokenType.String;
         }
 
         public bool IsOperator()
@@ -152,25 +201,13 @@ namespace ZASM
         {
             return IsGroupLeft() || IsGroupRight();
         }
-
-        
+      
         override public string ToString()
         {
-            if(Value == null || Value.Count == 0)
-                return "";
+            if (Value == null || Value.Count == 0)
+                return NumaricValue.ToString();
 
             return new string(Value.ToArray());
-        }
-
-        public int ToInt()
-        {
-            if (Type != TokenType.Number)
-                return 0;
-            
-            if (Value == null || Value.Count == 0)
-                return 0;
-
-            return int.Parse(ToString());
         }
     }
 
@@ -276,10 +313,12 @@ namespace ZASM
         RETN, RL, RLA, RLC, RLCA, RLD, RR, RRA, RRC, RRCA, RRD,
         RST, SBC, SCF, SET, SLA, SLL, SRA, SRL, SUB, XOR,
 
+        HIGH, LOW,
+
         OpcodeMax,
 
         // Commands
-        HIGH, LOW, BYTE, DC, DEFS, ELSE, ELSEIF, END, ENDIF, ENDMACRO,
+        BYTE, DC, DEFS, ELSE, ELSEIF, END, ENDIF, ENDMACRO,
         ENDPHASE, ENDPROC, ERROR, IF, IFDEF, IFNDEF, INCLUDE, MACRO,
         MESSAGE, OPTION, ORG, PHASE, PROC, WORD, EQU, Z80, i8080,
 
@@ -288,31 +327,23 @@ namespace ZASM
     
     class Tokenizer
     {
+        Token _NextToken;
         BinaryReader DataStream;
         int CurrentLine;
         int CurrentCharacter;
-        Stack<char> Buffer;
 
         public Tokenizer(Stream InputStream)
         {
             DataStream = new BinaryReader(InputStream);
-            Buffer = new Stack<char>();
             CurrentLine = 1;
             CurrentCharacter = 1;
+
+            _NextToken = GetNextToken();
         }
 
-        TokenType PeakNextTokenType()
+        TokenType PeekNextTokenType()
         {
-            int Current = -1;
-
-            if (Buffer.Count != 0)
-            {
-                Current = Buffer.Pop();                
-            }
-            else
-            {
-                Current = DataStream.PeekChar();
-            }
+            int Current = DataStream.PeekChar();
 
             if (Current == -1)
                 return TokenType.End;
@@ -324,17 +355,9 @@ namespace ZASM
                 return DataTables.CharacterData[Current];
         }
 
-        char PeakNextCharacter()
+        char PeekNextCharacter()
         {
-            int Value = -1;
-            if (Buffer.Count != 0)
-            {
-                Value = Buffer.Pop();                
-            }
-            else
-            {
-                Value = DataStream.PeekChar();
-            }
+            int Value = DataStream.PeekChar();
 
             if (Value == -1)
                 return '\0';
@@ -344,34 +367,99 @@ namespace ZASM
         
         char ReadNextCharacter()
         {
-            char Value = '\0';
-
-            if (Buffer.Count != 0)
-            {
-                Value = Buffer.Pop();                
-            }
-            else
-            {
-                Value = DataStream.ReadChar();
-            }
+            char Value =  DataStream.ReadChar();
 
             CurrentCharacter++;
 
             return Value;
         }
 
-        void UnReadCharacter(char Value)
+        void ReadNumber(ref Token Data)
         {
-            Buffer.Push(Value);
-            CurrentCharacter--;
-        }
+            while (true)
+            {
+                TokenType NextType = PeekNextTokenType();
+                char NextValue = PeekNextCharacter();
 
+                if (NextType == TokenType.Number)
+                    Data.Value.Add(ReadNextCharacter());
+
+                else if (NextType == TokenType.Identifier)
+                    Data.Value.Add(ReadNextCharacter());
+
+                else if (NextType == TokenType.Period || NextValue == '_')
+                    Data.Value.Add(ReadNextCharacter());
+
+                else
+                    break;
+            } 
+            
+            // Work out the base of the number.
+            int Base = 10;
+
+            List<char> TempData = Data.Value.Select(e => char.ToUpper(e)).ToList();
+
+            char TypeChar = TempData[TempData.Count - 1];
+
+            if (TempData.Count >= 2 && TempData[0] == '0' && TempData[1] == 'X')
+            {
+                TempData.RemoveRange(0, 2);    
+                Base = 16;
+            }
+            else if (TypeChar == 'H')
+            {
+                TempData.RemoveAt(TempData.Count - 1);    
+                Base = 16;
+            }
+            else if (TypeChar == 'O')
+            {
+                TempData.RemoveAt(TempData.Count - 1);
+                Base = 8;
+            }
+            else if (TypeChar == 'D')
+            {
+                TempData.RemoveAt(TempData.Count - 1);
+                Base = 10;
+            }
+            else if (TypeChar == 'B')
+            {
+                TempData.RemoveAt(TempData.Count - 1);
+                Base = 2;
+            }
+
+            if (TempData.Count == 0)
+            {
+                // ERROR!
+            }
+
+            try
+            {
+                int Result = 0;
+                foreach (char Num in TempData)
+                {
+                    // Ignore _ in numbers (allows spacing)
+                    if (Num == '_')
+                        continue;
+
+                    Result = Result * Base;
+                    Result += Convert.ToInt32(Num.ToString(), Base);
+                }
+            
+                Data.NumaricValue = Result;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+        
+        
         void ReadIdentifier(ref Token Data)
         {
             while (true)
             {
-                TokenType NextType = PeakNextTokenType();
-                char NextValue = PeakNextCharacter();
+                TokenType NextType = PeekNextTokenType();
+                char NextValue = PeekNextCharacter();
 
                 if (NextType == TokenType.Number)
                     Data.Value.Add(ReadNextCharacter());
@@ -391,7 +479,7 @@ namespace ZASM
         {
             while (true)
             {
-                TokenType Current = PeakNextTokenType();
+                TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
                     break; // ERROR
 
@@ -401,29 +489,26 @@ namespace ZASM
                 if (Current == TokenType.String && CurrentValue == Data.Value[0])
                     break;
             }
-
         }
 
         void SkipWhitespaces()
         {
-            while (PeakNextTokenType() == TokenType.WhiteSpace)
+            while (PeekNextTokenType() == TokenType.WhiteSpace)
                 ReadNextCharacter();
         }
 
         public void FlushLine()
         {
-            Buffer.Clear();
-
             while (true)
             {
-                TokenType Current = PeakNextTokenType();
+                TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.End)
                     break;
 
                 else if (Current == TokenType.LineBreak)
                 {
                     // Handle CR/LF
-                    if (ReadNextCharacter() == '\r' && PeakNextCharacter() == '\n')
+                    if (ReadNextCharacter() == '\r' && PeekNextCharacter() == '\n')
                         ReadNextCharacter();
 
                     CurrentLine++;
@@ -438,14 +523,22 @@ namespace ZASM
 
         }
 
+        public Token PeekNextToken()
+        {
+            return _NextToken;
+        }
+
         public Token NextToken()
         {
-            Token Ret;
-            bool StartOfLine = false;
+            Token Ret = _NextToken;
+            _NextToken = GetNextToken();
+            return Ret;
+        }
 
-            if (CurrentCharacter == 1)
-                StartOfLine = true;
-
+        Token GetNextToken()
+        {
+            Token Ret = default(Token);
+            
             Ret.Type = TokenType.End;
             Ret.Value = new List<char>();
 
@@ -455,7 +548,7 @@ namespace ZASM
 
             SkipWhitespaces();
 
-            Ret.Type = PeakNextTokenType();
+            Ret.Type = PeekNextTokenType();
             if (Ret.Type == TokenType.End)
                 return Ret;
 
@@ -464,16 +557,17 @@ namespace ZASM
             switch (Ret.Type)
             {
                 case TokenType.Number:
-                    while (PeakNextTokenType() == TokenType.Identifier || PeakNextTokenType() == TokenType.Number || PeakNextCharacter() == '.')
-                        Ret.Value.Add(ReadNextCharacter());
+                    ReadNumber(ref Ret);
                     break;
 
+                case TokenType.Period:
                 case TokenType.Identifier:
+                    Ret.Type = TokenType.Identifier;
                     ReadIdentifier(ref Ret);
                     break;
 
                 case TokenType.Comment:
-                    while (PeakNextTokenType() != TokenType.LineBreak && PeakNextTokenType() != TokenType.End)
+                    while (PeekNextTokenType() != TokenType.LineBreak && PeekNextTokenType() != TokenType.End)
                         Ret.Value.Add(ReadNextCharacter());
                     break;
 
@@ -485,17 +579,17 @@ namespace ZASM
                     break;
 
                 case TokenType.LessThen:
-                    if (PeakNextTokenType() == TokenType.Equal)              // <=
+                    if (PeekNextTokenType() == TokenType.Equal)              // <=
                     {
                         Ret.Type = TokenType.LessEqual;
                         Ret.Value.Add(ReadNextCharacter());
                     }
-                    else if (PeakNextTokenType() == TokenType.LessThen)     // <<
+                    else if (PeekNextTokenType() == TokenType.LessThen)     // <<
                     {
                         Ret.Type = TokenType.LeftShift;
                         Ret.Value.Add(ReadNextCharacter());
                     }
-                    else if (PeakNextTokenType() == TokenType.GreaterThen)  // <>
+                    else if (PeekNextTokenType() == TokenType.GreaterThen)  // <>
                     {
                         Ret.Type = TokenType.NotEqual;
                         Ret.Value.Add(ReadNextCharacter());
@@ -503,12 +597,12 @@ namespace ZASM
                     break;
 
                 case TokenType.GreaterThen:     // >=
-                    if (PeakNextTokenType() == TokenType.Equal)
+                    if (PeekNextTokenType() == TokenType.Equal)
                     {
                         Ret.Type = TokenType.GreaterEqual;
                         Ret.Value.Add(ReadNextCharacter());
                     }
-                    else if (PeakNextTokenType() == TokenType.GreaterThen)  // >>
+                    else if (PeekNextTokenType() == TokenType.GreaterThen)  // >>
                     {
                         Ret.Type = TokenType.RightShift;
                         Ret.Value.Add(ReadNextCharacter());
@@ -516,7 +610,7 @@ namespace ZASM
                     break;
 
                 case TokenType.BitwiseNot:      // !=
-                    if (PeakNextTokenType() == TokenType.Equal)
+                    if (PeekNextTokenType() == TokenType.Equal)
                     {
                         Ret.Type = TokenType.NotEqual;
                         Ret.Value.Add(ReadNextCharacter());
@@ -524,14 +618,14 @@ namespace ZASM
                     break;
 
                 case TokenType.Equal:           // ==
-                    if (PeakNextTokenType() == TokenType.Equal)
+                    if (PeekNextTokenType() == TokenType.Equal)
                     {
                         Ret.Value.Add(ReadNextCharacter());
                     }
                     break;
 
                 case TokenType.BitwiseAnd:           // &&
-                    if (PeakNextTokenType() == TokenType.BitwiseAnd)
+                    if (PeekNextTokenType() == TokenType.BitwiseAnd)
                     {
                         Ret.Type = TokenType.LogicalAnd;
                         Ret.Value.Add(ReadNextCharacter());
@@ -539,7 +633,7 @@ namespace ZASM
                     break;
 
                 case TokenType.BitwiseOR:           // ||
-                    if (PeakNextTokenType() == TokenType.BitwiseOR)
+                    if (PeekNextTokenType() == TokenType.BitwiseOR)
                     {
                         Ret.Type = TokenType.LogicalOR;
                         Ret.Value.Add(ReadNextCharacter());
@@ -551,7 +645,7 @@ namespace ZASM
                     Ret.Value.Add(ReadNextCharacter());
 
                     // Handle CR/LF
-                    if (Ret.Value[0] == '\r' && PeakNextCharacter() == '\n')
+                    if (Ret.Value[0] == '\r' && PeekNextCharacter() == '\n')
                         Ret.Value.Add(ReadNextCharacter());
 
                     CurrentLine++;
@@ -561,7 +655,7 @@ namespace ZASM
                 default:
                     if (Ret.Type < TokenType.Operator)
                     {
-                        while (PeakNextTokenType() == Ret.Type)
+                        while (PeekNextTokenType() == Ret.Type)
                             Ret.Value.Add(ReadNextCharacter());
                     }
                     break;
@@ -569,23 +663,27 @@ namespace ZASM
 
             if (Ret.Type == TokenType.Identifier)
             {
-                if (StartOfLine && PeakNextTokenType() == TokenType.Label)
+                if (DataTables.Commands.ContainsKey(Ret.ToString()))
                 {
-                    Ret.Type = TokenType.Label;
-                    ReadNextCharacter();
-                }
-                else if (DataTables.Commands.ContainsKey(Ret.ToString()))
-                {                    
-                    CommandID ID = DataTables.Commands[Ret.ToString()];
+                    Ret.CommandID = DataTables.Commands[Ret.ToString()];
 
-                    if (ID == CommandID.LOW)
-                        Ret.Type = TokenType.Low;
-                 
-                    else if (ID == CommandID.HIGH)
-                        Ret.Type = TokenType.High;
+                    if (Ret.CommandID < CommandID.RegisterMax)
+                        Ret.Type = TokenType.Register;
+
+                    else if (Ret.CommandID < CommandID.FlagsMax)
+                        Ret.Type = TokenType.Flag;
+
+                    else if (Ret.CommandID > CommandID.OpcodeMax)
+                        Ret.Type = TokenType.Command;
 
                     else
                         Ret.Type = TokenType.Keyword;
+
+                    if (Ret.CommandID == CommandID.LOW)
+                        Ret.Type = TokenType.Low;
+
+                    else if (Ret.CommandID == CommandID.HIGH)
+                        Ret.Type = TokenType.High;
                 }
             }
             

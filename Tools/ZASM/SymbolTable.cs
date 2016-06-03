@@ -6,15 +6,33 @@ using System.Threading.Tasks;
 
 namespace ZASM
 {
+    enum SymbolType
+    {
+        None,
+        Constant,
+        Address,
+        Function,
+        Macro,
+        Undefined,
+    }
+    
     class SymbolTableEntry
     {
         public string Symbol { get; set; }
         public List<int> LineIDs { get; set; }
 
-        public SymbolTableEntry(string Name = "")
+        public int DefinedLine { get; set; }
+        public SymbolType Type { get; set; }
+        public long Value { get; set; }
+
+        public SymbolTableEntry(string Name = "", SymbolType InitialType = SymbolType.None)
         {
+            Type = InitialType;
             Symbol = Name;
             LineIDs = new List<int>();
+            Value = 0;
+
+            DefinedLine = -1;
         }
     };
 
@@ -32,7 +50,7 @@ namespace ZASM
             {
                 if (!NameList.ContainsKey(Name.ToUpper()))
                 {
-                    NameList[Name.ToUpper()] = new SymbolTableEntry(Name);
+                    NameList[Name.ToUpper()] = new SymbolTableEntry(Name, SymbolType.Undefined);
                 }
 
                 return NameList[Name.ToUpper()];

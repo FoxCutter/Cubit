@@ -85,14 +85,14 @@ namespace ZASM
             // !"#$% &'()* +,-./
             TokenType.LogicalNot, TokenType.String, TokenType.Symbol, TokenType.Number, TokenType.Remainder,
             TokenType.BitwiseAnd, TokenType.String, TokenType.ParenthesesLeft, TokenType.ParenthesesRight, TokenType.Multiplication,
-            TokenType.Plus, TokenType.Comma, TokenType.Minus, TokenType.Identifier, TokenType.Division,
+            TokenType.Plus, TokenType.Comma, TokenType.Minus, TokenType.Period, TokenType.Division,
             
             // 0-9
             TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number,
             TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number, TokenType.Number,
 
             // :;<=> ?@
-            TokenType.Label, TokenType.Comment, TokenType.LessThen, TokenType.Equal, TokenType.GreaterThen,
+            TokenType.Colon, TokenType.Comment, TokenType.LessThen, TokenType.Equal, TokenType.GreaterThen,
             TokenType.Symbol, TokenType.Address,
 
             // A-Z
