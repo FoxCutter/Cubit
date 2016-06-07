@@ -10,6 +10,8 @@ namespace ZASM
     {
         public static Dictionary<TokenType, int> PrecedenceMap = new Dictionary<TokenType, int>()
         {
+            { TokenType.Command,            20 },   { TokenType.Keyword,            20 },
+            { TokenType.BracketLeft,        20 },   { TokenType.BracketRight,       20 },
             { TokenType.High,               21 },   { TokenType.Low,                21 },
             { TokenType.UnarrayPlus,        31 },   { TokenType.UnarrayMinus,       31 },   { TokenType.LogicalNot,     31 },   { TokenType.BitwiseNot,     31 },   { TokenType.Address,    31 },
             { TokenType.Multiplication,     50 },   { TokenType.Division,           50 },   { TokenType.Remainder,      50 },   
