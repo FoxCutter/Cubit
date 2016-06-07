@@ -101,7 +101,8 @@ namespace ZASM
                     Type == TokenType.BitwiseNot ||
                     Type == TokenType.High ||
                     Type == TokenType.Low ||
-                    Type == TokenType.Ternary;
+                    Type == TokenType.Ternary ||
+                    Type == TokenType.Address;
         }
 
         public bool IsEmpty()
@@ -111,7 +112,7 @@ namespace ZASM
 
         public bool IsValue()
         {
-            return Type == TokenType.Number || Type == TokenType.Identifier || Type == TokenType.String || Type == TokenType.Label;
+            return Type == TokenType.Number || Type == TokenType.Identifier || Type == TokenType.String || Type == TokenType.Label || Type == TokenType.ParenthesesRight || Type == TokenType.BracketRight;
         }
 
         public bool IsEnd()

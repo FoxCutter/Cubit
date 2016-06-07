@@ -236,22 +236,22 @@ namespace ZASM
                 TempData.RemoveRange(0, 2);    
                 Base = 16;
             }
-            else if (TypeChar == 'H')
+            else if (TypeChar == 'H')   // Hex
             {
                 TempData.RemoveAt(TempData.Count - 1);    
                 Base = 16;
             }
-            else if (TypeChar == 'O')
+            else if (TypeChar == 'O')   // Octal
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 8;
             }
-            else if (TypeChar == 'D')
+            else if (TypeChar == 'D')   // Decmila
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 10;
             }
-            else if (TypeChar == 'B')
+            else if (TypeChar == 'B')   // Binary
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 2;
@@ -259,7 +259,7 @@ namespace ZASM
 
             if (TempData.Count == 0)
             {
-                // ERROR!
+                throw new ZASMException(Data.Line, Data.Character, "TXX", "Empty number token.");
             }
 
             try
@@ -279,7 +279,7 @@ namespace ZASM
             }
             catch
             {
-                throw;
+                throw new ZASMException(Data.Line, Data.Character, "T01", "Invalid character in number");
             }
         }
         
@@ -311,7 +311,7 @@ namespace ZASM
             {
                 TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
-                    break; // ERROR
+                    throw new ZASMException(Data.Line, Data.Character, "T00", "Unexpected line break in a string");
 
                 char CurrentValue = ReadNextCharacter();
                 Data.Value.Add(CurrentValue);
@@ -362,7 +362,7 @@ namespace ZASM
                     break;
                 }
                 else
-                {
+                {                    
                     ReadNextCharacter();
                 }
             }

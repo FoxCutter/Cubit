@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Tokenizer.cs" />
+    <Compile Include="ZASMException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

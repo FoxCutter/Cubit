@@ -13,7 +13,7 @@ namespace ZASM
             { TokenType.Command,            20 },   { TokenType.Keyword,            20 },
             { TokenType.BracketLeft,        20 },   { TokenType.BracketRight,       20 },
             { TokenType.High,               21 },   { TokenType.Low,                21 },
-            { TokenType.UnarrayPlus,        31 },   { TokenType.UnarrayMinus,       31 },   { TokenType.LogicalNot,     31 },   { TokenType.BitwiseNot,     31 },   { TokenType.Address,    31 },
+            { TokenType.UnarrayPlus,        31 },   { TokenType.UnarrayMinus,       31 },   { TokenType.LogicalNot,     31 },   { TokenType.BitwiseNot,     31 },   { TokenType.Address,    201 },
             { TokenType.Multiplication,     50 },   { TokenType.Division,           50 },   { TokenType.Remainder,      50 },   
             { TokenType.Plus,               60 },   { TokenType.Minus,              60 },
             { TokenType.LeftShift,          70 },   { TokenType.RightShift,         70 },
@@ -25,7 +25,7 @@ namespace ZASM
             { TokenType.LogicalAnd,         130 },   
             { TokenType.LogicalOR,          140 },   
             { TokenType.Ternary,            151 },   
-            { TokenType.Comma,              160 },   
+            { TokenType.Comma,              161 },   
         };
         
         //static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
