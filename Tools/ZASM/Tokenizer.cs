@@ -122,9 +122,8 @@ namespace ZASM
         HD,
 
         // Immediate data
-        Immediate = 0x80,
-        ImmediateByte = Immediate,
-        ImmediateWord = Immediate, 
+        ImmediateByte = 0x80,
+        ImmediateWord, 
         
         RegisterMax = 0xFF,
 
@@ -152,6 +151,8 @@ namespace ZASM
         MESSAGE, OPTION, ORG, PHASE, PROC, WORD, EQU, Z80, i8080,
 
         CommandMax,
+
+        Encoded = 0xF000,
     }
     
     class Tokenizer

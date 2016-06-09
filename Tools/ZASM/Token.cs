@@ -79,7 +79,8 @@ namespace ZASM
         public TokenType Type;
         public CommandID CommandID;
         public List<char> Value;
-
+        public SymbolTableEntry Symbol;
+        
         public int NumaricValue;
         public int Line;
         public int Character;
@@ -118,6 +119,11 @@ namespace ZASM
         public bool IsEnd()
         {
             return Type == TokenType.LineBreak;
+        }
+
+        public bool IsEncoded()
+        {
+            return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.RST || CommandID == ZASM.CommandID.SET || CommandID == ZASM.CommandID.BIT || CommandID == ZASM.CommandID.RES);
         }
 
         public bool IsBreak()

@@ -7,13 +7,12 @@ using System.Threading.Tasks;
 namespace ZASM
 {
     [Flags]
-    enum RegParam : byte
+    enum ParamFlags
     {
-        None = 0x00,            // No flags on this register
-        Reference = 0x01,       // Memory Reference (Memory, BC, DE, HL, SP, IX, IY, nn)
-        WordData = 0x02,        // The Referenced data is Word sized, not byte
-        Literal = 0x04,         // The byte value in the register is used as the input value
-        ConditionCode = 0x08,   // The Byte value in the register is the condition code to test for
+        None        = 0x00,
+        AssumeA     = 0x01,
+        Index       = 0x02,   // The H,L and HL registers can also be Index Registers
+        Displacement= 0x04,   // The HL register can be an Index register with displacment
     }
 
     struct OpcodeEncoding
@@ -22,11 +21,12 @@ namespace ZASM
 
         public byte[] Encoding;
 
-        public CommandID Reg1;
-        public RegParam Reg1Param;
+        public CommandID Param1;
+        public ParamType Param1Type;
+        public CommandID Param2;
+        public ParamType Param2Type;
 
-        public CommandID Reg2;
-        public RegParam Reg2Param;
+        public ParamFlags Flags;
 
         public CommandID Function;
     };   
@@ -41,8 +41,8 @@ namespace ZASM
             //var Data = System.IO.File.OpenRead(@"D:\Programing\Code\Cubit\Tools\basic8k78-2.mac");
             var Data = System.IO.File.OpenRead(@"..\..\..\basic8k78-2.mac");
 
-            Parser Parse = new Parser(Data);
-            Parse.Parse();
+            Parser Parse = new Parser();
+            Parse.Parse(Data);
 
             return;
         }
