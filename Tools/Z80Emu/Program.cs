@@ -11,11 +11,11 @@ namespace Z80Emu
         static void Main(string[] args)
         {
             // 8k of Rom
-            Memory SystemMemory = new Memory(0x2000);
-            SystemMemory.LoadHex(@"..\..\..\..\z80 Monitor\zout\Monitor.hex");
+            //Memory SystemMemory = new Memory(0x2000);
+            //SystemMemory.LoadHex(@"..\..\..\..\z80 Monitor\zout\Monitor.hex");
             
-            //Memory SystemMemory = new Memory();
-            //SystemMemory.LoadHex(@"..\..\..\..\z80 Monitor\zout\basic8k78-2.hex");
+            Memory SystemMemory = new Memory();
+            SystemMemory.LoadHex(@"..\..\..\basic8k78-2.hex");
 
             ExternalIO SystemIO = new ExternalIO();
 

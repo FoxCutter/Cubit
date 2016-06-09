@@ -800,7 +800,8 @@ namespace Z80Emu
             // Get the data from the port
             byte Result = SystemIO.ReadPort(Port);
 
-            WriteData(Current, Result);
+            if(Current.Data.Reg2 != Register.None)
+                WriteData(Current, Result);
 
             Flags &= ~(Flag.NotCarry);
             Set_S_Z_Flags(Result);
@@ -831,12 +832,12 @@ namespace Z80Emu
         // Flags: S=S Z=Z H=0 O/P=P N=0 C=0
         void ExecuteAND(OpcodeInformation Current)
         {
-            byte Param1 = Get8BitRegister(Register.A);
-            byte Param2 = (byte)ReadData(Current);
+            byte Param1 = (byte)ReadData(Current, 1);
+            byte Param2 = (byte)ReadData(Current, 2);
 
             byte Result = (byte)(Param1 & Param2);
 
-            Set8BitRegister(Register.A, Result);
+            WriteData(Current, Result);
 
             Flags &= ~(Flag.All);
             Set_S_Z_Flags(Result);
@@ -848,12 +849,12 @@ namespace Z80Emu
         // Flags: S=S Z=Z H=0 O/P=P N=0 C=0
         void ExecuteOR(OpcodeInformation Current)
         {
-            byte Param1 = Get8BitRegister(Register.A);
-            byte Param2 = (byte)ReadData(Current);
+            byte Param1 = (byte)ReadData(Current, 1);
+            byte Param2 = (byte)ReadData(Current, 2);
 
             byte Result = (byte)(Param1 | Param2);
 
-            Set8BitRegister(Register.A, Result);
+            WriteData(Current, Result);
 
             Flags &= ~(Flag.All);
             Set_S_Z_Flags(Result);
@@ -865,12 +866,12 @@ namespace Z80Emu
         // Flags: S=S Z=Z H=0 O/P=P N=0 C=0
         void ExecuteXOR(OpcodeInformation Current)
         {
-            byte Param1 = Get8BitRegister(Register.A);
-            byte Param2 = (byte)ReadData(Current);
+            byte Param1 = (byte)ReadData(Current, 1);
+            byte Param2 = (byte)ReadData(Current, 2);
 
             byte Result = (byte)(Param1 ^ Param2);
 
-            Set8BitRegister(Register.A, Result);
+            WriteData(Current, Result);
 
             Flags &= ~(Flag.All);
             Set_S_Z_Flags(Result);
@@ -1186,8 +1187,8 @@ namespace Z80Emu
         // Flags: S=S Z=Z H=H O/P=O N=1 C=C
         void ExecuteCP(OpcodeInformation Current)
         {
-            byte Param1 = Get8BitRegister(Register.A);
-            byte Param2 = (byte)ReadData(Current);
+            byte Param1 = (byte)ReadData(Current, 1);
+            byte Param2 = (byte)ReadData(Current, 2);
 
             int Result = Param1 - Param2;
 
@@ -1278,8 +1279,8 @@ namespace Z80Emu
         // Flags SUB  8-Bit: S=S Z=Z H=H O/P=O N=1 C=C        
         void ExecuteSUB(OpcodeInformation Current)
         {
-            byte Param1 = Get8BitRegister(Register.A);
-            byte Param2 = (byte)ReadData(Current);
+            byte Param1 = (byte)ReadData(Current, 1);
+            byte Param2 = (byte)ReadData(Current, 2);
 
             int Result = Param1 - Param2;
 
@@ -1297,7 +1298,7 @@ namespace Z80Emu
             if (Result < 0)
                 Flags |= Flag.Carry;
 
-            Set8BitRegister(Register.A, (byte)Result);
+            WriteData(Current, (ushort) Result);
         }
 
         // Flags SBC: S=S Z=Z H=H O/P=O N=1 C=C
@@ -1708,6 +1709,7 @@ namespace Z80Emu
                     {
                         Current.Displacment = Read8BitPC();
                         ReadDisplacment = false;
+                        TableIndex = 3;
                     }
                 }
                 else if (Current.Opcode == 0xED)

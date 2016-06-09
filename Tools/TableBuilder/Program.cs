@@ -21,6 +21,7 @@ namespace TableBuilder
         const int Official = 16;
         const int Memory = 17;
         const int IX_IY = 18;
+        const int AssumeA = 19;
             
         static int SortData(string l, string r)
         {
@@ -35,14 +36,32 @@ namespace TableBuilder
 
             return string.Compare(Fieldsl[Param2], Fieldsr[Param2], true);
         }
-        
+
+        static string FormatEach<T>(string Format, IEnumerable<T> Data, bool Seperator = true)
+        {
+            StringBuilder Ret = new StringBuilder();
+            bool First = true;
+            foreach (T Entry in Data)
+            {
+                if (!First && Seperator)
+                    Ret.Append(", ");
+
+                First = false;
+
+                Ret.AppendFormat(Format, Entry);
+            }
+
+            return Ret.ToString();
+        }
+
         static void Main(string[] args)
         {
             List<string> Data = new List<string>(File.ReadAllLines(@"Z80 Opcodes.csv"));
-            List<string>[] Output = new List<string>[3];
+            List<string>[] Output = new List<string>[4];
             Output[0] = new List<string>(256);
             Output[1] = new List<string>(256);
             Output[2] = new List<string>(256);
+            Output[3] = new List<string>(256);
 
             List<string> OutputZasm = new List<string>();
 
@@ -61,47 +80,63 @@ namespace TableBuilder
                 Output[0].Add(Res.ToString());
                 Output[1].Add(Res.ToString());
                 Output[2].Add(Res.ToString());
+                Output[3].Add(Res.ToString());
                 
             }
 
 
             //Data.OrderBy(e => { return false; });
             Data.Sort(SortData);
-            
-            
+
+            List<byte> ByteCode = new List<byte>();
+
             foreach (string Line in Data)
             {
                 string[] Fields = Line.Split(',');
 
-                if (Fields[Official] != "Y")
+                // Skip the header line
+                if (Fields[Official].ToUpper() == "OFFICIAL")
                     continue;
+
+                bool Offical = true;
+
+                if (Fields[Official].ToUpper() == "N")
+                    Offical = false;
 
                 StringBuilder Res = new StringBuilder();
 
-                uint Code0 = 0;
-                uint Code1 = 0;
+                ByteCode.Clear();
+                
+                byte TempCode = 0;
 
                 if (Fields[Prefix].Length != 0)
-                    Code0 = Convert.ToUInt16(Fields[Prefix], 16);
+                {
+                    TempCode = (byte)Convert.ToUInt16(Fields[Prefix], 16);
 
-                Code1 = Convert.ToUInt16(Fields[HEX], 16);
+                    ByteCode.Add(TempCode);
 
-                Res.AppendFormat("            new OpcodeEncoding {{ Name = \"{0}\",\t// {1}{2}: {3} {4} {5}\r\n", Fields[Opcode], Fields[Prefix], Fields[HEX], Fields[Opcode], Fields[Param1], Fields[Param2]);
-                if(Code0 == 0)
-                    Res.AppendFormat("                                  Encoding = new byte[] {{ 0x{0:X2} }},\r\n", Code1);
-                else
-                    Res.AppendFormat("                                  Encoding = new byte[] {{ 0x{0:X2}, 0x{1:X2} }},\r\n", Code0, Code1);
-                Res.AppendFormat("                                  Reg1 = {0}, Reg1Param = {1},\r\n", ConvertRegs(Fields[Param1], Fields, true), ConvertParams(Fields[Param1], Fields));
-                Res.AppendFormat("                                  Reg2 = {0}, Reg2Param = {1},\r\n", ConvertRegs(Fields[Param2], Fields, true), ConvertParams(Fields[Param2], Fields));
-                Res.AppendFormat("                                  Function = CommandID.{0} ", Fields[Opcode]);
+                    if (TempCode == 0xDD)
+                        ByteCode.Add(0xCB);
+                }
+
+                TempCode = (byte)Convert.ToUInt16(Fields[HEX], 16);
+                ByteCode.Add(TempCode);
+
+                Res.AppendFormat("            new OpcodeEncoding {{ Name = \"{0}\",\t// {1}: {2} {3} {4}\r\n", Fields[Opcode], FormatEach("{0:X2}", ByteCode, false), Fields[Opcode], Fields[Param1], Fields[Param2]);
+                Res.AppendFormat("                                  Encoding = new byte[] {{ {0} }},\r\n", FormatEach("0x{0:X2}", ByteCode));
+                Res.AppendFormat("                                  Param1 = {0}, Param1Type = {1},\r\n", ConvertRegs(Fields[Param1], Fields, true), ConvertType(Fields[Param1], Fields));
+                Res.AppendFormat("                                  Param2 = {0}, Param2Type = {1},\r\n", ConvertRegs(Fields[Param2], Fields, true), ConvertType(Fields[Param2], Fields));
+                Res.AppendFormat("                                  Flags = {0}, Function = CommandID.{1} ", ConvertFlags(Fields), Fields[Opcode]);
                 Res.AppendFormat("}},");
 
                 OutputZasm.Add(Res.ToString());
 
                 Res.Clear();
 
+                //if (!Offical)
+                //    continue;
 
-                Res.AppendFormat("                new OpcodeData {{ Name = \"{0}\",\t// {1}{2}: {3} {4} {5}\r\n", Fields[Opcode], Fields[Prefix], Fields[HEX], Fields[Opcode], Fields[Param1], Fields[Param2]);
+                Res.AppendFormat("                new OpcodeData {{ Name = \"{0}\",\t// {1}: {2} {3} {4}\r\n", Fields[Opcode], FormatEach("{0:X2}", ByteCode, false), Fields[Opcode], Fields[Param1], Fields[Param2]);
                 Res.AppendFormat("                                 Reg1 = {0}, Reg1Param = {1},\r\n", ConvertRegs(Fields[Param1], Fields, false), ConvertParams(Fields[Param1], Fields));
                 Res.AppendFormat("                                 Reg2 = {0}, Reg2Param = {1},\r\n", ConvertRegs(Fields[Param2], Fields, false), ConvertParams(Fields[Param2], Fields));
                 Res.AppendFormat("                                 Function = Operation.{0} ", Fields[Opcode]);
@@ -112,10 +147,12 @@ namespace TableBuilder
 
                 else if (Fields[Prefix] == "CB")
                     Output[1][Convert.ToInt32(Fields[HEX], 16)] = Res.ToString();
-                
+
                 else if (Fields[Prefix] == "ED")
                     Output[2][Convert.ToInt32(Fields[HEX], 16)] = Res.ToString();
 
+                else if (Fields[Prefix] == "DD")
+                    Output[3][Convert.ToInt32(Fields[HEX], 16)] = Res.ToString();
 
             }
 
@@ -142,6 +179,13 @@ namespace TableBuilder
             OutputFile.WriteLine("            {");
             
             Output[2].ForEach(OutputFile.WriteLine);
+
+            OutputFile.WriteLine("            },");
+            OutputFile.WriteLine("");
+            OutputFile.WriteLine("            {");
+
+            Output[3].ForEach(OutputFile.WriteLine);
+
             OutputFile.WriteLine("            },");
             OutputFile.WriteLine("        };");
             OutputFile.WriteLine("    }");
@@ -194,7 +238,11 @@ namespace TableBuilder
                 Param == "6" || Param == "7"
                 )
             {
-                return "(" + Base + ")" + Param;
+                if (CommandID)
+                    return "(" + Base + ")((int)CommandID.Encoded + " + Param + ")";
+                    //return Base + ".Encoded + (" + Base + ")" + Param;
+                else
+                    return "(" + Base + ")" + Param;
             }
 
 
@@ -204,7 +252,11 @@ namespace TableBuilder
                 )
             {
                 Param = Param.Substring(0, Param.Length - 1);
-                return "(" + Base + ")0x" + Param;
+                if (CommandID)
+                    return "(" + Base + ")((int)CommandID.Encoded + 0x" + Param + ")";
+                    //return Base + ".Encoded + (" + Base + ")0x" + Param;
+                else
+                    return "(" + Base + ")0x" + Param;
             }
 
             if (Param == "NZ" || Param == "Z" || Param == "NC" ||
@@ -219,20 +271,23 @@ namespace TableBuilder
                     return "(Register)ConditionCode." + Param;
             }
 
-            if (Param == "HL")
+            if (!CommandID)
             {
-                if (Fields[IX_IY] == "Y - No Displacment")
-                    return Base + ".HX";
+                if (Param == "HL" || Param == "IX" || Param == "IY")
+                {
+                    if (Fields[IX_IY] == "Y - No Displacment")
+                        return Base + ".HX";
 
-                else if (Fields[IX_IY] == "Y")
-                    return Base + ".HD";
+                    else if (Fields[IX_IY] == "Y")
+                        return Base + ".HD";
+                }
+
+                if (Param == "H")
+                    return Base + ".XH";
+
+                if (Param == "L")
+                    return Base + ".XL";
             }
-
-            if (Param == "H")
-                return Base + ".XH";
-
-            if (Param == "L")
-                return Base + ".XL";
 
             return Base + "." + Param;
         }
@@ -313,6 +368,98 @@ namespace TableBuilder
             }
 
             return Ret.ToString();
+        }
+
+        static string ConvertType(string Param, string[] Fields)
+        {
+            if (Param.Length == 0)
+                return "ParamType.None";
+
+            bool Address = false;
+            
+            Param = Param.ToUpper();
+            if (Param[0] == '(')
+            {
+                Param = Param.Substring(1, Param.Length - 2);
+
+                if (Fields[Memory] == "Y")
+                    Address = true;
+            }
+
+
+            if (Param == "NZ" || Param == "Z" || Param == "NC" ||
+                Param == "CY" || Param == "PO" || Param == "PE" ||
+                Param == "P" || Param == "M"
+                )
+            {
+                return "ParamType.Conditional";
+            }
+
+            if (Param == "A" || Param == "F" || Param == "B" || Param == "C" || Param == "D" || Param == "E" ||
+                Param == "H" || Param == "L" || Param == "I" || Param == "R" || Param == "SPH" || Param == "SPL" ||
+                Param == "PCH" || Param == "PCL" ||Param == "IXH" || Param == "IXL" ||Param == "IYH" || Param == "IYL")
+            {
+                return "ParamType.RegisterByte";
+            }
+
+            if (Param == "SP" || Param == "AF" || Param == "BC" || Param == "DE" || Param == "HL")
+            {
+                if(Address)
+                    return "ParamType.RegisterPtr";
+                else
+                    return "ParamType.RegisterWord";
+            }
+
+            if (Param == "N" || Param == "E-2")
+                return "ParamType.Immediate";
+                
+            if (Param == "NN")
+            {
+                if (Address)
+                    return "ParamType.ImmediatePtr";
+                else
+                    return "ParamType.Immediate";
+            }
+
+            if (Param == "0" || Param == "0H" ||
+                Param == "1" || Param == "8H" ||
+                Param == "2" || Param == "10H" ||
+                Param == "3" || Param == "18H" ||
+                Param == "4" || Param == "20H" ||
+                Param == "5" || Param == "28H" ||
+                Param == "6" || Param == "30H" ||
+                Param == "7" || Param == "38H"
+                )
+            {
+                return "ParamType.Encoded";
+            }
+
+            return "ParamType.Unknown";
+
+        }
+
+        static string ConvertFlags(string[] Fields)
+        {
+            StringBuilder Ret = new StringBuilder();
+
+            if (Fields[IX_IY].ToUpper() == "Y")
+                Ret.Append("ParamFlags.Displacement");
+
+            else if (Fields[IX_IY] == "Y - No Displacment")
+                Ret.Append("ParamFlags.Index");
+
+            if (Fields[AssumeA].ToUpper() == "Y")
+            {
+                if (Ret.Length != 0)
+                    Ret.Append(" | ");
+
+                Ret.Append("ParamFlags.AssumeA");
+            }
+
+            if (Ret.Length != 0)
+                return Ret.ToString();
+            
+            return "ParamFlags.None";
         }
     }
 }
