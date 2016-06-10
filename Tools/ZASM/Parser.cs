@@ -12,7 +12,7 @@ namespace ZASM
         RegisterByte,
         RegisterWord,
         RegisterPtr,
-        IndexRegister,
+        RegisterDisplacedPtr,
 
         Immediate,
         ImmediatePtr,
@@ -28,50 +28,133 @@ namespace ZASM
 
         Conditional,
         Unknown,
+        Invalid,
         None,
     }
 
-    
-    class Parser
-    {
-       
-        class ParamInformation
-        {
-            public Stack<Token> Tokens;
-            public bool Address;
-            public ParamType Type;
 
-            public ParamInformation()
+    class ParamInformation
+    {
+        public Stack<Token> Tokens;
+        public bool Address;
+
+        public ParamType Type;
+        public Token Value;
+
+        public ParamInformation()
+        {
+            Tokens = new Stack<Token>();
+            Address = false;
+            Type = ParamType.Unknown;
+        }
+    }
+
+    class ObjectInformation
+    {
+        public Token Label;
+        public Token Operation;
+        public List<ParamInformation> Params;
+
+        public ObjectInformation()
+        {
+            Label = default(Token);
+            Operation = default(Token);
+            Params = new List<ParamInformation>();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder Ret = new StringBuilder();
+
+            if (!Label.IsEmpty())
             {
-                Tokens = new Stack<Token>();
-                Address = false;
-                Type = ParamType.Unknown;
+                Ret.Append(LabelString());
+                Ret.Append(" ");
             }
+
+            if (!Operation.IsEmpty())
+            {
+                Ret.Append(CommandString());
+                Ret.Append(" ");
+            }
+
+            for (int x = 0; x < Params.Count; x++)
+            {
+                if (x != 0)
+                    Ret.Append(", ");
+
+                Ret.Append(ParamString(x));
+            }
+            
+            return Ret.ToString();
+        }
+
+        public string LabelString()
+        {
+            if (Label.Type == TokenType.None)
+                return "";
+
+            else
+                return Label.ToString() + ":";
+        }
+
+        public string CommandString()
+        {
+            if (Operation.Type == TokenType.None)
+                return "";
+
+            else if (Operation.Type == TokenType.Identifier)
+                return Operation.ToString();
+
+            else
+                return Operation.CommandID.ToString();
         }
         
-        class LineInformation
+        public string ParamString(int Index)
         {
-            public Token Label;
-            public Token Operation;
-            public List<ParamInformation> Params;
+            if (Params.Count <= Index)
+                return "";
 
-            public LineInformation()
+            ParamInformation Param = Params[Index];
+            StringBuilder Ret = new StringBuilder();
+
+            if (Param.Address)
+                Ret.Append("(");
+
+            Ret.Append(Parser.PrintStack(Param.Tokens.ToList()).ToString());
+            
+            if (Param.Address)
+                Ret.Append(")");
+
+            return Ret.ToString();            
+        }
+
+        public int DataSize()
+        {
+            foreach (ParamInformation Param in Params)
             {
-                Label = default(Token);
-                Operation = default(Token);
-                Params = new List<ParamInformation>();
+                if (Param.Type == ParamType.RegisterByte)
+                    return 8;
+
+                if (Param.Type == ParamType.RegisterWord)
+                    return 16;
             }
-        };
-        
+
+            return 0;
+        }
+    };
+
+    class Parser
+    {
         SymbolTable _SymbolTable;
         Tokenizer _Tokenizer;
-        List<LineInformation> _LineData;
+        List<ObjectInformation> _ObjectData;
 
         public Parser()
         {
             _Tokenizer = null;
             _SymbolTable = new SymbolTable();
-            _LineData = new List<LineInformation>();
+            _ObjectData = new List<ObjectInformation>();
         }
 
         public bool Parse(Stream InputStream)
@@ -81,6 +164,9 @@ namespace ZASM
             // Pull in the file, build up the symbol table (names only though) and just get everything tokenized
             PhaseOne();
 
+            // Validate all the symbols we found were defined.
+            SymbolCheck();
+            
             // Run though the parsed input, validating lables, setting data and the like
             PhaseTwo();
             
@@ -89,9 +175,10 @@ namespace ZASM
             //    if(Entry.DefinedLine == -1)                
             //        Console.WriteLine(" Symbol: {0} Line:", Entry.Symbol);
             //}
-            foreach(LineInformation Entry in _LineData)
+            foreach(ObjectInformation Entry in _ObjectData)
             {
                 var Res = FindOpcode(Entry);
+                var SIze = SizeOpcode(Entry, Res);
 
                 if (Res.Function != CommandID.None)
                 {
@@ -148,22 +235,38 @@ namespace ZASM
             return true;
         }
 
-        void ParseLabel(Token LableToken, SymbolType Type)
+        void SymbolCheck()
         {
-            LineInformation NewLabel = new LineInformation();
+            // Flags any undefined symbols in symbol table
+            foreach (SymbolTableEntry Symbol in _SymbolTable.Where(e => e.Type == SymbolType.Undefined))
+            {
+                foreach (ObjectInformation Entry in Symbol.LineIDs)
+                {
+                    MessageLog.Log.Add("Parser", Entry.Operation, MessageCode.UnexpectedSymbol, Symbol.Symbol);
+                }
+            }
+        }
+        
+        ObjectInformation ParseLabel(Token LableToken, SymbolType Type)
+        {
+            ObjectInformation NewLabel = new ObjectInformation();
             NewLabel.Label = LableToken;
             NewLabel.Label.Type = TokenType.Label;
 
             LableToken.Symbol = _SymbolTable[LableToken.ToString()];
-
-            LableToken.Symbol.LineIDs.Add(LableToken.Line);
-            LableToken.Symbol.DefinedLine = LableToken.Line;
+           
+            LableToken.Symbol.LineIDs.Add(NewLabel);
+            LableToken.Symbol.DefinedLine = NewLabel;
             LableToken.Symbol.Type = Type;
 
-            _LineData.Add(NewLabel);
+            // If the label has a token, eat it.
+            if (_Tokenizer.PeekNextToken().Type == TokenType.Colon)
+                _Tokenizer.NextToken();
+
+            return NewLabel;
         }
 
-        ParamInformation ParseParams()
+        ParamInformation ParseParams(ObjectInformation CurrentObject)
         {
             ParamInformation Ret = new ParamInformation();
             Stack<Token> TempStack = new Stack<Token>();
@@ -192,12 +295,12 @@ namespace ZASM
                     if (CurrentToken.Type == TokenType.Identifier)
                     {
                         CurrentToken.Symbol = _SymbolTable[CurrentToken.ToString()];
-                        CurrentToken.Symbol.LineIDs.Add(CurrentToken.Line);
+                        CurrentToken.Symbol.LineIDs.Add(CurrentObject);
                     }
 
                     if (CurrentToken.IsGroupLeft())
                     {
-                        if (Depth == 0 && CurrentToken.Type == TokenType.ParenthesesLeft)
+                        if (Depth == 0 && CurrentToken.Type == TokenType.ParenthesesLeft && TempStack.Count == 0 && Ret.Tokens.Count == 0)
                             Ret.Address = true;
 
                         TempStack.Push(CurrentToken);
@@ -279,10 +382,13 @@ namespace ZASM
 
             return Ret;
         }
-        
-        void ParseKeyword(Token KeywordToken, string Label)
+
+        ObjectInformation ParseKeyword(Token KeywordToken, ObjectInformation CurrentObject)
         {
-            LineInformation Keyword = new LineInformation();
+            ObjectInformation Keyword = CurrentObject;
+
+            if (Keyword == null)
+                Keyword = new ObjectInformation();
             
             Keyword.Operation = KeywordToken;
 
@@ -291,28 +397,7 @@ namespace ZASM
                 bool Done = false;
                 while (!Done)
                 {
-                    ParamInformation Params = ParseParams();
-                    DecomposeParams(Params);
-
-                    if (KeywordToken.CommandID == CommandID.IN || KeywordToken.CommandID == CommandID.OUT || KeywordToken.CommandID == CommandID.JP)
-                        Params.Address = false;
-
-                    TypeParams(Params);
-
-                    if (KeywordToken.CanHaveFlag() && Params.Type == ParamType.RegisterByte)
-                    {
-                        Token Temp = Params.Tokens.Pop();
-                        if(Temp.CommandID == CommandID.C)
-                            Temp.CommandID = CommandID.CY;
-
-                        Params.Tokens.Push(Temp);
-                        Params.Type = ParamType.Conditional;
-                    }
-                    else if (KeywordToken.IsEncoded())
-                    {
-                        Params.Type = ParamType.Encoded;
-                    }
-
+                    ParamInformation Params = ParseParams(Keyword);
                     Keyword.Params.Add(Params);
 
                     if (_Tokenizer.PeekNextToken().Type != TokenType.Comma)
@@ -323,63 +408,153 @@ namespace ZASM
 
             }
 
-            // If we have an equ statment, lets just assigned it now.
-            if (KeywordToken.CommandID == CommandID.EQU && Keyword.Params.Count == 1)
+            if (Keyword.Operation.AssumeA() && Keyword.Params.Count == 1)
             {
+                ParamInformation NewParam = new ParamInformation();
+                NewParam.Address = false;
+                NewParam.Type = ParamType.None;
+
+                Token NewToken = Keyword.Params[0].Tokens.Peek();
+                NewToken.CommandID = CommandID.A;
+                NewToken.Type = TokenType.Register;
+                NewToken.Symbol = null;
+                NewToken.Value = new List<char>();
+                NewToken.Value.Add('A');
+
+                NewParam.Tokens.Push(NewToken);
+
+                Keyword.Params.Add(NewParam);
+
+                if (Keyword.Operation.CommandID != CommandID.OUT)
+                    Keyword.Params.Reverse();
+            }
+
+            foreach (ParamInformation Param in Keyword.Params)
+            {
+                if (Keyword.Operation.CommandID == CommandID.IN || Keyword.Operation.CommandID == CommandID.OUT || Keyword.Operation.CommandID == CommandID.JP)
+                    Param.Address = false;
+
+                DecomposeParams(Param);
+
+                if (Keyword.Operation.CanHaveFlag() && Param.Value.IsRegister())
+                {
+                    Token Temp = Param.Tokens.Pop();
+                    if (Temp.CommandID == CommandID.C)
+                    {
+                        Temp.CommandID = CommandID.CY;
+                        Temp.Type = TokenType.Flag;
+                    }
+
+                    Param.Value = Temp;
+                    Param.Tokens.Push(Temp);
+                }
+
+                TypeParams(Param);
+
+                if (Keyword.Operation.IsEncoded() && Param.Type == ParamType.Immediate)
+                    Param.Type = ParamType.Encoded;
+            }
+            return Keyword;
+        }
+
+        ObjectInformation ParseCommand(Token CommandToken, ObjectInformation CurrentObject)
+        {
+            ObjectInformation Command = CurrentObject;
+
+            if (Command == null)
+                Command = new ObjectInformation();
+
+            Command.Operation = CommandToken;
+
+            if (!_Tokenizer.PeekNextToken().IsBreak() && _Tokenizer.PeekNextToken().Type != TokenType.Comment && !_Tokenizer.PeekNextToken().IsEnd())
+            {
+                bool Done = false;
+                while (!Done)
+                {
+                    ParamInformation Params = ParseParams(Command);
+
+                    DecomposeParams(Params);
+                    TypeParams(Params);
+
+                    Command.Params.Add(Params);
+
+                    if (_Tokenizer.PeekNextToken().Type != TokenType.Comma)
+                        Done = true;
+                    else
+                        _Tokenizer.NextToken();
+                }
+
+            }
+
+            // If we have an equ statment, lets just assigned it now.
+            if (CommandToken.CommandID == CommandID.EQU && Command.Params.Count == 1 && !Command.Label.IsEmpty())
+            {
+                string Label = Command.Label.ToString();
                 if (_SymbolTable[Label].Type == SymbolType.Undefined)
                 {
-                    if (Keyword.Params[0].Tokens.Peek().Type == TokenType.Result || Keyword.Params[0].Tokens.Peek().Type == TokenType.Number)
-                        _SymbolTable[Label].Value = Keyword.Params[0].Tokens.Peek().NumaricValue;
+                    if (Command.Params[0].Tokens.Peek().Type == TokenType.Result || Command.Params[0].Tokens.Peek().Type == TokenType.Number)
+                        _SymbolTable[Label].Value = Command.Params[0].Tokens.Peek().NumaricValue;
 
                     _SymbolTable[Label].Type = SymbolType.Constant;
                 }
             }
 
-            _LineData.Add(Keyword);
+            return Command;
         }
-
+        
         bool PhaseOne()
         {
             bool Done = false;
-            string CurrentLabel = "";
+            ObjectInformation CurrentObject = null;
             while (!Done)
             {                
                 Token CurrentToken = _Tokenizer.NextToken();
+
                 if (CurrentToken.Type == TokenType.End)
                     Done = true;
 
-                else if (CurrentToken.Type == TokenType.Comment || CurrentToken.IsBreak())
+                else if (CurrentToken.Type == TokenType.Comment)
                     continue;
+                
+                else if (CurrentToken.IsBreak())
+                {
+                    if(CurrentObject != null)
+                        _ObjectData.Add(CurrentObject);
+
+                    CurrentObject = null;
+                }
 
                 else if (CurrentToken.Type == TokenType.Identifier)
                 {
                     if (_Tokenizer.PeekNextToken().Type == TokenType.Colon)
                     {
-                        ParseLabel(CurrentToken, SymbolType.Address);
-                        CurrentLabel = CurrentToken.ToString();
+                        CurrentObject = ParseLabel(CurrentToken, SymbolType.Address);
                     }
                     else if (_Tokenizer.PeekNextToken().Type == TokenType.Equal)
                     {
                         // Equal is treated the same as 'EQU' in this case
-                        ParseLabel(CurrentToken, SymbolType.Undefined);
-                        CurrentLabel = CurrentToken.ToString();
+                        CurrentObject = ParseLabel(CurrentToken, SymbolType.Undefined);
                     }
                     else if (_Tokenizer.PeekNextToken().Type == TokenType.Command)
                     {
                         // A few number of commands can make labels without using a :, they are marked by not having the . prefix
-                        if(_Tokenizer.PeekNextToken().Value[0] != '.')
-                            ParseLabel(CurrentToken, _Tokenizer.PeekNextToken().CommandID == CommandID.EQU ? SymbolType.Undefined : SymbolType.Address);
+                        if (_Tokenizer.PeekNextToken().Value[0] != '.')
+                        {
+                            CurrentObject = ParseLabel(CurrentToken, _Tokenizer.PeekNextToken().CommandID == CommandID.EQU ? SymbolType.Undefined : SymbolType.Address);
+                        }
                         else
-                            throw new ZASMException(CurrentToken.Line, CurrentToken.Character, "P04", "Can not define label");
-
-                        CurrentLabel = CurrentToken.ToString();
+                        {
+                            MessageLog.Log.Add("Parser", CurrentToken, MessageCode.UnknownError, CurrentToken.ToString());
+                            CurrentToken.Type = TokenType.Error;
+                        }
                     }
                     else
                     {
                         // Macro
                         if (_SymbolTable[CurrentToken.ToString()].Type == SymbolType.Undefined)
                         {
-                            throw new ZASMException(CurrentToken.Line, CurrentToken.Character, "P04", "Undefined Macro");
+                            MessageLog.Log.Add("Parser", CurrentToken, MessageCode.UnknownError, CurrentToken.ToString());
+                            CurrentToken.Type = TokenType.Error;
                         }
                     }
                 }
@@ -388,15 +563,27 @@ namespace ZASM
                     CurrentToken.Type = TokenType.Command;
                     CurrentToken.CommandID = CommandID.EQU;
 
-                    ParseKeyword(CurrentToken, CurrentLabel);
+                    CurrentObject = ParseKeyword(CurrentToken, CurrentObject);
                 }
                 else if (CurrentToken.Type == TokenType.Keyword)
                 {
-                    ParseKeyword(CurrentToken, CurrentLabel);
+                    CurrentObject = ParseKeyword(CurrentToken, CurrentObject);
                 }
                 else if (CurrentToken.Type == TokenType.Command)
                 {
-                    ParseKeyword(CurrentToken, CurrentLabel);
+                    CurrentObject = ParseCommand(CurrentToken, CurrentObject);
+                }
+                else
+                {
+                    MessageLog.Log.Add("Parser", CurrentToken, MessageCode.UnexpectedSymbol, CurrentToken.ToString());                                        
+                    CurrentToken.Type = TokenType.Error;
+                }
+
+                // Resync if we have an error
+                if (CurrentToken.Type == TokenType.Error)
+                {
+                    CurrentObject = null;
+                    _Tokenizer.FlushLine();
                 }
             }
             
@@ -422,98 +609,155 @@ namespace ZASM
 
             return true;
         }
-        
-        OpcodeEncoding FindOpcode(LineInformation CurrentLine)
+
+        ParamType SelectTypeToMatch(ParamInformation CurrentParam)
         {
-            if (CurrentLine.Operation.IsEmpty() || !CurrentLine.Operation.IsKeyword())
+            if (CurrentParam.Type == ParamType.RegisterDisplacedPtr)
+                return ParamType.RegisterPtr;
+
+            return CurrentParam.Type;
+        }
+
+        CommandID SelectCommandToMatch(ParamInformation CurrentParam)
+        {
+            switch (CurrentParam.Type)
+            {
+                case ParamType.Conditional:
+                case ParamType.RegisterPtr:
+                    break;
+
+                case ParamType.RegisterWord:
+                    if (CurrentParam.Value.IsIndexWord())
+                        return CommandID.HL;
+                    break;
+
+                case ParamType.RegisterByte:
+                    if (CurrentParam.Value.IsIndexHigh())
+                        return CommandID.H;
+
+                    else if (CurrentParam.Value.IsIndexLow())
+                        return CommandID.L;
+
+                    break;
+
+                case ParamType.Encoded:
+                    return (CommandID)((int)CommandID.Encoded + CurrentParam.Value.NumaricValue);
+
+                case ParamType.Immediate:
+                case ParamType.ImmediatePtr:
+                    return CommandID.None;
+            }
+
+            return CurrentParam.Value.CommandID;
+        }
+
+        int SizeOpcode(ObjectInformation CurrentObject, OpcodeEncoding Encoding)
+        {
+            if (Encoding.Encoding == null || Encoding.Encoding.Length == 0)
+                return 0;
+
+            int Ret = Encoding.Encoding.Length;
+
+            foreach (ParamInformation Param in CurrentObject.Params)
+            {
+                switch (Param.Type)
+                {
+                    case ParamType.Immediate:
+                        if(CurrentObject.Operation.HasAddress())
+                            Ret += 2;
+
+                        else if(CurrentObject.Operation.HasReletiveAddress())
+                            Ret += 1;
+
+                        else
+                            Ret += CurrentObject.DataSize() / 8;
+                        break;
+
+                    case ParamType.ImmediatePtr:
+                        // Add the address
+                        Ret += 2;
+                        break;
+
+                    case ParamType.RegisterDisplacedPtr:
+                        // Add two bytes, one for the prefix, the other for displacment
+                        Ret += 2;
+                        break;
+
+                    case ParamType.RegisterByte:
+                        // Add the prefix bites
+                        if (Param.Value.IsIndexHigh())
+                            Ret++;
+
+                        else if (Param.Value.IsIndexLow())
+                            Ret++;
+
+                        break;
+                }
+            }
+            
+            return Ret;
+        }
+        
+        OpcodeEncoding FindOpcode(ObjectInformation CurrentObject)
+        {
+            if (CurrentObject.Operation.IsEmpty() || !CurrentObject.Operation.IsKeyword())
                 return default(OpcodeEncoding);
 
             // Search based on the Command ID
-            var Opcodes = Ops.EncodingData.Where(e => e.Function == CurrentLine.Operation.CommandID);
-            
+            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData.Where(e => e.Function == CurrentObject.Operation.CommandID);
 
-            if (CurrentLine.Params.Count == 0)
+            if (Opcodes.Count() == 0)
             {
-                Opcodes = Opcodes.Where(e => e.Param1Type == ParamType.None && e.Param2Type == ParamType.None );
+                // Error, invalid opcode
+                return default(OpcodeEncoding);
+            }
+
+            if (CurrentObject.Params.Count == 0)
+            {
+                Opcodes = Opcodes.Where(e => e.Param1Type == ParamType.None && e.Param2Type == ParamType.None);
             }
             
-            if (CurrentLine.Params.Count == 1)
+            if(CurrentObject.Params.Count >= 1)
             {
-                Opcodes = Opcodes.Where(e => (e.Param1Type == CurrentLine.Params[0].Type && e.Param2Type == ParamType.None) | e.Flags.HasFlag(ParamFlags.AssumeA));
-
-                if (Opcodes.FirstOrDefault().Flags.HasFlag(ParamFlags.AssumeA))
+                ParamInformation CurrentParam = CurrentObject.Params[0];
                 {
-                    ParamInformation Temp = new ParamInformation();
-                    Temp.Address = false;
-                    Temp.Type = ParamType.RegisterByte;
-                    Token TempToken = CurrentLine.Params[0].Tokens.Peek();
-                    TempToken.CommandID = CommandID.A;
-                    TempToken.Symbol = null;
-                    TempToken.Value = new List<char>();
-                    TempToken.Value.Add('A');
-
-                    Temp.Tokens.Push(TempToken);
-
-                    CurrentLine.Params.Add(Temp);
-
-                    if (CurrentLine.Operation.CommandID != CommandID.OUT)
-                        CurrentLine.Params.Reverse();
-
-                    return FindOpcode(CurrentLine);
+                    ParamType Type = SelectTypeToMatch(CurrentParam);
+                    Opcodes = Opcodes.Where(e => (e.Param1Type == Type));
                 }
 
+                CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
 
-                switch (CurrentLine.Params[0].Type)
+                if (CurrentCommand != CommandID.None)
+                    Opcodes = Opcodes.Where(e => e.Param1 == CurrentCommand);
+
+                if (Opcodes.Count() == 0)
                 {
-                    case ParamType.Conditional:
-                    case ParamType.RegisterByte:
-                    case ParamType.RegisterWord:
-                    case ParamType.RegisterPtr:
-                        Opcodes = Opcodes.Where(e => e.Param1 == CurrentLine.Params[0].Tokens.Peek().CommandID);
-                        break;
+                    MessageLog.Log.Add("Parser", CurrentParam.Value, MessageCode.InvalidParamaterForOpcode, string.Format("{0} >{1}<", CurrentObject.CommandString(), CurrentObject.ParamString(0)));
 
-                    case ParamType.Encoded:
-                        Opcodes = Opcodes.Where(e => e.Param1 == (CommandID)((int)CommandID.Encoded +  CurrentLine.Params[0].Tokens.Peek().NumaricValue));
-                        break;
-
-                    case ParamType.Immediate:
-                    case ParamType.ImmediatePtr:
-                    case ParamType.Unknown:
-                        break;
-                }
+                    // Error, Parm1 is invalid
+                    return default(OpcodeEncoding);
+                }            
             }
-            else if (CurrentLine.Params.Count == 2)
+
+            if (CurrentObject.Params.Count >= 2)
             {
-                Opcodes = Opcodes.Where(e => e.Param1Type == CurrentLine.Params[0].Type && e.Param2Type == CurrentLine.Params[1].Type);
-
-                switch (CurrentLine.Params[0].Type)
+                ParamInformation CurrentParam = CurrentObject.Params[1];
                 {
-                    case ParamType.Conditional:
-                    case ParamType.RegisterByte:
-                    case ParamType.RegisterWord:
-                    case ParamType.RegisterPtr:
-                        Opcodes = Opcodes.Where(e => e.Param1 == CurrentLine.Params[0].Tokens.Peek().CommandID);
-                        break;
+                    ParamType Type = SelectTypeToMatch(CurrentParam);
+                    Opcodes = Opcodes.Where(e => (e.Param2Type == Type));
+                }
 
-                    case ParamType.Immediate:
-                    case ParamType.ImmediatePtr:
-                    case ParamType.Unknown:
-                        break;
-                } 
-                
-                switch (CurrentLine.Params[1].Type)
+                CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
+
+                if (CurrentCommand != CommandID.None)
+                    Opcodes = Opcodes.Where(e => e.Param2 == CurrentCommand);
+
+                if (Opcodes.Count() == 0)
                 {
-                    case ParamType.Conditional:
-                    case ParamType.RegisterByte:
-                    case ParamType.RegisterWord:
-                    case ParamType.RegisterPtr:
-                        Opcodes = Opcodes.Where(e => e.Param2 == CurrentLine.Params[1].Tokens.Peek().CommandID);
-                        break;
-
-                    case ParamType.Immediate:
-                    case ParamType.ImmediatePtr:
-                    case ParamType.Unknown:
-                        break;
+                    MessageLog.Log.Add("Parser", CurrentParam.Value, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, >{2}<", CurrentObject.CommandString(), CurrentObject.ParamString(0), CurrentObject.ParamString(1)));
+                    
+                    // Error, Parm2 is invalid
+                    return default(OpcodeEncoding);
                 }
             }
 
@@ -524,8 +768,50 @@ namespace ZASM
             else
                 return default(OpcodeEncoding);
         }
-        
+
         bool DecomposeParams(ParamInformation Param)
+        {
+            if (Param.Tokens.Count == 0)
+                return true;
+
+            if (!DecomposeParam(Param))
+                return false;
+
+            if (Param.Tokens.Count == 1)
+            {
+                Param.Value = Param.Tokens.Peek();
+                return true;
+            }
+            else if (!Param.Tokens.Peek().IsOperator())
+            {
+                // There should be a single token, a displaced index or an error
+                if (Param.Tokens.Count == 2)
+                {
+                    Token Op2 = Param.Tokens.Pop();
+                    Token Op1 = Param.Tokens.Pop();
+
+                    if (Op1.IsIndexWord() && Param.Address)
+                    {
+                        Op2.Type = TokenType.Displacment;
+                        Op2.CommandID = Op1.CommandID;
+                        Param.Tokens.Push(Op2);
+                        Param.Value = Param.Tokens.Peek();
+
+                        return true;
+                    }
+                    else
+                    {
+                        // ERROR;
+                        Param.Tokens.Push(Op1);
+                        Param.Tokens.Push(Op2);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        bool DecomposeParam(ParamInformation Param)
         {
             if (Param.Tokens.Count == 0)
                 return false;
@@ -540,7 +826,7 @@ namespace ZASM
 
                 if (CurrentToken.RightToLeft())
                 {
-                    if (DecomposeParams(Param))
+                    if (DecomposeParam(Param))
                     {
                         Op1 = Param.Tokens.Pop();
                     }
@@ -553,7 +839,7 @@ namespace ZASM
                 }
                 else
                 {
-                    if (DecomposeParams(Param))
+                    if (DecomposeParam(Param))
                     {
                         Op2 = Param.Tokens.Pop();
                     }
@@ -564,7 +850,7 @@ namespace ZASM
                         return false;
                     }
 
-                    if (DecomposeParams(Param))
+                    if (DecomposeParam(Param))
                     {
                         Op1 = Param.Tokens.Pop();
                     }
@@ -576,12 +862,17 @@ namespace ZASM
                         return false;
                     } 
                 }
-                
-   
-                Token Result = default(Token);
+
+
+                Token Result = CurrentToken;
+                Result.Value = new List<char>();
                 Result.Type = TokenType.Result;
-                
-                switch (CurrentToken.Type)
+
+                if (Op2.NumaricValue == 0 && (CurrentToken.Type == TokenType.Division || CurrentToken.Type == TokenType.Remainder))
+                {
+                    MessageLog.Log.Add("Parser", CurrentToken, MessageCode.DivisionByZero);
+                }
+                else switch (CurrentToken.Type)
                 {
                     case TokenType.UnarrayPlus:
                         Result.NumaricValue = +Op1.NumaricValue;
@@ -617,16 +908,10 @@ namespace ZASM
                         break;
 
                     case TokenType.Division:
-                        if(Op2.NumaricValue == 0)
-                            throw new ZASMException("P00", "Division by zero");
-
                         Result.NumaricValue = Op1.NumaricValue / Op2.NumaricValue;
                         break;
 
                     case TokenType.Remainder:
-                        if(Op2.NumaricValue == 0)
-                            throw new ZASMException("P00", "Division by zero");
-
                         Result.NumaricValue = Op1.NumaricValue % Op2.NumaricValue;
                         break;
 
@@ -720,7 +1005,8 @@ namespace ZASM
                 if (Symbol.Type == SymbolType.None)
                 {
                     // ERROR!
-                    throw new ZASMException("P01", string.Format("Unknow Symbol {0}", CurrentToken.ToString()));
+                    MessageLog.Log.Add("Parser", CurrentToken, MessageCode.UndefinedSymbol, CurrentToken.ToString());
+                    return false;
                 }
                 else if (Symbol.Type == SymbolType.Undefined)
                 {
@@ -757,6 +1043,56 @@ namespace ZASM
             return true;
         }
 
+        ParamType TypeToken(Token CurrentToken, bool Address)
+        {
+            if (CurrentToken.IsDisplacment())
+            {
+                return ParamType.RegisterDisplacedPtr;
+            }
+            else if (CurrentToken.IsFlag())
+            {
+                return ParamType.Conditional;
+            }
+            else if (CurrentToken.IsRegister())
+            {
+                if (CurrentToken.CommandID >= CommandID.Word)
+                {
+                    if (Address)
+                    {
+                        return ParamType.RegisterPtr;
+                    }
+                    else
+                    {
+                        return ParamType.RegisterWord;
+                    }
+                }
+                else
+                {
+                    if (Address)
+                    {
+                        // Byte Registers can't be pointers, so thrown an error
+                        return ParamType.Invalid;
+                    }
+                    else
+                    {
+                        return ParamType.RegisterByte;
+                    }
+                }
+            }
+            else if (CurrentToken.IsOperator() || CurrentToken.IsKeyword() || CurrentToken.IsCommand())
+            {
+                return ParamType.None;
+            }
+            else
+            {
+                if (Address)
+                    return ParamType.ImmediatePtr;
+
+                else
+                    return ParamType.Immediate;
+            }
+        }
+        
         bool TypeParams(ParamInformation Param)
         {
             Param.Type = ParamType.Unknown;
@@ -764,84 +1100,23 @@ namespace ZASM
             if (Param.Tokens.Count == 0)
                 return false;
 
-            if (Param.Tokens.Count > 1 && Param.Address)
+            if (Param.Tokens.Count == 1)
             {
-                // Check to see if we're indexing
+                Param.Type = TypeToken(Param.Tokens.Peek(), Param.Address);
             }
             else
-            {
-                Token Value = Param.Tokens.Peek();
-
-                if (Value.IsFlag())
-                {
-                    Param.Type = ParamType.Conditional;
-                }
-                else if (Value.IsRegister())
-                {
-                    if (Value.CommandID >= CommandID.Word)
-                    {
-                        if (Param.Address)
-                        {
-                            // We don't know the size of the data we are poiting to yet.
-                            Param.Type = ParamType.RegisterPtr;
-                        }
-                        else
-                        {
-                            Param.Type = ParamType.RegisterWord;
-                        }
-                    }
-                    else
-                    {
-                        // Byte Registers can't be pointers, so just ignore them
-                        Param.Type = ParamType.RegisterByte;
-                    }
-                }
-                else if (Value.IsIdentifier())
-                {
-                    if(Value.Symbol.Type == SymbolType.Constant) 
-                        Param.Type = ParamType.Immediate;
-
-                    else if (Param.Address)
-                        Param.Type = ParamType.ImmediatePtr;
-
-                    else 
-                        Param.Type = ParamType.Immediate;
-                }
-                else if (Value.Type == TokenType.Number || Value.Type == TokenType.Result)
-                {
-                    if (Param.Address)
-                        Param.Type = ParamType.ImmediatePtr;
-
-                    else
-                        Param.Type = ParamType.Immediate;
-                }
-                else if (Value.Type == TokenType.String)
-                {
+            {               
+                if (Param.Address)
+                    Param.Type = ParamType.ImmediatePtr;
+                else
                     Param.Type = ParamType.Immediate;
-                }
-
-                //RegisterPtrToByte,
-                //RegisterPtrToWord,
-
-                //Immediate,      
-                //ImmediateByte,            
-                //ImmediateWord,
-
-                //ImmediatePtr,
-                //ImmediatePtrToByte,
-                //ImmediatePtrToWord,
-
-                //IndexRegister,
-                //IndexRegisterPtrToByte,
-                //IndexRegisterPtrToWord,
             }
             
             return true;
 
         }
 
-
-        StringBuilder PrintStack(List<Token> Params, int Pos = 0)
+        static public StringBuilder PrintStack(List<Token> Params, int Pos = 0)
         {
             StringBuilder Ret = new StringBuilder();
             if (Pos >= Params.Count)
@@ -884,8 +1159,6 @@ namespace ZASM
 
                     First = false;
                 }
-                
-                
             }
             else if (CurrentToken.IsOperator())
             {

@@ -19,9 +19,9 @@ namespace ZASM
     class SymbolTableEntry
     {
         public string Symbol { get; set; }
-        public List<int> LineIDs { get; set; }
+        public List<ObjectInformation> LineIDs { get; set; }
 
-        public int DefinedLine { get; set; }
+        public ObjectInformation DefinedLine { get; set; }
         public SymbolType Type { get; set; }
         public long Value { get; set; }
 
@@ -29,10 +29,10 @@ namespace ZASM
         {
             Type = InitialType;
             Symbol = Name;
-            LineIDs = new List<int>();
+            LineIDs = new List<ObjectInformation>();
             Value = 0;
 
-            DefinedLine = -1;
+            DefinedLine = null;
         }
     };
 

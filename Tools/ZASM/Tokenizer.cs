@@ -118,9 +118,6 @@ namespace ZASM
         // Index register high (can be H, IXH, IYH)
         XH,
 
-        // Index register with Displacment (assuming it's IX or IY)
-        HD,
-
         // Immediate data
         ImmediateByte = 0x80,
         ImmediateWord, 
@@ -157,24 +154,26 @@ namespace ZASM
     
     class Tokenizer
     {
-        BinaryReader DataStream;
+        BinaryReader _DataStream;
         Token _LastToken;
         Token _NextToken;
-        int CurrentLine;
-        int CurrentCharacter;
+        int _CurrentLine;
+        int _CurrentCharacter;
+        FileInformation _InputFile;
 
         public Tokenizer(Stream InputStream)
         {
-            DataStream = new BinaryReader(InputStream);
-            CurrentLine = 1;
-            CurrentCharacter = 1;
+            _InputFile = null;
+            _DataStream = new BinaryReader(InputStream);
+            _CurrentLine = 1;
+            _CurrentCharacter = 1;
             _LastToken.Type = TokenType.None;
             _NextToken = GetNextToken();
         }
 
         TokenType PeekNextTokenType()
         {
-            int Current = DataStream.PeekChar();
+            int Current = _DataStream.PeekChar();
 
             if (Current == -1)
                 return TokenType.End;
@@ -188,7 +187,7 @@ namespace ZASM
 
         char PeekNextCharacter()
         {
-            int Value = DataStream.PeekChar();
+            int Value = _DataStream.PeekChar();
 
             if (Value == -1)
                 return '\0';
@@ -198,14 +197,14 @@ namespace ZASM
         
         char ReadNextCharacter()
         {
-            char Value =  DataStream.ReadChar();
+            char Value =  _DataStream.ReadChar();
 
-            CurrentCharacter++;
+            _CurrentCharacter++;
 
             return Value;
         }
 
-        void ReadNumber(ref Token Data)
+        bool ReadNumber(ref Token Data)
         {
             while (true)
             {
@@ -257,10 +256,16 @@ namespace ZASM
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 2;
             }
+            else if (DataTables.CharacterData[TypeChar] != TokenType.Number)
+            {
+                MessageLog.Log.Add("Tokenizer", Data, MessageCode.InvalidNumberToken, Data.ToString());
+                return false;
+            }
 
             if (TempData.Count == 0)
             {
-                throw new ZASMException(Data.Line, Data.Character, "TXX", "Empty number token.");
+                MessageLog.Log.Add("Tokenizer", Data, MessageCode.UnknownError, "Empty Number Token");
+                return false;
             }
 
             try
@@ -280,12 +285,16 @@ namespace ZASM
             }
             catch
             {
-                throw new ZASMException(Data.Line, Data.Character, "T01", "Invalid character in number");
+                MessageLog.Log.Add("Tokenizer", Data, MessageCode.InvalidNumberToken, Data.ToString());
+
+                return false;
             }
+
+            return true;
         }
         
         
-        void ReadIdentifier(ref Token Data)
+        bool ReadIdentifier(ref Token Data)
         {
             while (true)
             {
@@ -304,15 +313,29 @@ namespace ZASM
                 else
                     break;
             }
+
+            return true;
         }
 
-        void ReadString(ref Token Data)
+        bool ReadString(ref Token Data)
         {
             while (true)
             {
                 TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
-                    throw new ZASMException(Data.Line, Data.Character, "T00", "Unexpected line break in a string");
+                {
+                    MessageInformation Error = new MessageInformation()
+                    {
+                        File = null,
+                        Line = Data.Line,
+                        Character = Data.Character,
+                        Details = "Empty Number Token",
+                        Source = "Tokenizer",
+                        Code = MessageCode.UnexpectedLineBreak
+                    };
+
+                    return false;
+                }
 
                 char CurrentValue = ReadNextCharacter();
                 Data.Value.Add(CurrentValue);
@@ -320,22 +343,28 @@ namespace ZASM
                 if (Current == TokenType.String && CurrentValue == Data.Value[0])
                     break;
             }
+
+            return true;
         }
 
-        void ReadComment(ref Token Data)
+        bool ReadComment(ref Token Data)
         {
             while (PeekNextTokenType() != TokenType.LineBreak && PeekNextTokenType() != TokenType.End)
                 Data.Value.Add(ReadNextCharacter());
+
+            return true;
         }
 
-        void ReadNewline(ref Token Data)
+        bool ReadNewline(ref Token Data)
         {
             // Handle CR/LF
             if (Data.Value[0] == '\r' && PeekNextCharacter() == '\n')
                 Data.Value.Add(ReadNextCharacter());
 
-            CurrentLine++;
-            CurrentCharacter = 1;
+            _CurrentLine++;
+            _CurrentCharacter = 1;
+
+            return true;
         }
 
         void SkipWhitespaces()
@@ -358,8 +387,8 @@ namespace ZASM
                     if (ReadNextCharacter() == '\r' && PeekNextCharacter() == '\n')
                         ReadNextCharacter();
 
-                    CurrentLine++;
-                    CurrentCharacter = 1;
+                    _CurrentLine++;
+                    _CurrentCharacter = 1;
                     break;
                 }
                 else
@@ -386,40 +415,47 @@ namespace ZASM
         Token GetNextToken()
         {
             Token Ret = default(Token);
-            
+
+            SkipWhitespaces();
+
             Ret.Type = TokenType.End;
             Ret.Value = new List<char>();
 
-            Ret.Line = CurrentLine;
-            Ret.Character = CurrentCharacter;
-            Ret.Pos = DataStream.BaseStream.Position;
-
-            SkipWhitespaces();
+            Ret.File = _InputFile;
+            Ret.Line = _CurrentLine;
+            Ret.Character = _CurrentCharacter;
+            Ret.Pos = _DataStream.BaseStream.Position;
 
             Ret.Type = PeekNextTokenType();
             if (Ret.Type == TokenType.End)
                 return Ret;
 
+            bool Success = true;
+            
             Ret.Value.Add(ReadNextCharacter());
 
             switch (Ret.Type)
             {
+                case TokenType.Unknown:
+                    MessageLog.Log.Add("Tokenizer", Ret, MessageCode.UnexpectedSymbol, Ret.ToString());
+                    break;
+
                 case TokenType.Number:
-                    ReadNumber(ref Ret);
+                    Success = ReadNumber(ref Ret);
                     break;
 
                 case TokenType.Period:
                 case TokenType.Identifier:
                     Ret.Type = TokenType.Identifier;
-                    ReadIdentifier(ref Ret);
+                    Success = ReadIdentifier(ref Ret);
                     break;
 
                 case TokenType.Comment:
-                    ReadComment(ref Ret);
+                    Success = ReadComment(ref Ret);
                     break;
 
                 case TokenType.String:
-                    ReadString(ref Ret);
+                    Success = ReadString(ref Ret);
                     break;
 
                 case TokenType.Symbol:
@@ -488,7 +524,7 @@ namespace ZASM
                     break;
 
                 case TokenType.LineBreak:
-                    ReadNewline(ref Ret);
+                    Success = ReadNewline(ref Ret);
                     return Ret;
 
                 case TokenType.Plus:
@@ -535,7 +571,12 @@ namespace ZASM
                         Ret.Type = TokenType.High;
                 }
             }
-            
+
+            if (!Success)
+            {
+                Ret.Type = TokenType.Error;
+            }
+
             return Ret;
         }
     }

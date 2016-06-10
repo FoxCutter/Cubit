@@ -35,6 +35,8 @@ namespace ZASM
     {
         static void Main(string[] args)
         {
+            MessageLog.Log.GetEnumerator();
+            
             //string TestLine = " label:  ld, ($0AAh << 8) + 0x55		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
             //System.IO.MemoryStream Data = new System.IO.MemoryStream(UTF8Encoding.UTF8.GetBytes(TestLine));
 
@@ -43,6 +45,45 @@ namespace ZASM
 
             Parser Parse = new Parser();
             Parse.Parse(Data);
+
+            Console.WriteLine("ZASM Results: Messages: {0}, Warnings: {1}, Errors: {2}", MessageLog.Log.MessageCount(), MessageLog.Log.WarningCount(), MessageLog.Log.ErrorCount());
+
+            foreach (MessageInformation Message in MessageLog.Log)
+            {
+                if(Message.Code >= MessageCode.Warning && Message.Code < MessageCode.Error)
+                    Console.Write("Warning: ");
+
+                else if (Message.Code >= MessageCode.Error)
+                    Console.Write("Error:   ");
+
+                else 
+                    Console.Write("Message: ");
+
+                if (Message.File != null)
+                    Console.Write(Message.File.FullName);
+                Console.Write("({0}, {1}): ", Message.Line, Message.Character);
+                Console.Write("{0} {1:X4}: ", Message.Source, (int)Message.Code);
+
+                if (DataTables.MessageStrings.ContainsKey(Message.Code))
+                {
+                    string MessageText = DataTables.MessageStrings[Message.Code];
+                    Console.Write(MessageText);
+                }
+                else
+                {
+                    Console.Write("Missing text");
+                }
+
+                if (Message.Details != "")
+                {
+                    Console.Write(": ");
+                    Console.Write(Message.Details);
+                }
+
+
+                Console.WriteLine();
+            }
+
 
             return;
         }

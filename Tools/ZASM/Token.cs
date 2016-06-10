@@ -10,6 +10,7 @@ namespace ZASM
     {
         None,
         End,
+        Error,
         WhiteSpace,
         Unknown,
 
@@ -25,6 +26,7 @@ namespace ZASM
         Symbol,
         String,
         Label,
+        Displacment,
 
         // Symbol Types
         Period,
@@ -82,6 +84,8 @@ namespace ZASM
         public SymbolTableEntry Symbol;
         
         public int NumaricValue;
+
+        public FileInformation File;
         public int Line;
         public int Character;
         public long Pos;
@@ -116,6 +120,26 @@ namespace ZASM
             return Type == TokenType.Number || Type == TokenType.Identifier || Type == TokenType.String || Type == TokenType.Label || Type == TokenType.ParenthesesRight || Type == TokenType.BracketRight;
         }
 
+        public bool IsIndexWord()
+        {
+            return Type == TokenType.Register && (CommandID == ZASM.CommandID.IX || CommandID == ZASM.CommandID.IY);
+        }
+
+        public bool IsIndexHigh()
+        {
+            return Type == TokenType.Register && (CommandID == ZASM.CommandID.IXH || CommandID == ZASM.CommandID.IYH);
+        }
+
+        public bool IsIndexLow()
+        {
+            return Type == TokenType.Register && (CommandID == ZASM.CommandID.IXL || CommandID == ZASM.CommandID.IYL);
+        }
+        
+        public bool IsDisplacment()
+        {
+            return Type == TokenType.Displacment && (CommandID == ZASM.CommandID.IX || CommandID== ZASM.CommandID.IY);
+        }
+
         public bool IsEnd()
         {
             return Type == TokenType.LineBreak;
@@ -124,6 +148,26 @@ namespace ZASM
         public bool IsEncoded()
         {
             return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.RST || CommandID == ZASM.CommandID.SET || CommandID == ZASM.CommandID.BIT || CommandID == ZASM.CommandID.RES);
+        }
+
+        public bool HasAddress()
+        {
+            return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.CALL || CommandID == ZASM.CommandID.JP);
+        }
+
+        public bool HasReletiveAddress()
+        {
+            return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.JR || CommandID == ZASM.CommandID.DJNZ);
+        }
+
+        public bool AssumeA()
+        {
+            return Type == TokenType.Keyword && 
+                ( CommandID == ZASM.CommandID.ADC || CommandID == ZASM.CommandID.ADD || 
+                  CommandID == ZASM.CommandID.SUB || CommandID == ZASM.CommandID.SBC ||
+                  CommandID == ZASM.CommandID.OR  || CommandID == ZASM.CommandID.XOR ||
+                  CommandID == ZASM.CommandID.AND || CommandID == ZASM.CommandID.CP  ||
+                  CommandID == ZASM.CommandID.IN  || CommandID == ZASM.CommandID.OUT);
         }
 
         public bool IsBreak()
