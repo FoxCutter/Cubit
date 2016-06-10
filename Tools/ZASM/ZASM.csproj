@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataTables.cs" />
+    <Compile Include="FileInformation.cs" />
+    <Compile Include="MessageLog.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Opcodes.cs" />
@@ -49,7 +51,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="Tokenizer.cs" />
-    <Compile Include="ZASMException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

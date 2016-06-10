@@ -58,16 +58,22 @@ namespace ZASM
             { "SCF",	CommandID.SCF },    { "SET",	CommandID.SET },    { "SLA",	CommandID.SLA },    { "SLL",	CommandID.SLL },    { "SRA",	CommandID.SRA },
             { "SRL",	CommandID.SRL },    { "SUB",	CommandID.SUB },    { "XOR",	CommandID.XOR },
             
+            // Speical Opperators
+            { "HIGH",	    CommandID.HIGH },       { "LOW",	    CommandID.LOW },        
+            
+            
+            // Psudo ops
+            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DC",	        CommandID.DC },         { "DS",	        CommandID.DEFS },
+            { "EQU",        CommandID.EQU},         { "PROC",       CommandID.PROC},        { "ENDPROC",    CommandID.ENDPROC},     { "END",	    CommandID.END },        
+
             // Commands
-            { "HIGH",	    CommandID.HIGH },       { "LOW",	    CommandID.LOW },        { ".BYTE",	    CommandID.BYTE },       { ".WORD",	    CommandID.WORD },
+            { ".BYTE",	    CommandID.BYTE },       { ".WORD",	    CommandID.WORD },
             { ".DB",	    CommandID.BYTE },       { ".DW",	    CommandID.WORD },       { ".DC",	    CommandID.DC },         { ".DEFS",	    CommandID.DEFS },
             { ".INCLUDE",   CommandID.INCLUDE},     { ".MESSAGE",   CommandID.MESSAGE},     { ".ERROR",     CommandID.ERROR},       { ".OPTION",    CommandID.OPTION},
             { ".ORG",       CommandID.ORG},         { ".IF",        CommandID.IF},          { ".ELSE",      CommandID.ELSE},        { ".ELSEIF",    CommandID.ELSEIF},
             { ".ENDIF",     CommandID.ENDIF},       { ".MACRO",     CommandID.MACRO},       { ".ENDMACRO",  CommandID.ENDMACRO},    { ".PROC",      CommandID.PROC},
             { ".ENDPROC",   CommandID.ENDPROC},     { ".PHASE",     CommandID.PHASE},       { ".ENDPHASE",  CommandID.ENDPHASE},    { ".EQU",       CommandID.EQU},   
-            { ".DS",	    CommandID.DEFS },       { "EQU",        CommandID.EQU},         { "PROC",       CommandID.PROC},        { "ENDPROC",    CommandID.ENDPROC},     
-            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DC",	        CommandID.DC },         { "DS",	        CommandID.DEFS },
-            { "END",	    CommandID.END },        { ".END",	    CommandID.END },        { ".Z80",       CommandID.Z80},         { ".8080",      CommandID.i8080},
+            { ".DS",	    CommandID.DEFS },       { ".END",	    CommandID.END },        { ".Z80",       CommandID.Z80},         { ".8080",      CommandID.i8080},
         };
 
         public static TokenType[] CharacterData = new TokenType[]
@@ -119,6 +125,22 @@ namespace ZASM
 
             // {|}~
             TokenType.GroupLeft, TokenType.BitwiseOR, TokenType.GroupRight, TokenType.BitwiseNot, TokenType.Unknown,
+        };
+
+        
+        public static Dictionary<MessageCode, string> MessageStrings = new Dictionary<MessageCode,string>()
+        { 
+            { MessageCode.NoError, "" },
+            { MessageCode.UnknownError, "Unknown Error" },
+            { MessageCode.InvalidNumberToken, "Invalid character in number" },
+            { MessageCode.UnexpectedLineBreak, "Unexpected line break in a string" },
+
+            { MessageCode.UnexpectedSymbol, "Unexpected character encounter in input" },
+            { MessageCode.UndefinedSymbol, "Label used but not defined" },
+
+            { MessageCode.InvalidParamaterForOpcode, "Parameter is invalid" },
+            { MessageCode.DivisionByZero, "Division by Zero" },
+            
         };
     }
 }
