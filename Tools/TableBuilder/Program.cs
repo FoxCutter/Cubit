@@ -98,10 +98,10 @@ namespace TableBuilder
                 if (Fields[Official].ToUpper() == "OFFICIAL")
                     continue;
 
-                bool Offical = true;
+                //bool Offical = true;
 
-                if (Fields[Official].ToUpper() == "N")
-                    Offical = false;
+                //if (Fields[Official].ToUpper() == "N")
+                //    Offical = false;
 
                 StringBuilder Res = new StringBuilder();
 
@@ -445,7 +445,7 @@ namespace TableBuilder
             if (Fields[IX_IY].ToUpper() == "Y")
                 Ret.Append("ParamFlags.Displacement");
 
-            else if (Fields[IX_IY] == "Y - No Displacment")
+            else if (Fields[IX_IY] == "Y - No Displacment" || Fields[IX_IY].ToUpper() == "X")
                 Ret.Append("ParamFlags.Index");
 
             if (Fields[AssumeA].ToUpper() == "Y")
