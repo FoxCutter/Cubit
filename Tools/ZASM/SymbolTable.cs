@@ -9,7 +9,7 @@ namespace ZASM
     enum SymbolType
     {
         None,
-        Constant,
+        Value,
         Address,
         Function,
         Macro,

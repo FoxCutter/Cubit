@@ -44,6 +44,8 @@
     <Compile Include="DataTables.cs" />
     <Compile Include="FileInformation.cs" />
     <Compile Include="MessageLog.cs" />
+    <Compile Include="ObjectInformation.cs" />
+    <Compile Include="OutputSection.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Opcodes.cs" />

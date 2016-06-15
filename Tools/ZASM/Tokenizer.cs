@@ -324,15 +324,7 @@ namespace ZASM
                 TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
                 {
-                    MessageInformation Error = new MessageInformation()
-                    {
-                        File = null,
-                        Line = Data.Line,
-                        Character = Data.Character,
-                        Details = "Empty Number Token",
-                        Source = "Tokenizer",
-                        Code = MessageCode.UnexpectedLineBreak
-                    };
+                    MessageLog.Log.Add("Tokenizer", Data, MessageCode.UnexpectedLineBreak);
 
                     return false;
                 }
@@ -420,11 +412,12 @@ namespace ZASM
 
             Ret.Type = TokenType.End;
             Ret.Value = new List<char>();
+            Ret.Location = new TokenLocation();
 
-            Ret.File = _InputFile;
-            Ret.Line = _CurrentLine;
-            Ret.Character = _CurrentCharacter;
-            Ret.Pos = _DataStream.BaseStream.Position;
+            Ret.Location.File = _InputFile;
+            Ret.Location.Line = _CurrentLine;
+            Ret.Location.Character = _CurrentCharacter;
+            Ret.Location.Pos = _DataStream.BaseStream.Position;
 
             Ret.Type = PeekNextTokenType();
             if (Ret.Type == TokenType.End)

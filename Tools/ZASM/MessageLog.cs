@@ -78,9 +78,24 @@ namespace ZASM
         {
             MessageInformation Error = new MessageInformation()
             {
-                File = Object.File,
-                Line = Object.Line,
-                Character = Object.Character,
+                File = Object.Location.File,
+                Line = Object.Location.Line,
+                Character = Object.Location.Character,
+                Details = Details,
+                Source = Source,
+                Code = Code,
+            };
+
+            MessageLog.Log.Add(Error);
+        }
+
+        public void Add(string Source, TokenLocation Location, MessageCode Code, string Details = "")
+        {
+            MessageInformation Error = new MessageInformation()
+            {
+                File = Location.File,
+                Line = Location.Line,
+                Character = Location.Character,
                 Details = Details,
                 Source = Source,
                 Code = Code,

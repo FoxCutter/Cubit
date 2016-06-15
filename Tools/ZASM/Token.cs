@@ -76,6 +76,14 @@ namespace ZASM
         Ternary,
     }
 
+    class TokenLocation
+    {
+        public FileInformation File;
+        public int Line;
+        public int Character;
+        public long Pos;
+    }
+
     struct Token
     {
         public TokenType Type;
@@ -85,10 +93,8 @@ namespace ZASM
         
         public int NumaricValue;
 
-        public FileInformation File;
-        public int Line;
-        public int Character;
-        public long Pos;
+        public TokenLocation Location;
+
 
         public bool CanHaveFlag()
         {
