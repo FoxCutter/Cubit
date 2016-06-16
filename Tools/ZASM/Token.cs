@@ -17,7 +17,7 @@ namespace ZASM
         Comment,
         LineBreak,
         Identifier,
-        Keyword,
+        Opcode,
         Command,
         Register,
         Flag,
@@ -98,7 +98,7 @@ namespace ZASM
 
         public bool CanHaveFlag()
         {
-            if (!IsKeyword())
+            if (!IsOpcode())
                 return false;
 
             return (CommandID == CommandID.JR || CommandID == CommandID.JP || CommandID == CommandID.CALL || CommandID == CommandID.RET);
@@ -124,6 +124,11 @@ namespace ZASM
         public bool IsValue()
         {
             return Type == TokenType.Number || Type == TokenType.Identifier || Type == TokenType.String || Type == TokenType.Label || Type == TokenType.ParenthesesRight || Type == TokenType.BracketRight;
+        }
+
+        public bool IsData()
+        {
+            return Type == TokenType.Command && (CommandID == ZASM.CommandID.WORD || CommandID == ZASM.CommandID.BYTE || CommandID == ZASM.CommandID.DC || CommandID == ZASM.CommandID.DEFS);
         }
 
         public bool IsIndexWord()
@@ -153,22 +158,22 @@ namespace ZASM
 
         public bool IsEncoded()
         {
-            return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.RST || CommandID == ZASM.CommandID.SET || CommandID == ZASM.CommandID.BIT || CommandID == ZASM.CommandID.RES);
+            return Type == TokenType.Opcode && (CommandID == ZASM.CommandID.RST || CommandID == ZASM.CommandID.SET || CommandID == ZASM.CommandID.BIT || CommandID == ZASM.CommandID.RES);
         }
 
         public bool HasAddress()
         {
-            return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.CALL || CommandID == ZASM.CommandID.JP);
+            return Type == TokenType.Opcode && (CommandID == ZASM.CommandID.CALL || CommandID == ZASM.CommandID.JP);
         }
 
         public bool HasReletiveAddress()
         {
-            return Type == TokenType.Keyword && (CommandID == ZASM.CommandID.JR || CommandID == ZASM.CommandID.DJNZ);
+            return Type == TokenType.Opcode && (CommandID == ZASM.CommandID.JR || CommandID == ZASM.CommandID.DJNZ);
         }
 
         public bool AssumeA()
         {
-            return Type == TokenType.Keyword && 
+            return Type == TokenType.Opcode && 
                 ( CommandID == ZASM.CommandID.ADC || CommandID == ZASM.CommandID.ADD || 
                   CommandID == ZASM.CommandID.SUB || CommandID == ZASM.CommandID.SBC ||
                   CommandID == ZASM.CommandID.OR  || CommandID == ZASM.CommandID.XOR ||
@@ -186,9 +191,9 @@ namespace ZASM
             return Type == TokenType.Label;
         }
 
-        public bool IsKeyword()
+        public bool IsOpcode()
         {
-            return Type == TokenType.Keyword;
+            return Type == TokenType.Opcode;
         }
 
         public bool IsRegister()
@@ -209,6 +214,11 @@ namespace ZASM
         public bool IsIdentifier()
         {
             return Type == TokenType.Identifier;
+        }
+
+        public bool IsNumber()
+        {
+            return Type == TokenType.Number;
         }
 
         public bool IsString()
@@ -238,10 +248,20 @@ namespace ZASM
 
         override public string ToString()
         {
-            if (Value == null || Value.Count == 0)
-                return NumaricValue.ToString();
+            StringBuilder Ret = new StringBuilder();
 
-            return new string(Value.ToArray());
+            if (Value == null || Value.Count == 0)
+                Ret.Append(NumaricValue);
+
+            if (Type == TokenType.String)
+                Ret.Append("'");
+
+            Ret.Append(Value.ToArray());
+
+            if (Type == TokenType.String)
+                Ret.Append("'");
+
+            return Ret.ToString();
         }
     }
 }

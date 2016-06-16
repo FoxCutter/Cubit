@@ -20,6 +20,9 @@ namespace ZASM
         UnexpectedLineBreak,
         UnexpectedSymbol,
         InvalidParamaterForOpcode,
+        ValueMissing,
+        MissingGroupSymbol,
+        DataTypeMisMatch,
 
 
         UndefinedSymbol,
@@ -74,20 +77,20 @@ namespace ZASM
             _ErrorList = new List<MessageInformation>();
         }
 
-        public void Add(string Source, Token Object, MessageCode Code, string Details = "")
-        {
-            MessageInformation Error = new MessageInformation()
-            {
-                File = Object.Location.File,
-                Line = Object.Location.Line,
-                Character = Object.Location.Character,
-                Details = Details,
-                Source = Source,
-                Code = Code,
-            };
+        //public void Add(string Source, Token Object, MessageCode Code, string Details = "")
+        //{
+        //    MessageInformation Error = new MessageInformation()
+        //    {
+        //        File = Object.Location.File,
+        //        Line = Object.Location.Line,
+        //        Character = Object.Location.Character,
+        //        Details = Details,
+        //        Source = Source,
+        //        Code = Code,
+        //    };
 
-            MessageLog.Log.Add(Error);
-        }
+        //    MessageLog.Log.Add(Error);
+        //}
 
         public void Add(string Source, TokenLocation Location, MessageCode Code, string Details = "")
         {
@@ -126,7 +129,7 @@ namespace ZASM
 
         public IEnumerator<MessageInformation> GetEnumerator()
         {
-            _ErrorList.Sort();
+            //_ErrorList.Sort();
             return _ErrorList.GetEnumerator();
         }
 

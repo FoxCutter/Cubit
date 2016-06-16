@@ -258,13 +258,13 @@ namespace ZASM
             }
             else if (DataTables.CharacterData[TypeChar] != TokenType.Number)
             {
-                MessageLog.Log.Add("Tokenizer", Data, MessageCode.InvalidNumberToken, Data.ToString());
+                MessageLog.Log.Add("Tokenizer", Data.Location, MessageCode.InvalidNumberToken, Data.ToString());
                 return false;
             }
 
             if (TempData.Count == 0)
             {
-                MessageLog.Log.Add("Tokenizer", Data, MessageCode.UnknownError, "Empty Number Token");
+                MessageLog.Log.Add("Tokenizer", Data.Location, MessageCode.UnknownError, "Empty Number Token");
                 return false;
             }
 
@@ -285,7 +285,7 @@ namespace ZASM
             }
             catch
             {
-                MessageLog.Log.Add("Tokenizer", Data, MessageCode.InvalidNumberToken, Data.ToString());
+                MessageLog.Log.Add("Tokenizer", Data.Location, MessageCode.InvalidNumberToken, Data.ToString());
 
                 return false;
             }
@@ -319,21 +319,24 @@ namespace ZASM
 
         bool ReadString(ref Token Data)
         {
+            char Quote = Data.Value[0];
+            Data.Value.Clear();
             while (true)
             {
                 TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
                 {
-                    MessageLog.Log.Add("Tokenizer", Data, MessageCode.UnexpectedLineBreak);
+                    MessageLog.Log.Add("Tokenizer", Data.Location, MessageCode.UnexpectedLineBreak);
 
                     return false;
                 }
 
                 char CurrentValue = ReadNextCharacter();
-                Data.Value.Add(CurrentValue);
 
-                if (Current == TokenType.String && CurrentValue == Data.Value[0])
+                if (Current == TokenType.String && CurrentValue == Quote)
                     break;
+                
+                Data.Value.Add(CurrentValue);
             }
 
             return true;
@@ -430,7 +433,7 @@ namespace ZASM
             switch (Ret.Type)
             {
                 case TokenType.Unknown:
-                    MessageLog.Log.Add("Tokenizer", Ret, MessageCode.UnexpectedSymbol, Ret.ToString());
+                    MessageLog.Log.Add("Tokenizer", Ret.Location, MessageCode.UnexpectedSymbol, Ret.ToString());
                     break;
 
                 case TokenType.Number:
@@ -521,12 +524,12 @@ namespace ZASM
                     return Ret;
 
                 case TokenType.Plus:
-                    if (!_LastToken.IsValue())
+                    if (!_LastToken.IsValue() && _LastToken.CommandID != CommandID.IX && _LastToken.CommandID != CommandID.IY)
                         Ret.Type = TokenType.UnarrayPlus;
                     break;
 
                 case TokenType.Minus:
-                    if (!_LastToken.IsValue())
+                    if (!_LastToken.IsValue() && _LastToken.CommandID != CommandID.IX && _LastToken.CommandID != CommandID.IY)
                         Ret.Type = TokenType.UnarrayMinus;
                     break;
 
@@ -555,7 +558,7 @@ namespace ZASM
                         Ret.Type = TokenType.Command;
 
                     else
-                        Ret.Type = TokenType.Keyword;
+                        Ret.Type = TokenType.Opcode;
 
                     if (Ret.CommandID == CommandID.LOW)
                         Ret.Type = TokenType.Low;

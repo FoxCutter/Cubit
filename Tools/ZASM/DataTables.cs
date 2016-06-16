@@ -10,22 +10,23 @@ namespace ZASM
     {
         public static Dictionary<TokenType, int> PrecedenceMap = new Dictionary<TokenType, int>()
         {
-            { TokenType.Command,            20 },   { TokenType.Keyword,            20 },
-            { TokenType.BracketLeft,        20 },   { TokenType.BracketRight,       20 },
-            { TokenType.High,               21 },   { TokenType.Low,                21 },
-            { TokenType.UnarrayPlus,        31 },   { TokenType.UnarrayMinus,       31 },   { TokenType.LogicalNot,     31 },   { TokenType.BitwiseNot,     31 },   { TokenType.Address,    201 },
-            { TokenType.Multiplication,     50 },   { TokenType.Division,           50 },   { TokenType.Remainder,      50 },   
-            { TokenType.Plus,               60 },   { TokenType.Minus,              60 },
-            { TokenType.LeftShift,          70 },   { TokenType.RightShift,         70 },
-            { TokenType.LessThen,           80 },   { TokenType.LessEqual,          80 },   { TokenType.GreaterThen,    80 },   { TokenType.GreaterEqual,   80 },
-            { TokenType.Equal,              90 },   { TokenType.NotEqual,           90 },
-            { TokenType.BitwiseAnd,         100 },   
-            { TokenType.BitwiseXOR,         111 },   
-            { TokenType.BitwiseOR,          120 },   
-            { TokenType.LogicalAnd,         130 },   
-            { TokenType.LogicalOR,          140 },   
-            { TokenType.Ternary,            151 },   
-            { TokenType.Comma,              161 },   
+            { TokenType.Command,            2 },   { TokenType.Opcode,            2 },   { TokenType.Register,       2 },   { TokenType.Flag,          2 },
+            { TokenType.BracketLeft,        2 },   { TokenType.BracketRight,       2 },
+            { TokenType.High,               2 },   { TokenType.Low,                2 },
+            { TokenType.UnarrayPlus,        3 },   { TokenType.UnarrayMinus,       3 },   { TokenType.LogicalNot,     3 },   { TokenType.BitwiseNot,     3 },   
+            { TokenType.Multiplication,     5 },   { TokenType.Division,           5 },   { TokenType.Remainder,      5 },   
+            { TokenType.Plus,               6 },   { TokenType.Minus,              6 },
+            { TokenType.LeftShift,          7 },   { TokenType.RightShift,         7 },
+            { TokenType.LessThen,           8 },   { TokenType.LessEqual,          8 },   { TokenType.GreaterThen,    8 },   { TokenType.GreaterEqual,   8 },
+            { TokenType.Equal,              9 },   { TokenType.NotEqual,           9 },
+            { TokenType.BitwiseAnd,         10 },   
+            { TokenType.BitwiseXOR,         11 },   
+            { TokenType.BitwiseOR,          12 },   
+            { TokenType.LogicalAnd,         13 },   
+            { TokenType.LogicalOR,          14 },   
+            { TokenType.Ternary,            15 },   
+            { TokenType.Comma,              16 },   
+            { TokenType.Address,            20 },
         };
         
         //static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
@@ -140,6 +141,9 @@ namespace ZASM
 
             { MessageCode.InvalidParamaterForOpcode, "Parameter is invalid" },
             { MessageCode.DivisionByZero, "Division by Zero" },
+            { MessageCode.ValueMissing, "Value missing in assignment" },
+            { MessageCode.MissingGroupSymbol, "Missing group"},
+            { MessageCode.DataTypeMisMatch, "Datatype mismatch"},
             
         };
     }

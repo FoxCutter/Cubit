@@ -22,9 +22,9 @@ namespace ZASM
         public byte[] Encoding;
 
         public CommandID Param1;
-        public ParamType Param1Type;
+        public ParameterType Param1Type;
         public CommandID Param2;
-        public ParamType Param2Type;
+        public ParameterType Param2Type;
 
         public ParamFlags Flags;
 
