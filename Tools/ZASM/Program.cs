@@ -6,19 +6,16 @@ using System.Threading.Tasks;
 
 namespace ZASM
 {
-    [Flags]
     enum ParamFlags
     {
-        None        = 0x00,
-        AssumeA     = 0x01,
-        Index       = 0x02,   // The H,L and HL registers can also be Index Registers
-        Displacement= 0x04,   // The HL register can be an Index register with displacment
+        None,
+        Index,   // The H,L and HL registers can also be Index Registers
+        Displacement,   // The HL register can be an Index register with displacment
+        InternalDisplacement, //  Same as above, but the displacment is inside the opcode
     }
 
     struct OpcodeEncoding
     {
-        public string Name;
-
         public byte[] Encoding;
 
         public CommandID Param1;

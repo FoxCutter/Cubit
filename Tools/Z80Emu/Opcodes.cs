@@ -9,7 +9,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.NOP },
-                new OpcodeData { Name = "LD",	// 01: LD BC nn
+                new OpcodeData { Name = "LD",	// 01: LD BC NN
                                  Reg1 = Register.BC, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -29,7 +29,7 @@ namespace Z80Emu
                                  Reg1 = Register.B, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 06: LD B n
+                new OpcodeData { Name = "LD",	// 06: LD B N
                                  Reg1 = Register.B, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -61,7 +61,7 @@ namespace Z80Emu
                                  Reg1 = Register.C, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 0E: LD C n
+                new OpcodeData { Name = "LD",	// 0E: LD C N
                                  Reg1 = Register.C, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -69,11 +69,11 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRCA },
-                new OpcodeData { Name = "DJNZ",	// 10: DJNZ e-2 
+                new OpcodeData { Name = "DJNZ",	// 10: DJNZ E-2 
                                  Reg1 = Register.ImmediateByte, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DJNZ },
-                new OpcodeData { Name = "LD",	// 11: LD DE nn
+                new OpcodeData { Name = "LD",	// 11: LD DE NN
                                  Reg1 = Register.DE, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -93,7 +93,7 @@ namespace Z80Emu
                                  Reg1 = Register.D, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 16: LD D n
+                new OpcodeData { Name = "LD",	// 16: LD D N
                                  Reg1 = Register.D, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -101,7 +101,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RLA },
-                new OpcodeData { Name = "JR",	// 18: JR e-2 
+                new OpcodeData { Name = "JR",	// 18: JR E-2 
                                  Reg1 = Register.ImmediateByte, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.JR },
@@ -125,7 +125,7 @@ namespace Z80Emu
                                  Reg1 = Register.E, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 1E: LD E n
+                new OpcodeData { Name = "LD",	// 1E: LD E N
                                  Reg1 = Register.E, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -133,15 +133,15 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRA },
-                new OpcodeData { Name = "JR",	// 20: JR NZ e-2
+                new OpcodeData { Name = "JR",	// 20: JR NZ E-2
                                  Reg1 = (Register)ConditionCode.NZ, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.JR },
-                new OpcodeData { Name = "LD",	// 21: LD HL nn
+                new OpcodeData { Name = "LD",	// 21: LD HL NN
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
-                new OpcodeData { Name = "LD",	// 22: LD (nn) HL
+                new OpcodeData { Name = "LD",	// 22: LD (NN) HL
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.Reference | RegParam.WordData,
                                  Reg2 = Register.HX, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -157,7 +157,7 @@ namespace Z80Emu
                                  Reg1 = Register.XH, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 26: LD H n
+                new OpcodeData { Name = "LD",	// 26: LD H N
                                  Reg1 = Register.XH, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -165,7 +165,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DAA },
-                new OpcodeData { Name = "JR",	// 28: JR Z e-2
+                new OpcodeData { Name = "JR",	// 28: JR Z E-2
                                  Reg1 = (Register)ConditionCode.Z, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.JR },
@@ -173,7 +173,7 @@ namespace Z80Emu
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.HX, Reg2Param = RegParam.WordData,
                                  Function = Operation.ADD },
-                new OpcodeData { Name = "LD",	// 2A: LD HL (nn)
+                new OpcodeData { Name = "LD",	// 2A: LD HL (NN)
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.Reference | RegParam.WordData,
                                  Function = Operation.LD },
@@ -189,7 +189,7 @@ namespace Z80Emu
                                  Reg1 = Register.XL, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 2E: LD L n
+                new OpcodeData { Name = "LD",	// 2E: LD L N
                                  Reg1 = Register.XL, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -197,15 +197,15 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.CPL },
-                new OpcodeData { Name = "JR",	// 30: JR NC e-2
+                new OpcodeData { Name = "JR",	// 30: JR NC E-2
                                  Reg1 = (Register)ConditionCode.NC, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.JR },
-                new OpcodeData { Name = "LD",	// 31: LD SP nn
+                new OpcodeData { Name = "LD",	// 31: LD SP NN
                                  Reg1 = Register.SP, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
-                new OpcodeData { Name = "LD",	// 32: LD (nn) A
+                new OpcodeData { Name = "LD",	// 32: LD (NN) A
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.A, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -221,7 +221,7 @@ namespace Z80Emu
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 36: LD (HL) n
+                new OpcodeData { Name = "LD",	// 36: LD (HL) N
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -229,7 +229,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SCF },
-                new OpcodeData { Name = "JR",	// 38: JR CY e-2
+                new OpcodeData { Name = "JR",	// 38: JR CY E-2
                                  Reg1 = (Register)ConditionCode.CY, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.JR },
@@ -237,7 +237,7 @@ namespace Z80Emu
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.SP, Reg2Param = RegParam.WordData,
                                  Function = Operation.ADD },
-                new OpcodeData { Name = "LD",	// 3A: LD A (nn)
+                new OpcodeData { Name = "LD",	// 3A: LD A (NN)
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.Reference,
                                  Function = Operation.LD },
@@ -253,7 +253,7 @@ namespace Z80Emu
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DEC },
-                new OpcodeData { Name = "LD",	// 3E: LD A n
+                new OpcodeData { Name = "LD",	// 3E: LD A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
@@ -414,7 +414,7 @@ namespace Z80Emu
                                  Reg2 = Register.XL, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "LD",	// 66: LD H (HL)
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "LD",	// 67: LD H A
@@ -446,7 +446,7 @@ namespace Z80Emu
                                  Reg2 = Register.XL, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "LD",	// 6E: LD L (HL)
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "LD",	// 6F: LD L A
@@ -471,11 +471,11 @@ namespace Z80Emu
                                  Function = Operation.LD },
                 new OpcodeData { Name = "LD",	// 74: LD (HL) H
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "LD",	// 75: LD (HL) L
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "HALT",	// 76: HALT  
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
@@ -781,15 +781,15 @@ namespace Z80Emu
                                  Reg1 = Register.BC, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.POP },
-                new OpcodeData { Name = "JP",	// C2: JP NZ nn
+                new OpcodeData { Name = "JP",	// C2: JP NZ NN
                                  Reg1 = (Register)ConditionCode.NZ, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
-                new OpcodeData { Name = "JP",	// C3: JP nn 
+                new OpcodeData { Name = "JP",	// C3: JP NN 
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.JP },
-                new OpcodeData { Name = "CALL",	// C4: CALL NZ nn
+                new OpcodeData { Name = "CALL",	// C4: CALL NZ NN
                                  Reg1 = (Register)ConditionCode.NZ, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -797,7 +797,7 @@ namespace Z80Emu
                                  Reg1 = Register.BC, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.PUSH },
-                new OpcodeData { Name = "ADD",	// C6: ADD A n
+                new OpcodeData { Name = "ADD",	// C6: ADD A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.ADD },
@@ -813,7 +813,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RET },
-                new OpcodeData { Name = "JP",	// CA: JP Z nn
+                new OpcodeData { Name = "JP",	// CA: JP Z NN
                                  Reg1 = (Register)ConditionCode.Z, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
@@ -821,15 +821,15 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.Error },
-                new OpcodeData { Name = "CALL",	// CC: CALL Z nn
+                new OpcodeData { Name = "CALL",	// CC: CALL Z NN
                                  Reg1 = (Register)ConditionCode.Z, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
-                new OpcodeData { Name = "CALL",	// CD: CALL nn 
+                new OpcodeData { Name = "CALL",	// CD: CALL NN 
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.CALL },
-                new OpcodeData { Name = "ADC",	// CE: ADC A n
+                new OpcodeData { Name = "ADC",	// CE: ADC A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.ADC },
@@ -845,15 +845,15 @@ namespace Z80Emu
                                  Reg1 = Register.DE, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.POP },
-                new OpcodeData { Name = "JP",	// D2: JP NC nn
+                new OpcodeData { Name = "JP",	// D2: JP NC NN
                                  Reg1 = (Register)ConditionCode.NC, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
-                new OpcodeData { Name = "OUT",	// D3: OUT (n) A
+                new OpcodeData { Name = "OUT",	// D3: OUT (N) A
                                  Reg1 = Register.ImmediateByte, Reg1Param = RegParam.None,
                                  Reg2 = Register.A, Reg2Param = RegParam.None,
                                  Function = Operation.OUT },
-                new OpcodeData { Name = "CALL",	// D4: CALL NC nn
+                new OpcodeData { Name = "CALL",	// D4: CALL NC NN
                                  Reg1 = (Register)ConditionCode.NC, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -861,7 +861,7 @@ namespace Z80Emu
                                  Reg1 = Register.DE, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.PUSH },
-                new OpcodeData { Name = "SUB",	// D6: SUB A n
+                new OpcodeData { Name = "SUB",	// D6: SUB A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.SUB },
@@ -877,15 +877,15 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.EXX },
-                new OpcodeData { Name = "JP",	// DA: JP CY nn
+                new OpcodeData { Name = "JP",	// DA: JP CY NN
                                  Reg1 = (Register)ConditionCode.CY, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
-                new OpcodeData { Name = "IN",	// DB: IN A (n)
+                new OpcodeData { Name = "IN",	// DB: IN A (N)
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.IN },
-                new OpcodeData { Name = "CALL",	// DC: CALL CY nn
+                new OpcodeData { Name = "CALL",	// DC: CALL CY NN
                                  Reg1 = (Register)ConditionCode.CY, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -893,7 +893,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.Error },
-                new OpcodeData { Name = "SBC",	// DE: SBC A n
+                new OpcodeData { Name = "SBC",	// DE: SBC A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.SBC },
@@ -909,7 +909,7 @@ namespace Z80Emu
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.POP },
-                new OpcodeData { Name = "JP",	// E2: JP PO nn
+                new OpcodeData { Name = "JP",	// E2: JP PO NN
                                  Reg1 = (Register)ConditionCode.PO, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
@@ -917,7 +917,7 @@ namespace Z80Emu
                                  Reg1 = Register.SP, Reg1Param = RegParam.Reference | RegParam.WordData,
                                  Reg2 = Register.HX, Reg2Param = RegParam.WordData,
                                  Function = Operation.EX },
-                new OpcodeData { Name = "CALL",	// E4: CALL PO nn
+                new OpcodeData { Name = "CALL",	// E4: CALL PO NN
                                  Reg1 = (Register)ConditionCode.PO, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -925,7 +925,7 @@ namespace Z80Emu
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.PUSH },
-                new OpcodeData { Name = "AND",	// E6: AND A n
+                new OpcodeData { Name = "AND",	// E6: AND A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.AND },
@@ -941,7 +941,7 @@ namespace Z80Emu
                                  Reg1 = Register.HX, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.JP },
-                new OpcodeData { Name = "JP",	// EA: JP PE nn
+                new OpcodeData { Name = "JP",	// EA: JP PE NN
                                  Reg1 = (Register)ConditionCode.PE, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
@@ -949,7 +949,7 @@ namespace Z80Emu
                                  Reg1 = Register.DE, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.HL, Reg2Param = RegParam.WordData,
                                  Function = Operation.EX },
-                new OpcodeData { Name = "CALL",	// EC: CALL PE nn
+                new OpcodeData { Name = "CALL",	// EC: CALL PE NN
                                  Reg1 = (Register)ConditionCode.PE, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -957,7 +957,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.Error },
-                new OpcodeData { Name = "XOR",	// EE: XOR A n
+                new OpcodeData { Name = "XOR",	// EE: XOR A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.XOR },
@@ -973,7 +973,7 @@ namespace Z80Emu
                                  Reg1 = Register.AF, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.POP },
-                new OpcodeData { Name = "JP",	// F2: JP P nn
+                new OpcodeData { Name = "JP",	// F2: JP P NN
                                  Reg1 = (Register)ConditionCode.P, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
@@ -981,7 +981,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.DI },
-                new OpcodeData { Name = "CALL",	// F4: CALL P nn
+                new OpcodeData { Name = "CALL",	// F4: CALL P NN
                                  Reg1 = (Register)ConditionCode.P, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -989,7 +989,7 @@ namespace Z80Emu
                                  Reg1 = Register.AF, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.PUSH },
-                new OpcodeData { Name = "OR",	// F6: OR A n
+                new OpcodeData { Name = "OR",	// F6: OR A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.OR },
@@ -1005,7 +1005,7 @@ namespace Z80Emu
                                  Reg1 = Register.SP, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.HX, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
-                new OpcodeData { Name = "JP",	// FA: JP M nn
+                new OpcodeData { Name = "JP",	// FA: JP M NN
                                  Reg1 = (Register)ConditionCode.M, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.JP },
@@ -1013,7 +1013,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.EI },
-                new OpcodeData { Name = "CALL",	// FC: CALL M nn
+                new OpcodeData { Name = "CALL",	// FC: CALL M NN
                                  Reg1 = (Register)ConditionCode.M, Reg1Param = RegParam.ConditionCode,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.WordData,
                                  Function = Operation.CALL },
@@ -1021,7 +1021,7 @@ namespace Z80Emu
                                  Reg1 = Register.None, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.Error },
-                new OpcodeData { Name = "CP",	// FE: CP A n
+                new OpcodeData { Name = "CP",	// FE: CP A N
                                  Reg1 = Register.A, Reg1Param = RegParam.None,
                                  Reg2 = Register.ImmediateByte, Reg2Param = RegParam.None,
                                  Function = Operation.CP },
@@ -1049,11 +1049,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RLC },
                 new OpcodeData { Name = "RLC",	// CB04: RLC H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RLC },
                 new OpcodeData { Name = "RLC",	// CB05: RLC L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RLC },
                 new OpcodeData { Name = "RLC",	// CB06: RLC (HL) 
@@ -1081,11 +1081,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRC },
                 new OpcodeData { Name = "RRC",	// CB0C: RRC H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRC },
                 new OpcodeData { Name = "RRC",	// CB0D: RRC L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRC },
                 new OpcodeData { Name = "RRC",	// CB0E: RRC (HL) 
@@ -1113,11 +1113,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RL },
                 new OpcodeData { Name = "RL",	// CB14: RL H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RL },
                 new OpcodeData { Name = "RL",	// CB15: RL L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RL },
                 new OpcodeData { Name = "RL",	// CB16: RL (HL) 
@@ -1145,11 +1145,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RR },
                 new OpcodeData { Name = "RR",	// CB1C: RR H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RR },
                 new OpcodeData { Name = "RR",	// CB1D: RR L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RR },
                 new OpcodeData { Name = "RR",	// CB1E: RR (HL) 
@@ -1177,11 +1177,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLA },
                 new OpcodeData { Name = "SLA",	// CB24: SLA H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLA },
                 new OpcodeData { Name = "SLA",	// CB25: SLA L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLA },
                 new OpcodeData { Name = "SLA",	// CB26: SLA (HL) 
@@ -1209,11 +1209,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRA },
                 new OpcodeData { Name = "SRA",	// CB2C: SRA H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRA },
                 new OpcodeData { Name = "SRA",	// CB2D: SRA L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRA },
                 new OpcodeData { Name = "SRA",	// CB2E: SRA (HL) 
@@ -1241,11 +1241,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLL },
                 new OpcodeData { Name = "SLL",	// CB34: SLL H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLL },
                 new OpcodeData { Name = "SLL",	// CB35: SLL L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLL },
                 new OpcodeData { Name = "SLL",	// CB36: SLL (HL) 
@@ -1273,11 +1273,11 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRL },
                 new OpcodeData { Name = "SRL",	// CB3C: SRL H 
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRL },
                 new OpcodeData { Name = "SRL",	// CB3D: SRL L 
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRL },
                 new OpcodeData { Name = "SRL",	// CB3E: SRL (HL) 
@@ -1306,11 +1306,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB44: BIT 0 H
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB45: BIT 0 L
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB46: BIT 0 (HL)
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
@@ -1338,11 +1338,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB4C: BIT 1 H
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB4D: BIT 1 L
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB4E: BIT 1 (HL)
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
@@ -1370,11 +1370,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB54: BIT 2 H
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB55: BIT 2 L
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB56: BIT 2 (HL)
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
@@ -1402,11 +1402,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB5C: BIT 3 H
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB5D: BIT 3 L
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB5E: BIT 3 (HL)
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
@@ -1434,11 +1434,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB64: BIT 4 H
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB65: BIT 4 L
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB66: BIT 4 (HL)
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
@@ -1466,11 +1466,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB6C: BIT 5 H
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB6D: BIT 5 L
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB6E: BIT 5 (HL)
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
@@ -1498,11 +1498,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB74: BIT 6 H
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB75: BIT 6 L
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB76: BIT 6 (HL)
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
@@ -1530,11 +1530,11 @@ namespace Z80Emu
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB7C: BIT 7 H
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB7D: BIT 7 L
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.BIT },
                 new OpcodeData { Name = "BIT",	// CB7E: BIT 7 (HL)
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
@@ -1562,11 +1562,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB84: RES 0 H
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB85: RES 0 L
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB86: RES 0 (HL)
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
@@ -1594,11 +1594,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB8C: RES 1 H
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB8D: RES 1 L
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB8E: RES 1 (HL)
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
@@ -1626,11 +1626,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB94: RES 2 H
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB95: RES 2 L
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB96: RES 2 (HL)
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
@@ -1658,11 +1658,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB9C: RES 3 H
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB9D: RES 3 L
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CB9E: RES 3 (HL)
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
@@ -1690,11 +1690,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBA4: RES 4 H
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBA5: RES 4 L
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBA6: RES 4 (HL)
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
@@ -1722,11 +1722,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBAC: RES 5 H
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBAD: RES 5 L
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBAE: RES 5 (HL)
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
@@ -1754,11 +1754,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBB4: RES 6 H
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBB5: RES 6 L
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBB6: RES 6 (HL)
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
@@ -1786,11 +1786,11 @@ namespace Z80Emu
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBBC: RES 7 H
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBBD: RES 7 L
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.RES },
                 new OpcodeData { Name = "RES",	// CBBE: RES 7 (HL)
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
@@ -1818,11 +1818,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBC4: SET 0 H
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBC5: SET 0 L
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBC6: SET 0 (HL)
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
@@ -1850,11 +1850,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBCC: SET 1 H
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBCD: SET 1 L
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBCE: SET 1 (HL)
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
@@ -1882,11 +1882,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBD4: SET 2 H
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBD5: SET 2 L
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBD6: SET 2 (HL)
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
@@ -1914,11 +1914,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBDC: SET 3 H
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBDD: SET 3 L
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBDE: SET 3 (HL)
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
@@ -1946,11 +1946,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBE4: SET 4 H
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBE5: SET 4 L
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBE6: SET 4 (HL)
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
@@ -1978,11 +1978,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBEC: SET 5 H
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBED: SET 5 L
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBEE: SET 5 (HL)
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
@@ -2010,11 +2010,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBF4: SET 6 H
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBF5: SET 6 L
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBF6: SET 6 (HL)
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
@@ -2042,11 +2042,11 @@ namespace Z80Emu
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBFC: SET 7 H
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBFD: SET 7 L
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.SET },
                 new OpcodeData { Name = "SET",	// CBFE: SET 7 (HL)
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
@@ -2327,7 +2327,7 @@ namespace Z80Emu
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.BC, Reg2Param = RegParam.WordData,
                                  Function = Operation.SBC },
-                new OpcodeData { Name = "LD",	// ED43: LD (nn) BC
+                new OpcodeData { Name = "LD",	// ED43: LD (NN) BC
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.Reference | RegParam.WordData,
                                  Reg2 = Register.BC, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -2359,7 +2359,7 @@ namespace Z80Emu
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.BC, Reg2Param = RegParam.WordData,
                                  Function = Operation.ADC },
-                new OpcodeData { Name = "LD",	// ED4B: LD BC (nn)
+                new OpcodeData { Name = "LD",	// ED4B: LD BC (NN)
                                  Reg1 = Register.BC, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.Reference | RegParam.WordData,
                                  Function = Operation.LD },
@@ -2391,7 +2391,7 @@ namespace Z80Emu
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.DE, Reg2Param = RegParam.WordData,
                                  Function = Operation.SBC },
-                new OpcodeData { Name = "LD",	// ED53: LD (nn) DE
+                new OpcodeData { Name = "LD",	// ED53: LD (NN) DE
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.Reference | RegParam.WordData,
                                  Reg2 = Register.DE, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -2423,7 +2423,7 @@ namespace Z80Emu
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.DE, Reg2Param = RegParam.WordData,
                                  Function = Operation.ADC },
-                new OpcodeData { Name = "LD",	// ED5B: LD DE (nn)
+                new OpcodeData { Name = "LD",	// ED5B: LD DE (NN)
                                  Reg1 = Register.DE, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.Reference | RegParam.WordData,
                                  Function = Operation.LD },
@@ -2444,18 +2444,18 @@ namespace Z80Emu
                                  Reg2 = Register.R, Reg2Param = RegParam.None,
                                  Function = Operation.LD },
                 new OpcodeData { Name = "IN",	// ED60: IN H (C)
-                                 Reg1 = Register.XH, Reg1Param = RegParam.None,
+                                 Reg1 = Register.H, Reg1Param = RegParam.None,
                                  Reg2 = Register.C, Reg2Param = RegParam.None,
                                  Function = Operation.IN },
                 new OpcodeData { Name = "OUT",	// ED61: OUT (C) H
                                  Reg1 = Register.C, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
+                                 Reg2 = Register.H, Reg2Param = RegParam.None,
                                  Function = Operation.OUT },
                 new OpcodeData { Name = "SBC",	// ED62: SBC HL HL
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.HL, Reg2Param = RegParam.WordData,
                                  Function = Operation.SBC },
-                new OpcodeData { Name = "LD",	// ED63: LD (nn) HL
+                new OpcodeData { Name = "LD",	// ED63: LD (NN) HL
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.Reference | RegParam.WordData,
                                  Reg2 = Register.HL, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -2476,18 +2476,18 @@ namespace Z80Emu
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRD },
                 new OpcodeData { Name = "IN",	// ED68: IN L (C)
-                                 Reg1 = Register.XL, Reg1Param = RegParam.None,
+                                 Reg1 = Register.L, Reg1Param = RegParam.None,
                                  Reg2 = Register.C, Reg2Param = RegParam.None,
                                  Function = Operation.IN },
                 new OpcodeData { Name = "OUT",	// ED69: OUT (C) L
                                  Reg1 = Register.C, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
+                                 Reg2 = Register.L, Reg2Param = RegParam.None,
                                  Function = Operation.OUT },
                 new OpcodeData { Name = "ADC",	// ED6A: ADC HL HL
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.HL, Reg2Param = RegParam.WordData,
                                  Function = Operation.ADC },
-                new OpcodeData { Name = "LD",	// ED6B: LD HL (nn)
+                new OpcodeData { Name = "LD",	// ED6B: LD HL (NN)
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.Reference | RegParam.WordData,
                                  Function = Operation.LD },
@@ -2519,7 +2519,7 @@ namespace Z80Emu
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.SP, Reg2Param = RegParam.WordData,
                                  Function = Operation.SBC },
-                new OpcodeData { Name = "LD",	// ED73: LD (nn) SP
+                new OpcodeData { Name = "LD",	// ED73: LD (NN) SP
                                  Reg1 = Register.ImmediateWord, Reg1Param = RegParam.Reference | RegParam.WordData,
                                  Reg2 = Register.SP, Reg2Param = RegParam.WordData,
                                  Function = Operation.LD },
@@ -2551,7 +2551,7 @@ namespace Z80Emu
                                  Reg1 = Register.HL, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.SP, Reg2Param = RegParam.WordData,
                                  Function = Operation.ADC },
-                new OpcodeData { Name = "LD",	// ED7B: LD SP (nn)
+                new OpcodeData { Name = "LD",	// ED7B: LD SP (NN)
                                  Reg1 = Register.SP, Reg1Param = RegParam.WordData,
                                  Reg2 = Register.ImmediateWord, Reg2Param = RegParam.Reference | RegParam.WordData,
                                  Function = Operation.LD },
@@ -3086,1030 +3086,1030 @@ namespace Z80Emu
             },
 
             {
-                new OpcodeData { Name = "RLC",	// DDCB00: RLC (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB01: RLC (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB02: RLC (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB03: RLC (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB04: RLC (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB05: RLC (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB06: RLC (IX) 
+                new OpcodeData { Name = "",		// 00
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 01
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 02
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 03
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 04
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 05
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RLC",	// CB06: RLC (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RLC },
-                new OpcodeData { Name = "RLC",	// DDCB07: RLC (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.RLC },
-                new OpcodeData { Name = "RRC",	// DDCB08: RRC (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB09: RRC (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB0A: RRC (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB0B: RRC (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB0C: RRC (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB0D: RRC (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB0E: RRC (IX) 
+                new OpcodeData { Name = "",		// 07
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 08
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 09
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 0A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 0B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 0C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 0D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RRC",	// CB0E: RRC (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RRC },
-                new OpcodeData { Name = "RRC",	// DDCB0F: RRC (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.RRC },
-                new OpcodeData { Name = "RL",	// DDCB10: RL (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB11: RL (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB12: RL (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB13: RL (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB14: RL (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB15: RL (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB16: RL (IX) 
+                new OpcodeData { Name = "",		// 0F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 10
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 11
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 12
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 13
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 14
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 15
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RL",	// CB16: RL (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RL },
-                new OpcodeData { Name = "RL",	// DDCB17: RL (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.RL },
-                new OpcodeData { Name = "RR",	// DDCB18: RR (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB19: RR (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB1A: RR (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB1B: RR (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB1C: RR (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB1D: RR (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB1E: RR (IX) 
+                new OpcodeData { Name = "",		// 17
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 18
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 19
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 1A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 1B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 1C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 1D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RR",	// CB1E: RR (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.RR },
-                new OpcodeData { Name = "RR",	// DDCB1F: RR (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.RR },
-                new OpcodeData { Name = "SLA",	// DDCB20: SLA (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB21: SLA (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB22: SLA (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB23: SLA (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB24: SLA (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB25: SLA (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB26: SLA (IX) 
+                new OpcodeData { Name = "",		// 1F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 20
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 21
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 22
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 23
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 24
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 25
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SLA",	// CB26: SLA (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLA },
-                new OpcodeData { Name = "SLA",	// DDCB27: SLA (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.SLA },
-                new OpcodeData { Name = "SRA",	// DDCB28: SRA (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB29: SRA (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB2A: SRA (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB2B: SRA (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB2C: SRA (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB2D: SRA (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB2E: SRA (IX) 
+                new OpcodeData { Name = "",		// 27
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 28
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 29
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 2A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 2B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 2C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 2D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SRA",	// CB2E: SRA (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRA },
-                new OpcodeData { Name = "SRA",	// DDCB2F: SRA (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.SRA },
-                new OpcodeData { Name = "SLL",	// DDCB30: SLL (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB31: SLL (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB32: SLL (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB33: SLL (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB34: SLL (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB35: SLL (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB36: SLL (IX) 
+                new OpcodeData { Name = "",		// 2F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 30
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 31
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 32
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 33
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 34
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 35
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SLL",	// CB36: SLL (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SLL },
-                new OpcodeData { Name = "SLL",	// DDCB37: SLL (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.SLL },
-                new OpcodeData { Name = "SRL",	// DDCB38: SRL (IX) B
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.B, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB39: SRL (IX) C
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.C, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB3A: SRL (IX) D
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.D, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB3B: SRL (IX) E
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.E, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB3C: SRL (IX) H
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XH, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB3D: SRL (IX) L
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.XL, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB3E: SRL (IX) 
+                new OpcodeData { Name = "",		// 37
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 38
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 39
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 3A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 3B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 3C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 3D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SRL",	// CB3E: SRL (HL) 
                                  Reg1 = Register.HD, Reg1Param = RegParam.Reference,
                                  Reg2 = Register.None, Reg2Param = RegParam.None,
                                  Function = Operation.SRL },
-                new OpcodeData { Name = "SRL",	// DDCB3F: SRL (IX) A
-                                 Reg1 = Register.HD, Reg1Param = RegParam.None,
-                                 Reg2 = Register.A, Reg2Param = RegParam.None,
-                                 Function = Operation.SRL },
-                new OpcodeData { Name = "BIT",	// DDCB40: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB41: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB42: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB43: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB44: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB45: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB46: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB47: BIT 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB48: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB49: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB4A: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB4B: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB4C: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB4D: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB4E: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB4F: BIT 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB50: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB51: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB52: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB53: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB54: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB55: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB56: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB57: BIT 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB58: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB59: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB5A: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB5B: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB5C: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB5D: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB5E: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB5F: BIT 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB60: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB61: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB62: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB63: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB64: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB65: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB66: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB67: BIT 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB68: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB69: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB6A: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB6B: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB6C: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB6D: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB6E: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB6F: BIT 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB70: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB71: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB72: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB73: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB74: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB75: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB76: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB77: BIT 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB78: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB79: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB7A: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB7B: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB7C: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB7D: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB7E: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "BIT",	// DDCB7F: BIT 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.BIT },
-                new OpcodeData { Name = "RES",	// DDCB80: RES 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB81: RES 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB82: RES 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB83: RES 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB84: RES 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB85: RES 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB86: RES 0 (IX)
+                new OpcodeData { Name = "",		// 3F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 40
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 41
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 42
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 43
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 44
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 45
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB46: BIT 0 (HL)
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB87: RES 0 (IX)
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 47
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 48
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 49
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 4A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 4B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 4C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 4D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB4E: BIT 1 (HL)
+                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 4F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 50
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 51
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 52
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 53
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 54
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 55
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB56: BIT 2 (HL)
+                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 57
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 58
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 59
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 5A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 5B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 5C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 5D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB5E: BIT 3 (HL)
+                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 5F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 60
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 61
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 62
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 63
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 64
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 65
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB66: BIT 4 (HL)
+                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 67
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 68
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 69
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 6A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 6B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 6C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 6D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB6E: BIT 5 (HL)
+                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 6F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 70
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 71
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 72
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 73
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 74
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 75
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB76: BIT 6 (HL)
+                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 77
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 78
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 79
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 7A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 7B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 7C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 7D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "BIT",	// CB7E: BIT 7 (HL)
+                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
+                                 Function = Operation.BIT },
+                new OpcodeData { Name = "",		// 7F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 80
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 81
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 82
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 83
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 84
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 85
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CB86: RES 0 (HL)
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
+                                 Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB88: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB89: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB8A: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB8B: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB8C: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB8D: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB8E: RES 1 (IX)
+                new OpcodeData { Name = "",		// 87
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 88
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 89
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 8A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 8B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 8C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 8D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CB8E: RES 1 (HL)
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB8F: RES 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB90: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB91: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB92: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB93: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB94: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB95: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB96: RES 2 (IX)
+                new OpcodeData { Name = "",		// 8F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 90
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 91
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 92
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 93
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 94
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 95
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CB96: RES 2 (HL)
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB97: RES 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB98: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB99: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB9A: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB9B: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB9C: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB9D: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB9E: RES 3 (IX)
+                new OpcodeData { Name = "",		// 97
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 98
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 99
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 9A
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 9B
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 9C
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// 9D
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CB9E: RES 3 (HL)
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCB9F: RES 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA0: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA1: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA2: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA3: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA4: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA5: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA6: RES 4 (IX)
+                new OpcodeData { Name = "",		// 9F
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A0
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A1
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A2
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A3
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A4
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A5
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CBA6: RES 4 (HL)
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA7: RES 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA8: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBA9: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBAA: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBAB: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBAC: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBAD: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBAE: RES 5 (IX)
+                new OpcodeData { Name = "",		// A7
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A8
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// A9
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// AA
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// AB
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// AC
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// AD
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CBAE: RES 5 (HL)
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBAF: RES 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB0: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB1: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB2: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB3: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB4: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB5: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB6: RES 6 (IX)
+                new OpcodeData { Name = "",		// AF
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B0
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B1
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B2
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B3
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B4
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B5
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CBB6: RES 6 (HL)
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB7: RES 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB8: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBB9: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBBA: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBBB: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBBC: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBBD: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBBE: RES 7 (IX)
+                new OpcodeData { Name = "",		// B7
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B8
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// B9
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// BA
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// BB
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// BC
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// BD
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "RES",	// CBBE: RES 7 (HL)
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.RES },
-                new OpcodeData { Name = "RES",	// DDCBBF: RES 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.RES },
-                new OpcodeData { Name = "SET",	// DDCBC0: SET 0 (IX)
+                new OpcodeData { Name = "",		// BF
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C0
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C1
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C2
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C3
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C4
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C5
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBC6: SET 0 (HL)
                                  Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC1: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC2: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC3: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC4: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC5: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC6: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC7: SET 0 (IX)
-                                 Reg1 = (Register)0, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC8: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBC9: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBCA: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBCB: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBCC: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBCD: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBCE: SET 1 (IX)
+                new OpcodeData { Name = "",		// C7
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C8
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// C9
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// CA
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// CB
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// CC
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// CD
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBCE: SET 1 (HL)
                                  Reg1 = (Register)1, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBCF: SET 1 (IX)
-                                 Reg1 = (Register)1, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD0: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD1: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD2: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD3: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD4: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD5: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD6: SET 2 (IX)
+                new OpcodeData { Name = "",		// CF
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D0
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D1
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D2
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D3
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D4
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D5
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBD6: SET 2 (HL)
                                  Reg1 = (Register)2, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD7: SET 2 (IX)
-                                 Reg1 = (Register)2, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD8: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBD9: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBDA: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBDB: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBDC: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBDD: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBDE: SET 3 (IX)
+                new OpcodeData { Name = "",		// D7
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D8
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// D9
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// DA
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// DB
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// DC
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// DD
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBDE: SET 3 (HL)
                                  Reg1 = (Register)3, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBDF: SET 3 (IX)
-                                 Reg1 = (Register)3, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE0: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE1: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE2: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE3: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE4: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE5: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE6: SET 4 (IX)
+                new OpcodeData { Name = "",		// DF
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E0
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E1
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E2
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E3
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E4
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E5
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBE6: SET 4 (HL)
                                  Reg1 = (Register)4, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE7: SET 4 (IX)
-                                 Reg1 = (Register)4, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE8: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBE9: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBEA: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBEB: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBEC: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBED: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBEE: SET 5 (IX)
+                new OpcodeData { Name = "",		// E7
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E8
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// E9
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// EA
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// EB
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// EC
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// ED
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBEE: SET 5 (HL)
                                  Reg1 = (Register)5, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBEF: SET 5 (IX)
-                                 Reg1 = (Register)5, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF0: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF1: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF2: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF3: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF4: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF5: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF6: SET 6 (IX)
+                new OpcodeData { Name = "",		// EF
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F0
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F1
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F2
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F3
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F4
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F5
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBF6: SET 6 (HL)
                                  Reg1 = (Register)6, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF7: SET 6 (IX)
-                                 Reg1 = (Register)6, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF8: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBF9: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBFA: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBFB: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBFC: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBFD: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBFE: SET 7 (IX)
+                new OpcodeData { Name = "",		// F7
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F8
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// F9
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// FA
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// FB
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// FC
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "",		// FD
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
+                new OpcodeData { Name = "SET",	// CBFE: SET 7 (HL)
                                  Reg1 = (Register)7, Reg1Param = RegParam.Literal,
                                  Reg2 = Register.HD, Reg2Param = RegParam.Reference,
                                  Function = Operation.SET },
-                new OpcodeData { Name = "SET",	// DDCBFF: SET 7 (IX)
-                                 Reg1 = (Register)7, Reg1Param = RegParam.Literal,
-                                 Reg2 = Register.HD, Reg2Param = RegParam.None,
-                                 Function = Operation.SET },
+                new OpcodeData { Name = "",		// FF
+                                 Reg1 = Register.None, Reg1Param = RegParam.None,
+                                 Reg2 = Register.None, Reg2Param = RegParam.None,
+                                 Function = Operation.Error },
             },
         };
     }

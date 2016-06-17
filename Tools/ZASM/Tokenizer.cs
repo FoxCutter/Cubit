@@ -107,7 +107,7 @@ namespace ZASM
         SP = Word + SPH,
         PC = Word + PCH,
         IX = Word + IXH,
-        IY = Word + IXH,
+        IY = Word + IYH,
 
         // Index register (can be HL, IX, IY)
         HX = 0x40,

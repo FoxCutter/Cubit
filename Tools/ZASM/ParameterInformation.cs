@@ -73,6 +73,8 @@ namespace ZASM
             {
                 if (TokenList.Count == 1)
                     return TokenList[0];
+                else if (Type == ParameterType.RegisterDisplacedPtr)
+                    return TokenList[0];
                 else
                     return default(Token);
             }

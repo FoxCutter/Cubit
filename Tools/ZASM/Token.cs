@@ -145,6 +145,11 @@ namespace ZASM
         {
             return Type == TokenType.Register && (CommandID == ZASM.CommandID.IXL || CommandID == ZASM.CommandID.IYL);
         }
+
+        public bool IsIndex()
+        {
+            return IsIndexWord() || IsIndexHigh() || IsIndexLow();
+        }
         
         public bool IsDisplacment()
         {

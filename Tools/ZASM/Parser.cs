@@ -375,6 +375,7 @@ namespace ZASM
             }
 
             Opcode.Encoding = FindOpcode(Opcode);
+            Opcode.Length = Opcode.GetOpcodeLength();
 
             if(Opcode.Encoding.Encoding != null)
                 _CurrentAddress += Opcode.Encoding.Encoding.Length;
@@ -603,47 +604,14 @@ namespace ZASM
             return true;
         }
 
-        ParameterType SelectTypeToMatch(ParameterInformation CurrentParam)
-        {
-            if (CurrentParam.Type == ParameterType.RegisterDisplacedPtr)
-                return ParameterType.RegisterPtr;
-
-            return CurrentParam.Type;
-        }
-
         CommandID SelectCommandToMatch(ParameterInformation CurrentParam)
         {
-            switch (CurrentParam.Type)
-            {
-                case ParameterType.Conditional:
-                case ParameterType.RegisterPtr:
-                    break;
-
-                case ParameterType.RegisterWord:
-                    if (CurrentParam.Value.IsIndexWord())
-                        return CommandID.HL;
-                    break;
-
-                case ParameterType.RegisterByte:
-                    if (CurrentParam.Value.IsIndexHigh())
-                        return CommandID.H;
-
-                    else if (CurrentParam.Value.IsIndexLow())
-                        return CommandID.L;
-
-                    break;
-
-                case ParameterType.Encoded:
-                    return (CommandID)((int)CommandID.Encoded + CurrentParam.Value.NumaricValue);
-
-                case ParameterType.Immediate:
-                case ParameterType.ImmediatePtr:
-                    return CommandID.None;
-            }
-
-            return CurrentParam.Value.CommandID;
+            if(CurrentParam.Type == ParameterType.Encoded)
+                return (CommandID)((int)CommandID.Encoded + CurrentParam.Value.NumaricValue);
+            else
+                return CurrentParam.Value.CommandID;
         }
-        
+
         OpcodeEncoding FindOpcode(ObjectInformation CurrentObject)
         {
             if (CurrentObject.Type != ObjectType.Opcode)
@@ -669,8 +637,7 @@ namespace ZASM
             {
                 ParameterInformation CurrentParam = OpcodeObject.Params[0];
                 {
-                    ParameterType Type = SelectTypeToMatch(CurrentParam);
-                    Opcodes = Opcodes.Where(e => (e.Param1Type == Type));
+                    Opcodes = Opcodes.Where(e => (e.Param1Type == CurrentParam.Type));
                 }
 
                 CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
@@ -691,8 +658,7 @@ namespace ZASM
             {
                 ParameterInformation CurrentParam = OpcodeObject.Params[1];
                 {
-                    ParameterType Type = SelectTypeToMatch(CurrentParam);
-                    Opcodes = Opcodes.Where(e => (e.Param2Type == Type));
+                    Opcodes = Opcodes.Where(e => (e.Param2Type == CurrentParam.Type));
                 }
 
                 CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
@@ -709,12 +675,39 @@ namespace ZASM
                 }
             }
 
+            //if (OpcodeObject.Params.Count >= 3)
+            //{
+            //    ParameterInformation CurrentParam = OpcodeObject.Params[2];
+            //    {
+            //        Opcodes = Opcodes.Where(e => (e.Param3Type == CurrentParam.Type));
+            //    }
+
+            //    CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
+
+            //    if (CurrentCommand != CommandID.None)
+            //        Opcodes = Opcodes.Where(e => e.Param3 == CurrentCommand);
+
+            //    if (Opcodes.Count() == 0)
+            //    {
+            //        MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, {2}, >{3}<", OpcodeObject.Opcode.ToString(), OpcodeObject.ParamString(0), OpcodeObject.ParamString(1), OpcodeObject.ParamString(2)));
+
+            //        // Error, Parm2 is invalid
+            //        return default(OpcodeEncoding);
+            //    }
+            //} 
+            
             if (Opcodes.Count() > 1)
-                return Opcodes.FirstOrDefault();
+            {
+                return Opcodes.OrderBy(e => e.Encoding.Length).First();
+            }
             else if (Opcodes.Count() == 1)
+            {
                 return Opcodes.FirstOrDefault();
+            }
             else
+            {
                 return default(OpcodeEncoding);
+            }
         }
     }
 }

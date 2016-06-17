@@ -150,6 +150,49 @@ namespace ZASM
 
             return Ret.ToString();
         }
+
+        public int GetOpcodeLength()
+        {
+            if (Encoding.Function == CommandID.None)
+                return 0;
+
+            int Ret = Encoding.Encoding.Length;
+
+            if (Encoding.Param1Type != ParameterType.None)
+            {
+                if (Encoding.Param1Type == ParameterType.ImmediatePtr)
+                {
+                    Ret += 2;
+                }
+                else if (Encoding.Param1Type == ParameterType.Immediate)
+                {
+                    if (Encoding.Param1 == CommandID.ImmediateByte)
+                        Ret += 1;
+                    else
+                        Ret += 2;
+                }
+            }
+
+            if (Encoding.Param2Type != ParameterType.None)
+            {
+                if (Encoding.Param2Type == ParameterType.ImmediatePtr)
+                {
+                    Ret += 2;
+                }
+                else if (Encoding.Param2Type == ParameterType.Immediate)
+                {
+                    if (Encoding.Param2 == CommandID.ImmediateByte)
+                        Ret += 1;
+                    else
+                        Ret += 2;
+                }
+            }
+
+            if (Encoding.Flags == ParamFlags.InternalDisplacement || Encoding.Flags == ParamFlags.Displacement)
+                Ret += 1;
+
+            return Ret;
+        }
     }
 
     class CommandInformation : ParamInformation
