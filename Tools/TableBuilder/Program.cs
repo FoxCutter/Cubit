@@ -373,7 +373,7 @@ namespace TableBuilder
         static string ConvertType(string Param, string[] Fields)
         {
             if (Param.Length == 0)
-                return "ParamType.None";
+                return "ParameterType.None";
 
             bool Address = false;
             
@@ -392,33 +392,33 @@ namespace TableBuilder
                 Param == "P" || Param == "M"
                 )
             {
-                return "ParamType.Conditional";
+                return "ParameterType.Conditional";
             }
 
             if (Param == "A" || Param == "F" || Param == "B" || Param == "C" || Param == "D" || Param == "E" ||
                 Param == "H" || Param == "L" || Param == "I" || Param == "R" || Param == "SPH" || Param == "SPL" ||
                 Param == "PCH" || Param == "PCL" ||Param == "IXH" || Param == "IXL" ||Param == "IYH" || Param == "IYL")
             {
-                return "ParamType.RegisterByte";
+                return "ParameterType.RegisterByte";
             }
 
             if (Param == "SP" || Param == "AF" || Param == "BC" || Param == "DE" || Param == "HL")
             {
                 if(Address)
-                    return "ParamType.RegisterPtr";
+                    return "ParameterType.RegisterPtr";
                 else
-                    return "ParamType.RegisterWord";
+                    return "ParameterType.RegisterWord";
             }
 
             if (Param == "N" || Param == "E-2")
-                return "ParamType.Immediate";
+                return "ParameterType.Immediate";
                 
             if (Param == "NN")
             {
                 if (Address)
-                    return "ParamType.ImmediatePtr";
+                    return "ParameterType.ImmediatePtr";
                 else
-                    return "ParamType.Immediate";
+                    return "ParameterType.Immediate";
             }
 
             if (Param == "0" || Param == "0H" ||
@@ -431,10 +431,10 @@ namespace TableBuilder
                 Param == "7" || Param == "38H"
                 )
             {
-                return "ParamType.Encoded";
+                return "ParameterType.Encoded";
             }
 
-            return "ParamType.Unknown";
+            return "ParameterType.Unknown";
 
         }
 

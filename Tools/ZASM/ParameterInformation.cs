@@ -209,7 +209,16 @@ namespace ZASM
                 else if (Symbol.Type == SymbolType.Address || Symbol.Type == SymbolType.Value)
                 {
                     CurrentToken.Type = TokenType.Result;
-                    CurrentToken.NumaricValue = (int)Symbol.Value;                    
+
+                    if (Symbol.DefinedLine.Type == ObjectType.Value)
+                        CurrentToken.NumaricValue = ((ValueInformation)Symbol.DefinedLine).Value; 
+
+                    else if (Symbol.DefinedLine.Type == ObjectType.Label)
+                        CurrentToken.NumaricValue = ((LabelInformation)Symbol.DefinedLine).Address; 
+                    
+                    else
+                        MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UnknownError, "Unexpected symbol table type");
+                    
                 }
             }
             else if (CurrentToken.Type == TokenType.Number)

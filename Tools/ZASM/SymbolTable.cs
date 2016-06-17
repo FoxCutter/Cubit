@@ -23,14 +23,12 @@ namespace ZASM
 
         public ObjectInformation DefinedLine { get; set; }
         public SymbolType Type { get; set; }
-        public long Value { get; set; }
 
         public SymbolTableEntry(string Name = "", SymbolType InitialType = SymbolType.None)
         {
             Type = InitialType;
             Symbol = Name;
             LineIDs = new List<ObjectInformation>();
-            Value = 0;
 
             DefinedLine = null;
         }
@@ -64,9 +62,8 @@ namespace ZASM
 
         public IEnumerator<SymbolTableEntry> GetEnumerator()
         {
-            return NameList.Values.OrderBy(e => e.Symbol.ToUpper()).GetEnumerator();
-
-            //return NameList.Values.GetEnumerator();
+            //return NameList.Values.OrderBy(e => e.Symbol.ToUpper()).GetEnumerator();
+            return NameList.Values.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()

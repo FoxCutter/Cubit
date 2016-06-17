@@ -54,7 +54,7 @@ namespace ZASM
                 if (Entry.Type == ObjectType.Label)
                 {
                     //Console.Write("{0,-10} ", Entry.Symbol.Symbol + ":");
-                    Console.Write("{0,-10} ", Entry.Symbol.Value.ToString() + ":");
+                    Console.Write("{0,-10} ", Entry.Symbol.DefinedLine.ToString());
                 }
                 else if (Entry.Type == ObjectType.Value)
                 {
@@ -76,7 +76,7 @@ namespace ZASM
                 {
                     CommandInformation Command = (CommandInformation)Entry;
 
-                    Console.Write("{0,-6} ", Command.Action.ToString());
+                    Console.Write("{0,-6} ", Command.Command.ToString());
 
                     for (int x = 0; x < Command.Params.Count; x++)
                     {
@@ -90,7 +90,7 @@ namespace ZASM
                 {
                     OpcodeInformation Opcode = (OpcodeInformation)Entry;
 
-                    Console.Write("{0,-6} ", Opcode.Action.ToString());
+                    Console.Write("{0,-6} ", Opcode.Opcode.ToString());
 
                     for (int x = 0; x < Opcode.Params.Count; x++)
                     {
@@ -135,7 +135,6 @@ namespace ZASM
             Symbol.LineIDs.Add(NewLabel);
             Symbol.DefinedLine = NewLabel;
             Symbol.Type = SymbolType.Address;
-            Symbol.Value = _CurrentAddress;
 
             // If the label has a token, eat it.
             if (_Tokenizer.PeekNextToken().Type == TokenType.Colon)
@@ -313,7 +312,6 @@ namespace ZASM
         ObjectInformation ParseOpcode(Token OpcodeToken)
         {
             OpcodeInformation Opcode = new OpcodeInformation(OpcodeToken.CommandID, OpcodeToken.Location);
-            Opcode.Address = _CurrentAddress;
 
             if (!_Tokenizer.PeekNextToken().IsBreak() && _Tokenizer.PeekNextToken().Type != TokenType.Comment && !_Tokenizer.PeekNextToken().IsEnd())
             {
@@ -354,9 +352,10 @@ namespace ZASM
 
             foreach (ParameterInformation Param in Opcode.Params)
             {
-                if (Opcode.Action == CommandID.IN || Opcode.Action == CommandID.OUT || Opcode.Action == CommandID.JP)
+                if (Opcode.Opcode == CommandID.IN || Opcode.Opcode == CommandID.OUT || Opcode.Opcode == CommandID.JP)
                     Param.Pointer = false;
 
+                // Differentiate between the C Register and the Carry Flag
                 if (OpcodeToken.CanHaveFlag() && Param.Value.IsRegister())
                 {
                     if (Param.Value.CommandID == CommandID.C)
@@ -366,7 +365,6 @@ namespace ZASM
                         Temp.Type = TokenType.Flag;
 
                         Param.Value = Temp;
-
                     }
                 }
 
@@ -494,7 +492,6 @@ namespace ZASM
                 if (NewValue.Params.Simplify())
                 {
                     NewValue.Value = NewValue.Params.Value.NumaricValue;
-                    NewValue.Symbol.Value = NewValue.Params.Value.NumaricValue;
                 }
             }
 
@@ -646,59 +643,6 @@ namespace ZASM
 
             return CurrentParam.Value.CommandID;
         }
-
-
-        int SizeOpcode(ObjectInformation CurrentObject, OpcodeEncoding Encoding)
-        {
-            if (Encoding.Encoding == null || Encoding.Encoding.Length == 0)
-                return 0;
-
-            if (CurrentObject.Type != ObjectType.Opcode)
-                return 0;
-
-            OpcodeInformation CurrentCommand = (OpcodeInformation)CurrentObject;
-            
-            int Ret = Encoding.Encoding.Length;
-
-            foreach (ParameterInformation Param in CurrentCommand.Params)
-            {
-                switch (Param.Type)
-                {
-                    case ParameterType.Immediate:
-                        //if (CurrentCommand.Operation.HasAddress())
-                        //    Ret += 2;
-
-                        //else if (CurrentObject.Operation.HasReletiveAddress())
-                        //    Ret += 1;
-
-                        //else
-                            Ret += CurrentCommand.DataSize() / 8;
-                        break;
-
-                    case ParameterType.ImmediatePtr:
-                        // Add the address
-                        Ret += 2;
-                        break;
-
-                    case ParameterType.RegisterDisplacedPtr:
-                        // Add two bytes, one for the prefix, the other for displacment
-                        Ret += 2;
-                        break;
-
-                    case ParameterType.RegisterByte:
-                        // Add the prefix bites
-                        if (Param.Value.IsIndexHigh())
-                            Ret++;
-
-                        else if (Param.Value.IsIndexLow())
-                            Ret++;
-
-                        break;
-                }
-            }
-
-            return Ret;
-        }
         
         OpcodeEncoding FindOpcode(ObjectInformation CurrentObject)
         {
@@ -708,7 +652,7 @@ namespace ZASM
             OpcodeInformation OpcodeObject = (OpcodeInformation)CurrentObject;
 
             // Search based on the Command ID
-            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData.Where(e => e.Function == OpcodeObject.Action);
+            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData.Where(e => e.Function == OpcodeObject.Opcode);
 
             if (Opcodes.Count() == 0)
             {
@@ -736,7 +680,7 @@ namespace ZASM
 
                 if (Opcodes.Count() == 0)
                 {
-                    MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} >{1}<", OpcodeObject.Action.ToString(), OpcodeObject.ParamString(0)));
+                    MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} >{1}<", OpcodeObject.Opcode.ToString(), OpcodeObject.ParamString(0)));
 
                     // Error, Parm1 is invalid
                     return default(OpcodeEncoding);
@@ -758,7 +702,7 @@ namespace ZASM
 
                 if (Opcodes.Count() == 0)
                 {
-                    MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, >{2}<", OpcodeObject.Action.ToString(), OpcodeObject.ParamString(0), OpcodeObject.ParamString(1)));
+                    MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, >{2}<", OpcodeObject.Opcode.ToString(), OpcodeObject.ParamString(0), OpcodeObject.ParamString(1)));
                     
                     // Error, Parm2 is invalid
                     return default(OpcodeEncoding);

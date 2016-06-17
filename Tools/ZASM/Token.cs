@@ -251,15 +251,19 @@ namespace ZASM
             StringBuilder Ret = new StringBuilder();
 
             if (Value == null || Value.Count == 0)
+            {
                 Ret.Append(NumaricValue);
+            }
+            else
+            {
+                if (Type == TokenType.String)
+                    Ret.Append("'");
 
-            if (Type == TokenType.String)
-                Ret.Append("'");
+                Ret.Append(Value.ToArray());
 
-            Ret.Append(Value.ToArray());
-
-            if (Type == TokenType.String)
-                Ret.Append("'");
+                if (Type == TokenType.String)
+                    Ret.Append("'");
+            }
 
             return Ret.ToString();
         }
