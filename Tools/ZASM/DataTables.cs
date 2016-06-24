@@ -144,6 +144,7 @@ namespace ZASM
             { MessageCode.ValueMissing, "Value missing in assignment" },
             { MessageCode.MissingGroupSymbol, "Missing group"},
             { MessageCode.DataTypeMisMatch, "Datatype mismatch"},
+            { MessageCode.SyntaxError, "Syntax Error"},
             
         };
     }

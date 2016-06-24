@@ -25,7 +25,7 @@ namespace ZASM
         public TokenLocation        Location;
         public bool                 Error;
 
-        public int                  Length;
+        public int                  Address;
 
         public ObjectInformation(SymbolTableEntry Symbol, TokenLocation Location = null)
         {
@@ -33,7 +33,7 @@ namespace ZASM
             this.Symbol = Symbol;
             this.Location = Location;
             Error = false;
-            Length = 0;
+            Address = 0;
         }
         
         public override string ToString()
@@ -44,8 +44,6 @@ namespace ZASM
    
     class LabelInformation : ObjectInformation
     {
-        public int Address;
-
         public LabelInformation(SymbolTableEntry Symbol, TokenLocation Location = null)
             : base(Symbol, Location)
         {
@@ -73,7 +71,7 @@ namespace ZASM
 
         public override string ToString()
         {
-            return base.ToString() + " = " + Value.ToString();
+            return base.ToString() + " = 0x" + Value.ToString("X");
         }
     }
 
@@ -123,6 +121,39 @@ namespace ZASM
             Type = ObjectType.Data;
             this.DataType = DataType;
         }
+
+        public int GetDataLength()
+        {
+            int Ret = 0;
+
+            foreach (ParameterInformation Param in Params)
+            {
+                switch (DataType)
+                {
+                    case CommandID.BYTE:
+                        if (Param.Value.Type == TokenType.String)
+                            Ret += Param.Value.Value.Count;
+                        else
+                            Ret += 1;
+                        break;
+
+                    case CommandID.WORD:
+                        Ret += 2;
+                        break;
+
+                    case CommandID.DC:
+                        Ret += Param.Value.Value.Count;
+                        break;
+
+                    case CommandID.DEFS:
+                        Ret += Param.Value.NumaricValue;
+                        break;
+                }
+            }
+
+            return Ret;
+        }
+
     }
 
     class OpcodeInformation : ParamInformation
@@ -130,7 +161,6 @@ namespace ZASM
         public CommandID Opcode; 
 
         public OpcodeEncoding Encoding;        
-        //public int EncodingLength;
 
         public OpcodeInformation(CommandID Opcode, TokenLocation Location = null)
             : base(Location)

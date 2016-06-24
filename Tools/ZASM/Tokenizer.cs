@@ -109,15 +109,6 @@ namespace ZASM
         IX = Word + IXH,
         IY = Word + IYH,
 
-        // Index register (can be HL, IX, IY)
-        HX = 0x40,
-
-        // Index register low (can be L, IXL, IYL)
-        XL,
-
-        // Index register high (can be H, IXH, IYH)
-        XH,
-
         // Immediate data
         ImmediateByte = 0x80,
         ImmediateWord, 
@@ -270,15 +261,15 @@ namespace ZASM
 
             try
             {
-                int Result = 0;
+                short Result = 0;
                 foreach (char Num in TempData)
                 {
                     // Ignore _ in numbers (allows spacing)
                     if (Num == '_')
                         continue;
 
-                    Result = Result * Base;
-                    Result += Convert.ToInt32(Num.ToString(), Base);
+                    Result = (short)(Result * Base);
+                    Result += Convert.ToInt16(Num.ToString(), Base);
                 }
             
                 Data.NumaricValue = Result;

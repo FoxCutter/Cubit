@@ -15,7 +15,14 @@ namespace TableBuilder
         const int Opcode = 3;
         const int Param1 = 4;
         const int Param2 = 5;
-        const int BinData = 6;
+        const int BinData0 = 6;
+        const int BinData1 = 7;
+        const int BinData2 = 8;
+        const int BinData3 = 9;
+        const int BinData4 = 10;
+        const int BinData5 = 11;
+        const int BinData6 = 12;
+        const int BinData7 = 13;
         const int BIN = 14;
         const int Immediate = 15;
         const int Official = 16;
@@ -23,20 +30,6 @@ namespace TableBuilder
         const int IX_IY = 18;
         const int AssumeA = 19;
             
-        static int SortData(string l, string r)
-        {
-            string[] Fieldsl = l.Split(',');
-            string[] Fieldsr = r.Split(',');
-
-            if (string.Compare(Fieldsl[Opcode], Fieldsr[Opcode], true) != 0)
-                return string.Compare(Fieldsl[Opcode], Fieldsr[Opcode], true);
-
-            if (string.Compare(Fieldsl[Param1], Fieldsr[Param1], true) != 0)
-                return string.Compare(Fieldsl[Param1], Fieldsr[Param1], true);
-
-            return string.Compare(Fieldsl[Param2], Fieldsr[Param2], true);
-        }
-
         static string FormatEach<T>(string Format, IEnumerable<T> Data, bool Seperator = true)
         {
             StringBuilder Ret = new StringBuilder();
@@ -54,36 +47,6 @@ namespace TableBuilder
             return Ret.ToString();
         }
 
-        static string GetOpcodeEncoding(string[] Fields)
-        {
-            StringBuilder Res = new StringBuilder();
-            List<byte> ByteCode = new List<byte>();
-
-            byte TempCode = 0;
-
-            if (Fields[Prefix].Length != 0)
-            {
-                TempCode = (byte)Convert.ToUInt16(Fields[Prefix], 16);
-
-                ByteCode.Add(TempCode);
-
-                if (TempCode == 0xDD)
-                    ByteCode.Add(0xCB);
-            }
-
-            TempCode = (byte)Convert.ToUInt16(Fields[HEX], 16);
-            ByteCode.Add(TempCode);
-
-            Res.AppendFormat("            new OpcodeEncoding {{ // {0}: {1} {2} {3}\r\n", FormatEach("{0:X2}", ByteCode, false), Fields[Opcode], Fields[Param1], Fields[Param2]);
-            Res.AppendFormat("                                  Encoding = new byte[] {{ {0} }},\r\n", FormatEach("0x{0:X2}", ByteCode));
-            Res.AppendFormat("                                  Param1 = {0}, Param1Type = {1},\r\n", ConvertRegs(Fields[Param1], Fields, true), ConvertType(Fields[Param1], Fields));
-            Res.AppendFormat("                                  Param2 = {0}, Param2Type = {1},\r\n", ConvertRegs(Fields[Param2], Fields, true), ConvertType(Fields[Param2], Fields));
-            Res.AppendFormat("                                  Flags = {0}, Function = CommandID.{1} ", ConvertFlags(Fields), Fields[Opcode]);
-            Res.AppendFormat("}},");
-
-            return Res.ToString();
-        }
-
         struct OpcodeEntry
         {
             public string Name;
@@ -97,6 +60,8 @@ namespace TableBuilder
             public char IX_IY;
             public bool AssumeA;
             public bool IndexOnly; // Can only be used with IX/IY
+
+            public int OrderVal;
         };
 
 
@@ -138,8 +103,11 @@ namespace TableBuilder
                     Ret.IX_IY = 'V';
 
                     Temp = (byte)Convert.ToUInt16(Fields[HEX], 16);
-                    Temp &= 0x07;
-                    Ret.Param3 = "bcdehl a"[Temp].ToString();
+                    if (Temp >= 0x40)
+                    {
+                        Temp &= 0x07;
+                        Ret.Param3 = "bcdehl a"[Temp].ToString();
+                    }
 
                     Temp = 0xCB;
                 }
@@ -147,6 +115,8 @@ namespace TableBuilder
                 Ret.Encoding.Add(Temp);
             }
 
+            Ret.OrderVal = Convert.ToInt32(Fields[DEC], 10);
+            
             Ret.Encoding.Add((byte)Convert.ToUInt16(Fields[HEX], 16));
 
             return Ret;
@@ -156,13 +126,14 @@ namespace TableBuilder
         {
             StringBuilder Res = new StringBuilder();
 
-            Res.AppendFormat("            new OpcodeEncoding {{ // {0}: {1} {2} {3} {4}\r\n", FormatEach("{0:X2}", Entry.Encoding, false), Entry.Name, Entry.Param1, Entry.Param2, Entry.Param3);
-            Res.AppendFormat("                                  Encoding = new byte[] {{ {0} }},\r\n", FormatEach("0x{0:X2}", Entry.Encoding));
-            Res.AppendFormat("                                  Param1 = {0}, Param1Type = {1},\r\n", ConvertRegs(Entry.Param1, Entry, true), ConvertType(Entry.Param1, Entry));
-            Res.AppendFormat("                                  Param2 = {0}, Param2Type = {1},\r\n", ConvertRegs(Entry.Param2, Entry, true), ConvertType(Entry.Param2, Entry));
-            //Res.AppendFormat("                                  Param3 = {0}, Param3Type = {1},\r\n", ConvertRegs(Entry.Param3, Entry, true), ConvertType(Entry.Param3, Entry));
-            Res.AppendFormat("                                  Flags = {0}, Function = CommandID.{1} ", ConvertFlags(Entry), Entry.Name);
-            Res.AppendFormat("}},");
+            Res.AppendFormat("                    new OpcodeEncoding {{");
+            Res.AppendFormat(" Param1 = {0}, Param1Type = {1},", ConvertRegs(Entry.Param1, Entry, true), ConvertType(Entry.Param1, Entry));
+            Res.AppendFormat(" Param2 = {0}, Param2Type = {1},", ConvertRegs(Entry.Param2, Entry, true), ConvertType(Entry.Param2, Entry));
+            Res.AppendFormat(" Param3 = {0}, Param3Type = {1},", ConvertRegs(Entry.Param3, Entry, true), ConvertType(Entry.Param3, Entry));
+            Res.AppendFormat(" Flags = {0}, Function = CommandID.{1},", ConvertFlags(Entry), Entry.Name);
+            Res.AppendFormat(" Encoding = new byte[] {{ {0} }}", FormatEach("0x{0:X2}", Entry.Encoding));
+            Res.AppendFormat(" }},");
+            Res.AppendFormat(" // {0}: {1} {2} {3} {4}", FormatEach("{0:X2}", Entry.Encoding, false), Entry.Name, Entry.Param1, Entry.Param2, Entry.Param3);
 
             return Res.ToString();
         }
@@ -172,12 +143,12 @@ namespace TableBuilder
         {
             List<string> Data = new List<string>(File.ReadAllLines(@"Z80 Opcodes.csv"));
             List<string>[] Output = new List<string>[4];
+            Dictionary<string, List<OpcodeEntry>> EntryList = new Dictionary<string, List<OpcodeEntry>>();
+
             Output[0] = new List<string>(256);
             Output[1] = new List<string>(256);
             Output[2] = new List<string>(256);
             Output[3] = new List<string>(256);
-
-            List<string> OutputZasm = new List<string>();
 
             for (int x = 0; x < 256; x++)
             {
@@ -198,10 +169,6 @@ namespace TableBuilder
                 
             }
 
-
-            //Data.OrderBy(e => { return false; });
-            Data.Sort(SortData);
-
             List<byte> ByteCode = new List<byte>();
 
             foreach (string Line in Data)
@@ -213,6 +180,10 @@ namespace TableBuilder
                     continue;
 
                 OpcodeEntry Entry = ReadOpcodeEntry(Fields);
+                if (!EntryList.ContainsKey(Entry.Name))
+                    EntryList[Entry.Name] = new List<OpcodeEntry>();
+
+                EntryList[Entry.Name].Add(Entry);
 
                 if (Entry.Offical != 'N')
                 {
@@ -238,83 +209,91 @@ namespace TableBuilder
                         Output[3][Convert.ToInt32(Fields[HEX], 16)] = Res.ToString();
                 }
 
-                if (!Entry.IndexOnly)
-                    OutputZasm.Add(GetOpcodeEncoding(Entry));
-
                 if (Entry.IX_IY != 'N')
                 {
+                    Entry.IndexOnly = false;
+
                     if (Entry.IX_IY == 'Y' || Entry.IX_IY == 'V')
                     {
+                        OpcodeEntry NewEntry = Entry;
+                        
                         if (Entry.Param1 == "(HL)")
-                            Entry.Param1 = "(IX)";
+                            NewEntry.Param1 = "(IX)";
                         else
-                            Entry.Param2 = "(IX)";
+                            NewEntry.Param2 = "(IX)";
 
-                        Entry.Encoding.Insert(0, 0xDD);
-                        OutputZasm.Add(GetOpcodeEncoding(Entry));
+                        NewEntry.Encoding = new List<byte>(Entry.Encoding);
+                        NewEntry.Encoding.Insert(0, 0xDD);
+                        EntryList[Entry.Name].Add(NewEntry);
 
-                        if (Entry.Param1 == "(IX)")
-                            Entry.Param1 = "(IY)";
+                        if (Entry.Param1 == "(HL)")
+                            NewEntry.Param1 = "(IY)";
                         else
-                            Entry.Param2 = "(IY)";
+                            NewEntry.Param2 = "(IY)";
 
-                        Entry.Encoding.RemoveAt(0);
-                        Entry.Encoding.Insert(0, 0xFD);
-                        OutputZasm.Add(GetOpcodeEncoding(Entry));
+                        NewEntry.Encoding = new List<byte>(Entry.Encoding);
+                        NewEntry.Encoding.Insert(0, 0xFD);
+                        EntryList[Entry.Name].Add(NewEntry);
                     }
 
                     if (Entry.IX_IY == 'Z')
                     {
+                        OpcodeEntry NewEntry = Entry;
+
                         if (Entry.Param1 == "HL")
-                            Entry.Param1 = "IX";
+                            NewEntry.Param1 = "IX";
                         else
-                            Entry.Param2 = "IX";
+                            NewEntry.Param2 = "IX";
 
-                        Entry.Encoding.Insert(0, 0xDD);
-                        OutputZasm.Add(GetOpcodeEncoding(Entry));
+                        NewEntry.Encoding = new List<byte>(Entry.Encoding);
+                        NewEntry.Encoding.Insert(0, 0xDD);
+                        EntryList[Entry.Name].Add(NewEntry);
 
-                        if (Entry.Param1 == "IX")
-                            Entry.Param1 = "IY";
+                        if (Entry.Param1 == "HL")
+                            NewEntry.Param1 = "IY";
                         else
-                            Entry.Param2 = "IY";
+                            NewEntry.Param2 = "IY";
 
-                        Entry.Encoding.RemoveAt(0);
-                        Entry.Encoding.Insert(0, 0xFD);
-                        OutputZasm.Add(GetOpcodeEncoding(Entry));
+                        NewEntry.Encoding = new List<byte>(Entry.Encoding);
+                        NewEntry.Encoding.Insert(0, 0xFD);
+                        EntryList[Entry.Name].Add(NewEntry);
                     }
                     
                     else if (Entry.IX_IY == 'X')
                     {
-                        if (Entry.Param1.Contains('H'))
-                            Entry.Param1 = "IXH";
-                        else if (Entry.Param1.Contains('L'))
-                            Entry.Param1 = "IXL";
+                        OpcodeEntry NewEntry = Entry;
+                        
+                        if (Entry.Param1 == "H")
+                            NewEntry.Param1 = "IXH";
+                        else if (Entry.Param1 == "L")
+                            NewEntry.Param1 = "IXL";
 
-                        if (Entry.Param2.Contains('H'))
-                            Entry.Param2 = "IXH";
-                        else if (Entry.Param2.Contains('L'))
-                            Entry.Param2 = "IXL";
+                        if (Entry.Param2 == "H")
+                            NewEntry.Param2 = "IXH";
+                        else if (Entry.Param2 == "L")
+                            NewEntry.Param2 = "IXL";
 
-                        Entry.Encoding.Insert(0, 0xDD);
-                        OutputZasm.Add(GetOpcodeEncoding(Entry));
+                        NewEntry.Encoding = new List<byte>(Entry.Encoding);
+                        NewEntry.Encoding.Insert(0, 0xDD);
+                        EntryList[Entry.Name].Add(NewEntry);
 
-                        if (Entry.Param1.Contains('H'))
-                            Entry.Param1 = "IYH";
-                        else if (Entry.Param1.Contains('L'))
-                            Entry.Param1 = "IYL";
+                        if (Entry.Param1 == "H")
+                            NewEntry.Param1 = "IYH";
+                        else if (Entry.Param1 == "L")
+                            NewEntry.Param1 = "IYL";
 
-                        if (Entry.Param2.Contains('H'))
-                            Entry.Param2 = "IYH";
-                        else if (Entry.Param2.Contains('L'))
-                            Entry.Param2 = "IYL";
+                        if (Entry.Param2 == "H")
+                            NewEntry.Param2 = "IYH";
+                        else if (Entry.Param2 == "L")
+                            NewEntry.Param2 = "IYL";
 
-                        Entry.Encoding.RemoveAt(0);
-                        Entry.Encoding.Insert(0, 0xFD);
-                        OutputZasm.Add(GetOpcodeEncoding(Entry));
+                        NewEntry.Encoding = new List<byte>(Entry.Encoding);
+                        NewEntry.Encoding.Insert(0, 0xFD);
+                        EntryList[Entry.Name].Add(NewEntry);
                     }
-                }
-            
+                }            
             }
+
 
             StreamWriter OutputFile = new StreamWriter(@".\Z80Emu\Opcodes.cs", false);
 
@@ -356,270 +335,34 @@ namespace TableBuilder
             OutputFile.Close();
 
             OutputFile = new StreamWriter(@".\ZASM\Opcodes.cs", false);
+            OutputFile.WriteLine("using System.Collections.Generic;");
             OutputFile.WriteLine("namespace ZASM");
             OutputFile.WriteLine("{");
             OutputFile.WriteLine("    static class Ops");
             OutputFile.WriteLine("    {");
-            OutputFile.WriteLine("        static public OpcodeEncoding[] EncodingData = new OpcodeEncoding[]");
+            OutputFile.WriteLine("        static public Dictionary<CommandID, OpcodeEncoding[]> EncodingData = new Dictionary<CommandID,OpcodeEncoding[]>");
             OutputFile.WriteLine("        {");
-            OutputZasm.ForEach(OutputFile.WriteLine);
+            foreach (var OpcodeList in EntryList.OrderBy(e => e.Key))
+            {
+                OutputFile.WriteLine("            {");
+                OutputFile.WriteLine("                CommandID.{0}, new OpcodeEncoding[]", OpcodeList.Key);
+                OutputFile.WriteLine("                {");
+                foreach (OpcodeEntry Entry in OpcodeList.Value)
+                {
+                    if (!Entry.IndexOnly)
+                        OutputFile.WriteLine(GetOpcodeEncoding(Entry));
+                }
+                OutputFile.WriteLine("                }");
+                OutputFile.WriteLine("            },");
+            }
+
             OutputFile.WriteLine("        };");
             OutputFile.WriteLine("    }");
             OutputFile.WriteLine("}");
-
+            
             OutputFile.Flush();
             OutputFile.Close();
 
-        }
-
-        static string ConvertRegs(string Param, string[] Fields, bool CommandID)
-        {
-            string Base = "Register";
-            if (CommandID)
-                Base = "CommandID";
-            
-            if (Param.Length == 0)
-                return Base + ".None";
-
-            Param = Param.ToUpper();
-            if (Param[0] == '(')
-            {
-                Param = Param.Substring(1, Param.Length - 2);
-            }
-
-            if (Param == "N" || Param == "E-2")
-                return Base + ".ImmediateByte";
-
-            if (Param == "NN")
-                return Base + ".ImmediateWord";
-
-            if (Param == "0" || Param == "1" || Param == "2" || 
-                Param == "3" || Param == "4" || Param == "5" ||
-                Param == "6" || Param == "7"
-                )
-            {
-                if (CommandID)
-                    return "(" + Base + ")((int)CommandID.Encoded + " + Param + ")";
-                    //return Base + ".Encoded + (" + Base + ")" + Param;
-                else
-                    return "(" + Base + ")" + Param;
-            }
-
-
-            if (Param == "0H"  || Param == "8H"  || Param == "10H" ||
-                Param == "18H" || Param == "20H" || Param == "28H" ||
-                Param == "30H" || Param == "38H"
-                )
-            {
-                Param = Param.Substring(0, Param.Length - 1);
-                if (CommandID)
-                    return "(" + Base + ")((int)CommandID.Encoded + 0x" + Param + ")";
-                    //return Base + ".Encoded + (" + Base + ")0x" + Param;
-                else
-                    return "(" + Base + ")0x" + Param;
-            }
-
-            if (Param == "NZ" || Param == "Z" || Param == "NC" ||
-                Param == "CY" || Param == "PO" || Param == "PE" ||
-                Param == "P" || Param == "M"
-                )
-            {
-
-                if (CommandID)
-                    return "CommandID." + Param;
-                else
-                    return "(Register)ConditionCode." + Param;
-            }
-
-            if (!CommandID)
-            {
-                if (Param == "HL" || Param == "IX" || Param == "IY")
-                {
-                    if (Fields[IX_IY] == "Y - No Displacment")
-                        return Base + ".HX";
-
-                    else if (Fields[IX_IY] == "Y")
-                        return Base + ".HD";
-                }
-
-                if (Param == "H")
-                    return Base + ".XH";
-
-                if (Param == "L")
-                    return Base + ".XL";
-            }
-
-            return Base + "." + Param;
-        }
-
-        static string ConvertParams(string Param, string[] Fields)
-        {
-            if (Param.Length == 0)
-                return "RegParam.None";
-
-            StringBuilder Ret = new StringBuilder();
-
-            Param = Param.ToUpper();
-            if (Param[0] == '(')
-            {
-                Param = Param.Substring(1, Param.Length - 2);
-
-                if (Fields[Memory] == "Y")
-                {
-                    Ret.Append("RegParam.Reference");
-
-                    string OtherParam = "";
-
-                    // Work out how big the data we are point to is, based on the other operand
-                    if (Fields[Param1][0] == '(')
-                    {
-                        if (Fields[Param2].Length != 0)
-                        {
-                            OtherParam = Fields[Param2].ToUpper();
-                        }
-                    }
-                    else if (Fields[Param2][0] == '(')
-                    {
-                        OtherParam = Fields[Param1].ToUpper();
-                    }
-
-                    if (OtherParam == "SP" || OtherParam == "AF" || OtherParam == "BC" || OtherParam == "DE" || OtherParam == "HL" || OtherParam == "NN")
-                    {
-                        Ret.Append(" | RegParam.WordData");
-                    }
-                }
-            }
-
-            if (Ret.Length == 0 && (Param == "SP" || Param == "AF" || Param == "BC" || Param == "DE" || Param == "HL" || Param == "NN"))
-            {
-                Ret.Append("RegParam.WordData");
-            }
-
-            if (Param == "0" || Param == "0H" ||
-                Param == "1" || Param == "8H" ||
-                Param == "2" || Param == "10H" ||
-                Param == "3" || Param == "18H" ||
-                Param == "4" || Param == "20H" ||
-                Param == "5" || Param == "28H" ||
-                Param == "6" || Param == "30H" ||
-                Param == "7" || Param == "38H"
-                )
-            {
-                if (Ret.Length != 0)
-                    Ret.Append(" | ");
-
-                Ret.Append("RegParam.Literal");
-            }
-
-            if (Param == "NZ" || Param == "Z"  || Param == "NC" || 
-                Param == "CY" || Param == "PO" || Param == "PE" || 
-                Param == "P"  || Param == "M" 
-                )
-            {
-                if (Ret.Length != 0)
-                    Ret.Append(" | ");
-
-                Ret.Append("RegParam.ConditionCode");
-            }
-
-            if (Ret.Length == 0)
-            {
-                Ret.Append("RegParam.None");
-            }
-
-            return Ret.ToString();
-        }
-
-        static string ConvertType(string Param, string[] Fields)
-        {
-            if (Param.Length == 0)
-                return "ParameterType.None";
-
-            bool Address = false;
-            
-            Param = Param.ToUpper();
-            if (Param[0] == '(')
-            {
-                Param = Param.Substring(1, Param.Length - 2);
-
-                if (Fields[Memory] == "Y")
-                    Address = true;
-            }
-
-
-            if (Param == "NZ" || Param == "Z" || Param == "NC" ||
-                Param == "CY" || Param == "PO" || Param == "PE" ||
-                Param == "P" || Param == "M"
-                )
-            {
-                return "ParameterType.Conditional";
-            }
-
-            if (Param == "A" || Param == "F" || Param == "B" || Param == "C" || Param == "D" || Param == "E" ||
-                Param == "H" || Param == "L" || Param == "I" || Param == "R" || Param == "SPH" || Param == "SPL" ||
-                Param == "PCH" || Param == "PCL" ||Param == "IXH" || Param == "IXL" ||Param == "IYH" || Param == "IYL")
-            {
-                return "ParameterType.RegisterByte";
-            }
-
-            if (Param == "SP" || Param == "AF" || Param == "BC" || Param == "DE" || Param == "HL")
-            {
-                if(Address)
-                    return "ParameterType.RegisterPtr";
-                else
-                    return "ParameterType.RegisterWord";
-            }
-
-            if (Param == "N" || Param == "E-2")
-                return "ParameterType.Immediate";
-                
-            if (Param == "NN")
-            {
-                if (Address)
-                    return "ParameterType.ImmediatePtr";
-                else
-                    return "ParameterType.Immediate";
-            }
-
-            if (Param == "0" || Param == "0H" ||
-                Param == "1" || Param == "8H" ||
-                Param == "2" || Param == "10H" ||
-                Param == "3" || Param == "18H" ||
-                Param == "4" || Param == "20H" ||
-                Param == "5" || Param == "28H" ||
-                Param == "6" || Param == "30H" ||
-                Param == "7" || Param == "38H"
-                )
-            {
-                return "ParameterType.Encoded";
-            }
-
-            return "ParameterType.Unknown";
-
-        }
-
-        static string ConvertFlags(string[] Fields)
-        {
-            StringBuilder Ret = new StringBuilder();
-
-            if (Fields[IX_IY].ToUpper() == "Y")
-                Ret.Append("ParamFlags.Displacement");
-
-            else if (Fields[IX_IY] == "Y - No Displacment" || Fields[IX_IY].ToUpper() == "X")
-                Ret.Append("ParamFlags.Index");
-
-            if (Fields[AssumeA].ToUpper() == "Y")
-            {
-                if (Ret.Length != 0)
-                    Ret.Append(" | ");
-
-                Ret.Append("ParamFlags.AssumeA");
-            }
-
-            if (Ret.Length != 0)
-                return Ret.ToString();
-
-            return "ParamFlags.None";
         }
 
         static string ConvertParams(string Param, OpcodeEntry Entry)
@@ -704,12 +447,13 @@ namespace TableBuilder
         {
             string Base = "Register";
             if (CommandID)
-                Base = "CommandID";
+                Base = "CommandID";            
 
+            Param = Param.ToUpper().Trim();
+            
             if (Param.Length == 0)
                 return Base + ".None";
 
-            Param = Param.ToUpper();
             if (Param[0] == '(')
             {
                 Param = Param.Substring(1, Param.Length - 2);

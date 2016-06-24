@@ -181,18 +181,10 @@ namespace ZASM
         {
             if (CurrentToken.IsString())
             {
-                if (CurrentToken.Value.Count <= 2)
+                if (CurrentToken.Value.Count == 1)
                 {
                     CurrentToken.Type = TokenType.Result;
-
-                    if (CurrentToken.Value.Count >= 1)
-                        CurrentToken.NumaricValue = CurrentToken.Value[0];
-
-                    if (CurrentToken.Value.Count >= 2)
-                    {
-                        CurrentToken.NumaricValue = CurrentToken.NumaricValue << 8;
-                        CurrentToken.NumaricValue += CurrentToken.Value[1];
-                    }
+                    CurrentToken.NumaricValue = CurrentToken.Value[0];
                 }
             }
             else if (CurrentToken.IsIdentifier())
@@ -444,7 +436,7 @@ namespace ZASM
                 }
                 else if(Current.Type == TokenType.Result)
                 {
-                    TempStack.Push(Current.NumaricValue.ToString());
+                    TempStack.Push(string.Format("0{0:X}h", (short)Current.NumaricValue));
                 }
                 else
                 {

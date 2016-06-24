@@ -23,6 +23,7 @@ namespace ZASM
         ValueMissing,
         MissingGroupSymbol,
         DataTypeMisMatch,
+        SyntaxError,
 
 
         UndefinedSymbol,

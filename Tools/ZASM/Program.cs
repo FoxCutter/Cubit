@@ -14,7 +14,7 @@ namespace ZASM
         InternalDisplacement, //  Same as above, but the displacment is inside the opcode
     }
 
-    struct OpcodeEncoding
+    class OpcodeEncoding
     {
         public byte[] Encoding;
 
@@ -22,6 +22,8 @@ namespace ZASM
         public ParameterType Param1Type;
         public CommandID Param2;
         public ParameterType Param2Type;
+        public CommandID Param3;
+        public ParameterType Param3Type;
 
         public ParamFlags Flags;
 

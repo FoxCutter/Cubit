@@ -39,7 +39,7 @@ namespace ZASM
             // Validate all the symbols we found were defined.
             SymbolCheck();
             
-            // Run though the parsed input, validating lables, setting data and the like
+            // Resolve anything that needs to be resolved
             PhaseTwo();
             
             //foreach (SymbolTableEntry Entry in _SymbolTable)
@@ -86,6 +86,20 @@ namespace ZASM
                         Console.Write(Command.ParamString(x));
                     }
                 }
+                else if (Entry.Type == ObjectType.Data)
+                {
+                    DataInformation Command = (DataInformation)Entry;
+
+                    Console.Write("{0,-6} ", Command.DataType.ToString());
+
+                    for (int x = 0; x < Command.Params.Count; x++)
+                    {
+                        if (x != 0)
+                            Console.Write(", ");
+
+                        Console.Write(Command.ParamString(x));
+                    }
+                }
                 else if (Entry.Type == ObjectType.Opcode)
                 {
                     OpcodeInformation Opcode = (OpcodeInformation)Entry;
@@ -100,6 +114,7 @@ namespace ZASM
                         Console.Write(Opcode.ParamString(x));
                     }
                 }
+
 
                 Console.WriteLine();
             }
@@ -127,14 +142,22 @@ namespace ZASM
         
         ObjectInformation ParseLabel(Token LableToken)
         {
-            SymbolTableEntry Symbol = _SymbolTable[LableToken.ToString()];
-           
+            SymbolTableEntry Symbol = _SymbolTable[LableToken.ToString()];           
             LabelInformation NewLabel = new LabelInformation(Symbol, LableToken.Location);
+
+            if (Symbol.Type == SymbolType.Undefined)
+            {
+                Symbol.DefinedLine = NewLabel;
+                Symbol.Type = SymbolType.Address;
+            }
+            else
+            {
+                MessageLog.Log.Add("Parser", LableToken.Location, MessageCode.SyntaxError, string.Format("{0} redefined", Symbol.Symbol));
+            }
+
             NewLabel.Address = _CurrentAddress;
 
             Symbol.LineIDs.Add(NewLabel);
-            Symbol.DefinedLine = NewLabel;
-            Symbol.Type = SymbolType.Address;
 
             // If the label has a token, eat it.
             if (_Tokenizer.PeekNextToken().Type == TokenType.Colon)
@@ -312,6 +335,7 @@ namespace ZASM
         ObjectInformation ParseOpcode(Token OpcodeToken)
         {
             OpcodeInformation Opcode = new OpcodeInformation(OpcodeToken.CommandID, OpcodeToken.Location);
+            Opcode.Address = _CurrentAddress;
 
             if (!_Tokenizer.PeekNextToken().IsBreak() && _Tokenizer.PeekNextToken().Type != TokenType.Comment && !_Tokenizer.PeekNextToken().IsEnd())
             {
@@ -375,11 +399,9 @@ namespace ZASM
             }
 
             Opcode.Encoding = FindOpcode(Opcode);
-            Opcode.Length = Opcode.GetOpcodeLength();
+            //Opcode.Length = Opcode.GetOpcodeLength();
+            _CurrentAddress += Opcode.GetOpcodeLength();
 
-            if(Opcode.Encoding.Encoding != null)
-                _CurrentAddress += Opcode.Encoding.Encoding.Length;
-            
             return Opcode;
         }
 
@@ -404,12 +426,27 @@ namespace ZASM
                 }
             }
 
+            switch (NewCommand.Command)
+            {
+                case CommandID.i8080:
+                    break;
+
+                case CommandID.Z80:
+                    break;
+
+                case CommandID.ORG:
+                    _CurrentAddress = NewCommand.Params[0].Value.NumaricValue;
+                    break;
+            }
+
             return NewCommand;
         }
 
         ObjectInformation ParseData(Token CommandToken)
         {
             DataInformation NewData = new DataInformation(CommandToken.CommandID, CommandToken.Location);
+
+            NewData.Address = _CurrentAddress;
 
             if (!_Tokenizer.PeekNextToken().IsBreak() && _Tokenizer.PeekNextToken().Type != TokenType.Comment)
             {
@@ -428,42 +465,9 @@ namespace ZASM
                 }
             }
 
-            
-            //foreach (ParameterInformation Param in NewCommand.Params)
-            //{
-            //    if (Param.Simplify())
-            //    {
-            //        if (Param.Value.Type == TokenType.String)
-            //        {
-            //            if (CommandToken.CommandID == CommandID.WORD)
-            //            {
-            //                MessageLog.Log.Add("Parser", CommandToken.Location, MessageCode.DataTypeMisMatch, "Strings can only be used with DB, BYTE or DC command.");
-
-            //                NewCommand.Error = true;
-            //                return NewCommand;
-            //            }
-            //            else
-            //            {
-            //                byte[] Data = Encoding.ASCII.GetBytes(Param.Value.Value.ToArray());
-            //                if (CommandToken.CommandID == CommandID.DC)
-            //                    Data[Data.Length - 1] |= 0x80;
-
-            //                NewCode.Code.AddRange(Data);
-            //            }
-            //        }
-            //        else if (Param.Value.Type == TokenType.Result)
-            //        {
-            //            NewCode.Code.Add((byte)Param.Value.NumaricValue);
-            //            if (CommandToken.CommandID == CommandID.WORD)
-            //                NewCode.Code.Add((byte)((Param.Value.NumaricValue & 0xFF00) >> 8));
-
-            //        }
-            //        else
-            //        {
-            //            return NewCode;
-            //        }
-            //    }
-            //}
+            _CurrentAddress += NewData.GetDataLength();
+            //NewData.Length = NewData.GetDataLength();
+            //_CurrentAddress += NewData.Length;
 
             return NewData;
         }
@@ -473,9 +477,17 @@ namespace ZASM
         {
             SymbolTableEntry Symbol = _SymbolTable[ValueToken.ToString()];
             ValueInformation NewValue = new ValueInformation(Symbol, ValueToken.Location);
+            
+            if (Symbol.Type == SymbolType.Undefined)
+            {
+                Symbol.Type = SymbolType.Value;
+                Symbol.DefinedLine = NewValue;
+            }
+            else
+            {
+                
+            }
 
-            Symbol.Type = SymbolType.Value;
-            Symbol.DefinedLine = NewValue;
             Symbol.LineIDs.Add(NewValue);
 
             // Eat the command, we know what it should be already
@@ -519,6 +531,7 @@ namespace ZASM
 
                 else if (CurrentToken.Type == TokenType.Identifier)
                 {
+                    bool Error = false;
                     if (_Tokenizer.PeekNextToken().Type == TokenType.Colon)
                     {
                         CurrentObject = ParseLabel(CurrentToken);
@@ -536,14 +549,18 @@ namespace ZASM
                         }
                         else
                         {
-                            // Error
-                            MessageLog.Log.Add("", CurrentToken.Location, MessageCode.UnexpectedSymbol, "");
+                            Error = true;
                         }
                     }
                     else
                     {
-                        // Error
-                        MessageLog.Log.Add("", CurrentToken.Location, MessageCode.UnexpectedSymbol, "");
+                        Error = true;
+                    }
+                    
+                    if(Error)
+                    {
+                        CurrentToken.Type = TokenType.Error;
+                        MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.SyntaxError, string.Format("Unable to define label {0}, missing colon", CurrentToken.ToString()));
                     }
                 }
                 else if (CurrentToken.Type == TokenType.Opcode)
@@ -553,7 +570,7 @@ namespace ZASM
                 else if (CurrentToken.Type == TokenType.Command)
                 {
                     if (CurrentToken.IsData())
-                        CurrentObject = ParseCommand(CurrentToken);
+                        CurrentObject = ParseData(CurrentToken);
                     else
                         CurrentObject = ParseCommand(CurrentToken);
                 }
@@ -564,20 +581,22 @@ namespace ZASM
                 }
 
                 // Resync if we have an error
-                if (CurrentObject != null && CurrentObject.Error)
-                {
-                    _Tokenizer.FlushLine();
-                }
-                else if (CurrentToken.Type == TokenType.Error)
+                if (CurrentToken.Type == TokenType.Error)
                 {
                     CurrentObject = null;
                     _Tokenizer.FlushLine();
                 }
+                else
+                {
+                    if (CurrentObject != null)
+                    {
+                        _ObjectData.Add(CurrentObject);
+                        if (CurrentObject.Error)
+                            _Tokenizer.FlushLine();
+                    }
 
-                if (CurrentObject != null)
-                    _ObjectData.Add(CurrentObject);
-
-                CurrentObject = null;
+                    CurrentObject = null;
+                }
 
             }
 
@@ -586,6 +605,21 @@ namespace ZASM
 
         bool PhaseTwo()
         {
+            foreach (ObjectInformation Entry in _ObjectData)
+            {
+                if (Entry.Type == ObjectType.Opcode)
+                {
+                    OpcodeInformation OpEntry = (OpcodeInformation)Entry;
+
+                    foreach (ParameterInformation Param in OpEntry.Params)
+                    {
+                        if (Param.Type != ParameterType.RegisterDisplacedPtr && !Param.Simplify())
+                        {
+                            MessageLog.Log.Add("Parser", OpEntry.Location, MessageCode.SyntaxError, "Invalid statemnt");
+                        }
+                    }
+                }
+            }
             //List<LineInformation> PhaseTwoB = new List<LineInformation>();
 
             //foreach (LineInformation Entry in _LineData)
@@ -620,7 +654,7 @@ namespace ZASM
             OpcodeInformation OpcodeObject = (OpcodeInformation)CurrentObject;
 
             // Search based on the Command ID
-            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData.Where(e => e.Function == OpcodeObject.Opcode);
+            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData[OpcodeObject.Opcode];
 
             if (Opcodes.Count() == 0)
             {
@@ -675,26 +709,26 @@ namespace ZASM
                 }
             }
 
-            //if (OpcodeObject.Params.Count >= 3)
-            //{
-            //    ParameterInformation CurrentParam = OpcodeObject.Params[2];
-            //    {
-            //        Opcodes = Opcodes.Where(e => (e.Param3Type == CurrentParam.Type));
-            //    }
+            if (OpcodeObject.Params.Count >= 3)
+            {
+                ParameterInformation CurrentParam = OpcodeObject.Params[2];
+                {
+                    Opcodes = Opcodes.Where(e => (e.Param3Type == CurrentParam.Type));
+                }
 
-            //    CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
+                CommandID CurrentCommand = SelectCommandToMatch(CurrentParam);
 
-            //    if (CurrentCommand != CommandID.None)
-            //        Opcodes = Opcodes.Where(e => e.Param3 == CurrentCommand);
+                if (CurrentCommand != CommandID.None)
+                    Opcodes = Opcodes.Where(e => e.Param3 == CurrentCommand);
 
-            //    if (Opcodes.Count() == 0)
-            //    {
-            //        MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, {2}, >{3}<", OpcodeObject.Opcode.ToString(), OpcodeObject.ParamString(0), OpcodeObject.ParamString(1), OpcodeObject.ParamString(2)));
+                if (Opcodes.Count() == 0)
+                {
+                    MessageLog.Log.Add("Parser", OpcodeObject.Location, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, {2}, >{3}<", OpcodeObject.Opcode.ToString(), OpcodeObject.ParamString(0), OpcodeObject.ParamString(1), OpcodeObject.ParamString(2)));
 
-            //        // Error, Parm2 is invalid
-            //        return default(OpcodeEncoding);
-            //    }
-            //} 
+                    // Error, Parm2 is invalid
+                    return default(OpcodeEncoding);
+                }
+            } 
             
             if (Opcodes.Count() > 1)
             {
