@@ -196,7 +196,7 @@ namespace ZASM
                     // ERROR!
                     MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UndefinedSymbol, CurrentToken.ToString());
                 }
-                else if (Symbol.Type == SymbolType.Undefined)
+                else if (Symbol.Type == SymbolType.Undefined || Symbol.Type == SymbolType.None)
                 {
                     // Value hasn't been defined yet, so we can't do any more to it.                    
                 }

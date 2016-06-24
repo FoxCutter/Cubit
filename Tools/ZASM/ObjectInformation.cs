@@ -61,6 +61,7 @@ namespace ZASM
     {
         public int Value;
         public ParameterInformation Params;
+        public bool Constant;
 
         public ValueInformation(SymbolTableEntry Symbol, TokenLocation Location = null)
             : base(Symbol, Location)
@@ -183,7 +184,7 @@ namespace ZASM
 
         public int GetOpcodeLength()
         {
-            if (Encoding.Function == CommandID.None)
+            if (Encoding == null || Encoding.Function == CommandID.None)
                 return 0;
 
             int Ret = Encoding.Encoding.Length;

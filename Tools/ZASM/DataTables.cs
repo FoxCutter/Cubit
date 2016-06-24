@@ -66,6 +66,7 @@ namespace ZASM
             // Psudo ops
             { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DC",	        CommandID.DC },         { "DS",	        CommandID.DEFS },
             { "EQU",        CommandID.EQU},         { "PROC",       CommandID.PROC},        { "ENDPROC",    CommandID.ENDPROC},     { "END",	    CommandID.END },        
+            { "DEFL",       CommandID.DEFL},         
 
             // Commands
             { ".BYTE",	    CommandID.BYTE },       { ".WORD",	    CommandID.WORD },
@@ -73,8 +74,9 @@ namespace ZASM
             { ".INCLUDE",   CommandID.INCLUDE},     { ".MESSAGE",   CommandID.MESSAGE},     { ".ERROR",     CommandID.ERROR},       { ".OPTION",    CommandID.OPTION},
             { ".ORG",       CommandID.ORG},         { ".IF",        CommandID.IF},          { ".ELSE",      CommandID.ELSE},        { ".ELSEIF",    CommandID.ELSEIF},
             { ".ENDIF",     CommandID.ENDIF},       { ".MACRO",     CommandID.MACRO},       { ".ENDMACRO",  CommandID.ENDMACRO},    { ".PROC",      CommandID.PROC},
-            { ".ENDPROC",   CommandID.ENDPROC},     { ".PHASE",     CommandID.PHASE},       { ".ENDPHASE",  CommandID.ENDPHASE},    { ".EQU",       CommandID.EQU},   
-            { ".DS",	    CommandID.DEFS },       { ".END",	    CommandID.END },        { ".Z80",       CommandID.Z80},         { ".8080",      CommandID.i8080},
+            { ".ENDPROC",   CommandID.ENDPROC},     { ".PHASE",     CommandID.PHASE},       { ".ENDPHASE",  CommandID.ENDPHASE},    { ".EQU",       CommandID.EQU},
+            { ".DEFL",      CommandID.DEFL},        { ".DS",	    CommandID.DEFS },       { ".END",	    CommandID.END },        { ".Z80",       CommandID.Z80},         
+            { ".8080",      CommandID.i8080},
         };
 
         public static TokenType[] CharacterData = new TokenType[]
@@ -145,6 +147,7 @@ namespace ZASM
             { MessageCode.MissingGroupSymbol, "Missing group"},
             { MessageCode.DataTypeMisMatch, "Datatype mismatch"},
             { MessageCode.SyntaxError, "Syntax Error"},
+            { MessageCode.SyntaxWarning, "Syntax Warning"},
             
         };
     }

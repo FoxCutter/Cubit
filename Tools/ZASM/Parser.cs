@@ -130,7 +130,7 @@ namespace ZASM
         void SymbolCheck()
         {
             // Flags any undefined symbols in symbol table
-            var list = _SymbolTable.Where(e => e.Type == SymbolType.Undefined);
+            var list = _SymbolTable.Where(e => e.Type == SymbolType.Undefined || e.Type == SymbolType.None);
             foreach (SymbolTableEntry Symbol in list)
             {
                 foreach (ObjectInformation Entry in Symbol.LineIDs)
@@ -145,7 +145,7 @@ namespace ZASM
             SymbolTableEntry Symbol = _SymbolTable[LableToken.ToString()];           
             LabelInformation NewLabel = new LabelInformation(Symbol, LableToken.Location);
 
-            if (Symbol.Type == SymbolType.Undefined)
+            if (Symbol.Type == SymbolType.None || Symbol.Type == SymbolType.Undefined)
             {
                 Symbol.DefinedLine = NewLabel;
                 Symbol.Type = SymbolType.Address;
@@ -196,6 +196,9 @@ namespace ZASM
                     if (CurrentToken.Type == TokenType.Identifier)
                     {
                         CurrentToken.Symbol = _SymbolTable[CurrentToken.ToString()];
+                        if (CurrentToken.Symbol.Type == SymbolType.None)
+                            CurrentToken.Symbol.Type = SymbolType.Undefined;
+
                         CurrentToken.Symbol.LineIDs.Add(CurrentObject);
                     }
 
@@ -474,25 +477,15 @@ namespace ZASM
         
        
         ObjectInformation ParseValue(Token ValueToken)
-        {
+        {                        
             SymbolTableEntry Symbol = _SymbolTable[ValueToken.ToString()];
             ValueInformation NewValue = new ValueInformation(Symbol, ValueToken.Location);
-            
-            if (Symbol.Type == SymbolType.Undefined)
-            {
-                Symbol.Type = SymbolType.Value;
-                Symbol.DefinedLine = NewValue;
-            }
-            else
-            {
-                
-            }
-
             Symbol.LineIDs.Add(NewValue);
 
-            // Eat the command, we know what it should be already
-            _Tokenizer.NextToken();
-
+            // Get the command
+            Token Command = _Tokenizer.NextToken();
+            
+            // Read the paramters
             NewValue.Params = ParseParams(NewValue);
 
             if (NewValue.Params.Count == 0)
@@ -508,6 +501,40 @@ namespace ZASM
                 }
             }
 
+            if (Symbol.Type == SymbolType.None)
+            {
+                // This is the first time this symbol has been referenced
+                Symbol.Type = SymbolType.Value;
+                Symbol.DefinedLine = NewValue;
+                NewValue.Constant = Command.CommandID == CommandID.EQU;
+            }
+            else if (Symbol.Type == SymbolType.Undefined)
+            {
+                // Been referenced before, but not defined
+                if (Command.CommandID == CommandID.EQU)
+                {
+                    Symbol.Type = SymbolType.Value;
+                    Symbol.DefinedLine = NewValue;
+                    NewValue.Constant = true;
+                }
+                else
+                {
+                    MessageLog.Log.Add("Parser", Symbol.DefinedLine.Location, MessageCode.SyntaxError, string.Format("{0} has to be defined before use", Symbol.Symbol));
+                    NewValue.Error = true;
+                }
+            }
+            else
+            {
+                // Redefining the value                
+                ValueInformation OldValue = (ValueInformation)Symbol.DefinedLine;
+                if (OldValue.Constant)
+                {
+                    // We can't redefine a value created with EQU
+                    MessageLog.Log.Add("Parser", ValueToken.Location, MessageCode.SyntaxWarning, string.Format("Can't redefine the value of {0}", Symbol.Symbol));
+                    NewValue.Error = true;
+                }
+            }            
+            
             return NewValue;
         }
 
@@ -543,7 +570,7 @@ namespace ZASM
                     }
                     else if (_Tokenizer.PeekNextToken().Type == TokenType.Command)
                     {
-                        if (_Tokenizer.PeekNextToken().CommandID == CommandID.EQU)
+                        if (_Tokenizer.PeekNextToken().CommandID == CommandID.EQU || _Tokenizer.PeekNextToken().CommandID == CommandID.DEFL)
                         {
                             CurrentObject = ParseValue(CurrentToken);
                         }

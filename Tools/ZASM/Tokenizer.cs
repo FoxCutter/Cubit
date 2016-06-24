@@ -136,7 +136,7 @@ namespace ZASM
         // Commands
         BYTE, DC, DEFS, ELSE, ELSEIF, END, ENDIF, ENDMACRO,
         ENDPHASE, ENDPROC, ERROR, IF, IFDEF, IFNDEF, INCLUDE, MACRO,
-        MESSAGE, OPTION, ORG, PHASE, PROC, WORD, EQU, Z80, i8080,
+        MESSAGE, OPTION, ORG, PHASE, PROC, WORD, EQU, DEFL, Z80, i8080,
 
         CommandMax,
 
@@ -361,28 +361,33 @@ namespace ZASM
 
         public void FlushLine()
         {
-            while (true)
+            if (PeekNextToken().Type != TokenType.LineBreak)
             {
-                TokenType Current = PeekNextTokenType();
-                if (Current == TokenType.End)
-                    break;
 
-                else if (Current == TokenType.LineBreak)
+                while (true)
                 {
-                    // Handle CR/LF
-                    if (ReadNextCharacter() == '\r' && PeekNextCharacter() == '\n')
-                        ReadNextCharacter();
+                    TokenType Current = PeekNextTokenType();
+                    if (Current == TokenType.End)
+                        break;
 
-                    _CurrentLine++;
-                    _CurrentCharacter = 1;
-                    break;
-                }
-                else
-                {                    
-                    ReadNextCharacter();
+                    else if (Current == TokenType.LineBreak)
+                    {
+                        // Handle CR/LF
+                        if (ReadNextCharacter() == '\r' && PeekNextCharacter() == '\n')
+                            ReadNextCharacter();
+
+                        _CurrentLine++;
+                        _CurrentCharacter = 1;
+                        break;
+                    }
+                    else
+                    {
+                        ReadNextCharacter();
+                    }
                 }
             }
 
+            NextToken();
         }
 
         public Token PeekNextToken()

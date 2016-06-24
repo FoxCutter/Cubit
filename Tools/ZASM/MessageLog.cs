@@ -14,6 +14,8 @@ namespace ZASM
         NoError                     = 0x0000,        
 
         Warning                     = 0x4000,
+        SyntaxWarning,
+
 
         Error                       = 0x8000,
         InvalidNumberToken          = Error,

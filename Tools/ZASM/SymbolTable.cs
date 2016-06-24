@@ -48,7 +48,7 @@ namespace ZASM
             {
                 if (!NameList.ContainsKey(Name.ToUpper()))
                 {
-                    NameList[Name.ToUpper()] = new SymbolTableEntry(Name, SymbolType.Undefined);
+                    NameList[Name.ToUpper()] = new SymbolTableEntry(Name, SymbolType.None);
                 }
 
                 return NameList[Name.ToUpper()];
