@@ -22,6 +22,7 @@ namespace ZASM
         Register,
         Flag,
         Number,
+        CurrentPos,
         Result,
         Symbol,
         String,
@@ -123,7 +124,7 @@ namespace ZASM
 
         public bool IsValue()
         {
-            return Type == TokenType.Number || Type == TokenType.Identifier || Type == TokenType.String || Type == TokenType.Label || Type == TokenType.ParenthesesRight || Type == TokenType.BracketRight;
+            return Type == TokenType.CurrentPos || Type == TokenType.Number || Type == TokenType.Identifier || Type == TokenType.String || Type == TokenType.Label || Type == TokenType.ParenthesesRight || Type == TokenType.BracketRight;
         }
 
         public bool IsData()

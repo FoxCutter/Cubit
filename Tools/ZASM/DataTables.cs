@@ -94,7 +94,7 @@ namespace ZASM
             TokenType.WhiteSpace,   // Space
             
             // !"#$% &'()* +,-./
-            TokenType.LogicalNot, TokenType.String, TokenType.Symbol, TokenType.Number, TokenType.Remainder,
+            TokenType.LogicalNot, TokenType.String, TokenType.Symbol, TokenType.CurrentPos, TokenType.Remainder,
             TokenType.BitwiseAnd, TokenType.String, TokenType.ParenthesesLeft, TokenType.ParenthesesRight, TokenType.Multiplication,
             TokenType.Plus, TokenType.Comma, TokenType.Minus, TokenType.Period, TokenType.Division,
             

@@ -395,7 +395,7 @@ namespace ZASM
                     }
                 }
 
-                Param.Simplify();
+                Param.Simplify(_CurrentAddress);
 
                 if (OpcodeToken.IsEncoded() && Param.Type == ParameterType.Immediate)
                     Param.Type = ParameterType.Encoded;
@@ -418,7 +418,7 @@ namespace ZASM
                 while (!Done)
                 {
                     ParameterInformation Params = ParseParams(NewCommand);
-                    Params.Simplify();
+                    Params.Simplify(_CurrentAddress);
 
                     NewCommand.Params.Add(Params);
 
@@ -457,7 +457,7 @@ namespace ZASM
                 while (!Done)
                 {
                     ParameterInformation Params = ParseParams(NewData);
-                    Params.Simplify();
+                    Params.Simplify(_CurrentAddress);
 
                     NewData.Params.Add(Params);
 
@@ -495,7 +495,7 @@ namespace ZASM
             }
             else
             {
-                if (NewValue.Params.Simplify())
+                if (NewValue.Params.Simplify(_CurrentAddress))
                 {
                     NewValue.Value = NewValue.Params.Value.NumaricValue;
                 }
@@ -640,7 +640,7 @@ namespace ZASM
 
                     foreach (ParameterInformation Param in OpEntry.Params)
                     {
-                        if (Param.Type != ParameterType.RegisterDisplacedPtr && !Param.Simplify())
+                        if (Param.Type != ParameterType.RegisterDisplacedPtr && !Param.Simplify(_CurrentAddress))
                         {
                             MessageLog.Log.Add("Parser", OpEntry.Location, MessageCode.SyntaxError, "Invalid statemnt");
                         }

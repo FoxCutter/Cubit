@@ -227,9 +227,14 @@ namespace ZASM
                 TempData.RemoveRange(0, 2);    
                 Base = 16;
             }
+            else if (TempData[0] == '$')
+            {
+                TempData.RemoveAt(0);
+                Base = 16;
+            }
             else if (TypeChar == 'H')   // Hex
             {
-                TempData.RemoveAt(TempData.Count - 1);    
+                TempData.RemoveAt(TempData.Count - 1);
                 Base = 16;
             }
             else if (TypeChar == 'O')   // Octal
@@ -237,7 +242,7 @@ namespace ZASM
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 8;
             }
-            else if (TypeChar == 'D')   // Decmila
+            else if (TypeChar == 'D')   // Decimal
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 10;
@@ -527,6 +532,12 @@ namespace ZASM
                 case TokenType.Minus:
                     if (!_LastToken.IsValue() && _LastToken.CommandID != CommandID.IX && _LastToken.CommandID != CommandID.IY)
                         Ret.Type = TokenType.UnarrayMinus;
+                    break;
+
+                case TokenType.CurrentPos:
+                    if (PeekNextTokenType() == TokenType.Number)
+                        Success = ReadNumber(ref Ret);
+                    
                     break;
 
                 default:

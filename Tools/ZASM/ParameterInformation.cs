@@ -111,7 +111,7 @@ namespace ZASM
 
         }
         
-        public bool Simplify()
+        public bool Simplify(int CurrentAddress)
         {
             Stack<Token> TempStack = new Stack<Token>();
             int Pos = 0;
@@ -158,7 +158,7 @@ namespace ZASM
                 }
                 else
                 {
-                    TempStack.Push(ConvertToken(Current));
+                    TempStack.Push(ConvertToken(Current, CurrentAddress));
                 }
             }
 
@@ -177,7 +177,7 @@ namespace ZASM
             return TokenList.Count == 1;
         }
 
-        Token ConvertToken(Token CurrentToken)
+        Token ConvertToken(Token CurrentToken, int CurrentAddress)
         {
             if (CurrentToken.IsString())
             {
@@ -218,6 +218,11 @@ namespace ZASM
             else if (CurrentToken.Type == TokenType.Number)
             {
                 CurrentToken.Type = TokenType.Result;
+            }
+            else if (CurrentToken.Type == TokenType.CurrentPos)
+            {
+                CurrentToken.Type = TokenType.Result;
+                CurrentToken.NumaricValue = CurrentAddress;
             }
             
             return CurrentToken;
