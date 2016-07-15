@@ -1,27 +1,49 @@
 ; Z80 Monitor program for the CUBIT computer. Initial resides in ROM at C000, first page of memory
 ; (00h - ffh) are used for system settings and Monitor stack.
-
-
+;
+;
 ; Memory Layout
 ;
-; -------------------
-; | 0000-1FFF ROM   |
-; | 2000-20FF Data  |
-; | 2100-21FF Stack |
-; | 2200-22FF IVT   |
-; | 2300-FFFF RAM   |
-; -------------------
-
-
+; --------------------
+; | 0000-00FF Page 0 |
+; | 0100-DEFF RAM    |
+; | DF00-DFFF IVT    |
+; | E000-FFFF ROM    |
+; --------------------
+;
+; Calling Convention
+;  Registers:
+;	A:	Not Preserved
+;	B & C:	Not Preserved
+;	D & E:	Preserved
+;
+;	HL:	Memory address, will point to end of buffer on return
+;	IX:	Preserved
+;	IY:	Preserved
+;
+;	B	Byte Input & Return Value
+;	BC	Word Input & Return Value
+;
 ; ----------------------------------------------------------------
 ;                 Defines
 ; ----------------------------------------------------------------
 
-DATA_BASE	equ	02000h
-STACK_BOTTOM	equ	02100h
-STACK_TOP	equ	02200h
-IVT		equ	02200h
-BOTTOM_OF_RAM	equ	02300h
+RESET_VECTOR 	equ 	00000h
+RESET_VECTOR_1 	equ 	00008h
+RESET_VECTOR_2 	equ 	00010h
+RESET_VECTOR_3 	equ 	00018h
+RESET_VECTOR_4 	equ 	00020h
+RESET_VECTOR_5 	equ 	00028h
+RESET_VECTOR_6 	equ 	00030h
+RESET_VECTOR_7 	equ 	00038h
+STRATCH_SPACE   equ	00080h
+NMI_VECTOR	equ	00066h
+RAM_BASE	equ	00100h
+BOOT_LOCATION	equ	04C00h
+IVT		equ	0DF00h
+TOP_OF_STACK	equ	0DF00h
+ROM_BASE	equ	0E000h
+
 
 UART		equ	010h
 MEMORY_PORT	equ	0FFh
@@ -49,72 +71,400 @@ CRTLC		equ	003h
 ; ----------------------------------------------------------------
 
 
-PSTR macro address
+_PSTR macro address
 	LD	HL, Address
 	CALL	PRINTSTR
 endm
 
-PCHAR macro char
+_PCHAR macro char
 	CALL	PRINT_INLINE_CHAR
 	db	char
 endm
 
-ENTER macro
+_ENTER macro
 	PUSH	IY
 	LD	IY, 0
 	ADD	IY, SP
 endm
 
-LEAVE macro
+_LEAVE macro
 	LD	SP, IY
 	POP 	IY
 endm
 
 	.Z80	
 
+
+	.ORG ROM_BASE
+
+DEFAULT_INT:
+	EI
+	RETI
+
+
+
 ; ----------------------------------------------------------------
-;                    Vertor Table
+;                    Utility Functions
 ; ----------------------------------------------------------------
-
-	.ORG 	000h
-	JP 	START_UP
-
-	.ORG 	008H
-	JP	RESET
-
-	.ORG 	010H
-	jp	APIRouter
-	
-	.ORG 	018H
-	RET
-
-	.ORG 	020H
-	RET
-
-	.ORG 	028H
-	RET
-
-	.ORG 	030H
-	RET
-
-	.ORG 	038H
-	RET
-
-; NMI vector	
-	.ORG 	066H
-	RETN
 
 ; ---------------
-;	Default INT handler, does nothing but enable ints and return
+;	Prints a new line
+; Input:
+;	Nothing
+; Return:
+; 	Nothing
+NEWLINE:
+	_PCHAR	CR
+	_PCHAR	LF
+	RET
+
+; ---------------
+;	Prints a null terminated string
+; Input:
+;	HL = String to print
+; Return:
+; 	Nothing
+PRINTSTR:
+	LD 	A, (HL)
+	INC 	HL
+	CP 	0
+	JP 	Z, .EXIT
+	LD 	C, A
+	CALL 	CHAROUT
+	JP 	PRINTSTR
+
+.EXIT
+	RET
+
+; ---------------
+;	Prints the next character in the byte stream after the call
 ; Input:
 ;	Nothing
 ; Return:
 ; 	Nothing
 
-DefaultInt:
-	JP	(IY)
+PRINT_INLINE_CHAR:		
+	EX 	(SP), HL	; Swap HL and the top of the stack (which is the return address)	
+XX:
+	LD 	B, (HL)		; Load the byte at the return address into C
+	CALL 	CHAROUT		; Print the char
+	INC 	HL		; Inc past the byte
+
+	EX 	(SP), HL	; Restore the adjusted return address to the top of the stack
+
+	RET
+
+; ---------------
+;	Prints the string, which follows in the byte stream after the call
+;       Ends after printing a character with the high byte set.
+; Input:
+;	Nothing
+; Return:
+; 	Nothing
+;
+;PRINT_INLINE_STR:
+;	EX 	(SP), HL	; Swap HL and the top of the stack (which is the return address)	
+;
+;.Loop
+;	LD 	A, (HL)		; Load the byte at the return address into A
+;	INC 	HL		; Inc past the byte
+;
+;	PUSH 	AF		; Save the data on the stack
+;	AND 	A, 07Fh		; Mask off the high bit
+;	LD 	B, A		
+;	CALL 	CHAROUT		; Print the char
+;
+;	POP 	AF		; Restore the data
+;	AND 	A, 080h		; test the high bit	
+;	JP 	Z, .Loop	; If it's clear, loop
+;	
+;	EX 	(SP), HL	; Restore the adjusted return address to the top of the stack
+;
+;	RET
+	
+; ----------------------------------------------------------------
+;                    Character I/O
+; ----------------------------------------------------------------
+
+; ---------------
+; 	Prints a character to the UART
+; Input:
+;	B = Character to send to the port
+; Return:
+; 	Nothing
+
+CHAROUT:	
+	IN	UART + 5	; read console status
+	AND	40h		; if not ready
+	JP	Z, CHAROUT	; keep waiting
+	LD	A, B		; get character
+	OUT	UART		; and print it
+	RET
+
+; ---------------
+;	Tries to read a charater from the UART.
+; Input:
+;	Nothing
+; Return:
+; 	B = Input Character
+; 	Carry Flag: Set = Has Input, Clear = No input
+CHARIN:	
+	IN	UART + 5	; read console status
+	AND	01h		; check if character available
+	RET	Z		; return if not with carry clear
+	IN	UART		; get character
+	LD	B, A		; Store the value
+	SCF			; and set carry flag
+	RET
+	
+
+; ----------------------------------------------------------------
+;                    Disk I/O
+; ----------------------------------------------------------------
+
+
+; ----------------------------------------------------------------
+;                    Monitor
+; ----------------------------------------------------------------
+
+; ---------------
+;	Reads a string from input
+; Input:
+;	HL = Input Buffer
+;	B = Byte count of Buffer
+;
+; Return:
+;	B = Buffer space remaining
+;	C = Character Count
+;	HL = Address of last byte of string
+;	Zero Flag: Set if no Data
+;	
+; Varables:
+;	HL = Where to store the next char
+;	B = Input Char
+;	D = Count of characters
+;	E = Max Length
+
+
+READSTR:
+	PUSH	DE
+
+	LD	(HL), 0		; Make sure we are always null terminated
+	LD	D, 0
+	LD	E, B
+
+.INPUT		
+	CALL 	CHARIN		; Loop until we get a charater
+	JP 	NC, .INPUT	
+	LD	A, B
+
+	CP 	A, LF		; Process the input
+	JP 	Z, .EXIT
+	CP 	A, CR		; Process the input
+	JP 	Z, .EXIT
+
+	CP 	A, BS		
+	JP 	Z,.BACKSPACE
+
+	CP	A, SPC
+	JP	C, .BELL	; If it's a special character ring the bell
+
+	LD	A, E		; Check to see if the buffer is full
+	CP	A, D
+	JP	Z, .BELL
+	
+	LD	(HL), C		; Save the charater
+	INC	HL
+	LD	(HL), 0		; Make sure it's NULL terminated
+	INC	D
+
+	CALL 	CHAROUT		; Echo the charater
+	JP	.INPUT		; Loop
+
+.BACKSPACE:
+	LD	A, D		; Check to see if the buffer is empty
+	CP	0
+	JP	Z, .BELL	
+	
+	DEC	HL		; Delete the last character
+	LD	(HL), 0		
+	DEC	D
+	
+	LD	B, BS		; Backspace
+	CALL 	CHAROUT
+	LD	B, SPC		; Space
+	CALL 	CHAROUT
+	LD	B, BS		
+	CALL 	CHAROUT		; Backspace
+		
+	JP	.INPUT		; Loop
+
+.BELL:
+	LD	B, BEL
+	CALL 	CHAROUT
+	JP	.INPUT		; Loop
+
+.EXIT
+	CALL	NEWLINE
+
+	; Save the byte count
+	LD	C, D
+
+	; Work out the Buffer size remaning
+	LD	A, E
+	SUB	D
+	LD	B, A
+	
+
+	; Set the zero flag
+	LD	A, D
+	CP	0
+	
+	POP 	DE	
+	RET
+
+; ---------------------------------------------------
+; Constants
+; ---------------------------------------------------
+SPLASH:		db	CR, LF
+		db	"   Z80 System Monitor", CR, LF
+		db	"   Version 00.01", CR, LF, 0
+
+HELP:		db	" E: Examine [Address] [Length]  N: Examine Next", CR, LF	
+		db	" D: Deposit (Address) (Value)   X: Deposit Next (Value)", CR, LF	
+		db	" I: Read Port (Port)            O: Write Port (Port) (Value)", CR, LF	
+		db	" L: Load Hex                    G: Download Hex (Start) [End]", CR, LF
+		db	0
+		
+PROMPT: 	db	">> ",0
+
+
+MONITOR_ENTRY:
+	LD	SP, TOP_OF_STACK	; Rset the stack
+	_PSTR	SPLASH
+
+MONITOR_LOOP:	
+	CALL	NEWLINE
+	_PSTR	PROMPT
+
+	; Read the input
+	LD	HL, RAM_BASE
+	LD	B, 80
+	CALL	READSTR
+
+	; If it's blank just loop again
+	JMP	Z, MONITOR_LOOP
+	
+	; process the input
+	
+	JMP	MONITOR_LOOP
+
+; ----------------------------------------------------------------
+;                    Start up Code
+; ----------------------------------------------------------------
+
+
+; ---------------
+;	 Initializes a 16550 UART to 9600 N,8,1
+; Input:
+;	Nothing
+; Return:
+; 	Nothing
+
+COMINT: 			
+	LD 	A, 0		; Disable all Interrupts
+	OUT 	(UART + 1), A
+
+	LD 	A, 080h		; Enable the DLAB
+	OUT 	(UART + 3), A
+	
+	LD 	A, 00Ch		; 9600 BAUD (lo)
+	OUT 	(UART + 0), A
+	
+	LD 	A, 000h		; 9600 BAUD (hi)
+	OUT 	(UART + 1), A
+	
+	LD 	A, 003h		; Disable DLAB and set N,8,1
+	OUT 	(UART + 3), A
+	
+	LD 	A, 07h		; Enable and clear the FIFO
+	OUT 	(UART + 2), A
+	
+	LD 	A, 03h		; Enable RTS/SDR
+	OUT 	(UART + 4), A
+	RET
+	
+; ---------------
+;	 Set up the system
+
+
+RESET:	
+	LD	HL, RESET_VECTOR	; Check the reset vector
+	LD	A, (HL)
+	CP	A, 0C3h			; If it's not a jump
+	JMP	NZ, SETUP		; Goto setup
+	
+	RST 	0h			; Otherwise call the vector
+	
+
+SETUP:
+	; Set up the system.
+	LD	SP, TOP_OF_STACK	; Set up the Stack
+	
+	; Set up the reset vector
+	LD	HL, RESET_VECTOR
+	LD	DE, MONITOR_ENTRY
+	LD	(HL), 0C3h
+	INC 	HL
+	LD	(HL), E
+	INC 	HL
+	LD	(HL), D
+	
+	; Set up the NMI
+	LD	HL, NMI_VECTOR
+	LD	(HL), 0EDh
+	INC	HL
+	LD	(HL), 045h	
+	
+	
+	; Set up the IVT
+	LD	HL, IVT
+	LD 	B, 128
+	LD	DE, DEFAULT_INT
+.Loop:	
+	LD 	(HL), E
+	INC 	HL
+	LD 	(HL), D
+	INC 	HL
+	DEC 	B
+	JR 	NZ, .Loop
+	
+
+	LD	A, high IVT
+	LD	I, A
+	IM	2
+	
+	; Set up the comport
+	CALL 	COMINT
+	
+	
+	; Ints on
 	EI
-	RETI
+
+
+; ---------------	
+;	Start up entry point
+
+	.ORG 0FFF0h
+START_UP:
+	jmp RESET
+	db 000h, 000h
+	db '07/15/16', 0
+	db 000h, 000h
+	
+
+	.END START_UP
+
 
 	
 ; ----------------------------------------------------------------
@@ -153,322 +503,7 @@ APIRouter:
 	SCF	
 	RET
 
-; ---------------
-; 	Prints a character to the UART
-; Input:
-;	C = Character to send to the port
-; Return:
-; 	Nothing
-
-CHAROUT:	
-	IN	UART + 5	; read console status
-	AND	40h		; if not ready
-	JP	Z,CHAROUT	; keep waiting
-	LD	A,C		; get character
-	OUT	UART		; and print it
-	RET
-
-; ---------------
-;	Tries to read a charater from the UART.
-; Input:
-;	Nothing
-; Return:
-; 	C = Input Character
-; 	Carry Flag: Set = Has Input, Clear = No input
-CHARIN:	
-	IN	UART + 5	; read console status
-	AND	01h		; check if character available
-	RET	Z		; return if not with carry clear
-	IN	UART		; get character
-	LD	C, A		; Save it
-	SCF			; and set carry flag
-	RET
-	
-; ---------------
-;	Prints a null terminated string
-; Input:
-;	HL = String to print
-; Return:
-; 	Nothing
-PRINTSTR:
-	LD 	A, (HL)
-	INC 	HL
-	CP 	0
-	JP 	Z, .EXIT
-	LD 	C, A
-	CALL 	CHAROUT
-	JP 	PRINTSTR
-
-.EXIT
-	RET
-
-; ---------------
-;	Reads a string from input
-; Input:
-;	HL = Input Buffer
-;	B = Byte count of Buffer
-; Return:
-;	A = Character Count
-;	B = Buffer space remaining
-;	HL = Address of last byte of string
-;	Zero Flag: Set if no Data
-;	
-; Varables:
-;	HL = Where to store the next char
-;	C = Input Char
-;	B = Max Length
-;	D = Count of characters
-
-READSTR:
-	LD	(HL), 0		; Make sure we are always null terminated
-	LD	D, 0
-
-.INPUT		
-	CALL 	CHARIN		; Loop until we get a charater
-	JP 	NC, .INPUT	
-	
-	LD	A, C
-	
-	CP 	LF		; Process the input
-	JP 	Z, .EXIT
-	CP 	CR		; Process the input
-	JP 	Z, .EXIT
-
-	CP 	BS		
-	JP 	Z,.BACKSPACE
-
-	CP	SPC
-	JP	C, .BELL	; If it's a special character ring the bell
-
-	LD	A, B		; Check to see if the buffer is full
-	CP	D
-	JP	Z, .BELL
-	
-	LD	(HL), C		; Save the charater
-	INC	HL
-	LD	(HL), 0		; Make sure it's NULL terminated
-	INC	D
-
-	CALL 	CHAROUT		; Echo the charater
-	JP	.INPUT		; Loop
-
-.BACKSPACE:
-	LD	A, D		; Check to see if the buffer is empty
-	CP	0
-	JP	Z, .BELL	
-	
-	DEC	HL		; Delete the last character
-	LD	(HL), 0		
-	DEC	D
-	
-	LD	C, BS		; Backspace
-	CALL 	CHAROUT
-	LD	C, SPC		; Space
-	CALL 	CHAROUT
-	LD	C, BS		
-	CALL 	CHAROUT		; Backspace
-		
-	JP	.INPUT		; Loop
-
-.BELL:
-	LD	C, BEL
-	CALL 	CHAROUT
-	JP	.INPUT		; Loop
-
-.EXIT
-	CALL	NEWLINE
-	LD	A, B
-	SUB	D
-	LD	B, A
-	
-	LD	A, D
-	CP	0	
-	
-	RET
-
-; ----------------------------------------------------------------
-;        Utility Functions
-; ----------------------------------------------------------------
-
-; ---------------
-;	Prints a new line
-; Input:
-;	Nothing
-; Return:
-; 	Nothing
-NEWLINE:
-	PUSH 	BC
-	PCHAR	CR
-	PCHAR	LF
-	POP	BC
-	RET
-
-; ---------------
-;	Prints the next character in the byte stream after the call
-; Input:
-;	Nothing
-; Return:
-; 	Nothing
-
-PRINT_INLINE_CHAR:		
-	EX 	(SP), HL	; Swap HL and the top of the stack (which is the return address)	
-XX:
-	LD 	C, (HL)		; Load the byte at the return address into C
-	CALL 	CHAROUT		; Print the char
-	INC 	HL		; Inc past the byte
-
-	EX 	(SP), HL	; Restore the adjusted return address to the top of the stack
-
-	RET
-
-
-; ----------------------------------------------------------------
-;         Start up Code
-; ----------------------------------------------------------------
-
-
-; ---------------
-;	 Initializes a 16550 UART to 9600 N,8,1
-; Input:
-;	Nothing
-; Return:
-; 	Nothing
-
-COMINT: 			
-	LD 	A, 0		; Disable all Interrupts
-	OUT 	(UART + 1), A
-
-	LD 	A, 080h		; Enable the DLAB
-	OUT 	(UART + 3), A
-	
-	LD 	A, 00Ch		; 9600 BAUD (lo)
-	OUT 	(UART + 0), A
-	
-	LD 	A, 000h		; 9600 BAUD (hi)
-	OUT 	(UART + 1), A
-	
-	LD 	A, 003h		; Disable DLAB and set N,8,1
-	OUT 	(UART + 3), A
-	
-	LD 	A, 07h		; Enable and clear the FIFO
-	OUT 	(UART + 2), A
-	
-	LD 	A, 03h		; Enable RTS/SDR
-	OUT 	(UART + 4), A
-	RET
-	
-	
-RESET  :
-	; Set up the stack
-	LD 	SP, STACK_TOP
-	; Set up the IVT
-	LD 	B, 128
-	LD	DE, DefaultInt
-.Loop:	
-	LD 	(HL), E
-	INC 	HL
-	LD 	(HL), D
-	INC 	HL
-	DEC 	B
-	JR 	NZ, .Loop
-		
-	LD 	A, high IVT 
-	LD 	I, A
-
-	CALL 	COMINT
-	
-	LD	HL, Stratch
-	LD	B, 80
-
-
-	PSTR 	SPLASH
-
-	CALL 	NEWLINE
-	CALL 	READSTR
-	
-
-	HALT
-
-SIG1		equ 	055h
-SIG2		equ 	0AAh
-
-START_UP:
-	; Check the signature to see if we've already done the setup, if so just skip it all.
-	LD 	HL, (StartValue)
-	LD 	A, Sig1
-	CP 	H
-	JP 	NZ, SETUP
-	
-	LD 	A, Sig2
-	CP 	L
-	JP 	NZ, SETUP
-	
-	JP 	RESET
-
-SETUP:		
-	; Write out the signatue.
-	LD 	BC, (Sig1<<8) + Sig2
-	LD 	(StartValue), BC
-	
-	JP 	Reset
-
-
-; ---------------------------------------------------
-; Constants
-; ---------------------------------------------------
-SPLASH:		db	"   Z80 System Monitor", CR, LF
-		db	"   Version 00.01", CR, LF, 0
-
-HELP:		db	" E: Examine [Address] [Length]  N: Examine Next", CR, LF	
-		db	" D: Deposit (Address) (Value)   X: Deposit Next (Value)", CR, LF	
-		db	" I: Read Port (Port)            O: Write Port (Port) (Value)", CR, LF	
-		db	" L: Load Hex                    G: Download Hex (Start) [End]", CR, LF
-		db	0
-		
-PROMPT: 	db	">> ",0
-
-
-; ---------------------------------------------------
-;         Variables
-; ---------------------------------------------------
-	.ORG DATA_BASE
-
-StartValue:	defs	2
-
-BottomOfRam:	defs 	1
-TopOfRam:	defs 	1
-TotalRam:	defs 	1
-Stratch:	defs 	81
-
-	.END START_UP
 
 
 
 
-; ---------------
-;	Prints the string, which follows in the byte stream after the call
-;       Ends after printing a character with the high byte set.
-; Input:
-;	Nothing
-; Return:
-; 	Nothing
-
-PRINT_INLINE_STR:
-	EX 	(SP), HL	; Swap HL and the top of the stack (which is the return address)	
-
-.Loop
-	LD 	A, (HL)		; Load the byte at the return address into A
-	INC 	HL		; Inc past the byte
-
-	PUSH 	AF		; Save the data on the stack
-	AND 	A, 07Fh		; Mask off the high bit
-	LD 	C, A		
-	CALL 	CHAROUT		; Print the char
-
-	POP 	AF		; Restore the data
-	AND 	A, 080h		; test the high bit	
-	JP 	Z, .Loop	; If it's clear, loop
-	
-	EX 	(SP), HL	; Restore the adjusted return address to the top of the stack
-
-	RET
