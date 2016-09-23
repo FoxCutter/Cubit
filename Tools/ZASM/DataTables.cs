@@ -10,7 +10,7 @@ namespace ZASM
     {
         public static Dictionary<TokenType, int> PrecedenceMap = new Dictionary<TokenType, int>()
         {
-            { TokenType.Command,            2 },   { TokenType.Opcode,            2 },   { TokenType.Register,       2 },   { TokenType.Flag,          2 },
+            { TokenType.Command,            2 },   { TokenType.Opcode,             2 },   { TokenType.Register,       2},   { TokenType.Flag,          2 },
             { TokenType.BracketLeft,        2 },   { TokenType.BracketRight,       2 },
             { TokenType.High,               2 },   { TokenType.Low,                2 },
             { TokenType.UnarrayPlus,        3 },   { TokenType.UnarrayMinus,       3 },   { TokenType.LogicalNot,     3 },   { TokenType.BitwiseNot,     3 },   
@@ -29,6 +29,68 @@ namespace ZASM
             { TokenType.Address,            20 },
         };
         
+        ////static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
+        public static SortedList<string, CommandID> i8080 = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
+        {
+            // Registers  
+            { "A",	    CommandID.A },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
+            { "E",	    CommandID.E },      { "H",	    CommandID.H },      { "L",	    CommandID.L },      
+            { "PSW",    CommandID.AF },     { "BC",	    CommandID.BC },     { "DE",	    CommandID.DE },     { "HL",	    CommandID.HL },     { "M",	    CommandID.HL },     
+            { "SP",	    CommandID.SP },    
+
+            // Flags
+            { "CY",	    CommandID.CY },     { "NC",	    CommandID.NC },     { "Z",	    CommandID.Z },      { "NZ",	    CommandID.NZ },     { "PE",	    CommandID.PE },
+            { "PO",	    CommandID.PO },     { "P",	    CommandID.P },     
+
+            // Opcodes
+            { "ADC",	CommandID.ADC },    { "ACI",	CommandID.ACI },    { "ADD",	CommandID.ADD },    { "ADI",	CommandID.ADI },    
+            { "ANA",	CommandID.ANA },    { "ANI",	CommandID.AND },                
+
+            { "CALL",	CommandID.CALL },   
+            { "CNZ",    CommandID.CNZ },    { "CZ",	    CommandID.CZ },     { "CNC",    CommandID.CNC },    { "CC",	    CommandID.CC },
+            { "CPO",    CommandID.CPO },    { "CPE",	CommandID.CPE },    { "CP",     CommandID.CP },     { "CM",	    CommandID.CM },
+
+            { "CMA",	CommandID.CMA },    { "CMC",	CommandID.CMC },    
+            { "CMP",	CommandID.CMP },    { "CPI",	CommandID.CPI },     
+            
+            { "DAA",	CommandID.DAA },    { "DAD",	CommandID.DAD },                
+
+            { "DCR",	CommandID.DCR },    { "DCX",	CommandID.DCX },    
+
+            { "DI",	    CommandID.DI },     { "EI",	    CommandID.EI },     { "HALT",	CommandID.HALT },   { "IN",	    CommandID.IN },     
+
+            { "INR",	CommandID.INR },    { "INX",	CommandID.INX },  
+
+            { "JMP",    CommandID.JMP }, 
+            { "JNZ",    CommandID.JNZ },    { "JZ",	    CommandID.JZ },     { "JNC",    CommandID.JNC },    { "JC",	    CommandID.JC },
+            { "JPO",    CommandID.JPO },    { "JPE",	CommandID.JPE },    { "JP",     CommandID.JP },     { "JM",	    CommandID.JM },
+
+            { "LDA",	CommandID.LDA },    { "LXI",    CommandID.LXI },   { "LDAX",    CommandID.LDAX },   { "LHLD",    CommandID.LHLD },
+            { "MOV",	CommandID.MOV },    { "MVI",	CommandID.MVI },     
+
+            { "NOP",	CommandID.NOP },
+            { "ORA",	CommandID.ORA },     { "ORI",    CommandID.ORI },
+            { "OUT",	CommandID.OUT },
+            { "PCHL",   CommandID.PCHL }, 
+            { "POP",	CommandID.POP },    { "PUSH",	CommandID.PUSH },
+            { "RAL",	CommandID.RAL },    { "RAR",	CommandID.RAR },
+            { "RET",	CommandID.RET },
+            { "RNZ",    CommandID.RNZ },    { "RZ",	    CommandID.RZ },      { "RNC",    CommandID.RNC },     { "RC",	    CommandID.RC },
+            { "RPO",    CommandID.RPO },    { "RPE",    CommandID.RPE },     { "RP",     CommandID.RP },      { "RM",	    CommandID.RM },
+
+            { "RLC",	CommandID.RLC },    { "RRC",	CommandID.RRC },   
+            { "RST",	CommandID.RST },
+            { "SBB",	CommandID.SBB },    { "SBI",	CommandID.SBI },
+
+            { "SHLD",	CommandID.SHLD },   { "SPHL",	CommandID.SPHL },    { "STA",	CommandID.STA},       { "STAX",	CommandID.STAX },  
+            { "STC",	CommandID.STC },
+            { "SUB",	CommandID.SUB },    { "SUI",	CommandID.SUI },
+
+            { "XCHG",	CommandID.XCHG },     
+            { "XRA",	CommandID.XRA },    { "XRI",	CommandID.XRI },
+            { "XTHL",	CommandID.XTHL },
+        };
+
         //static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
         public static SortedList<string, CommandID> Commands = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
         {

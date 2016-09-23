@@ -124,6 +124,9 @@ namespace Z80Emu
         public Register     Reg2;
         public RegParam     Reg2Param;
 
+        public Register     Reg3;
+        public RegParam     Reg3Param;
+
         public Operation    Function;
     };
 

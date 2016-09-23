@@ -76,7 +76,7 @@ namespace ZASM
                 else if (Type == ParameterType.RegisterDisplacedPtr)
                     return TokenList[0];
                 else
-                    return default(Token);
+                    return new Token();
             }
             
             set
@@ -99,8 +99,8 @@ namespace ZASM
                 return TokenList.Count;
             }
         }
-        
-        
+
+
         public void Add(Token NewToken)
         {
             TokenList.Add(NewToken);
@@ -113,13 +113,28 @@ namespace ZASM
         
         public bool Simplify(int CurrentAddress)
         {
+            Token TempToken = null;
+            
             Stack<Token> TempStack = new Stack<Token>();
             int Pos = 0;
 
             while (Pos < TokenList.Count)
-            {                               
+            {
                 Token Current = TokenList[Pos];
                 Pos++;
+
+                if (Current.IsIndexWord())
+                {
+                    if (TempToken != null)
+                    {
+                        MessageLog.Log.Add("Parser", null, MessageCode.SyntaxError, "Can not have two Index's in the same memory refrence");
+                        return false;
+                    }
+                    TempToken = Current;
+                    Current = new Token();
+                    Current.Type = TokenType.Result;
+                    Current.NumericValue = 0;
+                }
 
                 if (Current.IsOperator())
                 {
@@ -164,13 +179,23 @@ namespace ZASM
 
             TokenList = TempStack.Reverse().ToList();
 
-            if (TokenList[0].IsIndexWord() && TokenList.Last().IsOperator())
+            if (TempToken != null)
             {
-                Token Current = TokenList[0];
-                Current.Type = TokenType.Displacment;
-                TokenList.RemoveAt(0);
-                TokenList.Insert(0, Current);
-            }
+                TempToken.Type = TokenType.Displacment;
+                TokenList.Insert(0, TempToken);
+
+                //TempToken = new Token();
+                //TempToken.Type = TokenType.Plus;
+                //TokenList.Add(TempToken);                
+            }            
+
+            //if (TokenList[0].IsIndexWord() && TokenList.Last().IsOperator())
+            //{
+            //    Token Current = TokenList[0];
+            //    Current.Type = TokenType.Displacment;
+            //    TokenList.RemoveAt(0);
+            //    TokenList.Insert(0, Current);
+            //}
 
             Type = TypeToken(TokenList[0]);
 
@@ -181,11 +206,10 @@ namespace ZASM
         {
             if (CurrentToken.IsString())
             {
-                if (CurrentToken.Value.Count == 1)
-                {
-                    CurrentToken.Type = TokenType.Result;
-                    CurrentToken.NumaricValue = CurrentToken.Value[0];
-                }
+                //if (CurrentToken.StringValue.Length <= 2)
+                //{
+                //    CurrentToken.Type = TokenType.Result;
+                //}
             }
             else if (CurrentToken.IsIdentifier())
             {
@@ -194,24 +218,27 @@ namespace ZASM
                 if (Symbol.Type == SymbolType.None)
                 {
                     // ERROR!
-                    MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UndefinedSymbol, CurrentToken.ToString());
+                    MessageLog.Log.Add("Parser", null, MessageCode.UndefinedSymbol, CurrentToken.ToString());
                 }
-                else if (Symbol.Type == SymbolType.Undefined || Symbol.Type == SymbolType.None)
+                else if (Symbol.State == SymbolState.Undefined || Symbol.State == SymbolState.ValuePending)
                 {
                     // Value hasn't been defined yet, so we can't do any more to it.                    
                 }
-                else if (Symbol.Type == SymbolType.Address || Symbol.Type == SymbolType.Value)
+                else if (Symbol.Type == SymbolType.Address || Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant)
                 {
                     CurrentToken.Type = TokenType.Result;
 
-                    if (Symbol.DefinedLine.Type == ObjectType.Value)
-                        CurrentToken.NumaricValue = ((ValueInformation)Symbol.DefinedLine).Value; 
+                    if (Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Value)
+                    {
+                        CurrentToken.NumericValue = ((ValueInformation)Symbol.Object).Value;
+                    }
+                    else if (Symbol.Type == SymbolType.Address)
+                    {
+                        CurrentToken.NumericValue = ((LabelInformation)Symbol.Object).Address;
+                    }
 
-                    else if (Symbol.DefinedLine.Type == ObjectType.Label)
-                        CurrentToken.NumaricValue = ((LabelInformation)Symbol.DefinedLine).Address; 
-                    
                     else
-                        MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UnknownError, "Unexpected symbol table type");
+                        MessageLog.Log.Add("Parser", null, MessageCode.UnknownError, "Unexpected symbol table type");
                     
                 }
             }
@@ -222,17 +249,17 @@ namespace ZASM
             else if (CurrentToken.Type == TokenType.CurrentPos)
             {
                 CurrentToken.Type = TokenType.Result;
-                CurrentToken.NumaricValue = CurrentAddress;
+                CurrentToken.NumericValue = CurrentAddress;
             }
             
             return CurrentToken;
         }
-        
+
         Token ExecuteToken(Token Op1, Token CurrentToken, Token Op2)
         {
-            Token Result = CurrentToken;
-            Result.Value = new List<char>();
+            Token Result = new Token();
             Result.Type = TokenType.Unknown;
+            //Result.Value = new List<char>();
 
             if (!CurrentToken.IsOperator())
                 return Result;
@@ -248,109 +275,109 @@ namespace ZASM
                     return Result;
             }
 
-            if (Op2.NumaricValue == 0 && (CurrentToken.Type == TokenType.Division || CurrentToken.Type == TokenType.Remainder))
+            if (Op2.NumericValue == 0 && (CurrentToken.Type == TokenType.Division || CurrentToken.Type == TokenType.Remainder))
             {
-                MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.DivisionByZero);
+                //MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.DivisionByZero);
             }
             else
             {
                 switch (CurrentToken.Type)
                 {
                     case TokenType.UnarrayPlus:
-                        Result.NumaricValue = +Op2.NumaricValue;
+                        Result.NumericValue = +Op2.NumericValue;
                         break;
 
                     case TokenType.UnarrayMinus:
-                        Result.NumaricValue = -Op2.NumaricValue;
+                        Result.NumericValue = -Op2.NumericValue;
                         break;
 
                     case TokenType.BitwiseNot:
-                        Result.NumaricValue = ~Op2.NumaricValue;
+                        Result.NumericValue = ~Op2.NumericValue;
                         break;
 
                     case TokenType.High:
-                        Result.NumaricValue = (Op2.NumaricValue & 0xFF00) >> 8;
+                        Result.NumericValue = (Op2.NumericValue & 0xFF00) >> 8;
                         break;
 
                     case TokenType.Low:
-                        Result.NumaricValue = (Op2.NumaricValue & 0x00FF);
+                        Result.NumericValue = (Op2.NumericValue & 0x00FF);
                         break;
 
 
                     case TokenType.Plus:
-                        Result.NumaricValue = Op1.NumaricValue + Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue + Op2.NumericValue;
                         break;
 
                     case TokenType.Minus:
-                        Result.NumaricValue = Op1.NumaricValue - Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue - Op2.NumericValue;
                         break;
 
                     case TokenType.Multiplication:
-                        Result.NumaricValue = Op1.NumaricValue * Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue * Op2.NumericValue;
                         break;
 
                     case TokenType.Division:
-                        Result.NumaricValue = Op1.NumaricValue / Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue / Op2.NumericValue;
                         break;
 
                     case TokenType.Remainder:
-                        Result.NumaricValue = Op1.NumaricValue % Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue % Op2.NumericValue;
                         break;
 
                     case TokenType.BitwiseAnd:
-                        Result.NumaricValue = Op1.NumaricValue & Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue & Op2.NumericValue;
                         break;
 
                     case TokenType.BitwiseXOR:
-                        Result.NumaricValue = Op1.NumaricValue ^ Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue ^ Op2.NumericValue;
                         break;
 
                     case TokenType.BitwiseOR:
-                        Result.NumaricValue = Op1.NumaricValue | Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue | Op2.NumericValue;
                         break;
 
                     case TokenType.LeftShift:
-                        Result.NumaricValue = Op1.NumaricValue << Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue << Op2.NumericValue;
                         break;
 
                     case TokenType.RightShift:
-                        Result.NumaricValue = Op1.NumaricValue >> Op2.NumaricValue;
+                        Result.NumericValue = Op1.NumericValue >> Op2.NumericValue;
                         break;
 
                     case TokenType.LogicalNot:
-                        Result.NumaricValue = (Op2.NumaricValue == 0) ? 1 : 0;
+                        Result.NumericValue = (Op2.NumericValue == 0) ? 1 : 0;
                         break;
 
                     case TokenType.LessThen:
-                        Result.NumaricValue = (Op1.NumaricValue < Op2.NumaricValue) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue < Op2.NumericValue) ? 1 : 0;
                         break;
 
                     case TokenType.GreaterThen:
-                        Result.NumaricValue = (Op1.NumaricValue > Op2.NumaricValue) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue > Op2.NumericValue) ? 1 : 0;
                         break;
 
                     case TokenType.LessEqual:
-                        Result.NumaricValue = (Op1.NumaricValue <= Op2.NumaricValue) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue <= Op2.NumericValue) ? 1 : 0;
                         break;
 
                     case TokenType.GreaterEqual:
-                        Result.NumaricValue = (Op1.NumaricValue >= Op2.NumaricValue) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue >= Op2.NumericValue) ? 1 : 0;
                         break;
 
                     case TokenType.Equal:
-                        Result.NumaricValue = (Op1.NumaricValue == Op2.NumaricValue) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue == Op2.NumericValue) ? 1 : 0;
                         break;
 
                     case TokenType.NotEqual:
-                        Result.NumaricValue = (Op1.NumaricValue != Op2.NumaricValue) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue != Op2.NumericValue) ? 1 : 0;
                         break;
 
                     case TokenType.LogicalAnd:
-                        Result.NumaricValue = (Op1.NumaricValue != 0 && Op2.NumaricValue != 0) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue != 0 && Op2.NumericValue != 0) ? 1 : 0;
                         break;
 
                     case TokenType.LogicalOR:
-                        Result.NumaricValue = (Op1.NumaricValue != 0 || Op2.NumaricValue != 0) ? 1 : 0;
+                        Result.NumericValue = (Op1.NumericValue != 0 || Op2.NumericValue != 0) ? 1 : 0;
                         break;
                 }
 
@@ -439,9 +466,17 @@ namespace ZASM
                         TempStack.Push(string.Format("{0} {1} {2}", LHS, Current, RHS));
                     }
                 }
-                else if(Current.Type == TokenType.Result)
+                else if (Current.Type == TokenType.Displacment)
                 {
-                    TempStack.Push(string.Format("0{0:X}h", (short)Current.NumaricValue));
+                    TempStack.Push(string.Format("<Index> {0}", Current.CommandID));
+                }
+                else if (Current.Type == TokenType.Result)
+                {
+                    TempStack.Push(string.Format("0{0:X}h", (short)Current.NumericValue));
+                }
+                else if (Current.Type == TokenType.Identifier)
+                {
+                    TempStack.Push(Current.Symbol.Name);
                 }
                 else
                 {

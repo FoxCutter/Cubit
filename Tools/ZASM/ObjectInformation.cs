@@ -38,7 +38,7 @@ namespace ZASM
         
         public override string ToString()
         {
-            return Symbol.Symbol;
+            return Symbol.Name;
         }
     }
    
@@ -133,7 +133,7 @@ namespace ZASM
                 {
                     case CommandID.BYTE:
                         if (Param.Value.Type == TokenType.String)
-                            Ret += Param.Value.Value.Count;
+                            Ret += Param.Value.StringValue.Length;
                         else
                             Ret += 1;
                         break;
@@ -143,11 +143,11 @@ namespace ZASM
                         break;
 
                     case CommandID.DC:
-                        Ret += Param.Value.Value.Count;
+                        Ret += Param.Value.StringValue.Length;
                         break;
 
                     case CommandID.DEFS:
-                        Ret += Param.Value.NumaricValue;
+                        Ret += Param.Value.NumericValue;
                         break;
                 }
             }
@@ -184,7 +184,7 @@ namespace ZASM
 
         public int GetOpcodeLength()
         {
-            if (Encoding == null || Encoding.Function == CommandID.None)
+            if (Encoding.Function == CommandID.None)
                 return 0;
 
             int Ret = Encoding.Encoding.Length;

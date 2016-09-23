@@ -99,9 +99,9 @@ namespace ZASM
         {
             MessageInformation Error = new MessageInformation()
             {
-                File = Location.File,
-                Line = Location.Line,
-                Character = Location.Character,
+                File = Location == null ? null : Location.File,
+                Line = Location == null ? 0 : Location.Line,
+                Character = Location == null ? 0 : Location.Character,
                 Details = Details,
                 Source = Source,
                 Code = Code,
@@ -109,6 +109,22 @@ namespace ZASM
 
             MessageLog.Log.Add(Error);
         }
+
+        public void Add(string Source, int Line, int Character, MessageCode Code, string Details = "")
+        {
+            MessageInformation Error = new MessageInformation()
+            {
+                File = null,
+                Line = Line,
+                Character = Character,
+                Details = Details,
+                Source = Source,
+                Code = Code,
+            };
+
+            MessageLog.Log.Add(Error);
+        }
+        
         
         public void Add(MessageInformation Error)
         {

@@ -85,17 +85,24 @@ namespace ZASM
         public long Pos;
     }
 
-    struct Token
+    class Token
     {
         public TokenType Type;
         public CommandID CommandID;
-        public List<char> Value;
         public SymbolTableEntry Symbol;
-        
-        public int NumaricValue;
+        public string StringValue;
 
-        public TokenLocation Location;
+        public int NumericValue;
 
+        public Token()
+        {
+            Type = TokenType.None;
+            CommandID = ZASM.CommandID.None;
+            Symbol = null;
+
+            NumericValue = 0;
+            StringValue = "";
+        }
 
         public bool CanHaveFlag()
         {
@@ -151,10 +158,10 @@ namespace ZASM
         {
             return IsIndexWord() || IsIndexHigh() || IsIndexLow();
         }
-        
+
         public bool IsDisplacment()
         {
-            return Type == TokenType.Displacment && (CommandID == ZASM.CommandID.IX || CommandID== ZASM.CommandID.IY);
+            return Type == TokenType.Displacment && (CommandID == ZASM.CommandID.IX || CommandID == ZASM.CommandID.IY);
         }
 
         public bool IsEnd()
@@ -179,12 +186,12 @@ namespace ZASM
 
         public bool AssumeA()
         {
-            return Type == TokenType.Opcode && 
-                ( CommandID == ZASM.CommandID.ADC || CommandID == ZASM.CommandID.ADD || 
+            return Type == TokenType.Opcode &&
+                (CommandID == ZASM.CommandID.ADC || CommandID == ZASM.CommandID.ADD ||
                   CommandID == ZASM.CommandID.SUB || CommandID == ZASM.CommandID.SBC ||
-                  CommandID == ZASM.CommandID.OR  || CommandID == ZASM.CommandID.XOR ||
-                  CommandID == ZASM.CommandID.AND || CommandID == ZASM.CommandID.CP  ||
-                  CommandID == ZASM.CommandID.IN  || CommandID == ZASM.CommandID.OUT);
+                  CommandID == ZASM.CommandID.OR || CommandID == ZASM.CommandID.XOR ||
+                  CommandID == ZASM.CommandID.AND || CommandID == ZASM.CommandID.CP ||
+                  CommandID == ZASM.CommandID.IN || CommandID == ZASM.CommandID.OUT);
         }
 
         public bool IsBreak()
@@ -256,23 +263,24 @@ namespace ZASM
         {
             StringBuilder Ret = new StringBuilder();
 
-            if (Value == null || Value.Count == 0)
+            if(Type == TokenType.Number || Type == TokenType.Result)
+                Ret.AppendFormat("0{0:X2}h", NumericValue);
+
+            else if (Type == TokenType.String)
             {
-                Ret.Append(NumaricValue);
+                Ret.AppendFormat("'{0}'", StringValue);
             }
             else
             {
-                if (Type == TokenType.String)
-                    Ret.Append("'");
-
-                Ret.Append(Value.ToArray());
-
-                if (Type == TokenType.String)
-                    Ret.Append("'");
+                if (CommandID != ZASM.CommandID.None)
+                    Ret.Append(CommandID);
+                else
+                    Ret.AppendFormat("<{0}>", Type);
             }
-
+            
             return Ret.ToString();
         }
     }
+    
 }
 

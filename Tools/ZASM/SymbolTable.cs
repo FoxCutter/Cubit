@@ -10,27 +10,48 @@ namespace ZASM
     {
         None,
         Value,
+        Constant,
         Address,
-        Function,
-        Macro,
-        Undefined,
+        Unknown,
     }
-    
+
+    enum SymbolState
+    {
+        // The Symbol has no values associated with it and represents nothing
+        Empty,
+
+        // The Symbol is known but undefined, 
+        Undefined,
+
+        // Object is non-null, but may need additinal processing to produce a value
+        ValuePending,
+
+        // The object is Non-null and has a finalized/current value.
+        ValueSet,
+    }
+
     class SymbolTableEntry
     {
-        public string Symbol { get; set; }
-        public List<ObjectInformation> LineIDs { get; set; }
+        public string Name;
+        public SymbolType Type;
+        public SymbolState State;
 
-        public ObjectInformation DefinedLine { get; set; }
-        public SymbolType Type { get; set; }
+        public int DefinedLine;
 
-        public SymbolTableEntry(string Name = "", SymbolType InitialType = SymbolType.None)
+        public List<int> LineIDs;
+
+        public ObjectInformation Object;
+        
+        public SymbolTableEntry(string SymbolName = "", SymbolType InitialType = SymbolType.None)
         {
+            Name = SymbolName;
             Type = InitialType;
-            Symbol = Name;
-            LineIDs = new List<ObjectInformation>();
+            State = Name == "" ? SymbolState.Empty : SymbolState.Undefined;
 
-            DefinedLine = null;
+            LineIDs = new List<int>();
+
+            DefinedLine = 0;
+            Object = null;
         }
     };
 
@@ -38,25 +59,25 @@ namespace ZASM
     {
         Dictionary<string, SymbolTableEntry> NameList = new Dictionary<string, SymbolTableEntry>();
 
-        public SymbolTable() 
+        public SymbolTable()
         {
         }
 
-        public SymbolTableEntry this[string Name]
+        public SymbolTableEntry this[string SymbolName]
         {
-            get 
+            get
             {
-                if (!NameList.ContainsKey(Name.ToUpper()))
+                if (!NameList.ContainsKey(SymbolName.ToUpper()))
                 {
-                    NameList[Name.ToUpper()] = new SymbolTableEntry(Name, SymbolType.None);
+                    NameList[SymbolName.ToUpper()] = new SymbolTableEntry(SymbolName, SymbolType.None);
                 }
 
-                return NameList[Name.ToUpper()];
+                return NameList[SymbolName.ToUpper()];
             }
-            
-            set 
+
+            set
             {
-                NameList[Name.ToUpper()] = value;            
+                NameList[SymbolName.ToUpper()] = value;
             }
         }
 
