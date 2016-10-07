@@ -99,9 +99,9 @@ namespace ZASM
         {
             MessageInformation Error = new MessageInformation()
             {
-                File = Location == null ? null : Location.File,
-                Line = Location == null ? 0 : Location.Line,
-                Character = Location == null ? 0 : Location.Character,
+                //File = Location == null ? null : Location.File,
+                Line = Location.Line,
+                Character = Location.Character,
                 Details = Details,
                 Source = Source,
                 Code = Code,

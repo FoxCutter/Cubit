@@ -77,12 +77,16 @@ namespace ZASM
         Ternary,
     }
 
-    class TokenLocation
+    struct TokenLocation
     {
-        public FileInformation File;
+        //public FileInformation File;
         public int Line;
         public int Character;
-        public long Pos;
+
+        public override string ToString()
+        {
+            return string.Format("{0}, {1}", Line, Character);
+        }
     }
 
     class Token
@@ -94,6 +98,8 @@ namespace ZASM
 
         public int NumericValue;
 
+        public TokenLocation Location;
+
         public Token()
         {
             Type = TokenType.None;
@@ -102,6 +108,7 @@ namespace ZASM
 
             NumericValue = 0;
             StringValue = "";
+            Location = default(TokenLocation);
         }
 
         public bool CanHaveFlag()
@@ -136,7 +143,12 @@ namespace ZASM
 
         public bool IsData()
         {
-            return Type == TokenType.Command && (CommandID == ZASM.CommandID.WORD || CommandID == ZASM.CommandID.BYTE || CommandID == ZASM.CommandID.DC || CommandID == ZASM.CommandID.DEFS);
+            return Type == TokenType.Command && (CommandID == ZASM.CommandID.WORD || CommandID == ZASM.CommandID.BYTE || CommandID == ZASM.CommandID.DC || IsReserved());
+        }
+
+        public bool IsReserved()
+        {
+            return Type == TokenType.Command && (CommandID == ZASM.CommandID.RESB || CommandID == ZASM.CommandID.RESW || CommandID == ZASM.CommandID.RESD);
         }
 
         public bool IsIndexWord()

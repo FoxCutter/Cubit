@@ -27,7 +27,7 @@ namespace ZASM
 
         public int                  Address;
 
-        public ObjectInformation(SymbolTableEntry Symbol, TokenLocation Location = null)
+        public ObjectInformation(SymbolTableEntry Symbol, TokenLocation Location)
         {
             Type = ObjectType.None;
             this.Symbol = Symbol;
@@ -44,7 +44,7 @@ namespace ZASM
    
     class LabelInformation : ObjectInformation
     {
-        public LabelInformation(SymbolTableEntry Symbol, TokenLocation Location = null)
+        public LabelInformation(SymbolTableEntry Symbol, TokenLocation Location)
             : base(Symbol, Location)
         {
             Type = ObjectType.Label;
@@ -63,7 +63,7 @@ namespace ZASM
         public ParameterInformation Params;
         public bool Constant;
 
-        public ValueInformation(SymbolTableEntry Symbol, TokenLocation Location = null)
+        public ValueInformation(SymbolTableEntry Symbol, TokenLocation Location)
             : base(Symbol, Location)
         {
             Type = ObjectType.Value;
@@ -81,7 +81,7 @@ namespace ZASM
     {
         public List<ParameterInformation> Params;
 
-        public ParamInformation(TokenLocation Location = null)
+        public ParamInformation(TokenLocation Location)
             : base(null, Location)
         {
             Params = new List<ParameterInformation>();
@@ -116,7 +116,7 @@ namespace ZASM
     {
         public CommandID DataType;
 
-        public DataInformation(CommandID DataType, TokenLocation Location = null)
+        public DataInformation(CommandID DataType, TokenLocation Location)
             : base(Location)
         {
             Type = ObjectType.Data;
@@ -146,8 +146,16 @@ namespace ZASM
                         Ret += Param.Value.StringValue.Length;
                         break;
 
-                    case CommandID.DEFS:
+                    case CommandID.RESB:
                         Ret += Param.Value.NumericValue;
+                        break;
+
+                    case CommandID.RESW:
+                        Ret += Param.Value.NumericValue * 2;
+                        break;
+
+                    case CommandID.RESD:
+                        Ret += Param.Value.NumericValue * 4;
                         break;
                 }
             }
@@ -161,9 +169,9 @@ namespace ZASM
     {
         public CommandID Opcode; 
 
-        public OpcodeEncoding Encoding;        
+        public OpcodeEncoding Encoding;
 
-        public OpcodeInformation(CommandID Opcode, TokenLocation Location = null)
+        public OpcodeInformation(CommandID Opcode, TokenLocation Location)
             : base(Location)
         {
             Type = ObjectType.Opcode;
@@ -228,9 +236,9 @@ namespace ZASM
 
     class CommandInformation : ParamInformation
     {
-        public CommandID Command; 
+        public CommandID Command;
 
-        public CommandInformation(CommandID Command, TokenLocation Location = null)
+        public CommandInformation(CommandID Command, TokenLocation Location)
             : base(Location)
         {
             Type = ObjectType.Command;

@@ -135,14 +135,17 @@ namespace ZASM
         STC, SUI, XCHG, XRA, XRI, XTHL,
 
         // Psudo Operators
-        HIGH, LOW,
+        HIGH, LOW, TIMES,
 
         OpcodeMax,
 
         // Commands
-        BYTE, DC, DEFS, ELSE, ELSEIF, END, ENDIF, ENDMACRO,
-        ENDPHASE, ENDPROC, ERROR, IF, IFDEF, IFNDEF, INCLUDE, MACRO,
-        MESSAGE, OPTION, ORG, PHASE, PROC, WORD, EQU, DEFL, Z80, i8080,
+        CONST, BYTE, WORD, DWORD, DC, RESB, RESW, RESD,
+        EQU, PROC, ENDPROC, CALLPROC, STRUCT, ENDSTRUCT,
+
+        // Directives
+        EXTERN, PUBLIC, INCLUDE, Z80, i8080, ORG, END,
+
 
         CommandMax,
 
@@ -156,6 +159,7 @@ namespace ZASM
         int _Character;
         TokenType _LastToken;
         CommandID _LastCommand;
+        TokenLocation _CurrentLocation;
 
 
         public int CurrentLine { get; private set; }
@@ -175,6 +179,7 @@ namespace ZASM
             CurrentValue = new List<char>();
             _LastToken = TokenType.None;
             _LastCommand = CommandID.None;
+            _CurrentLocation = default(TokenLocation);
 
             // Skip to the first real token in the stream.
             SkipWhitespaces();
@@ -259,7 +264,7 @@ namespace ZASM
                 TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
                 {
-                    MessageLog.Log.Add("Tokenizer", CurrentLine, CurrentCharacter, MessageCode.UnexpectedLineBreak);
+                    MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.UnexpectedLineBreak);
 
                     return false;
                 }
@@ -345,13 +350,13 @@ namespace ZASM
             }
             else if (DataTables.CharacterData[TypeChar] != TokenType.Number)
             {
-                MessageLog.Log.Add("Tokenizer", CurrentLine, CurrentCharacter, MessageCode.InvalidNumberToken, CurrentString);
+                MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.InvalidNumberToken, CurrentString);
                 return false;
             }
 
             if (TempData.Count == 0)
             {
-                MessageLog.Log.Add("Tokenizer", CurrentLine, CurrentCharacter, MessageCode.UnknownError, "Empty Number Token");
+                MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.UnknownError, "Empty Number Token");
                 return false;
             }
 
@@ -372,7 +377,7 @@ namespace ZASM
             }
             catch
             {
-                MessageLog.Log.Add("Tokenizer", CurrentLine, CurrentCharacter, MessageCode.InvalidNumberToken, CurrentString);
+                MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.InvalidNumberToken, CurrentString);
 
                 return false;
             }
@@ -430,8 +435,12 @@ namespace ZASM
         {
             CurrentLine = _Line;
             CurrentCharacter = _Character;
+
+            _CurrentLocation.Line = _Line;
+            _CurrentLocation.Character = _Character;
             
             Token Ret = new Token();
+            Ret.Location = _CurrentLocation;
 
             CurrentValue.Clear();
 
@@ -447,7 +456,7 @@ namespace ZASM
             switch (Ret.Type)
             {
                 case TokenType.Unknown:
-                    MessageLog.Log.Add("Tokenizer", CurrentLine, CurrentCharacter, MessageCode.UnexpectedSymbol, CurrentString);
+                    MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.UnexpectedSymbol, CurrentString);
                     break;
 
                 case TokenType.Number:

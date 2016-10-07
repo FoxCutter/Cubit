@@ -122,23 +122,23 @@ namespace ZASM
             { "SRL",	CommandID.SRL },    { "SUB",	CommandID.SUB },    { "XOR",	CommandID.XOR },
             
             // Speical Opperators
-            { "HIGH",	    CommandID.HIGH },       { "LOW",	    CommandID.LOW },        
+            { "HIGH",	    CommandID.HIGH },       { "LOW",	    CommandID.LOW },        { "TIMES",	    CommandID.TIMES },        
             
             
-            // Psudo ops
-            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DC",	        CommandID.DC },         { "DS",	        CommandID.DEFS },
-            { "EQU",        CommandID.EQU},         { "PROC",       CommandID.PROC},        { "ENDPROC",    CommandID.ENDPROC},     { "END",	    CommandID.END },        
-            { "DEFL",       CommandID.DEFL},         
+            // Psudo ops            
+            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DD",	        CommandID.DWORD },      { "DC",	        CommandID.DC },         
+            { "DS",	        CommandID.RESB },       { "RESB",       CommandID.RESB },       { "RESW",       CommandID.RESW },       { "RESD",       CommandID.RESD }, 
+            { "EQU",        CommandID.EQU },        { "CONST",	    CommandID.CONST },      { "DEFL",	    CommandID.CONST },       
 
             // Commands
-            { ".BYTE",	    CommandID.BYTE },       { ".WORD",	    CommandID.WORD },
-            { ".DB",	    CommandID.BYTE },       { ".DW",	    CommandID.WORD },       { ".DC",	    CommandID.DC },         { ".DEFS",	    CommandID.DEFS },
-            { ".INCLUDE",   CommandID.INCLUDE},     { ".MESSAGE",   CommandID.MESSAGE},     { ".ERROR",     CommandID.ERROR},       { ".OPTION",    CommandID.OPTION},
-            { ".ORG",       CommandID.ORG},         { ".IF",        CommandID.IF},          { ".ELSE",      CommandID.ELSE},        { ".ELSEIF",    CommandID.ELSEIF},
-            { ".ENDIF",     CommandID.ENDIF},       { ".MACRO",     CommandID.MACRO},       { ".ENDMACRO",  CommandID.ENDMACRO},    { ".PROC",      CommandID.PROC},
-            { ".ENDPROC",   CommandID.ENDPROC},     { ".PHASE",     CommandID.PHASE},       { ".ENDPHASE",  CommandID.ENDPHASE},    { ".EQU",       CommandID.EQU},
-            { ".DEFL",      CommandID.DEFL},        { ".DS",	    CommandID.DEFS },       { ".END",	    CommandID.END },        { ".Z80",       CommandID.Z80},         
-            { ".8080",      CommandID.i8080},
+            { "PROC",       CommandID.PROC },        { "ENDPROC",   CommandID.ENDPROC },    { "CALLPROC",   CommandID.CALLPROC },
+            { "STRUCT",     CommandID.STRUCT },      { "ENDSTRUCT", CommandID.ENDSTRUCT },
+                        
+            // Directives
+            { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },
+            { ".INCLUDE",   CommandID.INCLUDE },     { ".INCBIN",   CommandID.INCLUDE },     
+            { ".Z80",       CommandID.Z80 },         { ".8080",     CommandID.i8080 },     { ".ORG",        CommandID.ORG },        { ".END",	    CommandID.END },        
+            { "END",	    CommandID.END },        
         };
 
         public static TokenType[] CharacterData = new TokenType[]

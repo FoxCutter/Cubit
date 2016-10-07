@@ -127,12 +127,14 @@ namespace ZASM
                 {
                     if (TempToken != null)
                     {
-                        MessageLog.Log.Add("Parser", null, MessageCode.SyntaxError, "Can not have two Index's in the same memory refrence");
+                        MessageLog.Log.Add("Parser", TempToken.Location, MessageCode.SyntaxError, "Can not have two Index's in the same memory refrence");
                         return false;
                     }
+
                     TempToken = Current;
                     Current = new Token();
                     Current.Type = TokenType.Result;
+                    Current.Location = TempToken.Location;
                     Current.NumericValue = 0;
                 }
 
@@ -218,13 +220,13 @@ namespace ZASM
                 if (Symbol.Type == SymbolType.None)
                 {
                     // ERROR!
-                    MessageLog.Log.Add("Parser", null, MessageCode.UndefinedSymbol, CurrentToken.ToString());
+                    MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UndefinedSymbol, CurrentToken.ToString());
                 }
                 else if (Symbol.State == SymbolState.Undefined || Symbol.State == SymbolState.ValuePending)
                 {
                     // Value hasn't been defined yet, so we can't do any more to it.                    
                 }
-                else if (Symbol.Type == SymbolType.Address || Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant)
+                else if (Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant)
                 {
                     CurrentToken.Type = TokenType.Result;
 
@@ -232,13 +234,9 @@ namespace ZASM
                     {
                         CurrentToken.NumericValue = ((ValueInformation)Symbol.Object).Value;
                     }
-                    else if (Symbol.Type == SymbolType.Address)
-                    {
-                        CurrentToken.NumericValue = ((LabelInformation)Symbol.Object).Address;
-                    }
 
                     else
-                        MessageLog.Log.Add("Parser", null, MessageCode.UnknownError, "Unexpected symbol table type");
+                        MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UnknownError, "Unexpected symbol table type");
                     
                 }
             }
@@ -258,6 +256,7 @@ namespace ZASM
         Token ExecuteToken(Token Op1, Token CurrentToken, Token Op2)
         {
             Token Result = new Token();
+            Result.Location = CurrentToken.Location;
             Result.Type = TokenType.Unknown;
             //Result.Value = new List<char>();
 

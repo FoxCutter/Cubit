@@ -120,7 +120,7 @@ namespace ZASM
             {
                 //foreach (ObjectInformation Entry in Symbol.LineIDs)
                 //{
-                    MessageLog.Log.Add("Parser", null, MessageCode.UndefinedSymbol, Symbol.Name);
+                MessageLog.Log.Add("Parser", default(TokenLocation), MessageCode.UndefinedSymbol, Symbol.Name);
                 //}
             }
         }
@@ -235,26 +235,26 @@ namespace ZASM
         LabelInformation ParseLabel(Token LabelToken, bool AddressLabel)
         {
             SymbolTableEntry SymbolEntry = _SymbolTable[_Tokenizer.CurrentString];
-            LabelInformation NewLabel = new LabelInformation(SymbolEntry);
+            LabelInformation NewLabel = new LabelInformation(SymbolEntry, LabelToken.Location);
 
             if (AddressLabel)
             {
                 if (SymbolEntry.State != SymbolState.Undefined)
                 {
-                    MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.SyntaxError, string.Format("{0} redefined", SymbolEntry.Name));
+                    MessageLog.Log.Add("Parser", LabelToken.Location, MessageCode.SyntaxError, string.Format("{0} redefined", SymbolEntry.Name));
                     NewLabel.Error = true;
                     return NewLabel;
                 }
 
                 SymbolEntry.Type = SymbolType.Address;
-                SymbolEntry.DefinedLine = _Tokenizer.CurrentLine;
+                SymbolEntry.DefinedLine = LabelToken.Location.Line;
 
                 NewLabel.Address = _CurrentAddress;
                 SymbolEntry.Object = NewLabel;
                 SymbolEntry.State = SymbolState.ValueSet;
             }
 
-            SymbolEntry.LineIDs.Add(_Tokenizer.CurrentLine);
+            SymbolEntry.LineIDs.Add(LabelToken.Location.Line);
 
             // If the label has a colon, eat it.
             if (_Tokenizer.PeekNextTokenType() == TokenType.Colon)
@@ -265,8 +265,8 @@ namespace ZASM
 
         ObjectInformation ParseAssignment(Token ValueToken, LabelInformation LabelObject)
         {
-            ValueInformation NewValue = new ValueInformation(LabelObject.Symbol);
-            NewValue.Symbol.LineIDs.Add(_Tokenizer.CurrentLine);
+            ValueInformation NewValue = new ValueInformation(LabelObject.Symbol, ValueToken.Location);
+            NewValue.Symbol.LineIDs.Add(ValueToken.Location.Line);
             NewValue.Symbol.Object = NewValue;
 
             // Read the paramters
@@ -275,8 +275,8 @@ namespace ZASM
             if (NewValue.Symbol.State == SymbolState.Undefined)
             {
                 // This is the first time this symbol has been referenced
-                NewValue.Symbol.Type = ValueToken.CommandID == CommandID.DEFL ? SymbolType.Value : SymbolType.Constant;
-                NewValue.Symbol.DefinedLine = _Tokenizer.CurrentLine;
+                NewValue.Symbol.Type = ValueToken.CommandID == CommandID.CONST ? SymbolType.Value : SymbolType.Constant;
+                NewValue.Symbol.DefinedLine = ValueToken.Location.Line;
             }
             else
             {
@@ -284,7 +284,7 @@ namespace ZASM
                 // We can't redefine a value created with EQU/=
                 if (NewValue.Symbol.Type == SymbolType.Constant)
                 {
-                    MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.SyntaxWarning, string.Format("Can't redefine the value of {0}", NewValue.Symbol.Name));
+                    MessageLog.Log.Add("Parser", ValueToken.Location, MessageCode.SyntaxWarning, string.Format("Can't redefine the value of {0}", NewValue.Symbol.Name));
                     NewValue.Error = true;
                 }
             }
@@ -292,7 +292,7 @@ namespace ZASM
             if (NewValue.Params.Count == 0)
             {
                 NewValue.Error = true;
-                MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.ValueMissing, NewValue.Symbol.Name);
+                MessageLog.Log.Add("Parser", ValueToken.Location, MessageCode.ValueMissing, NewValue.Symbol.Name);
             }
             else
             {
@@ -313,7 +313,7 @@ namespace ZASM
 
         ObjectInformation ParseOpcode(Token OpcodeToken)
         {
-            OpcodeInformation Opcode = new OpcodeInformation(OpcodeToken.CommandID);
+            OpcodeInformation Opcode = new OpcodeInformation(OpcodeToken.CommandID, OpcodeToken.Location);
             Opcode.Address = _CurrentAddress;
 
             if (_Tokenizer.PeekNextTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextTokenType() != TokenType.Comment && _Tokenizer.PeekNextTokenType() != TokenType.End)
@@ -381,7 +381,7 @@ namespace ZASM
 
         ObjectInformation ParseCommand(Token CommandToken)
         {
-            CommandInformation NewCommand = new CommandInformation(CommandToken.CommandID);
+            CommandInformation NewCommand = new CommandInformation(CommandToken.CommandID, CommandToken.Location);
             NewCommand.Address = _CurrentAddress;
 
             if (_Tokenizer.PeekNextTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextTokenType() != TokenType.Comment && _Tokenizer.PeekNextTokenType() != TokenType.End)
@@ -416,7 +416,7 @@ namespace ZASM
 
         ObjectInformation ParseData(Token CommandToken)
         {
-            DataInformation NewData = new DataInformation(CommandToken.CommandID);
+            DataInformation NewData = new DataInformation(CommandToken.CommandID, CommandToken.Location);
 
             NewData.Address = _CurrentAddress;
 
@@ -427,6 +427,11 @@ namespace ZASM
                     ParameterInformation Params = ParseParams(NewData);
                     Params.Simplify(_CurrentAddress);
                     NewData.Params.Add(Params);
+
+                    if (CommandToken.IsReserved() && Params.Value.Type != TokenType.Result)
+                    {                                                
+                        MessageLog.Log.Add("Parser", CommandToken.Location, MessageCode.UndefinedSymbol);
+                    }
 
                     if (_Tokenizer.PeekNextTokenType() != TokenType.Comma)
                         break;
@@ -475,7 +480,7 @@ namespace ZASM
                             CurrentToken.Symbol.State = SymbolState.Undefined;
                         }
 
-                        CurrentToken.Symbol.LineIDs.Add(_Tokenizer.CurrentLine);
+                        CurrentToken.Symbol.LineIDs.Add(CurrentToken.Location.Line);
                     }
 
                     if (CurrentToken.IsGroupLeft())
@@ -643,7 +648,7 @@ namespace ZASM
                             }
                             else
                             {
-                                MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.SyntaxError, string.Format("Unable to define label {0}, missing colon", _Tokenizer.CurrentString));
+                                MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.SyntaxError, string.Format("Unable to define label {0}, missing colon", _Tokenizer.CurrentString));
                                 CurrentToken.Type = TokenType.Error;
                             }
                         }
@@ -656,11 +661,11 @@ namespace ZASM
                     case TokenType.Equal:
                     case TokenType.Command:
                         {
-                            if (CurrentToken.Type == TokenType.Equal || CurrentToken.CommandID == CommandID.EQU || CurrentToken.CommandID == CommandID.DEFL)
+                            if (CurrentToken.Type == TokenType.Equal || CurrentToken.CommandID == CommandID.EQU || CurrentToken.CommandID == CommandID.CONST)
                             {
                                 if (LabelObject == null)
                                 {
-                                    MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.SyntaxError, "Can't set a value without a label");
+                                    MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.SyntaxError, "Can't set a value without a label");
                                     CurrentToken.Type = TokenType.Error;
                                 }
                                 else
@@ -682,7 +687,7 @@ namespace ZASM
 
                     case TokenType.Error:
                     default:
-                        MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.UnexpectedSymbol, CurrentToken.ToString());
+                        MessageLog.Log.Add("Parser", CurrentToken.Location, MessageCode.UnexpectedSymbol, CurrentToken.ToString());
                         CurrentToken.Type = TokenType.Error;
                         break;
                 }
@@ -700,7 +705,7 @@ namespace ZASM
                     {
                         if (LabelObject != null)
                         {
-                            MessageLog.Log.Add("Parser", _Tokenizer.CurrentLine, _Tokenizer.CurrentCharacter, MessageCode.UnexpectedSymbol, LabelObject.Symbol.Name);
+                            MessageLog.Log.Add("Parser", LabelObject.Location, MessageCode.UnexpectedSymbol, LabelObject.Symbol.Name);
                             LabelObject = null;
                         }
                         _ObjectData.Add(CurrentObject);
