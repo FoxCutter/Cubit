@@ -20,33 +20,32 @@ namespace ZASM
        
     class ObjectInformation
     {
-        public ObjectType           Type;
-        public SymbolTableEntry     Symbol;
-        public bool                 Error;
+        public ObjectType           Type { get; private set; }
 
+        public bool                 Error;
         public int                  Address;
 
-        public ObjectInformation(SymbolTableEntry Symbol)
+        public ObjectInformation(ObjectType Type = ObjectType.None)
         {
-            Type = ObjectType.None;
-            this.Symbol = Symbol;
+            this.Type = Type;
             Error = false;
             Address = 0;
         }
         
         public override string ToString()
         {
-            return Symbol.Name;
+            return "";
         }
     }
 
-    class LabelInformation : ObjectInformation
+    class SymbolInformation : ObjectInformation
     {
-        public LabelInformation(SymbolTableEntry Symbol)
-            : base(Symbol)
+        public SymbolTableEntry Symbol;
+
+        public SymbolInformation(SymbolTableEntry Symbol, ObjectType Type)
+            : base(Type)
         {
-            Type = ObjectType.Label;
-            Address = 0;
+            this.Symbol = Symbol;
         }
 
         public override string ToString()
@@ -55,17 +54,31 @@ namespace ZASM
         }
     }
 
-    class ValueInformation : ObjectInformation
+
+    class LabelInformation : SymbolInformation
+    {
+        public LabelInformation(SymbolTableEntry Symbol)
+            : base(Symbol, ObjectType.Label)
+        {
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + ":";
+        }
+    }
+
+    class ValueInformation : SymbolInformation
     {
         public int Value;
         public ParameterInformation Params;
         //public bool Constant;
 
         public ValueInformation(SymbolTableEntry Symbol)
-            : base(Symbol)
+            : base(Symbol, ObjectType.Value)
         {
-            Type = ObjectType.Value;
             Value = 0;
+            Params = null;
         }
 
         public override string ToString()
@@ -79,11 +92,10 @@ namespace ZASM
     {
         public List<ParameterInformation> Params;
 
-        public ParamInformation()
-            : base(null)
+        public ParamInformation(ObjectType Type)
+            : base(Type)
         {
             Params = new List<ParameterInformation>();
-            Type = ObjectType.Data;
         }
 
         public override string ToString()
@@ -115,9 +127,8 @@ namespace ZASM
         public CommandID DataType;
 
         public DataInformation(CommandID DataType)
-            : base()
+            : base(ObjectType.Data)
         {
-            Type = ObjectType.Data;
             this.DataType = DataType;
         }
 
@@ -170,9 +181,8 @@ namespace ZASM
         public OpcodeEncoding Encoding;
 
         public OpcodeInformation(CommandID Opcode)
-            : base()
+            : base(ObjectType.Opcode)
         {
-            Type = ObjectType.Opcode;
             this.Opcode = Opcode;
         }
 
@@ -237,9 +247,8 @@ namespace ZASM
         public CommandID Command;
 
         public CommandInformation(CommandID Command)
-            : base()
+            : base(ObjectType.Command)
         {
-            Type = ObjectType.Command;
             this.Command = Command;
         }
     }

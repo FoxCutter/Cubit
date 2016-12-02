@@ -42,12 +42,14 @@ namespace ZASM
 
                 if (Entry.Type == ObjectType.Label)
                 {
-                    Console.Write("{0,-10} ", Entry.Symbol.Name + ":");
+                    LabelInformation Label = (LabelInformation)Entry;
+                    Console.Write("{0,-10} ", Label.Symbol.Name + ":");
                     //Console.Write("{0,-10} ", Entry.Symbol.DefinedLine.ToString());
                 }
                 else if (Entry.Type == ObjectType.Value)
                 {
-                    Console.Write("{0,-10} ", Entry.Symbol.Name);
+                    ValueInformation Value = (ValueInformation)Entry;
+                    Console.Write("{0,-10} ", Value.Symbol.Name);
                 }
                 else
                 {
