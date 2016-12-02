@@ -37,7 +37,7 @@ namespace ZASM
     struct MessageInformation : IComparer<MessageInformation>, IComparable<MessageInformation>
     {
         // The location of the error
-        public FileInformation File;
+        public string FileName;
         public int Line;
         public int Character;
         
@@ -48,10 +48,10 @@ namespace ZASM
        
         public int Compare(MessageInformation x, MessageInformation y)
         {
-            if (x.File != null && y.File != null)
+            if (x.FileName != null && y.FileName != null)
             {
-                if (!string.Equals(x.File.FullName, y.File.FullName, StringComparison.OrdinalIgnoreCase))
-                    return string.Compare(x.File.FullName, y.File.FullName, true);
+                if (!string.Equals(x.FileName, y.FileName, StringComparison.OrdinalIgnoreCase))
+                    return string.Compare(x.FileName, y.FileName, true);
             }
 
             if (x.Line != y.Line)
@@ -100,6 +100,7 @@ namespace ZASM
             MessageInformation Error = new MessageInformation()
             {
                 //File = Location == null ? null : Location.File,
+                FileName = "",
                 Line = Location.Line,
                 Character = Location.Character,
                 Details = Details,
@@ -114,7 +115,7 @@ namespace ZASM
         {
             MessageInformation Error = new MessageInformation()
             {
-                File = null,
+                FileName = "",
                 Line = Line,
                 Character = Character,
                 Details = Details,

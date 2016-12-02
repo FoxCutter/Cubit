@@ -79,7 +79,6 @@ namespace ZASM
 
     struct TokenLocation
     {
-        //public FileInformation File;
         public int Line;
         public int Character;
 

@@ -58,8 +58,8 @@ namespace ZASM
                 else 
                     Console.Write("Message: ");
 
-                if (Message.File != null)
-                    Console.Write(Message.File.FullName);
+                if (!string.IsNullOrEmpty(Message.FileName))
+                    Console.Write(Message.FileName);
                 Console.Write("({0}, {1}): ", Message.Line, Message.Character);
                 Console.Write("{0} {1:X4}: ", Message.Source, (int)Message.Code);
 
