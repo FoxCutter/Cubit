@@ -22,16 +22,14 @@ namespace ZASM
     {
         public ObjectType           Type;
         public SymbolTableEntry     Symbol;
-        public TokenLocation        Location;
         public bool                 Error;
 
         public int                  Address;
 
-        public ObjectInformation(SymbolTableEntry Symbol, TokenLocation Location)
+        public ObjectInformation(SymbolTableEntry Symbol)
         {
             Type = ObjectType.None;
             this.Symbol = Symbol;
-            this.Location = Location;
             Error = false;
             Address = 0;
         }
@@ -41,11 +39,11 @@ namespace ZASM
             return Symbol.Name;
         }
     }
-   
+
     class LabelInformation : ObjectInformation
     {
-        public LabelInformation(SymbolTableEntry Symbol, TokenLocation Location)
-            : base(Symbol, Location)
+        public LabelInformation(SymbolTableEntry Symbol)
+            : base(Symbol)
         {
             Type = ObjectType.Label;
             Address = 0;
@@ -61,10 +59,10 @@ namespace ZASM
     {
         public int Value;
         public ParameterInformation Params;
-        public bool Constant;
+        //public bool Constant;
 
-        public ValueInformation(SymbolTableEntry Symbol, TokenLocation Location)
-            : base(Symbol, Location)
+        public ValueInformation(SymbolTableEntry Symbol)
+            : base(Symbol)
         {
             Type = ObjectType.Value;
             Value = 0;
@@ -81,8 +79,8 @@ namespace ZASM
     {
         public List<ParameterInformation> Params;
 
-        public ParamInformation(TokenLocation Location)
-            : base(null, Location)
+        public ParamInformation()
+            : base(null)
         {
             Params = new List<ParameterInformation>();
             Type = ObjectType.Data;
@@ -116,8 +114,8 @@ namespace ZASM
     {
         public CommandID DataType;
 
-        public DataInformation(CommandID DataType, TokenLocation Location)
-            : base(Location)
+        public DataInformation(CommandID DataType)
+            : base()
         {
             Type = ObjectType.Data;
             this.DataType = DataType;
@@ -171,8 +169,8 @@ namespace ZASM
 
         public OpcodeEncoding Encoding;
 
-        public OpcodeInformation(CommandID Opcode, TokenLocation Location)
-            : base(Location)
+        public OpcodeInformation(CommandID Opcode)
+            : base()
         {
             Type = ObjectType.Opcode;
             this.Opcode = Opcode;
@@ -238,8 +236,8 @@ namespace ZASM
     {
         public CommandID Command;
 
-        public CommandInformation(CommandID Command, TokenLocation Location)
-            : base(Location)
+        public CommandInformation(CommandID Command)
+            : base()
         {
             Type = ObjectType.Command;
             this.Command = Command;

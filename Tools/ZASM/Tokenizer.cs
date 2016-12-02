@@ -159,8 +159,6 @@ namespace ZASM
         int _Character;
         TokenType _LastToken;
         CommandID _LastCommand;
-        TokenLocation _CurrentLocation;
-
 
         public int CurrentLine { get; private set; }
         public int CurrentCharacter { get; private set; }
@@ -179,7 +177,6 @@ namespace ZASM
             CurrentValue = new List<char>();
             _LastToken = TokenType.None;
             _LastCommand = CommandID.None;
-            _CurrentLocation = default(TokenLocation);
 
             // Skip to the first real token in the stream.
             SkipWhitespaces();
@@ -264,7 +261,7 @@ namespace ZASM
                 TokenType Current = PeekNextTokenType();
                 if (Current == TokenType.LineBreak || Current == TokenType.End)
                 {
-                    MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.UnexpectedLineBreak);
+                    MessageLog.Log.Add("Tokenizer", _Line, _Character, MessageCode.UnexpectedLineBreak);
 
                     return false;
                 }
@@ -350,13 +347,13 @@ namespace ZASM
             }
             else if (DataTables.CharacterData[TypeChar] != TokenType.Number)
             {
-                MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.InvalidNumberToken, CurrentString);
+                MessageLog.Log.Add("Tokenizer", _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
                 return false;
             }
 
             if (TempData.Count == 0)
             {
-                MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.UnknownError, "Empty Number Token");
+                MessageLog.Log.Add("Tokenizer", _Line, _Character, MessageCode.UnknownError, "Empty Number Token");
                 return false;
             }
 
@@ -377,7 +374,7 @@ namespace ZASM
             }
             catch
             {
-                MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.InvalidNumberToken, CurrentString);
+                MessageLog.Log.Add("Tokenizer", _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
 
                 return false;
             }
@@ -435,13 +432,9 @@ namespace ZASM
         {
             CurrentLine = _Line;
             CurrentCharacter = _Character;
-
-            _CurrentLocation.Line = _Line;
-            _CurrentLocation.Character = _Character;
             
             Token Ret = new Token();
-            Ret.Location = _CurrentLocation;
-
+            
             CurrentValue.Clear();
 
             Ret.Type = TokenType.End;
@@ -456,7 +449,7 @@ namespace ZASM
             switch (Ret.Type)
             {
                 case TokenType.Unknown:
-                    MessageLog.Log.Add("Tokenizer", _CurrentLocation, MessageCode.UnexpectedSymbol, CurrentString);
+                    MessageLog.Log.Add("Tokenizer", _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
                     break;
 
                 case TokenType.Number:

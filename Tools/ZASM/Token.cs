@@ -77,17 +77,6 @@ namespace ZASM
         Ternary,
     }
 
-    struct TokenLocation
-    {
-        public int Line;
-        public int Character;
-
-        public override string ToString()
-        {
-            return string.Format("{0}, {1}", Line, Character);
-        }
-    }
-
     class Token
     {
         public TokenType Type;
@@ -97,8 +86,6 @@ namespace ZASM
 
         public int NumericValue;
 
-        public TokenLocation Location;
-
         public Token()
         {
             Type = TokenType.None;
@@ -107,7 +94,6 @@ namespace ZASM
 
             NumericValue = 0;
             StringValue = "";
-            Location = default(TokenLocation);
         }
 
         public bool CanHaveFlag()
