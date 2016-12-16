@@ -16,6 +16,13 @@ namespace ZASM
         Opcode,
         Command,
         Data,
+
+        Meta,
+
+        // Meta types after this one
+        File,
+        Line,
+        Offset,
     }
        
     class ObjectInformation
@@ -35,6 +42,50 @@ namespace ZASM
         public override string ToString()
         {
             return "";
+        }
+    }
+
+    class FileInformation : ObjectInformation
+    {
+        public string FileName;
+
+        public FileInformation(string FileName)
+            : base(ObjectType.File)
+        {
+            this.FileName = FileName;            
+        }
+
+        public override string ToString()
+        {
+            return FileName;
+        }
+    }
+
+    class LineInformation : ObjectInformation
+    {
+        public LineInformation(int LineNumber)
+            : base(ObjectType.Line)
+        {
+            this.Address = LineNumber;
+        }
+
+        public override string ToString()
+        {
+            return Address.ToString();
+        }
+    }
+
+    class OffsetInformation : ObjectInformation
+    {
+        public OffsetInformation(int Offset)
+            : base(ObjectType.Offset)
+        {
+            Address = Offset;
+        }
+
+        public override string ToString()
+        {
+            return "0x" + Address.ToString("X");
         }
     }
 

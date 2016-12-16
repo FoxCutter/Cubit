@@ -38,6 +38,9 @@ namespace ZASM
             {
                 //var Res = FindOpcode(Entry);
 
+                if (Entry.Type >= ObjectType.Meta)
+                    continue;
+                
                 Console.Write("{0:X4} ", Entry.Address);
 
                 if (Entry.Type == ObjectType.Label)
@@ -624,6 +627,8 @@ namespace ZASM
             ObjectInformation CurrentObject = null;
             LabelInformation LabelObject = null;
 
+            _ObjectData.Add(new LineInformation(_Tokenizer.CurrentLine + 1));
+
             while (!Done)
             {
                 Token CurrentToken = _Tokenizer.GetNextToken();
@@ -636,6 +641,7 @@ namespace ZASM
                     // Ignore comments and line breaks.
                     case TokenType.Comment:
                     case TokenType.LineBreak:
+                        CurrentObject = new LineInformation(_Tokenizer.CurrentLine + 1);
                         break;
 
                     case TokenType.Identifier:
@@ -700,6 +706,7 @@ namespace ZASM
                 {
                     CurrentObject = null;
                     _Tokenizer.FlushLine();
+                    _ObjectData.Add(new LineInformation(_Tokenizer.CurrentLine + 1));
                 }
                 else
                 {
