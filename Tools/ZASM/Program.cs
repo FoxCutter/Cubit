@@ -9,25 +9,33 @@ namespace ZASM
     enum ParamFlags
     {
         None,
-        Index,   // The H,L and HL registers can also be Index Registers
-        Displacement,   // The HL register can be an Index register with displacment
-        InternalDisplacement, //  Same as above, but the displacment is inside the opcode
+        //Index,   // The H,L and HL registers can also be Index Registers
+        //Displacement,   // The HL register can be an Index register with displacment
+        //InternalDisplacement, //  Same as above, but the displacment is inside the opcode
+        EmbededIndex,       // The Index will be embeded in the opcode instead of following it (iiCBnnOP)
+
     }
 
     struct OpcodeEncoding
     {
-        public byte[] Encoding;
+        //public byte[] Encoding;
 
-        public CommandID Param1;
-        public ParameterType Param1Type;
-        public CommandID Param2;
-        public ParameterType Param2Type;
-        public CommandID Param3;
-        public ParameterType Param3Type;
+        //public CommandID Param1;
+        //public ParameterType Param1Type;
+        //public CommandID Param2;
+        //public ParameterType Param2Type;
+        //public CommandID Param3;
+        //public ParameterType Param3Type;
 
-        public ParamFlags Flags;
+        //public ParamFlags Flags;
+
+        //public CommandID Function;
 
         public CommandID Function;
+        public CommandID[] Params;
+        public ParamFlags Flags;
+        public byte Prefix;
+        public byte Base;
     };
 
     class Program

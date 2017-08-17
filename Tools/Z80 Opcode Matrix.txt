@@ -1,168 +1,168 @@
-Prefix,Base,Name,Opcode1,Opcode2,Opcode3,Offical,No Index Prefix,Index Byte Reg,Size
-,0,NOP,,,,Y,N,N,
-,1,LD,WordReg | 3,Word | Immidate,,Y,N,N,Word
-,2,LD,(BC),A,,Y,N,N,Byte
-,3,INC,WordReg | 3,,,Y,N,N,Word
-,4,INC,ByteReg | 2,,,Y,N,Y,Byte
-,5,DEC,ByteReg | 2,,,Y,N,Y,Byte
-,6,LD,ByteReg | 2,Byte | Immidate,,Y,N,Y,Byte
-,7,RLCA,,,,Y,N,N,
-,8,EX,AF,AF',,Y,N,N,Byte
-,9,ADD,AddrReg,WordReg | 3,,Y,N,N,Word
-,0A,LD,A,(BC),,Y,N,N,Byte
-,0B,DEC,WordReg | 3,,,Y,N,N,Word
-,0F,RRCA,,,,Y,N,N,
-,10,DJNZ,Disp | Immidate,,,Y,N,N,Byte
-,12,LD,(DE),A,,Y,N,N,Byte
-,17,RLA,,,,Y,N,N,Byte
-,18,JR,Disp | Immidate,,,Y,N,N,Byte
-,1A,LD,A,(DE),,Y,N,N,Byte
-,1F,RRA,,,,Y,N,N,
-,20,JR,HalfFlag | 4,Disp | Immidate,,Y,N,N,Byte
-,22,LD,AddressPtr | Immidate,AddrReg,,Y,N,N,Word
-,27,DAA,,,,Y,N,N,
-,2A,LD,AddrReg,AddressPtr | Immidate,,Y,N,N,Word
-,2F,CPL,,,,Y,N,N,
-,32,LD,AddressPtr | Immidate,A,,Y,N,N,Byte
-,34,INC,BytePtr,,,Y,N,N,Byte
-,35,DEC,BytePtr,,,Y,N,N,Byte
-,36,LD,BytePtr,Byte | Immidate,,Y,N,N,Byte
-,37,SCF,,,,Y,N,N,
-,3A,LD,A,AddressPtr | Immidate,,Y,N,N,Byte
-,3F,CCF,,,,Y,N,N,
-,40,LD,ByteReg | 2,ByteReg | 1,,Y,N,Y,Byte
-,46,LD,ByteReg | 2,BytePtr,,Y,N,Y,Byte
-,70,LD,BytePtr,ByteReg | 1,,Y,N,Y,Byte
-,76,HALT,,,,Y,N,N,
-,80,ADD,A,ByteReg | 1,,Y,N,Y,Byte
-,86,ADD,A,BytePtr,,Y,N,N,Byte
-,88,ADC,A,ByteReg | 1,,Y,N,Y,Byte
-,8E,ADC,A,BytePtr,,Y,N,N,Byte
-,90,SUB,A,ByteReg | 1,,Y,N,Y,Byte
-,96,SUB,A,BytePtr,,Y,N,N,Byte
-,98,SBC,A,ByteReg | 1,,Y,N,Y,Byte
-,9E,SBC,A,BytePtr,,Y,N,N,Byte
-,A0,AND,A,ByteReg | 1,,Y,N,Y,Byte
-,A6,AND,A,BytePtr,,Y,N,N,Byte
-,A8,XOR,A,ByteReg | 1,,Y,N,Y,Byte
-,AE,XOR,A,BytePtr,,Y,N,N,Byte
-,B0,OR,A,ByteReg | 1,,Y,N,Y,Byte
-,B6,OR,A,BytePtr,,Y,N,N,Byte
-,B8,CP,A,ByteReg | 1,,Y,N,Y,Byte
-,BE,CP,A,BytePtr,,Y,N,N,Byte
-,C0,RET,Flag | 2,,,Y,N,N,
-,C1,POP,WordRegF | 3,,,Y,N,N,Word
-,C2,JP,Flag | 2,Address | Immidate,,Y,N,N,Word
-,C3,JP,Address | Immidate,,,Y,N,N,Word
-,C4,CALL,Flag | 2,Address | Immidate,,Y,N,N,Word
-,C5,PUSH,WordRegF | 3,,,Y,N,N,Word
-,C6,ADD,A,Byte | Immidate,,Y,N,N,Byte
-,C7,RST,Encoded | 2,,,Y,N,N,
-,C9,RET,,,,Y,N,N,
-,CD,CALL,Address | Immidate,,,Y,N,N,Word
-,CE,ADC,A,Byte | Immidate,,Y,N,N,Byte
-,D3,OUT,Byte | Immidate,A,,Y,N,N,Byte
-,D6,SUB,A,Byte | Immidate,,Y,N,N,Byte
-,D9,EXX,,,,Y,N,N,
-,DB,IN,A,Byte | Immidate,,Y,N,N,Byte
-,DE,SBC,A,Byte | Immidate,,Y,N,N,Byte
-,E3,EX,(SP),AddrReg,,Y,N,N,Byte
-,E6,AND,A,Byte | Immidate,,Y,N,N,Byte
-,E9,JP,BytePtr,,,Y,N,N,Word
-,EB,EX,DE,HL,,Y,N,N,Byte
-,EE,XOR,A,Byte | Immidate,,Y,N,N,Byte
-,F3,DI,,,,Y,N,N,
-,F6,OR,A,Byte | Immidate,,Y,N,N,
-,F9,LD,SP,AddrReg,,Y,N,N,Word
-,FB,EI,,,,Y,N,N,
-,FE,CP,A,Byte | Immidate,,Y,N,N,Byte
-CB,0,RLC,ByteReg | 1,,,Y,N,N,
-CB,0,RLC,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,6,RLC,BytePtr,,,Y,N,N,Byte
-CB,8,RRC,ByteReg | 1,,,Y,N,N,Byte
-CB,8,RRC,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,E,RRC,BytePtr,,,Y,N,N,Byte
-CB,10,RL,ByteReg | 1,,,Y,N,N,Byte
-CB,10,RL,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,16,RL,BytePtr,,,Y,N,N,Byte
-CB,18,RR,ByteReg | 1,,,Y,N,N,Byte
-CB,18,RR,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,1E,RR,BytePtr,,,Y,N,N,Byte
-CB,20,SLA,ByteReg | 1,,,Y,N,N,Byte
-CB,20,SLA,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,26,SLA,BytePtr,,,Y,N,N,Byte
-CB,28,SRA,ByteReg | 1,,,Y,N,N,Byte
-CB,28,SRA,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,2E,SRA,BytePtr,,,Y,N,N,Byte
-CB,30,SLL,ByteReg | 1,,,X,N,N,Byte
-CB,30,SLL,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,36,SLL,BytePtr,,,X,N,N,Byte
-CB,38,SRL,ByteReg | 1,,,Y,N,N,Byte
-CB,38,SRL,IndexPtr,ByteReg | 1,,N,N,N,Byte
-CB,3E,SRL,BytePtr,,,Y,N,N,Byte
-CB,40,BIT,Encoded | 2,ByteReg | 1,,Y,N,N,Byte
-CB,40,BIT,Encoded | 2,IndexPtr,ByteReg | 1,N,N,N,Byte
-CB,46,BIT,Encoded | 2,BytePtr ,,Y,N,N,Byte
-CB,80,RES,Encoded | 2,ByteReg | 1,,Y,N,N,Byte
-CB,80,RES,Encoded | 2,IndexPtr,ByteReg | 1,N,N,N,Byte
-CB,86,RES,Encoded | 2,BytePtr,,Y,N,N,Byte
-CB,C0,SET,Encoded | 2,ByteReg | 1,,Y,N,N,Byte
-CB,C0,SET,Encoded | 2,IndexPtr,ByteReg | 1,N,N,N,Byte
-CB,C6,SET,Encoded | 2,BytePtr,,Y,N,N,Byte
-ED,40,IN,ByteReg | 2,C,,Y,N,N,Byte
-ED,41,OUT,C,ByteReg | 2,,Y,N,N,Byte
-ED,42,SBC,HL,WordReg | 3,,Y,Y,N,Word
-ED,43,LD,AddressPtr | Immidate,WordReg | 3,,Y,Y,N,Word
-ED,44,NEG,A,,,Y,N,N,Byte
-ED,45,RETN,,,,Y,N,N,
-ED,46,IM,0,,,Y,N,N,
-ED,47,LD,I,A,,Y,N,N,Byte
-ED,4A,ADC,HL,WordReg | 3,,Y,Y,N,Word
-ED,4B,LD,WordReg | 3,AddressPtr | Immidate,,Y,Y,N,Word
-ED,4C,NEG,A,,,N,N,N,Byte
-ED,4D,RETI,,,,Y,N,N,
-ED,4E,IM,0,,,N,N,N,
-ED,4F,LD,R,A,,Y,N,N,Byte
-ED,54,NEG,A,,,N,N,N,Byte
-ED,55,RETN,,,,N,N,N,
-ED,56,IM,1,,,Y,N,N,
-ED,57,LD,A,I,,Y,N,N,Byte
-ED,5C,NEG,A,,,N,N,N,Byte
-ED,5D,RETN,,,,N,N,N,
-ED,5E,IM,2,,,Y,N,N,
-ED,5F,LD,A,R,,Y,N,N,Byte
-ED,63,LD,AddressPtr | Immidate,HL,,N,Y,N,Word
-ED,64,NEG,A,,,N,N,N,Byte
-ED,65,RETN,,,,N,N,N,
-ED,66,IM,0,,,N,N,N,
-ED,67,RRD,,,,Y,N,N,
-ED,6B,LD,HL,AddressPtr | Immidate,,N,Y,N,Word
-ED,6C,NEG,A,,,N,N,N,Byte
-ED,6D,RETN,,,,N,N,N,
-ED,6E,IM,0,,,N,N,N,
-ED,6E,IM,0,,,N,N,N,
-ED,6F,RLD,,,,Y,N,N,
-ED,70,IN,C,,,X,N,N,Byte
-ED,71,OUT,C,0,,X,N,N,Byte
-ED,74,NEG,A,,,N,N,N,Byte
-ED,75,RETN,,,,N,N,N,
-ED,76,IM,1,,,N,N,N,
-ED,7C,NEG,A,,,N,N,N,Byte
-ED,7D,RETN,,,,N,N,N,
-ED,7E,IM,2,,,N,N,N,
-ED,A0,LDI,,,,Y,N,N,Byte
-ED,A1,CPI,,,,Y,N,N,
-ED,A2,INI,,,,Y,N,N,
-ED,A3,OUTI,,,,Y,N,N,
-ED,A8,LDD,,,,Y,N,N,Byte
-ED,A9,CPD,,,,Y,N,N,
-ED,AA,IND,,,,Y,N,N,
-ED,AB,OUTD,,,,Y,N,N,
-ED,B0,LDIR,,,,Y,N,N,Byte
-ED,B1,CPIR,,,,Y,N,N,
-ED,B2,INIR,,,,Y,N,N,
-ED,B3,OTIR,,,,Y,N,N,
-ED,B8,LDDR,,,,Y,N,N,Byte
-ED,B9,CPDR,,,,Y,N,N,
-ED,BA,INDR,,,,Y,N,N,
-ED,BB,OTDR,,,,Y,N,N,
+Prefix,Base,Name,Opcode1,Opcode2,Opcode3,Offical,Function,,
+,0,NOP,,,,Y,NOP,,
+,1,LD,WordReg | 3,Word | Immidate,,Y,LD,,
+,2,LD,(BC),A,,Y,LD,,
+,3,INC,WordReg | 3,,,Y,INC,,
+,4,INC,ByteReg* | 2,,,Y,INC,,
+,5,DEC,ByteReg* | 2,,,Y,DEC,,
+,6,LD,ByteReg* | 2,Byte | Immidate,,Y,LD,,
+,7,RLCA,,,,Y,RL_A_CY,,
+,8,EX,AF,AF',,Y,EX,,
+,9,ADD,HL*,WordReg | 3,,Y,ADD,,
+,0A,LD,A,(BC),,Y,LD,,
+,0B,DEC,WordReg | 3,,,Y,DEC,,
+,0F,RRCA,,,,Y,RR_A_CY,,
+,10,DJNZ,Disp | Immidate,,,Y,DJNZ,,
+,12,LD,(DE),A,,Y,LD,,
+,17,RLA,,,,Y,RL_A,,
+,18,JR,Disp | Immidate,,,Y,JR,Flags,
+,1A,LD,A,(DE),,Y,LD,0,NZ
+,1F,RRA,,,,Y,RR_A,1,Z
+,20,JR,HalfFlag | 4,Disp | Immidate,,Y,JR,2,NC
+,22,LD,AddressPtr | Immidate,HL*,,Y,LD,3,CY
+,27,DAA,,,,Y,BCD_Adjust,4,PO
+,2A,LD,HL*,AddressPtr | Immidate,,Y,LD,5,PE
+,2F,CPL,A,,,Y,NOT,6,P
+,32,LD,AddressPtr | Immidate,A,,Y,LD,7,M
+,34,INC,(HL*),,,Y,INC,,
+,35,DEC,(HL*),,,Y,DEC,,
+,36,LD,(HL*),Byte | Immidate,,Y,LD,,
+,37,SCF,,,,Y,CY_SET,,
+,3A,LD,A,AddressPtr | Immidate,,Y,LD,,
+,3F,CCF,,,,Y,CY_Invert,,
+,40,LD,ByteReg* | 2,ByteReg* | 1,,Y,LD,,
+,46,LD,ByteReg* | 2,(HL*),,Y,LD,,
+,70,LD,(HL*),ByteReg* | 1,,Y,LD,,
+,76,HALT,,,,Y,HALT,,
+,80,ADD,A,ByteReg* | 1,,Y,ADD,,
+,86,ADD,A,(HL*),,Y,ADD,,
+,88,ADC,A,ByteReg* | 1,,Y,ADDC,,
+,8E,ADC,A,(HL*),,Y,ADDC,,
+,90,SUB,A,ByteReg* | 1,,Y,SUB,,
+,96,SUB,A,(HL*),,Y,SUB,,
+,98,SBC,A,ByteReg* | 1,,Y,SUBC,,
+,9E,SBC,A,(HL*),,Y,SUBC,,
+,A0,AND,A,ByteReg* | 1,,Y,AND,,
+,A6,AND,A,(HL*),,Y,AND,,
+,A8,XOR,A,ByteReg* | 1,,Y,XOR,,
+,AE,XOR,A,(HL*),,Y,XOR,,
+,B0,OR,A,ByteReg* | 1,,Y,OR,,
+,B6,OR,A,(HL*),,Y,OR,,
+,B8,CP,A,ByteReg* | 1,,Y,CMP,,
+,BE,CP,A,(HL*),,Y,CMP,,
+,C0,RET,Flag | 2,Address | Immidate,,Y,RET,,
+,C1,POP,WordRegF | 3,,,Y,POP,,
+,C2,JP,Flag | 2,Address | Immidate,,Y,JMP,,
+,C3,JP,Address | Immidate,,,Y,JMP,,
+,C4,CALL,Flag | 2,Address | Immidate,,Y,CALL,,
+,C5,PUSH,WordRegF | 3,,,Y,PUSH,,
+,C6,ADD,A,Byte | Immidate,,Y,ADD,,
+,C7,RST,Encoded | 2,,,Y,RST,,
+,C9,RET,,,,Y,RET,,
+,CD,CALL,Address | Immidate,,,Y,CALL,,
+,CE,ADC,A,Byte | Immidate,,Y,ADDC,,
+,D3,OUT,Byte | Immidate,A,,Y,OUT,,
+,D6,SUB,A,Byte | Immidate,,Y,SUB,,
+,D9,EXX,,,,Y,EXX,,
+,DB,IN,A,Byte | Immidate,,Y,IN,,
+,DE,SBC,A,Byte | Immidate,,Y,SUBC,,
+,E3,EX,(SP),HL*,,Y,EX,,
+,E6,AND,A,Byte | Immidate,,Y,AND,,
+,E9,JP,HL*,,,Y,JMP,,
+,EB,EX,DE,HL,,Y,EX,,
+,EE,XOR,A,Byte | Immidate,,Y,XOR,,
+,F3,DI,,,,Y,DI,,
+,F6,OR,A,Byte | Immidate,,Y,OR,,
+,F9,LD,SP,HL*,,Y,LD,,
+,FB,EI,,,,Y,EI,,
+,FE,CP,A,Byte | Immidate,,Y,CMP,,
+CB,0,RLC,ByteReg | 1,,,Y,RL_CY,,
+CB,0,RLC,(IX*),ByteReg | 1,,X,RL_CY,,
+CB,6,RLC,(HL*),,,Y,RL_CY,,
+CB,8,RRC,ByteReg | 1,,,Y,RR_CY,,
+CB,8,RRC,(IX*),ByteReg | 1,,X,RR_CY,,
+CB,E,RRC,(HL*),,,Y,RR_CY,,
+CB,10,RL,ByteReg | 1,,,Y,RL,,
+CB,10,RL,(IX*),ByteReg | 1,,X,RL,,
+CB,16,RL,(HL*),,,Y,RL,,
+CB,18,RR,ByteReg | 1,,,Y,RR,,
+CB,18,RR,(IX*),ByteReg | 1,,X,RR,,
+CB,1E,RR,(HL*),,,Y,RR,,
+CB,20,SLA,ByteReg | 1,,,Y,SL_Signed,,
+CB,20,SLA,(IX*),ByteReg | 1,,X,SL_Signed,,
+CB,26,SLA,(HL*),,,Y,SL_Signed,,
+CB,28,SRA,ByteReg | 1,,,Y,SR_Signed,,
+CB,28,SRA,(IX*),ByteReg | 1,,X,SR_Signed,,
+CB,2E,SRA,(HL*),,,Y,SR_Signed,,
+CB,30,SLL,ByteReg | 1,,,X,SL_L,,
+CB,30,SLL,(IX*),ByteReg | 1,,X,SL_L,,
+CB,36,SLL,(HL*),,,X,SL_L,,
+CB,38,SRL,ByteReg | 1,,,Y,SR_L,,
+CB,38,SRL,(IX*),ByteReg | 1,,X,SR_L,,
+CB,3E,SRL,(HL*),,,Y,SR_L,,
+CB,40,BIT,Encoded | 2,ByteReg | 1,,Y,BIT,,
+CB,40,BIT,Encoded | 2,(IX*),ByteReg | 1,X,BIT,,
+CB,46,BIT,Encoded | 2,(HL*),,Y,BIT,,
+CB,80,RES,Encoded | 2,ByteReg | 1,,Y,RES,,
+CB,80,RES,Encoded | 2,(IX*),ByteReg | 1,X,RES,,
+CB,86,RES,Encoded | 2,(HL*),,Y,RES,,
+CB,C0,SET,Encoded | 2,ByteReg | 1,,Y,SET,,
+CB,C0,SET,Encoded | 2,(IX*),ByteReg | 1,X,SET,,
+CB,C6,SET,Encoded | 2,(HL*),,Y,SET,,
+ED,40,IN,ByteReg | 2,C,,Y,IN,,
+ED,41,OUT,C,ByteReg | 2,,Y,OUT,,
+ED,42,SBC,HL,WordReg | 3,,Y,SUBC,,
+ED,43,LD,AddressPtr | Immidate,WordReg | 3,,Y,LD,,
+ED,44,NEG,A,,,Y,NEG,,
+ED,45,RETN,,,,Y,RETN,,
+ED,46,IM,0,,,Y,IM,,
+ED,47,LD,I,A,,Y,LD,,
+ED,4A,ADC,HL,WordReg | 3,,Y,ADDC,,
+ED,4B,LD,WordReg | 3,AddressPtr | Immidate,,Y,LD,,
+ED,4C,NEG,A,,,N,NEG,,
+ED,4D,RETI,,,,Y,RETI,,
+ED,4E,IM,0,,,N,IM,,
+ED,4F,LD,R,A,,Y,LD,,
+ED,54,NEG,A,,,N,NEG,,
+ED,55,RETN,,,,N,RETN,,
+ED,56,IM,1,,,Y,IM,,
+ED,57,LD,A,I,,Y,LD,,
+ED,5C,NEG,A,,,N,NEG,,
+ED,5D,RETN,,,,N,RETN,,
+ED,5E,IM,2,,,Y,IM,,
+ED,5F,LD,A,R,,Y,LD,,
+ED,63,LD,AddressPtr | Immidate,HL,,N,LD,,
+ED,64,NEG,A,,,N,NEG,,
+ED,65,RETN,,,,N,RETN,,
+ED,66,IM,0,,,N,IM,,
+ED,67,RRD,,,,Y,ROLL_R,,
+ED,6B,LD,HL,AddressPtr | Immidate,,N,LD,,
+ED,6C,NEG,A,,,N,NEG,,
+ED,6D,RETN,,,,N,RETN,,
+ED,6E,IM,0,,,N,IM,,
+ED,6E,IM,0,,,N,IM,,
+ED,6F,RLD,,,,Y,ROLL_L,,
+ED,70,IN,C,,,X,IN,,
+ED,71,OUT,C,0,,X,OUT,,
+ED,74,NEG,A,,,N,NEG,,
+ED,75,RETN,,,,N,RETN,,
+ED,76,IM,1,,,N,IM,,
+ED,7C,NEG,A,,,N,NEG,,
+ED,7D,RETN,,,,N,RETN,,
+ED,7E,IM,2,,,N,IM,,
+ED,A0,LDI,,,,Y,LD_I,,
+ED,A1,CPI,,,,Y,CMP_I,,
+ED,A2,INI,,,,Y,IN_I,,
+ED,A3,OUTI,,,,Y,OUT_I,,
+ED,A8,LDD,,,,Y,LD_D,,
+ED,A9,CPD,,,,Y,CMP_D,,
+ED,AA,IND,,,,Y,IN_D,,
+ED,AB,OUTD,,,,Y,OUT_D,,
+ED,B0,LDIR,,,,Y,LD_IR,,
+ED,B1,CPIR,,,,Y,CMP_IR,,
+ED,B2,INIR,,,,Y,IN_IR,,
+ED,B3,OTIR,,,,Y,OUT_IR,,
+ED,B8,LDDR,,,,Y,LD_DR,,
+ED,B9,CPDR,,,,Y,CMP_DR,,
+ED,BA,INDR,,,,Y,IN_DR,,
+ED,BB,OTDR,,,,Y,OUT_DR,,

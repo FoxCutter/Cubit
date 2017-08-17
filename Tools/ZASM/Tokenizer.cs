@@ -111,7 +111,16 @@ namespace ZASM
         RegisterMax = 0xFF,
 
         // Flags
-        CY, NC, Z, NZ, PE, PO, P, M,
+        Flag_NZ,
+        Flag_Z,
+        Flag_NC,
+        Flag_C,
+        Flag_PO,
+        Flag_PE,
+        Flag_P,
+        Flag_M,
+
+        //CY, NC, Z, NZ, PE, PO, P, M,
 
         FlagsMax,
 
@@ -148,6 +157,45 @@ namespace ZASM
 
 
         CommandMax,
+
+        // Encoding Flags
+        ByteReg,            // B, C, D, E, H, L, A
+        ByteRegIndex,       // B, C, D, E, IXH, IYH, IXL, IYL, A
+        WordReg,            // BC, DE, HL, SP, IX, IY
+        WordRegAF,          // BC, DE, HL, AF, IX, IY
+        Flags,              // NZ, Z, NC, CY, PO, PE, P, M
+        HalfFlags,          // NZ, Z, NC, CY
+
+
+        Byte_Pointer,       // (HL), (IX + *), (IY + *)
+        Address_Registers,  // HL, IX, IY
+        Index_Pointer,      // (IX+*), (IY+*)
+
+        Address_Pointer,    // (nn)
+
+        ByteData,           // n
+        WordData,           // nn
+        Displacment,        // e-2
+        Address,            // nn
+
+        HL_Pointer,         // (HL)
+        BC_Pointer,         // (BC)
+        DE_Pointer,         // (DE)
+        SP_Pointer,         // (SP)
+
+        HLInc_Pointer,      // (HL+) Gameboy
+        HLDec_Pointer,      // (HL-) Gameboy
+        High_Pointer,       // (+Word) Gameboy
+        High_C_Pointer,     // (+C) Gameboy
+        SP_Offset,          // SP + Byte Gameboy
+
+        PosImmidate,        // Encoded as Immidate data
+        Pos1,
+        Pos2,
+        Pos3,
+        Pos4,
+
+        EncodingMax,
 
         Encoded = 0xF000,
     }

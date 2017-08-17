@@ -13,13 +13,20 @@ namespace TableBuilder
             None,
 
             // Byte Registers
-            A,             
             B,             
             C,
             D,
             E,
-            L,
             H,
+            L,
+            M,  // i8080
+            A,
+
+            IXL,
+            IXH,
+            IYL,
+            IYH,
+
             I,             
             R,             
 
@@ -28,33 +35,41 @@ namespace TableBuilder
             DE,            
             HL,            
             SP,            
-            AF,
-            AddrReg,    // HL, IX, IY
+            AF,     // Z80
+            PSW,    // i8080
+
+            IX,
+            IY,
             
             // Flags
-            NZ,
-            Z,
-            NC,
-            CY,
-            PO,
-            PE,
-            P,
-            M,
+            Flag_NZ,
+            Flag_Z,
+            Flag_NC,
+            Flag_CY,
+            Flag_PO,
+            Flag_PE,
+            Flag_P,
+            Flag_M,
             
             // Immidates
-            ByteImmidate,   // *
-            WordImmidate,   // **
+            ByteData,       // *
+            WordData,       // **
             Displacment,    // *
             Address,        // **
 
             // Pointers
-            HL_Pointer,     // (HL)
+            HL_Pointer,     // (HL) Z80
             BC_Pointer,     // (BC)
             DE_Pointer,     // (DE)
             SP_Pointer,     // (SP)
-            AddressPtr,     // (**)
-            IndexPtr,       // (IX+*), (IY+*)
-            BytePtr,        // (HL), (IX + *), (IY + *)
+
+            HLInc_Pointer,  // (HL+) Gameboy
+            HLDec_Pointer,  // (HL-) Gameboy
+            High_Pointer,   // (+Word) Gameboy
+            High_C_Pointer, // (+C) Gameboy
+            SP_Offset,      // SP + Byte Gameboy
+
+            Address_Pointer,    // (**)
 
             Zero = 0x100,   // 0
             One,
@@ -65,11 +80,16 @@ namespace TableBuilder
             Six,
             Seven,
 
-            Expandable = 0x200, 
+            Expandable = 0x200,
+
+            Byte_Pointer,       // (HL), (IX + *), (IY + *)
+            Address_Registers,  // HL, IX, IY
+            Index_Pointer,      // (IX+*), (IY+*)
 
             WordReg,        // BC, DE, HL, SP, IX, IY
             WordRegAF,      // BC, DE, HL, AF, IX, IY
-            ByteReg,        // B, C, D, E, H, L, IXH, IYH, IXL, IYL
+            ByteReg,        // B, C, D, E, H, L, A
+            ByteRegIndex,   // B, C, D, E, IXH, IYH, IXL, IYL, A
             Flags,          // NZ, Z, NC, CY, PO, PE, P, M
             HalfFlags,      // NZ, Z, NC, CY
             Encoded,        // 0-7
@@ -89,11 +109,13 @@ namespace TableBuilder
         {
             public ParamType Type;
             public ParamPos Pos;
+            public bool Implicit;
         }
 
         public class OpcodeEntry
         {
             public string Opcode;
+            public string Function;
 
             public byte Prefix;
             public byte Base;
@@ -101,9 +123,6 @@ namespace TableBuilder
             public List<ParamInformation> Params;
 
             public bool Offical;
-            public bool NoIndexPrefix;
-            public bool IndexByteReg;
-            public byte DataSize;
 
             public bool CanExpand()
             {
@@ -133,8 +152,8 @@ namespace TableBuilder
                 {
                     if(Opcode.ToUpper() == "IN" || Opcode.ToUpper() == "OUT")
                         return false;
-                    
-                    if (Params.Where(e => e.Type == OpcodeMatrix.ParamType.IndexPtr).Count() != 0)
+
+                    if (Params.Where(e => e.Type == OpcodeMatrix.ParamType.Index_Pointer).Count() != 0)
                         return false;
                 }
 
@@ -178,9 +197,9 @@ namespace TableBuilder
             const int Op2Type = 4;
             const int Op3Type = 5;
             const int Offical = 6;
-            const int NoIndex = 7;
-            const int ByteIndex = 8;
-            const int DataSize = 9;
+            const int Function = 7;
+            //const int ByteIndex = 8;
+            //const int Size = 9;
 
             OpcodeEntry NewEntry = new OpcodeEntry();
             NewEntry.Params = new List<ParamInformation>();
@@ -194,6 +213,7 @@ namespace TableBuilder
 
             NewEntry.Base = (byte)Convert.ToUInt16(Fields[Base], 16);
             NewEntry.Opcode = Fields[Opcode].ToUpper();
+            NewEntry.Function = Fields[Function];
 
             ParamInformation NewParam1 = ConvertParamInformation(Fields[Op1Type]);
             ParamInformation NewParam2 = ConvertParamInformation(Fields[Op2Type]);
@@ -209,17 +229,6 @@ namespace TableBuilder
                 NewEntry.Params.Add(NewParam3);
 
             NewEntry.Offical = Fields[Offical] == "Y" || Fields[Offical] == "X";
-            NewEntry.NoIndexPrefix = Fields[NoIndex] == "Y";
-            NewEntry.IndexByteReg = Fields[ByteIndex] == "Y";
-
-            if(Fields[DataSize].ToUpper() == "BYTE")
-                NewEntry.DataSize = 8;
-
-            if (Fields[DataSize].ToUpper() == "WORD")
-                NewEntry.DataSize = 8;
-
-            else
-                NewEntry.DataSize = 0;
 
             return NewEntry;
         }
@@ -228,8 +237,18 @@ namespace TableBuilder
         {
             ParamInformation Ret;
             Ret.Pos = ParamPos.None;
+            Ret.Type = ParamType.None;
+            Ret.Implicit = false;
 
-            switch (Value.ToUpper().Trim())
+            string Name = Value.ToUpper().Trim();
+            if (Name.Length > 0 && Name[0] == '!')
+            {
+                Ret.Implicit = true;
+
+                Name = Name.Substring(1);
+            }
+
+            switch (Name)
             {
                 case "0":
                     Ret.Type = ParamType.Zero;
@@ -243,6 +262,7 @@ namespace TableBuilder
                     Ret.Type = ParamType.Two;
                     break;
 
+
                 case "(BC)":
                     Ret.Type = ParamType.BC_Pointer;
                     break;
@@ -255,25 +275,43 @@ namespace TableBuilder
                     Ret.Type = ParamType.SP_Pointer;
                     break;
 
-                case "A":
-                    Ret.Type = ParamType.A;
+                case "(HL)":
+                    Ret.Type = ParamType.HL_Pointer;
                     break;
 
-                case "AF":
-                case "AF'":
-                    Ret.Type = ParamType.AF;
+                case "(HL+)":
+                    Ret.Type = ParamType.HLInc_Pointer;
+                    break;
+
+                case "(HL-)":
+                    Ret.Type = ParamType.HLDec_Pointer;
+                    break;
+
+                case "(+C)":
+                    Ret.Type = ParamType.High_C_Pointer;
+                    break;
+
+                case "(+WORD) | IMMIDATE":
+                    Ret.Type = ParamType.High_Pointer;
+                    Ret.Pos = ParamPos.Immidate;
+                    break;
+
+                case "SP + BYTE | IMMIDATE":
+                    Ret.Type = ParamType.SP_Offset;
+                    Ret.Pos = ParamPos.Immidate;
+                    break;
+
+
+                case "A":
+                    Ret.Type = ParamType.A;
                     break;
 
                 case "C":
                     Ret.Type = ParamType.C;
                     break;
 
-                case "DE":
-                    Ret.Type = ParamType.DE;
-                    break;
-
-                case "HL":
-                    Ret.Type = ParamType.HL;
+                case "M":
+                    Ret.Type = ParamType.M;
                     break;
 
                 case "I":
@@ -284,12 +322,65 @@ namespace TableBuilder
                     Ret.Type = ParamType.R;
                     break;
 
+
+                case "PSW":
+                    Ret.Type = ParamType.PSW;
+                    break;
+
+                case "AF":
+                case "AF'":
+                    Ret.Type = ParamType.AF;
+                    break;
+
+                case "DE":
+                    Ret.Type = ParamType.DE;
+                    break;
+
+                case "HL":
+                    Ret.Type = ParamType.HL;
+                    break;
+
                 case "SP":
                     Ret.Type = ParamType.SP;
                     break;
 
+
+                case "FLAG-NZ":
+                    Ret.Type = ParamType.Flag_NZ;
+                    break;
+
+                case "FLAG-Z":
+                    Ret.Type = ParamType.Flag_Z;
+                    break;
+
+                case "FLAG-NC":
+                    Ret.Type = ParamType.Flag_NC;
+                    break;
+
+                case "FLAG-C":
+                case "FLAG-CY":
+                    Ret.Type = ParamType.Flag_CY;
+                    break;
+
+                case "FLAG-PO":
+                    Ret.Type = ParamType.Flag_PO;
+                    break;
+
+                case "FLAG-PE":
+                    Ret.Type = ParamType.Flag_PE;
+                    break;
+
+                case "FLAG-P":
+                    Ret.Type = ParamType.Flag_P;
+                    break;
+
+                case "FLAG-M":
+                    Ret.Type = ParamType.Flag_M;
+                    break;
+
+
                 case "ADDRESSPTR | IMMIDATE":
-                    Ret.Type = ParamType.AddressPtr;
+                    Ret.Type = ParamType.Address_Pointer;
                     Ret.Pos = ParamPos.Immidate;
                     break;
 
@@ -298,27 +389,29 @@ namespace TableBuilder
                     Ret.Pos = ParamPos.Immidate;
                     break;
 
+                case "HL*":
                 case "ADDRREG":
-                    Ret.Type = ParamType.AddrReg;
+                    Ret.Type = ParamType.Address_Registers;
+                    break;
+
+                case "(HL*)":
+                case "BYTEPTR":
+                    Ret.Type = ParamType.Byte_Pointer;
+                    break;
+
+                case "(IX*)":
+                case "INDEXPTR":
+                    Ret.Type = ParamType.Index_Pointer;
                     break;
 
                 case "BYTE | IMMIDATE":
-                    Ret.Type = ParamType.ByteImmidate;
+                    Ret.Type = ParamType.ByteData;
                     Ret.Pos = ParamPos.Immidate;
                     break;
 
-                case "BYTEPTR":
-                    Ret.Type = ParamType.BytePtr;
-                    break;
-
-                case "BYTEREG | 1":
-                    Ret.Type = ParamType.ByteReg;
-                    Ret.Pos = ParamPos.Pos1;
-                    break;
-
-                case "BYTEREG | 2":
-                    Ret.Type = ParamType.ByteReg;
-                    Ret.Pos = ParamPos.Pos2;
+                case "WORD | IMMIDATE":
+                    Ret.Type = ParamType.WordData;
+                    Ret.Pos = ParamPos.Immidate;
                     break;
 
                 case "DISP | IMMIDATE":
@@ -326,10 +419,33 @@ namespace TableBuilder
                     Ret.Pos = ParamPos.Immidate;
                     break;
 
+
+
+                case "BYTEREG* | 1":
+                    Ret.Type = ParamType.ByteRegIndex;
+                    Ret.Pos = ParamPos.Pos1;
+                    break;
+
+                case "BYTEREG | 1":
+                    Ret.Type = ParamType.ByteReg;
+                    Ret.Pos = ParamPos.Pos1;
+                    break;
+
+                case "BYTEREG* | 2":
+                    Ret.Type = ParamType.ByteRegIndex;
+                    Ret.Pos = ParamPos.Pos2;
+                    break;
+
+                case "BYTEREG | 2":
+                    Ret.Type = ParamType.ByteReg;
+                    Ret.Pos = ParamPos.Pos2;
+                    break;
+
                 case "ENCODED | 2":
                     Ret.Type = ParamType.Encoded;
                     Ret.Pos = ParamPos.Pos2;
                     break;
+
 
                 case "FLAG | 2":
                     Ret.Type = ParamType.Flags;
@@ -341,14 +457,6 @@ namespace TableBuilder
                     Ret.Pos = ParamPos.Pos4;
                     break;
 
-                case "INDEXPTR":
-                    Ret.Type = ParamType.IndexPtr;
-                    break;
-
-                case "WORD | IMMIDATE":
-                    Ret.Type = ParamType.WordImmidate;
-                    Ret.Pos = ParamPos.Immidate;
-                    break;
 
                 case "WORDREG | 3":
                     Ret.Type = ParamType.WordReg;
@@ -360,6 +468,7 @@ namespace TableBuilder
                     Ret.Pos = ParamPos.Pos3;
                     break;
                 
+
                 case "":
                     Ret.Type = ParamType.None;
                     break;
@@ -379,9 +488,12 @@ namespace TableBuilder
             {
                 if (!Skip)
                 {
-                    OpcodeEntry NewEntry = BuildEntry(Line);
+                    if (Line.Length != 0)
+                    {
+                        OpcodeEntry NewEntry = BuildEntry(Line);
 
-                    _OpcodeList.Add(NewEntry);
+                        _OpcodeList.Add(NewEntry);
+                    }
                 }
 
                 Skip = false;
@@ -402,16 +514,57 @@ namespace TableBuilder
             _OpcodeMatrix = _OpcodeMatrix.OrderBy(e => (e.Prefix << 8) + e.Base).ToList();
         }
 
-        static ParamType[] AddrRegs = new ParamType[] { ParamType.HL };
+        static ParamType[] AddrRegs = new ParamType[] { ParamType.HL, ParamType.IX, ParamType.IY };
         static ParamType[] BytePtrs = new ParamType[] { ParamType.HL_Pointer };
         static ParamType[] WordRegisters = new ParamType[] { ParamType.BC, ParamType.DE, ParamType.HL, ParamType.SP };
-        static ParamType[] ByteRegisters = new ParamType[] { ParamType.B, ParamType.C, ParamType.D, ParamType.E, ParamType.H, ParamType.L, ParamType.None, ParamType.A };
-        static ParamType[] Flags = new ParamType[] { ParamType.NZ, ParamType.Z, ParamType.NC, ParamType.CY, ParamType.PO, ParamType.PE, ParamType.P, ParamType.M };
+        static ParamType[] ByteRegisters = new ParamType[] { ParamType.B, ParamType.C, ParamType.D, ParamType.E, ParamType.H, ParamType.IXH, ParamType.IYH, ParamType.L, ParamType.IXL, ParamType.IYL, ParamType.None, ParamType.A };
+        static ParamType[] Flags = new ParamType[] { ParamType.Flag_NZ, ParamType.Flag_Z, ParamType.Flag_NC, ParamType.Flag_CY, ParamType.Flag_PO, ParamType.Flag_PE, ParamType.Flag_P, ParamType.Flag_M };
         static ParamType[] Encoded = new ParamType[] { ParamType.Zero, ParamType.Zero + 1, ParamType.Zero + 2, ParamType.Zero + 3, ParamType.Zero + 4, ParamType.Zero + 5, ParamType.Zero + 6, ParamType.Zero + 7 };
         static ParamType[] Reset = new ParamType[] { ParamType.Zero, ParamType.Zero + 0x08, ParamType.Zero + 0x10, ParamType.Zero + 0x18, ParamType.Zero + 0x20, ParamType.Zero + 0x28, ParamType.Zero + 0x30, ParamType.Zero + 0x38 };
 
         static int[] ShiftMap = new int[] { 0, 0, 3, 4, 3, 0 };
-        
+
+        byte LookupValue(ParamType Type)
+        {
+            switch (Type)
+            {
+                case ParamType.B:
+                    return 0;
+                case ParamType.C:
+                    return 1;
+                case ParamType.D:
+                    return 2;
+                case ParamType.E:
+                    return 3;
+                case ParamType.H:
+                case ParamType.IXH:
+                case ParamType.IYH:
+                    return 4;
+                case ParamType.L:
+                case ParamType.IXL:
+                case ParamType.IYL:
+                    return 5;
+                case ParamType.A:
+                    return 7;
+
+                case ParamType.BC:
+                    return 0;
+                case ParamType.DE:
+                    return 1;
+                case ParamType.HL:
+                case ParamType.IX:
+                case ParamType.IY:
+                    return 2;
+                case ParamType.AF:
+                case ParamType.PSW:
+                case ParamType.SP:
+                    return 3;
+                
+                default:
+                    return 0;
+            }
+        }
+
         List<OpcodeEntry> ExpandOpcodeEntry(OpcodeEntry Entry)
         {
             List<OpcodeEntry> Ret = new List<OpcodeEntry>();
@@ -431,6 +584,9 @@ namespace TableBuilder
             // Create new opcode entries for each new param            
             for(byte Value = 0; Value < Params.Count; Value++)
             {
+                if (Params[Value].Type == ParamType.None)
+                    continue;
+                
                 OpcodeEntry NewEntry = Entry.NewParam(Params[Value], Index);
                 NewEntry.Base += (byte)(Value << ShiftMap[(int)Params[Value].Pos]);
 
@@ -443,6 +599,25 @@ namespace TableBuilder
                     if (NewEntry.IsValid())
                         Ret.Add(NewEntry);
                 }
+
+                //if (Entry.Params[Index].Type == ParamType.ByteRegIndex)
+                //{
+                //    if (Params[Value].Type == ParamType.H)
+                //    {
+                //        NewEntry.Type = ParamType.IXH;
+                //        Ret.Add(NewEntry);
+                //        NewEntry.Type = ParamType.IYH;
+                //        Ret.Add(NewEntry);
+                //    }
+                //    else if (Params[Value].Type == ParamType.L)
+                //    {
+                //        NewEntry.Type = ParamType.IXL;
+                //        Ret.Add(NewEntry);
+                //        NewEntry.Type = ParamType.IYL;
+                //        Ret.Add(NewEntry);
+                //    }
+                //}
+
             }
 
             return Ret;
@@ -459,13 +634,16 @@ namespace TableBuilder
             else if (ParamEntry.Type == ParamType.ByteReg)
                 RegList = ByteRegisters;
 
+            else if (ParamEntry.Type == ParamType.ByteRegIndex)
+                RegList = ByteRegisters;
+
             else if (ParamEntry.Type == ParamType.Flags || ParamEntry.Type == ParamType.HalfFlags)
                 RegList = Flags;
 
-            else if (ParamEntry.Type == ParamType.AddrReg)
+            else if (ParamEntry.Type == ParamType.Address_Registers)
                 RegList = AddrRegs;
 
-            else if (ParamEntry.Type == ParamType.BytePtr)
+            else if (ParamEntry.Type == ParamType.Byte_Pointer)
                 RegList = BytePtrs;
 
             else if (ParamEntry.Type == ParamType.Encoded)
@@ -489,11 +667,13 @@ namespace TableBuilder
                     NewEntry.Type = Entry;
 
                 NewEntry.Pos = ParamEntry.Pos;
+                NewEntry.Implicit = ParamEntry.Implicit;
                 
                 Ret.Add(NewEntry);
 
                 if (ParamEntry.Type == ParamType.HalfFlags && Ret.Count == 4)
                     break;
+
             }
 
             return Ret;

@@ -39,8 +39,8 @@ namespace ZASM
             { "SP",	    CommandID.SP },    
 
             // Flags
-            { "CY",	    CommandID.CY },     { "NC",	    CommandID.NC },     { "Z",	    CommandID.Z },      { "NZ",	    CommandID.NZ },     { "PE",	    CommandID.PE },
-            { "PO",	    CommandID.PO },     { "P",	    CommandID.P },     
+            { "CY",	    CommandID.Flag_C },      { "NC",	CommandID.Flag_NC },     { "Z",	    CommandID.Flag_Z },      { "NZ",	    CommandID.Flag_NZ },     { "PE",	    CommandID.Flag_PE },
+            { "PO",	    CommandID.Flag_PO },     { "P",	    CommandID.Flag_P },     
 
             // Opcodes
             { "ADC",	CommandID.ADC },    { "ACI",	CommandID.ACI },    { "ADD",	CommandID.ADD },    { "ADI",	CommandID.ADI },    
@@ -102,8 +102,8 @@ namespace ZASM
             { "IXH",	CommandID.IXH },    { "IXL",	CommandID.IXL },    { "IYH",	CommandID.IYH },    { "IYL",	CommandID.IYL },    { "AF'",	CommandID.AF },
 
             // Flags
-            { "CY",	    CommandID.CY },     { "NC",	    CommandID.NC },     { "Z",	    CommandID.Z },      { "NZ",	    CommandID.NZ },     { "PE",	    CommandID.PE },
-            { "PO",	    CommandID.PO },     { "P",	    CommandID.P },      { "M",	    CommandID.M },
+            { "CY",	    CommandID.Flag_C },  { "NC",	CommandID.Flag_NC }, { "Z",	    CommandID.Flag_Z },  { "NZ",	CommandID.Flag_NZ }, { "PE",	CommandID.Flag_PE },
+            { "PO",	    CommandID.Flag_PO }, { "P",	    CommandID.Flag_P },  { "M",	    CommandID.Flag_M },
 
             // Opcodes
             { "ADC",	CommandID.ADC },    { "ADD",	CommandID.ADD },    { "AND",	CommandID.AND },    { "BIT",	CommandID.BIT },    { "CALL",	CommandID.CALL },

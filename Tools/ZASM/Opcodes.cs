@@ -1,1618 +1,1031 @@
-using System.Collections.Generic;
 namespace ZASM
 {
     static class Ops
     {
-        static public Dictionary<CommandID, OpcodeEncoding[]> EncodingData = new Dictionary<CommandID,OpcodeEncoding[]>
+        static public OpcodeEncoding[] EncodingData = 
         {
-            {
-                CommandID.ADC, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x88 } }, // 88: ADC A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x89 } }, // 89: ADC A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x8A } }, // 8A: ADC A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x8B } }, // 8B: ADC A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x8C } }, // 8C: ADC A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADC, Encoding = new byte[] { 0xDD, 0x8C } }, // DD8C: ADC A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADC, Encoding = new byte[] { 0xFD, 0x8C } }, // FD8C: ADC A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x8D } }, // 8D: ADC A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADC, Encoding = new byte[] { 0xDD, 0x8D } }, // DD8D: ADC A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADC, Encoding = new byte[] { 0xFD, 0x8D } }, // FD8D: ADC A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x8E } }, // 8E: ADC A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.ADC, Encoding = new byte[] { 0xDD, 0x8E } }, // DD8E: ADC A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.ADC, Encoding = new byte[] { 0xFD, 0x8E } }, // FD8E: ADC A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0x8F } }, // 8F: ADC A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0xCE } }, // CE: ADC A N 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0xED, 0x4A } }, // ED4A: ADC HL BC 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0xED, 0x5A } }, // ED5A: ADC HL DE 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0xED, 0x6A } }, // ED6A: ADC HL HL 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.SP, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADC, Encoding = new byte[] { 0xED, 0x7A } }, // ED7A: ADC HL SP 
-                }
-            },
-            {
-                CommandID.ADD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x09 } }, // 09: ADD HL BC 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x09 } }, // DD09: ADD IX BC 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x09 } }, // FD09: ADD IY BC 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x19 } }, // 19: ADD HL DE 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x19 } }, // DD19: ADD IX DE 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x19 } }, // FD19: ADD IY DE 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x29 } }, // 29: ADD HL HL 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x29 } }, // DD29: ADD IX HL 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x29 } }, // FD29: ADD IY HL 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.SP, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x39 } }, // 39: ADD HL SP 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.SP, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x39 } }, // DD39: ADD IX SP 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.SP, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x39 } }, // FD39: ADD IY SP 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x80 } }, // 80: ADD A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x81 } }, // 81: ADD A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x82 } }, // 82: ADD A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x83 } }, // 83: ADD A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x84 } }, // 84: ADD A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x84 } }, // DD84: ADD A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x84 } }, // FD84: ADD A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x85 } }, // 85: ADD A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x85 } }, // DD85: ADD A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x85 } }, // FD85: ADD A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x86 } }, // 86: ADD A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.ADD, Encoding = new byte[] { 0xDD, 0x86 } }, // DD86: ADD A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.ADD, Encoding = new byte[] { 0xFD, 0x86 } }, // FD86: ADD A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0x87 } }, // 87: ADD A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.ADD, Encoding = new byte[] { 0xC6 } }, // C6: ADD A N 
-                }
-            },
-            {
-                CommandID.AND, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA0 } }, // A0: AND A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA1 } }, // A1: AND A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA2 } }, // A2: AND A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA3 } }, // A3: AND A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA4 } }, // A4: AND A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.AND, Encoding = new byte[] { 0xDD, 0xA4 } }, // DDA4: AND A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.AND, Encoding = new byte[] { 0xFD, 0xA4 } }, // FDA4: AND A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA5 } }, // A5: AND A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.AND, Encoding = new byte[] { 0xDD, 0xA5 } }, // DDA5: AND A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.AND, Encoding = new byte[] { 0xFD, 0xA5 } }, // FDA5: AND A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA6 } }, // A6: AND A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.AND, Encoding = new byte[] { 0xDD, 0xA6 } }, // DDA6: AND A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.AND, Encoding = new byte[] { 0xFD, 0xA6 } }, // FDA6: AND A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xA7 } }, // A7: AND A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.AND, Encoding = new byte[] { 0xE6 } }, // E6: AND A N 
-                }
-            },
-            {
-                CommandID.BIT, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x40 } }, // CB40: BIT 0 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x41 } }, // CB41: BIT 0 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x42 } }, // CB42: BIT 0 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x43 } }, // CB43: BIT 0 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x44 } }, // CB44: BIT 0 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x45 } }, // CB45: BIT 0 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x46 } }, // CB46: BIT 0 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x47 } }, // CB47: BIT 0 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x48 } }, // CB48: BIT 1 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x49 } }, // CB49: BIT 1 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x4A } }, // CB4A: BIT 1 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x4B } }, // CB4B: BIT 1 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x4C } }, // CB4C: BIT 1 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x4D } }, // CB4D: BIT 1 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x4E } }, // CB4E: BIT 1 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x4F } }, // CB4F: BIT 1 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x50 } }, // CB50: BIT 2 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x51 } }, // CB51: BIT 2 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x52 } }, // CB52: BIT 2 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x53 } }, // CB53: BIT 2 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x54 } }, // CB54: BIT 2 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x55 } }, // CB55: BIT 2 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x56 } }, // CB56: BIT 2 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x57 } }, // CB57: BIT 2 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x58 } }, // CB58: BIT 3 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x59 } }, // CB59: BIT 3 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x5A } }, // CB5A: BIT 3 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x5B } }, // CB5B: BIT 3 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x5C } }, // CB5C: BIT 3 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x5D } }, // CB5D: BIT 3 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x5E } }, // CB5E: BIT 3 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x5F } }, // CB5F: BIT 3 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x60 } }, // CB60: BIT 4 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x61 } }, // CB61: BIT 4 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x62 } }, // CB62: BIT 4 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x63 } }, // CB63: BIT 4 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x64 } }, // CB64: BIT 4 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x65 } }, // CB65: BIT 4 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x66 } }, // CB66: BIT 4 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x67 } }, // CB67: BIT 4 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x68 } }, // CB68: BIT 5 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x69 } }, // CB69: BIT 5 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x6A } }, // CB6A: BIT 5 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x6B } }, // CB6B: BIT 5 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x6C } }, // CB6C: BIT 5 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x6D } }, // CB6D: BIT 5 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x6E } }, // CB6E: BIT 5 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x6F } }, // CB6F: BIT 5 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x70 } }, // CB70: BIT 6 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x71 } }, // CB71: BIT 6 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x72 } }, // CB72: BIT 6 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x73 } }, // CB73: BIT 6 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x74 } }, // CB74: BIT 6 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x75 } }, // CB75: BIT 6 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x76 } }, // CB76: BIT 6 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x77 } }, // CB77: BIT 6 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x78 } }, // CB78: BIT 7 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x79 } }, // CB79: BIT 7 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x7A } }, // CB7A: BIT 7 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x7B } }, // CB7B: BIT 7 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x7C } }, // CB7C: BIT 7 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x7D } }, // CB7D: BIT 7 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x7E } }, // CB7E: BIT 7 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.BIT, Encoding = new byte[] { 0xCB, 0x7F } }, // CB7F: BIT 7 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x40 } }, // DDCB40: BIT 0 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x40 } }, // FDCB40: BIT 0 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x41 } }, // DDCB41: BIT 0 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x41 } }, // FDCB41: BIT 0 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x42 } }, // DDCB42: BIT 0 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x42 } }, // FDCB42: BIT 0 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x43 } }, // DDCB43: BIT 0 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x43 } }, // FDCB43: BIT 0 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x44 } }, // DDCB44: BIT 0 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x44 } }, // FDCB44: BIT 0 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x45 } }, // DDCB45: BIT 0 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x45 } }, // FDCB45: BIT 0 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x46 } }, // DDCB46: BIT 0 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x46 } }, // FDCB46: BIT 0 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x47 } }, // DDCB47: BIT 0 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x47 } }, // FDCB47: BIT 0 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x48 } }, // DDCB48: BIT 1 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x48 } }, // FDCB48: BIT 1 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x49 } }, // DDCB49: BIT 1 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x49 } }, // FDCB49: BIT 1 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x4A } }, // DDCB4A: BIT 1 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x4A } }, // FDCB4A: BIT 1 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x4B } }, // DDCB4B: BIT 1 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x4B } }, // FDCB4B: BIT 1 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x4C } }, // DDCB4C: BIT 1 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x4C } }, // FDCB4C: BIT 1 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x4D } }, // DDCB4D: BIT 1 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x4D } }, // FDCB4D: BIT 1 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x4E } }, // DDCB4E: BIT 1 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x4E } }, // FDCB4E: BIT 1 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x4F } }, // DDCB4F: BIT 1 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x4F } }, // FDCB4F: BIT 1 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x50 } }, // DDCB50: BIT 2 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x50 } }, // FDCB50: BIT 2 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x51 } }, // DDCB51: BIT 2 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x51 } }, // FDCB51: BIT 2 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x52 } }, // DDCB52: BIT 2 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x52 } }, // FDCB52: BIT 2 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x53 } }, // DDCB53: BIT 2 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x53 } }, // FDCB53: BIT 2 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x54 } }, // DDCB54: BIT 2 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x54 } }, // FDCB54: BIT 2 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x55 } }, // DDCB55: BIT 2 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x55 } }, // FDCB55: BIT 2 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x56 } }, // DDCB56: BIT 2 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x56 } }, // FDCB56: BIT 2 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x57 } }, // DDCB57: BIT 2 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x57 } }, // FDCB57: BIT 2 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x58 } }, // DDCB58: BIT 3 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x58 } }, // FDCB58: BIT 3 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x59 } }, // DDCB59: BIT 3 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x59 } }, // FDCB59: BIT 3 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x5A } }, // DDCB5A: BIT 3 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x5A } }, // FDCB5A: BIT 3 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x5B } }, // DDCB5B: BIT 3 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x5B } }, // FDCB5B: BIT 3 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x5C } }, // DDCB5C: BIT 3 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x5C } }, // FDCB5C: BIT 3 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x5D } }, // DDCB5D: BIT 3 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x5D } }, // FDCB5D: BIT 3 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x5E } }, // DDCB5E: BIT 3 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x5E } }, // FDCB5E: BIT 3 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x5F } }, // DDCB5F: BIT 3 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x5F } }, // FDCB5F: BIT 3 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x60 } }, // DDCB60: BIT 4 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x60 } }, // FDCB60: BIT 4 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x61 } }, // DDCB61: BIT 4 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x61 } }, // FDCB61: BIT 4 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x62 } }, // DDCB62: BIT 4 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x62 } }, // FDCB62: BIT 4 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x63 } }, // DDCB63: BIT 4 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x63 } }, // FDCB63: BIT 4 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x64 } }, // DDCB64: BIT 4 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x64 } }, // FDCB64: BIT 4 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x65 } }, // DDCB65: BIT 4 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x65 } }, // FDCB65: BIT 4 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x66 } }, // DDCB66: BIT 4 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x66 } }, // FDCB66: BIT 4 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x67 } }, // DDCB67: BIT 4 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x67 } }, // FDCB67: BIT 4 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x68 } }, // DDCB68: BIT 5 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x68 } }, // FDCB68: BIT 5 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x69 } }, // DDCB69: BIT 5 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x69 } }, // FDCB69: BIT 5 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x6A } }, // DDCB6A: BIT 5 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x6A } }, // FDCB6A: BIT 5 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x6B } }, // DDCB6B: BIT 5 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x6B } }, // FDCB6B: BIT 5 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x6C } }, // DDCB6C: BIT 5 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x6C } }, // FDCB6C: BIT 5 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x6D } }, // DDCB6D: BIT 5 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x6D } }, // FDCB6D: BIT 5 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x6E } }, // DDCB6E: BIT 5 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x6E } }, // FDCB6E: BIT 5 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x6F } }, // DDCB6F: BIT 5 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x6F } }, // FDCB6F: BIT 5 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x70 } }, // DDCB70: BIT 6 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x70 } }, // FDCB70: BIT 6 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x71 } }, // DDCB71: BIT 6 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x71 } }, // FDCB71: BIT 6 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x72 } }, // DDCB72: BIT 6 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x72 } }, // FDCB72: BIT 6 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x73 } }, // DDCB73: BIT 6 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x73 } }, // FDCB73: BIT 6 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x74 } }, // DDCB74: BIT 6 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x74 } }, // FDCB74: BIT 6 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x75 } }, // DDCB75: BIT 6 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x75 } }, // FDCB75: BIT 6 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x76 } }, // DDCB76: BIT 6 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x76 } }, // FDCB76: BIT 6 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x77 } }, // DDCB77: BIT 6 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x77 } }, // FDCB77: BIT 6 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x78 } }, // DDCB78: BIT 7 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x78 } }, // FDCB78: BIT 7 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x79 } }, // DDCB79: BIT 7 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x79 } }, // FDCB79: BIT 7 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x7A } }, // DDCB7A: BIT 7 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x7A } }, // FDCB7A: BIT 7 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x7B } }, // DDCB7B: BIT 7 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x7B } }, // FDCB7B: BIT 7 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x7C } }, // DDCB7C: BIT 7 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x7C } }, // FDCB7C: BIT 7 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x7D } }, // DDCB7D: BIT 7 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x7D } }, // FDCB7D: BIT 7 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x7E } }, // DDCB7E: BIT 7 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x7E } }, // FDCB7E: BIT 7 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xDD, 0xCB, 0x7F } }, // DDCB7F: BIT 7 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.BIT, Encoding = new byte[] { 0xFD, 0xCB, 0x7F } }, // FDCB7F: BIT 7 (IY) a
-                }
-            },
-            {
-                CommandID.CALL, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.NZ, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xC4 } }, // C4: CALL NZ NN 
-                    new OpcodeEncoding { Param1 = CommandID.Z, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xCC } }, // CC: CALL Z NN 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.Immediate, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xCD } }, // CD: CALL NN  
-                    new OpcodeEncoding { Param1 = CommandID.NC, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xD4 } }, // D4: CALL NC NN 
-                    new OpcodeEncoding { Param1 = CommandID.CY, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xDC } }, // DC: CALL CY NN 
-                    new OpcodeEncoding { Param1 = CommandID.PO, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xE4 } }, // E4: CALL PO NN 
-                    new OpcodeEncoding { Param1 = CommandID.PE, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xEC } }, // EC: CALL PE NN 
-                    new OpcodeEncoding { Param1 = CommandID.P, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xF4 } }, // F4: CALL P NN 
-                    new OpcodeEncoding { Param1 = CommandID.M, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CALL, Encoding = new byte[] { 0xFC } }, // FC: CALL M NN 
-                }
-            },
-            {
-                CommandID.CCF, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CCF, Encoding = new byte[] { 0x3F } }, // 3F: CCF   
-                }
-            },
-            {
-                CommandID.CP, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xB8 } }, // B8: CP A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xB9 } }, // B9: CP A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xBA } }, // BA: CP A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xBB } }, // BB: CP A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xBC } }, // BC: CP A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.CP, Encoding = new byte[] { 0xDD, 0xBC } }, // DDBC: CP A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.CP, Encoding = new byte[] { 0xFD, 0xBC } }, // FDBC: CP A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xBD } }, // BD: CP A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.CP, Encoding = new byte[] { 0xDD, 0xBD } }, // DDBD: CP A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.CP, Encoding = new byte[] { 0xFD, 0xBD } }, // FDBD: CP A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xBE } }, // BE: CP A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.CP, Encoding = new byte[] { 0xDD, 0xBE } }, // DDBE: CP A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.CP, Encoding = new byte[] { 0xFD, 0xBE } }, // FDBE: CP A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xBF } }, // BF: CP A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CP, Encoding = new byte[] { 0xFE } }, // FE: CP A N 
-                }
-            },
-            {
-                CommandID.CPD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CPD, Encoding = new byte[] { 0xED, 0xA9 } }, // EDA9: CPD   
-                }
-            },
-            {
-                CommandID.CPDR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CPDR, Encoding = new byte[] { 0xED, 0xB9 } }, // EDB9: CPDR   
-                }
-            },
-            {
-                CommandID.CPI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CPI, Encoding = new byte[] { 0xED, 0xA1 } }, // EDA1: CPI   
-                }
-            },
-            {
-                CommandID.CPIR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CPIR, Encoding = new byte[] { 0xED, 0xB1 } }, // EDB1: CPIR   
-                }
-            },
-            {
-                CommandID.CPL, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.CPL, Encoding = new byte[] { 0x2F } }, // 2F: CPL   
-                }
-            },
-            {
-                CommandID.DAA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DAA, Encoding = new byte[] { 0x27 } }, // 27: DAA   
-                }
-            },
-            {
-                CommandID.DEC, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x05 } }, // 05: DEC B  
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x0B } }, // 0B: DEC BC  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x0D } }, // 0D: DEC C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x15 } }, // 15: DEC D  
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x1B } }, // 1B: DEC DE  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x1D } }, // 1D: DEC E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x25 } }, // 25: DEC H  
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.DEC, Encoding = new byte[] { 0xDD, 0x25 } }, // DD25: DEC IXH  
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.DEC, Encoding = new byte[] { 0xFD, 0x25 } }, // FD25: DEC IYH  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x2B } }, // 2B: DEC HL  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.DEC, Encoding = new byte[] { 0xDD, 0x2B } }, // DD2B: DEC IX  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.DEC, Encoding = new byte[] { 0xFD, 0x2B } }, // FD2B: DEC IY  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x2D } }, // 2D: DEC L  
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.DEC, Encoding = new byte[] { 0xDD, 0x2D } }, // DD2D: DEC IXL  
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.DEC, Encoding = new byte[] { 0xFD, 0x2D } }, // FD2D: DEC IYL  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x35 } }, // 35: DEC (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.DEC, Encoding = new byte[] { 0xDD, 0x35 } }, // DD35: DEC (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.DEC, Encoding = new byte[] { 0xFD, 0x35 } }, // FD35: DEC (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x3B } }, // 3B: DEC SP  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DEC, Encoding = new byte[] { 0x3D } }, // 3D: DEC A  
-                }
-            },
-            {
-                CommandID.DI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DI, Encoding = new byte[] { 0xF3 } }, // F3: DI   
-                }
-            },
-            {
-                CommandID.DJNZ, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateByte, Param1Type = ParameterType.Immediate, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.DJNZ, Encoding = new byte[] { 0x10 } }, // 10: DJNZ E-2  
-                }
-            },
-            {
-                CommandID.EI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.EI, Encoding = new byte[] { 0xFB } }, // FB: EI   
-                }
-            },
-            {
-                CommandID.EX, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.AF, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.AF, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.EX, Encoding = new byte[] { 0x08 } }, // 08: EX AF AF 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.EX, Encoding = new byte[] { 0xE3 } }, // E3: EX (SP) HL 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.EX, Encoding = new byte[] { 0xDD, 0xE3 } }, // DDE3: EX (SP) IX 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.EX, Encoding = new byte[] { 0xFD, 0xE3 } }, // FDE3: EX (SP) IY 
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.EX, Encoding = new byte[] { 0xEB } }, // EB: EX DE HL 
-                }
-            },
-            {
-                CommandID.EXX, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.EXX, Encoding = new byte[] { 0xD9 } }, // D9: EXX   
-                }
-            },
-            {
-                CommandID.HALT, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.HALT, Encoding = new byte[] { 0x76 } }, // 76: HALT   
-                }
-            },
-            {
-                CommandID.IM, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x46 } }, // ED46: IM 0  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x4E } }, // ED4E: IM 0  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x56 } }, // ED56: IM 1  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x5E } }, // ED5E: IM 2  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x66 } }, // ED66: IM 0  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x6E } }, // ED6E: IM 0  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x76 } }, // ED76: IM 1  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IM, Encoding = new byte[] { 0xED, 0x7E } }, // ED7E: IM 2  
-                }
-            },
-            {
-                CommandID.IN, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xDB } }, // DB: IN A (N) 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x40 } }, // ED40: IN B (C) 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x48 } }, // ED48: IN C (C) 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x50 } }, // ED50: IN D (C) 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x58 } }, // ED58: IN E (C) 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x60 } }, // ED60: IN H (C) 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x68 } }, // ED68: IN L (C) 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x70 } }, // ED70: IN (C)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IN, Encoding = new byte[] { 0xED, 0x78 } }, // ED78: IN A (C) 
-                }
-            },
-            {
-                CommandID.INC, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x03 } }, // 03: INC BC  
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x04 } }, // 04: INC B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x0C } }, // 0C: INC C  
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x13 } }, // 13: INC DE  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x14 } }, // 14: INC D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x1C } }, // 1C: INC E  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x23 } }, // 23: INC HL  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.INC, Encoding = new byte[] { 0xDD, 0x23 } }, // DD23: INC IX  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.INC, Encoding = new byte[] { 0xFD, 0x23 } }, // FD23: INC IY  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x24 } }, // 24: INC H  
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.INC, Encoding = new byte[] { 0xDD, 0x24 } }, // DD24: INC IXH  
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.INC, Encoding = new byte[] { 0xFD, 0x24 } }, // FD24: INC IYH  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x2C } }, // 2C: INC L  
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.INC, Encoding = new byte[] { 0xDD, 0x2C } }, // DD2C: INC IXL  
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.INC, Encoding = new byte[] { 0xFD, 0x2C } }, // FD2C: INC IYL  
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x33 } }, // 33: INC SP  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x34 } }, // 34: INC (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.INC, Encoding = new byte[] { 0xDD, 0x34 } }, // DD34: INC (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.INC, Encoding = new byte[] { 0xFD, 0x34 } }, // FD34: INC (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INC, Encoding = new byte[] { 0x3C } }, // 3C: INC A  
-                }
-            },
-            {
-                CommandID.IND, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.IND, Encoding = new byte[] { 0xED, 0xAA } }, // EDAA: IND   
-                }
-            },
-            {
-                CommandID.INDR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INDR, Encoding = new byte[] { 0xED, 0xBA } }, // EDBA: INDR   
-                }
-            },
-            {
-                CommandID.INI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INI, Encoding = new byte[] { 0xED, 0xA2 } }, // EDA2: INI   
-                }
-            },
-            {
-                CommandID.INIR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.INIR, Encoding = new byte[] { 0xED, 0xB2 } }, // EDB2: INIR   
-                }
-            },
-            {
-                CommandID.JP, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.NZ, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xC2 } }, // C2: JP NZ NN 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.Immediate, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xC3 } }, // C3: JP NN  
-                    new OpcodeEncoding { Param1 = CommandID.Z, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xCA } }, // CA: JP Z NN 
-                    new OpcodeEncoding { Param1 = CommandID.NC, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xD2 } }, // D2: JP NC NN 
-                    new OpcodeEncoding { Param1 = CommandID.CY, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xDA } }, // DA: JP CY NN 
-                    new OpcodeEncoding { Param1 = CommandID.PO, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xE2 } }, // E2: JP PO NN 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xE9 } }, // E9: JP (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.JP, Encoding = new byte[] { 0xDD, 0xE9 } }, // DDE9: JP (HL) IX 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.JP, Encoding = new byte[] { 0xFD, 0xE9 } }, // FDE9: JP (HL) IY 
-                    new OpcodeEncoding { Param1 = CommandID.PE, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xEA } }, // EA: JP PE NN 
-                    new OpcodeEncoding { Param1 = CommandID.P, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xF2 } }, // F2: JP P NN 
-                    new OpcodeEncoding { Param1 = CommandID.M, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JP, Encoding = new byte[] { 0xFA } }, // FA: JP M NN 
-                }
-            },
-            {
-                CommandID.JR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateByte, Param1Type = ParameterType.Immediate, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JR, Encoding = new byte[] { 0x18 } }, // 18: JR E-2  
-                    new OpcodeEncoding { Param1 = CommandID.NZ, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JR, Encoding = new byte[] { 0x20 } }, // 20: JR NZ E-2 
-                    new OpcodeEncoding { Param1 = CommandID.Z, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JR, Encoding = new byte[] { 0x28 } }, // 28: JR Z E-2 
-                    new OpcodeEncoding { Param1 = CommandID.NC, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JR, Encoding = new byte[] { 0x30 } }, // 30: JR NC E-2 
-                    new OpcodeEncoding { Param1 = CommandID.CY, Param1Type = ParameterType.Conditional, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.JR, Encoding = new byte[] { 0x38 } }, // 38: JR CY E-2 
-                }
-            },
-            {
-                CommandID.LD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x01 } }, // 01: LD BC NN 
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x02 } }, // 02: LD (BC) A 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x06 } }, // 06: LD B N 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x0A } }, // 0A: LD A (BC) 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x0E } }, // 0E: LD C N 
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x11 } }, // 11: LD DE NN 
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x12 } }, // 12: LD (DE) A 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x16 } }, // 16: LD D N 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x1A } }, // 1A: LD A (DE) 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x1E } }, // 1E: LD E N 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x21 } }, // 21: LD HL NN 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x21 } }, // DD21: LD IX NN 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x21 } }, // FD21: LD IY NN 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x22 } }, // 22: LD (NN) HL 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x22 } }, // DD22: LD (NN) IX 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x22 } }, // FD22: LD (NN) IY 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x26 } }, // 26: LD H N 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x26 } }, // DD26: LD IXH N 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x26 } }, // FD26: LD IYH N 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x2A } }, // 2A: LD HL (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x2A } }, // DD2A: LD IX (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x2A } }, // FD2A: LD IY (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x2E } }, // 2E: LD L N 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x2E } }, // DD2E: LD IXL N 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x2E } }, // FD2E: LD IYL N 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x31 } }, // 31: LD SP NN 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x32 } }, // 32: LD (NN) A 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x36 } }, // 36: LD (HL) N 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x36 } }, // DD36: LD (IX) N 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x36 } }, // FD36: LD (IY) N 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x3A } }, // 3A: LD A (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x3E } }, // 3E: LD A N 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x40 } }, // 40: LD B B 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x41 } }, // 41: LD B C 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x42 } }, // 42: LD B D 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x43 } }, // 43: LD B E 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x44 } }, // 44: LD B H 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x44 } }, // DD44: LD B IXH 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x44 } }, // FD44: LD B IYH 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x45 } }, // 45: LD B L 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x45 } }, // DD45: LD B IXL 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x45 } }, // FD45: LD B IYL 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x46 } }, // 46: LD B (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x46 } }, // DD46: LD B (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x46 } }, // FD46: LD B (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x47 } }, // 47: LD B A 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x48 } }, // 48: LD C B 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x49 } }, // 49: LD C C 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x4A } }, // 4A: LD C D 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x4B } }, // 4B: LD C E 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x4C } }, // 4C: LD C H 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x4C } }, // DD4C: LD C IXH 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x4C } }, // FD4C: LD C IYH 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x4D } }, // 4D: LD C L 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x4D } }, // DD4D: LD C IXL 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x4D } }, // FD4D: LD C IYL 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x4E } }, // 4E: LD C (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x4E } }, // DD4E: LD C (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x4E } }, // FD4E: LD C (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x4F } }, // 4F: LD C A 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x50 } }, // 50: LD D B 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x51 } }, // 51: LD D C 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x52 } }, // 52: LD D D 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x53 } }, // 53: LD D E 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x54 } }, // 54: LD D H 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x54 } }, // DD54: LD D IXH 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x54 } }, // FD54: LD D IYH 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x55 } }, // 55: LD D L 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x55 } }, // DD55: LD D IXL 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x55 } }, // FD55: LD D IYL 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x56 } }, // 56: LD D (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x56 } }, // DD56: LD D (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x56 } }, // FD56: LD D (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x57 } }, // 57: LD D A 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x58 } }, // 58: LD E B 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x59 } }, // 59: LD E C 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x5A } }, // 5A: LD E D 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x5B } }, // 5B: LD E E 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x5C } }, // 5C: LD E H 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x5C } }, // DD5C: LD E IXH 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x5C } }, // FD5C: LD E IYH 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x5D } }, // 5D: LD E L 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x5D } }, // DD5D: LD E IXL 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x5D } }, // FD5D: LD E IYL 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x5E } }, // 5E: LD E (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x5E } }, // DD5E: LD E (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x5E } }, // FD5E: LD E (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x5F } }, // 5F: LD E A 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x60 } }, // 60: LD H B 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x60 } }, // DD60: LD IXH B 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x60 } }, // FD60: LD IYH B 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x61 } }, // 61: LD H C 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x61 } }, // DD61: LD IXH C 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x61 } }, // FD61: LD IYH C 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x62 } }, // 62: LD H D 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x62 } }, // DD62: LD IXH D 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x62 } }, // FD62: LD IYH D 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x63 } }, // 63: LD H E 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x63 } }, // DD63: LD IXH E 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x63 } }, // FD63: LD IYH E 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x64 } }, // 64: LD H H 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x64 } }, // DD64: LD IXH IXH 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x64 } }, // FD64: LD IYH IYH 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x65 } }, // 65: LD H L 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x65 } }, // DD65: LD IXH IXL 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x65 } }, // FD65: LD IYH IYL 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x66 } }, // 66: LD H (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x66 } }, // DD66: LD H (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x66 } }, // FD66: LD H (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x67 } }, // 67: LD H A 
-                    new OpcodeEncoding { Param1 = CommandID.IXH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x67 } }, // DD67: LD IXH A 
-                    new OpcodeEncoding { Param1 = CommandID.IYH, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x67 } }, // FD67: LD IYH A 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x68 } }, // 68: LD L B 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x68 } }, // DD68: LD IXL B 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x68 } }, // FD68: LD IYL B 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x69 } }, // 69: LD L C 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x69 } }, // DD69: LD IXL C 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x69 } }, // FD69: LD IYL C 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x6A } }, // 6A: LD L D 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x6A } }, // DD6A: LD IXL D 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x6A } }, // FD6A: LD IYL D 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x6B } }, // 6B: LD L E 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x6B } }, // DD6B: LD IXL E 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x6B } }, // FD6B: LD IYL E 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x6C } }, // 6C: LD L H 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x6C } }, // DD6C: LD IXL IXH 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x6C } }, // FD6C: LD IYL IYH 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x6D } }, // 6D: LD L L 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x6D } }, // DD6D: LD IXL IXL 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x6D } }, // FD6D: LD IYL IYL 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x6E } }, // 6E: LD L (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x6E } }, // DD6E: LD L (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x6E } }, // FD6E: LD L (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x6F } }, // 6F: LD L A 
-                    new OpcodeEncoding { Param1 = CommandID.IXL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x6F } }, // DD6F: LD IXL A 
-                    new OpcodeEncoding { Param1 = CommandID.IYL, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x6F } }, // FD6F: LD IYL A 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x70 } }, // 70: LD (HL) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x70 } }, // DD70: LD (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x70 } }, // FD70: LD (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x71 } }, // 71: LD (HL) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x71 } }, // DD71: LD (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x71 } }, // FD71: LD (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x72 } }, // 72: LD (HL) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x72 } }, // DD72: LD (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x72 } }, // FD72: LD (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x73 } }, // 73: LD (HL) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x73 } }, // DD73: LD (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x73 } }, // FD73: LD (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x74 } }, // 74: LD (HL) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x74 } }, // DD74: LD (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x74 } }, // FD74: LD (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x75 } }, // 75: LD (HL) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x75 } }, // DD75: LD (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x75 } }, // FD75: LD (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x77 } }, // 77: LD (HL) A 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x77 } }, // DD77: LD (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x77 } }, // FD77: LD (IY) A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x78 } }, // 78: LD A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x79 } }, // 79: LD A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x7A } }, // 7A: LD A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x7B } }, // 7B: LD A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x7C } }, // 7C: LD A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x7C } }, // DD7C: LD A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x7C } }, // FD7C: LD A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x7D } }, // 7D: LD A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x7D } }, // DD7D: LD A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x7D } }, // FD7D: LD A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x7E } }, // 7E: LD A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0x7E } }, // DD7E: LD A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0x7E } }, // FD7E: LD A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0x7F } }, // 7F: LD A A 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xF9 } }, // F9: LD SP HL 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xDD, 0xF9 } }, // DDF9: LD SP IX 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.LD, Encoding = new byte[] { 0xFD, 0xF9 } }, // FDF9: LD SP IY 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x43 } }, // ED43: LD (NN) BC 
-                    new OpcodeEncoding { Param1 = CommandID.I, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x47 } }, // ED47: LD I A 
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x4B } }, // ED4B: LD BC (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.R, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x4F } }, // ED4F: LD R A 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x53 } }, // ED53: LD (NN) DE 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.I, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x57 } }, // ED57: LD A I 
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x5B } }, // ED5B: LD DE (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.R, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x5F } }, // ED5F: LD A R 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x63 } }, // ED63: LD (NN) HL 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x6B } }, // ED6B: LD HL (NN) 
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateWord, Param1Type = ParameterType.ImmediatePtr, Param2 = CommandID.SP, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x73 } }, // ED73: LD (NN) SP 
-                    new OpcodeEncoding { Param1 = CommandID.SP, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.ImmediateWord, Param2Type = ParameterType.ImmediatePtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LD, Encoding = new byte[] { 0xED, 0x7B } }, // ED7B: LD SP (NN) 
-                }
-            },
-            {
-                CommandID.LDD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LDD, Encoding = new byte[] { 0xED, 0xA8 } }, // EDA8: LDD   
-                }
-            },
-            {
-                CommandID.LDDR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LDDR, Encoding = new byte[] { 0xED, 0xB8 } }, // EDB8: LDDR   
-                }
-            },
-            {
-                CommandID.LDI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LDI, Encoding = new byte[] { 0xED, 0xA0 } }, // EDA0: LDI   
-                }
-            },
-            {
-                CommandID.LDIR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.LDIR, Encoding = new byte[] { 0xED, 0xB0 } }, // EDB0: LDIR   
-                }
-            },
-            {
-                CommandID.NEG, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x44 } }, // ED44: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x4C } }, // ED4C: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x54 } }, // ED54: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x5C } }, // ED5C: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x64 } }, // ED64: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x6C } }, // ED6C: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x74 } }, // ED74: NEG   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NEG, Encoding = new byte[] { 0xED, 0x7C } }, // ED7C: NEG   
-                }
-            },
-            {
-                CommandID.NOP, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.NOP, Encoding = new byte[] { 0x00 } }, // 00: NOP   
-                }
-            },
-            {
-                CommandID.OR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB0 } }, // B0: OR A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB1 } }, // B1: OR A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB2 } }, // B2: OR A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB3 } }, // B3: OR A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB4 } }, // B4: OR A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.OR, Encoding = new byte[] { 0xDD, 0xB4 } }, // DDB4: OR A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.OR, Encoding = new byte[] { 0xFD, 0xB4 } }, // FDB4: OR A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB5 } }, // B5: OR A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.OR, Encoding = new byte[] { 0xDD, 0xB5 } }, // DDB5: OR A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.OR, Encoding = new byte[] { 0xFD, 0xB5 } }, // FDB5: OR A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB6 } }, // B6: OR A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.OR, Encoding = new byte[] { 0xDD, 0xB6 } }, // DDB6: OR A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.OR, Encoding = new byte[] { 0xFD, 0xB6 } }, // FDB6: OR A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xB7 } }, // B7: OR A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OR, Encoding = new byte[] { 0xF6 } }, // F6: OR A N 
-                }
-            },
-            {
-                CommandID.OTDR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OTDR, Encoding = new byte[] { 0xED, 0xBB } }, // EDBB: OTDR   
-                }
-            },
-            {
-                CommandID.OTIR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OTIR, Encoding = new byte[] { 0xED, 0xB3 } }, // EDB3: OTIR   
-                }
-            },
-            {
-                CommandID.OUT, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.ImmediateByte, Param1Type = ParameterType.Immediate, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xD3 } }, // D3: OUT (N) A 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x41 } }, // ED41: OUT (C) B 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x49 } }, // ED49: OUT (C) C 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x51 } }, // ED51: OUT (C) D 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x59 } }, // ED59: OUT (C) E 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x61 } }, // ED61: OUT (C) H 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x69 } }, // ED69: OUT (C) L 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = (CommandID)((int)CommandID.Encoded + 0), Param2Type = ParameterType.Encoded, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x71 } }, // ED71: OUT (C) 0 
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUT, Encoding = new byte[] { 0xED, 0x79 } }, // ED79: OUT (C) A 
-                }
-            },
-            {
-                CommandID.OUTD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUTD, Encoding = new byte[] { 0xED, 0xAB } }, // EDAB: OUTD   
-                }
-            },
-            {
-                CommandID.OUTI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.OUTI, Encoding = new byte[] { 0xED, 0xA3 } }, // EDA3: OUTI   
-                }
-            },
-            {
-                CommandID.POP, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.POP, Encoding = new byte[] { 0xC1 } }, // C1: POP BC  
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.POP, Encoding = new byte[] { 0xD1 } }, // D1: POP DE  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.POP, Encoding = new byte[] { 0xE1 } }, // E1: POP HL  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.POP, Encoding = new byte[] { 0xDD, 0xE1 } }, // DDE1: POP IX  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.POP, Encoding = new byte[] { 0xFD, 0xE1 } }, // FDE1: POP IY  
-                    new OpcodeEncoding { Param1 = CommandID.AF, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.POP, Encoding = new byte[] { 0xF1 } }, // F1: POP AF  
-                }
-            },
-            {
-                CommandID.PUSH, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.BC, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.PUSH, Encoding = new byte[] { 0xC5 } }, // C5: PUSH BC  
-                    new OpcodeEncoding { Param1 = CommandID.DE, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.PUSH, Encoding = new byte[] { 0xD5 } }, // D5: PUSH DE  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.PUSH, Encoding = new byte[] { 0xE5 } }, // E5: PUSH HL  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.PUSH, Encoding = new byte[] { 0xDD, 0xE5 } }, // DDE5: PUSH IX  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.PUSH, Encoding = new byte[] { 0xFD, 0xE5 } }, // FDE5: PUSH IY  
-                    new OpcodeEncoding { Param1 = CommandID.AF, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.PUSH, Encoding = new byte[] { 0xF5 } }, // F5: PUSH AF  
-                }
-            },
-            {
-                CommandID.RES, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x80 } }, // CB80: RES 0 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x81 } }, // CB81: RES 0 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x82 } }, // CB82: RES 0 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x83 } }, // CB83: RES 0 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x84 } }, // CB84: RES 0 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x85 } }, // CB85: RES 0 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x86 } }, // CB86: RES 0 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x87 } }, // CB87: RES 0 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x88 } }, // CB88: RES 1 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x89 } }, // CB89: RES 1 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x8A } }, // CB8A: RES 1 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x8B } }, // CB8B: RES 1 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x8C } }, // CB8C: RES 1 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x8D } }, // CB8D: RES 1 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x8E } }, // CB8E: RES 1 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x8F } }, // CB8F: RES 1 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x90 } }, // CB90: RES 2 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x91 } }, // CB91: RES 2 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x92 } }, // CB92: RES 2 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x93 } }, // CB93: RES 2 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x94 } }, // CB94: RES 2 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x95 } }, // CB95: RES 2 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x96 } }, // CB96: RES 2 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x97 } }, // CB97: RES 2 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x98 } }, // CB98: RES 3 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x99 } }, // CB99: RES 3 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x9A } }, // CB9A: RES 3 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x9B } }, // CB9B: RES 3 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x9C } }, // CB9C: RES 3 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x9D } }, // CB9D: RES 3 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x9E } }, // CB9E: RES 3 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0x9F } }, // CB9F: RES 3 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA0 } }, // CBA0: RES 4 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA1 } }, // CBA1: RES 4 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA2 } }, // CBA2: RES 4 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA3 } }, // CBA3: RES 4 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA4 } }, // CBA4: RES 4 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA5 } }, // CBA5: RES 4 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA6 } }, // CBA6: RES 4 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA7 } }, // CBA7: RES 4 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA8 } }, // CBA8: RES 5 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xA9 } }, // CBA9: RES 5 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xAA } }, // CBAA: RES 5 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xAB } }, // CBAB: RES 5 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xAC } }, // CBAC: RES 5 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xAD } }, // CBAD: RES 5 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xAE } }, // CBAE: RES 5 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xAF } }, // CBAF: RES 5 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB0 } }, // CBB0: RES 6 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB1 } }, // CBB1: RES 6 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB2 } }, // CBB2: RES 6 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB3 } }, // CBB3: RES 6 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB4 } }, // CBB4: RES 6 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB5 } }, // CBB5: RES 6 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB6 } }, // CBB6: RES 6 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB7 } }, // CBB7: RES 6 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB8 } }, // CBB8: RES 7 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xB9 } }, // CBB9: RES 7 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xBA } }, // CBBA: RES 7 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xBB } }, // CBBB: RES 7 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xBC } }, // CBBC: RES 7 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xBD } }, // CBBD: RES 7 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xBE } }, // CBBE: RES 7 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RES, Encoding = new byte[] { 0xCB, 0xBF } }, // CBBF: RES 7 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x80 } }, // DDCB80: RES 0 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x80 } }, // FDCB80: RES 0 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x81 } }, // DDCB81: RES 0 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x81 } }, // FDCB81: RES 0 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x82 } }, // DDCB82: RES 0 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x82 } }, // FDCB82: RES 0 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x83 } }, // DDCB83: RES 0 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x83 } }, // FDCB83: RES 0 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x84 } }, // DDCB84: RES 0 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x84 } }, // FDCB84: RES 0 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x85 } }, // DDCB85: RES 0 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x85 } }, // FDCB85: RES 0 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x86 } }, // DDCB86: RES 0 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x86 } }, // FDCB86: RES 0 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x87 } }, // DDCB87: RES 0 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x87 } }, // FDCB87: RES 0 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x88 } }, // DDCB88: RES 1 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x88 } }, // FDCB88: RES 1 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x89 } }, // DDCB89: RES 1 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x89 } }, // FDCB89: RES 1 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x8A } }, // DDCB8A: RES 1 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x8A } }, // FDCB8A: RES 1 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x8B } }, // DDCB8B: RES 1 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x8B } }, // FDCB8B: RES 1 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x8C } }, // DDCB8C: RES 1 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x8C } }, // FDCB8C: RES 1 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x8D } }, // DDCB8D: RES 1 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x8D } }, // FDCB8D: RES 1 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x8E } }, // DDCB8E: RES 1 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x8E } }, // FDCB8E: RES 1 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x8F } }, // DDCB8F: RES 1 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x8F } }, // FDCB8F: RES 1 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x90 } }, // DDCB90: RES 2 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x90 } }, // FDCB90: RES 2 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x91 } }, // DDCB91: RES 2 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x91 } }, // FDCB91: RES 2 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x92 } }, // DDCB92: RES 2 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x92 } }, // FDCB92: RES 2 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x93 } }, // DDCB93: RES 2 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x93 } }, // FDCB93: RES 2 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x94 } }, // DDCB94: RES 2 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x94 } }, // FDCB94: RES 2 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x95 } }, // DDCB95: RES 2 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x95 } }, // FDCB95: RES 2 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x96 } }, // DDCB96: RES 2 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x96 } }, // FDCB96: RES 2 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x97 } }, // DDCB97: RES 2 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x97 } }, // FDCB97: RES 2 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x98 } }, // DDCB98: RES 3 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x98 } }, // FDCB98: RES 3 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x99 } }, // DDCB99: RES 3 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x99 } }, // FDCB99: RES 3 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x9A } }, // DDCB9A: RES 3 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x9A } }, // FDCB9A: RES 3 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x9B } }, // DDCB9B: RES 3 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x9B } }, // FDCB9B: RES 3 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x9C } }, // DDCB9C: RES 3 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x9C } }, // FDCB9C: RES 3 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x9D } }, // DDCB9D: RES 3 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x9D } }, // FDCB9D: RES 3 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x9E } }, // DDCB9E: RES 3 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x9E } }, // FDCB9E: RES 3 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0x9F } }, // DDCB9F: RES 3 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0x9F } }, // FDCB9F: RES 3 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA0 } }, // DDCBA0: RES 4 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA0 } }, // FDCBA0: RES 4 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA1 } }, // DDCBA1: RES 4 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA1 } }, // FDCBA1: RES 4 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA2 } }, // DDCBA2: RES 4 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA2 } }, // FDCBA2: RES 4 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA3 } }, // DDCBA3: RES 4 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA3 } }, // FDCBA3: RES 4 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA4 } }, // DDCBA4: RES 4 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA4 } }, // FDCBA4: RES 4 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA5 } }, // DDCBA5: RES 4 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA5 } }, // FDCBA5: RES 4 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA6 } }, // DDCBA6: RES 4 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA6 } }, // FDCBA6: RES 4 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA7 } }, // DDCBA7: RES 4 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA7 } }, // FDCBA7: RES 4 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA8 } }, // DDCBA8: RES 5 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA8 } }, // FDCBA8: RES 5 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xA9 } }, // DDCBA9: RES 5 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xA9 } }, // FDCBA9: RES 5 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xAA } }, // DDCBAA: RES 5 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xAA } }, // FDCBAA: RES 5 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xAB } }, // DDCBAB: RES 5 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xAB } }, // FDCBAB: RES 5 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xAC } }, // DDCBAC: RES 5 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xAC } }, // FDCBAC: RES 5 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xAD } }, // DDCBAD: RES 5 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xAD } }, // FDCBAD: RES 5 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xAE } }, // DDCBAE: RES 5 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xAE } }, // FDCBAE: RES 5 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xAF } }, // DDCBAF: RES 5 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xAF } }, // FDCBAF: RES 5 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB0 } }, // DDCBB0: RES 6 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB0 } }, // FDCBB0: RES 6 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB1 } }, // DDCBB1: RES 6 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB1 } }, // FDCBB1: RES 6 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB2 } }, // DDCBB2: RES 6 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB2 } }, // FDCBB2: RES 6 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB3 } }, // DDCBB3: RES 6 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB3 } }, // FDCBB3: RES 6 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB4 } }, // DDCBB4: RES 6 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB4 } }, // FDCBB4: RES 6 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB5 } }, // DDCBB5: RES 6 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB5 } }, // FDCBB5: RES 6 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB6 } }, // DDCBB6: RES 6 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB6 } }, // FDCBB6: RES 6 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB7 } }, // DDCBB7: RES 6 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB7 } }, // FDCBB7: RES 6 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB8 } }, // DDCBB8: RES 7 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB8 } }, // FDCBB8: RES 7 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xB9 } }, // DDCBB9: RES 7 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xB9 } }, // FDCBB9: RES 7 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xBA } }, // DDCBBA: RES 7 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xBA } }, // FDCBBA: RES 7 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xBB } }, // DDCBBB: RES 7 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xBB } }, // FDCBBB: RES 7 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xBC } }, // DDCBBC: RES 7 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xBC } }, // FDCBBC: RES 7 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xBD } }, // DDCBBD: RES 7 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xBD } }, // FDCBBD: RES 7 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xBE } }, // DDCBBE: RES 7 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xBE } }, // FDCBBE: RES 7 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xDD, 0xCB, 0xBF } }, // DDCBBF: RES 7 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RES, Encoding = new byte[] { 0xFD, 0xCB, 0xBF } }, // FDCBBF: RES 7 (IY) a
-                }
-            },
-            {
-                CommandID.RET, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.NZ, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xC0 } }, // C0: RET NZ  
-                    new OpcodeEncoding { Param1 = CommandID.Z, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xC8 } }, // C8: RET Z  
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xC9 } }, // C9: RET   
-                    new OpcodeEncoding { Param1 = CommandID.NC, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xD0 } }, // D0: RET NC  
-                    new OpcodeEncoding { Param1 = CommandID.CY, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xD8 } }, // D8: RET CY  
-                    new OpcodeEncoding { Param1 = CommandID.PO, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xE0 } }, // E0: RET PO  
-                    new OpcodeEncoding { Param1 = CommandID.PE, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xE8 } }, // E8: RET PE  
-                    new OpcodeEncoding { Param1 = CommandID.P, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xF0 } }, // F0: RET P  
-                    new OpcodeEncoding { Param1 = CommandID.M, Param1Type = ParameterType.Conditional, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RET, Encoding = new byte[] { 0xF8 } }, // F8: RET M  
-                }
-            },
-            {
-                CommandID.RETI, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETI, Encoding = new byte[] { 0xED, 0x4D } }, // ED4D: RETI   
-                }
-            },
-            {
-                CommandID.RETN, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x45 } }, // ED45: RETN   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x55 } }, // ED55: RETN   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x5D } }, // ED5D: RETN   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x65 } }, // ED65: RETN   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x6D } }, // ED6D: RETN   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x75 } }, // ED75: RETN   
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RETN, Encoding = new byte[] { 0xED, 0x7D } }, // ED7D: RETN   
-                }
-            },
-            {
-                CommandID.RL, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x10 } }, // CB10: RL B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x11 } }, // CB11: RL C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x12 } }, // CB12: RL D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x13 } }, // CB13: RL E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x14 } }, // CB14: RL H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x15 } }, // CB15: RL L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x16 } }, // CB16: RL (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RL, Encoding = new byte[] { 0xCB, 0x17 } }, // CB17: RL A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x10 } }, // DDCB10: RL (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x10 } }, // FDCB10: RL (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x11 } }, // DDCB11: RL (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x11 } }, // FDCB11: RL (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x12 } }, // DDCB12: RL (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x12 } }, // FDCB12: RL (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x13 } }, // DDCB13: RL (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x13 } }, // FDCB13: RL (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x14 } }, // DDCB14: RL (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x14 } }, // FDCB14: RL (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x15 } }, // DDCB15: RL (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x15 } }, // FDCB15: RL (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x16 } }, // DDCB16: RL (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x16 } }, // FDCB16: RL (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xDD, 0xCB, 0x17 } }, // DDCB17: RL (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RL, Encoding = new byte[] { 0xFD, 0xCB, 0x17 } }, // FDCB17: RL (IY) A 
-                }
-            },
-            {
-                CommandID.RLA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLA, Encoding = new byte[] { 0x17 } }, // 17: RLA   
-                }
-            },
-            {
-                CommandID.RLC, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x00 } }, // CB00: RLC B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x01 } }, // CB01: RLC C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x02 } }, // CB02: RLC D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x03 } }, // CB03: RLC E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x04 } }, // CB04: RLC H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x05 } }, // CB05: RLC L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x06 } }, // CB06: RLC (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLC, Encoding = new byte[] { 0xCB, 0x07 } }, // CB07: RLC A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x00 } }, // DDCB00: RLC (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x00 } }, // FDCB00: RLC (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x01 } }, // DDCB01: RLC (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x01 } }, // FDCB01: RLC (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x02 } }, // DDCB02: RLC (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x02 } }, // FDCB02: RLC (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x03 } }, // DDCB03: RLC (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x03 } }, // FDCB03: RLC (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x04 } }, // DDCB04: RLC (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x04 } }, // FDCB04: RLC (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x05 } }, // DDCB05: RLC (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x05 } }, // FDCB05: RLC (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x06 } }, // DDCB06: RLC (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x06 } }, // FDCB06: RLC (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xDD, 0xCB, 0x07 } }, // DDCB07: RLC (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RLC, Encoding = new byte[] { 0xFD, 0xCB, 0x07 } }, // FDCB07: RLC (IY) A 
-                }
-            },
-            {
-                CommandID.RLCA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLCA, Encoding = new byte[] { 0x07 } }, // 07: RLCA   
-                }
-            },
-            {
-                CommandID.RLD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RLD, Encoding = new byte[] { 0xED, 0x6F } }, // ED6F: RLD   
-                }
-            },
-            {
-                CommandID.RR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x18 } }, // CB18: RR B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x19 } }, // CB19: RR C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x1A } }, // CB1A: RR D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x1B } }, // CB1B: RR E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x1C } }, // CB1C: RR H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x1D } }, // CB1D: RR L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x1E } }, // CB1E: RR (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RR, Encoding = new byte[] { 0xCB, 0x1F } }, // CB1F: RR A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x18 } }, // DDCB18: RR (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x18 } }, // FDCB18: RR (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x19 } }, // DDCB19: RR (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x19 } }, // FDCB19: RR (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x1A } }, // DDCB1A: RR (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x1A } }, // FDCB1A: RR (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x1B } }, // DDCB1B: RR (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x1B } }, // FDCB1B: RR (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x1C } }, // DDCB1C: RR (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x1C } }, // FDCB1C: RR (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x1D } }, // DDCB1D: RR (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x1D } }, // FDCB1D: RR (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x1E } }, // DDCB1E: RR (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x1E } }, // FDCB1E: RR (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xDD, 0xCB, 0x1F } }, // DDCB1F: RR (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RR, Encoding = new byte[] { 0xFD, 0xCB, 0x1F } }, // FDCB1F: RR (IY) A 
-                }
-            },
-            {
-                CommandID.RRA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRA, Encoding = new byte[] { 0x1F } }, // 1F: RRA   
-                }
-            },
-            {
-                CommandID.RRC, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x08 } }, // CB08: RRC B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x09 } }, // CB09: RRC C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x0A } }, // CB0A: RRC D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x0B } }, // CB0B: RRC E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x0C } }, // CB0C: RRC H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x0D } }, // CB0D: RRC L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x0E } }, // CB0E: RRC (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRC, Encoding = new byte[] { 0xCB, 0x0F } }, // CB0F: RRC A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x08 } }, // DDCB08: RRC (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x08 } }, // FDCB08: RRC (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x09 } }, // DDCB09: RRC (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x09 } }, // FDCB09: RRC (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x0A } }, // DDCB0A: RRC (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x0A } }, // FDCB0A: RRC (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x0B } }, // DDCB0B: RRC (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x0B } }, // FDCB0B: RRC (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x0C } }, // DDCB0C: RRC (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x0C } }, // FDCB0C: RRC (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x0D } }, // DDCB0D: RRC (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x0D } }, // FDCB0D: RRC (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x0E } }, // DDCB0E: RRC (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x0E } }, // FDCB0E: RRC (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xDD, 0xCB, 0x0F } }, // DDCB0F: RRC (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.RRC, Encoding = new byte[] { 0xFD, 0xCB, 0x0F } }, // FDCB0F: RRC (IY) A 
-                }
-            },
-            {
-                CommandID.RRCA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRCA, Encoding = new byte[] { 0x0F } }, // 0F: RRCA   
-                }
-            },
-            {
-                CommandID.RRD, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RRD, Encoding = new byte[] { 0xED, 0x67 } }, // ED67: RRD   
-                }
-            },
-            {
-                CommandID.RST, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x0), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xC7 } }, // C7: RST 0H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x8), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xCF } }, // CF: RST 8H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x10), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xD7 } }, // D7: RST 10H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x18), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xDF } }, // DF: RST 18H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x20), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xE7 } }, // E7: RST 20H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x28), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xEF } }, // EF: RST 28H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x30), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xF7 } }, // F7: RST 30H  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0x38), Param1Type = ParameterType.Encoded, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.RST, Encoding = new byte[] { 0xFF } }, // FF: RST 38H  
-                }
-            },
-            {
-                CommandID.SBC, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x98 } }, // 98: SBC A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x99 } }, // 99: SBC A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x9A } }, // 9A: SBC A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x9B } }, // 9B: SBC A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x9C } }, // 9C: SBC A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SBC, Encoding = new byte[] { 0xDD, 0x9C } }, // DD9C: SBC A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SBC, Encoding = new byte[] { 0xFD, 0x9C } }, // FD9C: SBC A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x9D } }, // 9D: SBC A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SBC, Encoding = new byte[] { 0xDD, 0x9D } }, // DD9D: SBC A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SBC, Encoding = new byte[] { 0xFD, 0x9D } }, // FD9D: SBC A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x9E } }, // 9E: SBC A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.SBC, Encoding = new byte[] { 0xDD, 0x9E } }, // DD9E: SBC A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.SBC, Encoding = new byte[] { 0xFD, 0x9E } }, // FD9E: SBC A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0x9F } }, // 9F: SBC A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0xDE } }, // DE: SBC A N 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.BC, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0xED, 0x42 } }, // ED42: SBC HL BC 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.DE, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0xED, 0x52 } }, // ED52: SBC HL DE 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0xED, 0x62 } }, // ED62: SBC HL HL 
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.SP, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SBC, Encoding = new byte[] { 0xED, 0x72 } }, // ED72: SBC HL SP 
-                }
-            },
-            {
-                CommandID.SCF, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.None, Param1Type = ParameterType.None, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SCF, Encoding = new byte[] { 0x37 } }, // 37: SCF   
-                }
-            },
-            {
-                CommandID.SET, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC0 } }, // CBC0: SET 0 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC1 } }, // CBC1: SET 0 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC2 } }, // CBC2: SET 0 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC3 } }, // CBC3: SET 0 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC4 } }, // CBC4: SET 0 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC5 } }, // CBC5: SET 0 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC6 } }, // CBC6: SET 0 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC7 } }, // CBC7: SET 0 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC8 } }, // CBC8: SET 1 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xC9 } }, // CBC9: SET 1 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xCA } }, // CBCA: SET 1 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xCB } }, // CBCB: SET 1 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xCC } }, // CBCC: SET 1 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xCD } }, // CBCD: SET 1 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xCE } }, // CBCE: SET 1 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xCF } }, // CBCF: SET 1 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD0 } }, // CBD0: SET 2 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD1 } }, // CBD1: SET 2 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD2 } }, // CBD2: SET 2 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD3 } }, // CBD3: SET 2 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD4 } }, // CBD4: SET 2 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD5 } }, // CBD5: SET 2 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD6 } }, // CBD6: SET 2 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD7 } }, // CBD7: SET 2 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD8 } }, // CBD8: SET 3 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xD9 } }, // CBD9: SET 3 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xDA } }, // CBDA: SET 3 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xDB } }, // CBDB: SET 3 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xDC } }, // CBDC: SET 3 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xDD } }, // CBDD: SET 3 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xDE } }, // CBDE: SET 3 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xDF } }, // CBDF: SET 3 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE0 } }, // CBE0: SET 4 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE1 } }, // CBE1: SET 4 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE2 } }, // CBE2: SET 4 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE3 } }, // CBE3: SET 4 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE4 } }, // CBE4: SET 4 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE5 } }, // CBE5: SET 4 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE6 } }, // CBE6: SET 4 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE7 } }, // CBE7: SET 4 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE8 } }, // CBE8: SET 5 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xE9 } }, // CBE9: SET 5 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xEA } }, // CBEA: SET 5 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xEB } }, // CBEB: SET 5 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xEC } }, // CBEC: SET 5 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xED } }, // CBED: SET 5 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xEE } }, // CBEE: SET 5 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xEF } }, // CBEF: SET 5 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF0 } }, // CBF0: SET 6 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF1 } }, // CBF1: SET 6 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF2 } }, // CBF2: SET 6 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF3 } }, // CBF3: SET 6 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF4 } }, // CBF4: SET 6 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF5 } }, // CBF5: SET 6 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF6 } }, // CBF6: SET 6 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF7 } }, // CBF7: SET 6 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF8 } }, // CBF8: SET 7 B 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xF9 } }, // CBF9: SET 7 C 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xFA } }, // CBFA: SET 7 D 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xFB } }, // CBFB: SET 7 E 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xFC } }, // CBFC: SET 7 H 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xFD } }, // CBFD: SET 7 L 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xFE } }, // CBFE: SET 7 (HL) 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SET, Encoding = new byte[] { 0xCB, 0xFF } }, // CBFF: SET 7 A 
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC0 } }, // DDCBC0: SET 0 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC0 } }, // FDCBC0: SET 0 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC1 } }, // DDCBC1: SET 0 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC1 } }, // FDCBC1: SET 0 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC2 } }, // DDCBC2: SET 0 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC2 } }, // FDCBC2: SET 0 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC3 } }, // DDCBC3: SET 0 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC3 } }, // FDCBC3: SET 0 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC4 } }, // DDCBC4: SET 0 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC4 } }, // FDCBC4: SET 0 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC5 } }, // DDCBC5: SET 0 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC5 } }, // FDCBC5: SET 0 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC6 } }, // DDCBC6: SET 0 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC6 } }, // FDCBC6: SET 0 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC7 } }, // DDCBC7: SET 0 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 0), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC7 } }, // FDCBC7: SET 0 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC8 } }, // DDCBC8: SET 1 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC8 } }, // FDCBC8: SET 1 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xC9 } }, // DDCBC9: SET 1 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xC9 } }, // FDCBC9: SET 1 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xCA } }, // DDCBCA: SET 1 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xCA } }, // FDCBCA: SET 1 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xCB } }, // DDCBCB: SET 1 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xCB } }, // FDCBCB: SET 1 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xCC } }, // DDCBCC: SET 1 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xCC } }, // FDCBCC: SET 1 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xCD } }, // DDCBCD: SET 1 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xCD } }, // FDCBCD: SET 1 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xCE } }, // DDCBCE: SET 1 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xCE } }, // FDCBCE: SET 1 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xCF } }, // DDCBCF: SET 1 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 1), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xCF } }, // FDCBCF: SET 1 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD0 } }, // DDCBD0: SET 2 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD0 } }, // FDCBD0: SET 2 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD1 } }, // DDCBD1: SET 2 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD1 } }, // FDCBD1: SET 2 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD2 } }, // DDCBD2: SET 2 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD2 } }, // FDCBD2: SET 2 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD3 } }, // DDCBD3: SET 2 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD3 } }, // FDCBD3: SET 2 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD4 } }, // DDCBD4: SET 2 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD4 } }, // FDCBD4: SET 2 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD5 } }, // DDCBD5: SET 2 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD5 } }, // FDCBD5: SET 2 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD6 } }, // DDCBD6: SET 2 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD6 } }, // FDCBD6: SET 2 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD7 } }, // DDCBD7: SET 2 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 2), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD7 } }, // FDCBD7: SET 2 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD8 } }, // DDCBD8: SET 3 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD8 } }, // FDCBD8: SET 3 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xD9 } }, // DDCBD9: SET 3 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xD9 } }, // FDCBD9: SET 3 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xDA } }, // DDCBDA: SET 3 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xDA } }, // FDCBDA: SET 3 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xDB } }, // DDCBDB: SET 3 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xDB } }, // FDCBDB: SET 3 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xDC } }, // DDCBDC: SET 3 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xDC } }, // FDCBDC: SET 3 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xDD } }, // DDCBDD: SET 3 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xDD } }, // FDCBDD: SET 3 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xDE } }, // DDCBDE: SET 3 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xDE } }, // FDCBDE: SET 3 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xDF } }, // DDCBDF: SET 3 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 3), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xDF } }, // FDCBDF: SET 3 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE0 } }, // DDCBE0: SET 4 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE0 } }, // FDCBE0: SET 4 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE1 } }, // DDCBE1: SET 4 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE1 } }, // FDCBE1: SET 4 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE2 } }, // DDCBE2: SET 4 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE2 } }, // FDCBE2: SET 4 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE3 } }, // DDCBE3: SET 4 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE3 } }, // FDCBE3: SET 4 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE4 } }, // DDCBE4: SET 4 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE4 } }, // FDCBE4: SET 4 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE5 } }, // DDCBE5: SET 4 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE5 } }, // FDCBE5: SET 4 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE6 } }, // DDCBE6: SET 4 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE6 } }, // FDCBE6: SET 4 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE7 } }, // DDCBE7: SET 4 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 4), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE7 } }, // FDCBE7: SET 4 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE8 } }, // DDCBE8: SET 5 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE8 } }, // FDCBE8: SET 5 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xE9 } }, // DDCBE9: SET 5 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xE9 } }, // FDCBE9: SET 5 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xEA } }, // DDCBEA: SET 5 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xEA } }, // FDCBEA: SET 5 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xEB } }, // DDCBEB: SET 5 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xEB } }, // FDCBEB: SET 5 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xEC } }, // DDCBEC: SET 5 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xEC } }, // FDCBEC: SET 5 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xED } }, // DDCBED: SET 5 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xED } }, // FDCBED: SET 5 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xEE } }, // DDCBEE: SET 5 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xEE } }, // FDCBEE: SET 5 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xEF } }, // DDCBEF: SET 5 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 5), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xEF } }, // FDCBEF: SET 5 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF0 } }, // DDCBF0: SET 6 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF0 } }, // FDCBF0: SET 6 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF1 } }, // DDCBF1: SET 6 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF1 } }, // FDCBF1: SET 6 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF2 } }, // DDCBF2: SET 6 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF2 } }, // FDCBF2: SET 6 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF3 } }, // DDCBF3: SET 6 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF3 } }, // FDCBF3: SET 6 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF4 } }, // DDCBF4: SET 6 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF4 } }, // FDCBF4: SET 6 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF5 } }, // DDCBF5: SET 6 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF5 } }, // FDCBF5: SET 6 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF6 } }, // DDCBF6: SET 6 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF6 } }, // FDCBF6: SET 6 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF7 } }, // DDCBF7: SET 6 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 6), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF7 } }, // FDCBF7: SET 6 (IY) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF8 } }, // DDCBF8: SET 7 (IX) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.B, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF8 } }, // FDCBF8: SET 7 (IY) b
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xF9 } }, // DDCBF9: SET 7 (IX) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.C, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xF9 } }, // FDCBF9: SET 7 (IY) c
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xFA } }, // DDCBFA: SET 7 (IX) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.D, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xFA } }, // FDCBFA: SET 7 (IY) d
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xFB } }, // DDCBFB: SET 7 (IX) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.E, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xFB } }, // FDCBFB: SET 7 (IY) e
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xFC } }, // DDCBFC: SET 7 (IX) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.H, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xFC } }, // FDCBFC: SET 7 (IY) h
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xFD } }, // DDCBFD: SET 7 (IX) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.L, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xFD } }, // FDCBFD: SET 7 (IY) l
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xFE } }, // DDCBFE: SET 7 (IX)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.Unknown, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xFE } }, // FDCBFE: SET 7 (IY)  
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xDD, 0xCB, 0xFF } }, // DDCBFF: SET 7 (IX) a
-                    new OpcodeEncoding { Param1 = (CommandID)((int)CommandID.Encoded + 7), Param1Type = ParameterType.Encoded, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterWord, Param3 = CommandID.A, Param3Type = ParameterType.RegisterByte, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SET, Encoding = new byte[] { 0xFD, 0xCB, 0xFF } }, // FDCBFF: SET 7 (IY) a
-                }
-            },
-            {
-                CommandID.SLA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x20 } }, // CB20: SLA B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x21 } }, // CB21: SLA C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x22 } }, // CB22: SLA D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x23 } }, // CB23: SLA E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x24 } }, // CB24: SLA H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x25 } }, // CB25: SLA L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x26 } }, // CB26: SLA (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLA, Encoding = new byte[] { 0xCB, 0x27 } }, // CB27: SLA A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x20 } }, // DDCB20: SLA (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x20 } }, // FDCB20: SLA (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x21 } }, // DDCB21: SLA (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x21 } }, // FDCB21: SLA (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x22 } }, // DDCB22: SLA (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x22 } }, // FDCB22: SLA (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x23 } }, // DDCB23: SLA (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x23 } }, // FDCB23: SLA (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x24 } }, // DDCB24: SLA (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x24 } }, // FDCB24: SLA (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x25 } }, // DDCB25: SLA (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x25 } }, // FDCB25: SLA (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x26 } }, // DDCB26: SLA (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x26 } }, // FDCB26: SLA (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xDD, 0xCB, 0x27 } }, // DDCB27: SLA (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLA, Encoding = new byte[] { 0xFD, 0xCB, 0x27 } }, // FDCB27: SLA (IY) A 
-                }
-            },
-            {
-                CommandID.SLL, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x30 } }, // CB30: SLL B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x31 } }, // CB31: SLL C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x32 } }, // CB32: SLL D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x33 } }, // CB33: SLL E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x34 } }, // CB34: SLL H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x35 } }, // CB35: SLL L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x36 } }, // CB36: SLL (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SLL, Encoding = new byte[] { 0xCB, 0x37 } }, // CB37: SLL A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x30 } }, // DDCB30: SLL (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x30 } }, // FDCB30: SLL (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x31 } }, // DDCB31: SLL (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x31 } }, // FDCB31: SLL (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x32 } }, // DDCB32: SLL (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x32 } }, // FDCB32: SLL (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x33 } }, // DDCB33: SLL (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x33 } }, // FDCB33: SLL (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x34 } }, // DDCB34: SLL (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x34 } }, // FDCB34: SLL (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x35 } }, // DDCB35: SLL (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x35 } }, // FDCB35: SLL (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x36 } }, // DDCB36: SLL (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x36 } }, // FDCB36: SLL (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xDD, 0xCB, 0x37 } }, // DDCB37: SLL (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SLL, Encoding = new byte[] { 0xFD, 0xCB, 0x37 } }, // FDCB37: SLL (IY) A 
-                }
-            },
-            {
-                CommandID.SRA, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x28 } }, // CB28: SRA B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x29 } }, // CB29: SRA C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x2A } }, // CB2A: SRA D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x2B } }, // CB2B: SRA E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x2C } }, // CB2C: SRA H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x2D } }, // CB2D: SRA L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x2E } }, // CB2E: SRA (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRA, Encoding = new byte[] { 0xCB, 0x2F } }, // CB2F: SRA A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x28 } }, // DDCB28: SRA (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x28 } }, // FDCB28: SRA (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x29 } }, // DDCB29: SRA (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x29 } }, // FDCB29: SRA (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x2A } }, // DDCB2A: SRA (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x2A } }, // FDCB2A: SRA (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x2B } }, // DDCB2B: SRA (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x2B } }, // FDCB2B: SRA (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x2C } }, // DDCB2C: SRA (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x2C } }, // FDCB2C: SRA (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x2D } }, // DDCB2D: SRA (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x2D } }, // FDCB2D: SRA (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x2E } }, // DDCB2E: SRA (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x2E } }, // FDCB2E: SRA (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xDD, 0xCB, 0x2F } }, // DDCB2F: SRA (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRA, Encoding = new byte[] { 0xFD, 0xCB, 0x2F } }, // FDCB2F: SRA (IY) A 
-                }
-            },
-            {
-                CommandID.SRL, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.B, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x38 } }, // CB38: SRL B  
-                    new OpcodeEncoding { Param1 = CommandID.C, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x39 } }, // CB39: SRL C  
-                    new OpcodeEncoding { Param1 = CommandID.D, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x3A } }, // CB3A: SRL D  
-                    new OpcodeEncoding { Param1 = CommandID.E, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x3B } }, // CB3B: SRL E  
-                    new OpcodeEncoding { Param1 = CommandID.H, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x3C } }, // CB3C: SRL H  
-                    new OpcodeEncoding { Param1 = CommandID.L, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x3D } }, // CB3D: SRL L  
-                    new OpcodeEncoding { Param1 = CommandID.HL, Param1Type = ParameterType.RegisterPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x3E } }, // CB3E: SRL (HL)  
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SRL, Encoding = new byte[] { 0xCB, 0x3F } }, // CB3F: SRL A  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x38 } }, // DDCB38: SRL (IX) B 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x38 } }, // FDCB38: SRL (IY) B 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x39 } }, // DDCB39: SRL (IX) C 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x39 } }, // FDCB39: SRL (IY) C 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x3A } }, // DDCB3A: SRL (IX) D 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x3A } }, // FDCB3A: SRL (IY) D 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x3B } }, // DDCB3B: SRL (IX) E 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x3B } }, // FDCB3B: SRL (IY) E 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x3C } }, // DDCB3C: SRL (IX) H 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x3C } }, // FDCB3C: SRL (IY) H 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x3D } }, // DDCB3D: SRL (IX) L 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x3D } }, // FDCB3D: SRL (IY) L 
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x3E } }, // DDCB3E: SRL (IX)  
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterDisplacedPtr, Param2 = CommandID.None, Param2Type = ParameterType.None, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x3E } }, // FDCB3E: SRL (IY)  
-                    new OpcodeEncoding { Param1 = CommandID.IX, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xDD, 0xCB, 0x3F } }, // DDCB3F: SRL (IX) A 
-                    new OpcodeEncoding { Param1 = CommandID.IY, Param1Type = ParameterType.RegisterWord, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.InternalDisplacement, Function = CommandID.SRL, Encoding = new byte[] { 0xFD, 0xCB, 0x3F } }, // FDCB3F: SRL (IY) A 
-                }
-            },
-            {
-                CommandID.SUB, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x90 } }, // 90: SUB A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x91 } }, // 91: SUB A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x92 } }, // 92: SUB A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x93 } }, // 93: SUB A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x94 } }, // 94: SUB A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SUB, Encoding = new byte[] { 0xDD, 0x94 } }, // DD94: SUB A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SUB, Encoding = new byte[] { 0xFD, 0x94 } }, // FD94: SUB A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x95 } }, // 95: SUB A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SUB, Encoding = new byte[] { 0xDD, 0x95 } }, // DD95: SUB A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.SUB, Encoding = new byte[] { 0xFD, 0x95 } }, // FD95: SUB A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x96 } }, // 96: SUB A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.SUB, Encoding = new byte[] { 0xDD, 0x96 } }, // DD96: SUB A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.SUB, Encoding = new byte[] { 0xFD, 0x96 } }, // FD96: SUB A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0x97 } }, // 97: SUB A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.SUB, Encoding = new byte[] { 0xD6 } }, // D6: SUB A N 
-                }
-            },
-            {
-                CommandID.XOR, new OpcodeEncoding[]
-                {
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.B, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xA8 } }, // A8: XOR A B 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.C, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xA9 } }, // A9: XOR A C 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.D, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xAA } }, // AA: XOR A D 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.E, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xAB } }, // AB: XOR A E 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.H, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xAC } }, // AC: XOR A H 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.XOR, Encoding = new byte[] { 0xDD, 0xAC } }, // DDAC: XOR A IXH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYH, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.XOR, Encoding = new byte[] { 0xFD, 0xAC } }, // FDAC: XOR A IYH 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.L, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xAD } }, // AD: XOR A L 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IXL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.XOR, Encoding = new byte[] { 0xDD, 0xAD } }, // DDAD: XOR A IXL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IYL, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Index, Function = CommandID.XOR, Encoding = new byte[] { 0xFD, 0xAD } }, // FDAD: XOR A IYL 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.HL, Param2Type = ParameterType.RegisterPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xAE } }, // AE: XOR A (HL) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IX, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.XOR, Encoding = new byte[] { 0xDD, 0xAE } }, // DDAE: XOR A (IX) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.IY, Param2Type = ParameterType.RegisterDisplacedPtr, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.Displacement, Function = CommandID.XOR, Encoding = new byte[] { 0xFD, 0xAE } }, // FDAE: XOR A (IY) 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.A, Param2Type = ParameterType.RegisterByte, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xAF } }, // AF: XOR A A 
-                    new OpcodeEncoding { Param1 = CommandID.A, Param1Type = ParameterType.RegisterByte, Param2 = CommandID.ImmediateByte, Param2Type = ParameterType.Immediate, Param3 = CommandID.None, Param3Type = ParameterType.None, Flags = ParamFlags.None, Function = CommandID.XOR, Encoding = new byte[] { 0xEE } }, // EE: XOR A N 
-                }
-            },
+            // 88: ADC A, r*,
+            new OpcodeEncoding { Function = CommandID.ADC,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x88,
+                               },
+
+            // 8E: ADC A, (HL*),
+            new OpcodeEncoding { Function = CommandID.ADC,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x8E,
+                               },
+
+            // CE: ADC A, n,
+            new OpcodeEncoding { Function = CommandID.ADC,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xCE,
+                               },
+
+            // ED4A: ADC HL, rr,
+            new OpcodeEncoding { Function = CommandID.ADC,
+                                 Params = new CommandID[] { CommandID.HL, CommandID.WordReg | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x4A,
+                               },
+
+            // 09: ADD HL*, rr,
+            new OpcodeEncoding { Function = CommandID.ADD,
+                                 Params = new CommandID[] { CommandID.Address_Registers, CommandID.WordReg | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x09,
+                               },
+
+            // 80: ADD A, r*,
+            new OpcodeEncoding { Function = CommandID.ADD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x80,
+                               },
+
+            // 86: ADD A, (HL*),
+            new OpcodeEncoding { Function = CommandID.ADD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x86,
+                               },
+
+            // C6: ADD A, n,
+            new OpcodeEncoding { Function = CommandID.ADD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC6,
+                               },
+
+            // A0: AND A, r*,
+            new OpcodeEncoding { Function = CommandID.AND,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xA0,
+                               },
+
+            // A6: AND A, (HL*),
+            new OpcodeEncoding { Function = CommandID.AND,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xA6,
+                               },
+
+            // E6: AND A, n,
+            new OpcodeEncoding { Function = CommandID.AND,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xE6,
+                               },
+
+            // CB40: BIT n, r,
+            new OpcodeEncoding { Function = CommandID.BIT,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x40,
+                               },
+
+            // CB40: BIT n, (IX*), r,
+            new OpcodeEncoding { Function = CommandID.BIT,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x40,
+                               },
+
+            // CB46: BIT n, (HL*),
+            new OpcodeEncoding { Function = CommandID.BIT,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x46,
+                               },
+
+            // C4: CALL cc, nn,
+            new OpcodeEncoding { Function = CommandID.CALL,
+                                 Params = new CommandID[] { CommandID.Flags | CommandID.Pos2, CommandID.Address | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC4,
+                               },
+
+            // CD: CALL nn,
+            new OpcodeEncoding { Function = CommandID.CALL,
+                                 Params = new CommandID[] { CommandID.Address | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xCD,
+                               },
+
+            // 3F: CCF
+            new OpcodeEncoding { Function = CommandID.CCF,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x3F,
+                               },
+
+            // B8: CP A, r*,
+            new OpcodeEncoding { Function = CommandID.CP,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xB8,
+                               },
+
+            // BE: CP A, (HL*),
+            new OpcodeEncoding { Function = CommandID.CP,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xBE,
+                               },
+
+            // FE: CP A, n,
+            new OpcodeEncoding { Function = CommandID.CP,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xFE,
+                               },
+
+            // EDA9: CPD
+            new OpcodeEncoding { Function = CommandID.CPD,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xA9,
+                               },
+
+            // EDB9: CPDR
+            new OpcodeEncoding { Function = CommandID.CPDR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xB9,
+                               },
+
+            // EDA1: CPI
+            new OpcodeEncoding { Function = CommandID.CPI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xA1,
+                               },
+
+            // EDB1: CPIR
+            new OpcodeEncoding { Function = CommandID.CPIR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xB1,
+                               },
+
+            // 2F: CPL A,
+            new OpcodeEncoding { Function = CommandID.CPL,
+                                 Params = new CommandID[] { CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x2F,
+                               },
+
+            // 27: DAA
+            new OpcodeEncoding { Function = CommandID.DAA,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x27,
+                               },
+
+            // 05: DEC r*,
+            new OpcodeEncoding { Function = CommandID.DEC,
+                                 Params = new CommandID[] { CommandID.ByteRegIndex | CommandID.Pos2, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x05,
+                               },
+
+            // 0B: DEC rr,
+            new OpcodeEncoding { Function = CommandID.DEC,
+                                 Params = new CommandID[] { CommandID.WordReg | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x0B,
+                               },
+
+            // 35: DEC (HL*),
+            new OpcodeEncoding { Function = CommandID.DEC,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x35,
+                               },
+
+            // F3: DI
+            new OpcodeEncoding { Function = CommandID.DI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xF3,
+                               },
+
+            // 10: DJNZ e-2,
+            new OpcodeEncoding { Function = CommandID.DJNZ,
+                                 Params = new CommandID[] { CommandID.Displacment | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x10,
+                               },
+
+            // FB: EI
+            new OpcodeEncoding { Function = CommandID.EI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xFB,
+                               },
+
+            // 08: EX AF, AF,
+            new OpcodeEncoding { Function = CommandID.EX,
+                                 Params = new CommandID[] { CommandID.AF, CommandID.AF, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x08,
+                               },
+
+            // E3: EX (SP), HL*,
+            new OpcodeEncoding { Function = CommandID.EX,
+                                 Params = new CommandID[] { CommandID.SP_Pointer, CommandID.Address_Registers, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xE3,
+                               },
+
+            // EB: EX DE, HL,
+            new OpcodeEncoding { Function = CommandID.EX,
+                                 Params = new CommandID[] { CommandID.DE, CommandID.HL, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xEB,
+                               },
+
+            // D9: EXX
+            new OpcodeEncoding { Function = CommandID.EXX,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xD9,
+                               },
+
+            // 76: HALT
+            new OpcodeEncoding { Function = CommandID.HALT,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x76,
+                               },
+
+            // ED46: IM 0,
+            new OpcodeEncoding { Function = CommandID.IM,
+                                 Params = new CommandID[] { (CommandID)((int)CommandID.Encoded + 00), },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x46,
+                               },
+
+            // ED56: IM 1,
+            new OpcodeEncoding { Function = CommandID.IM,
+                                 Params = new CommandID[] { (CommandID)((int)CommandID.Encoded + 01), },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x56,
+                               },
+
+            // ED5E: IM 2,
+            new OpcodeEncoding { Function = CommandID.IM,
+                                 Params = new CommandID[] { (CommandID)((int)CommandID.Encoded + 02), },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x5E,
+                               },
+
+            // DB: IN A, n,
+            new OpcodeEncoding { Function = CommandID.IN,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xDB,
+                               },
+
+            // ED40: IN r, C,
+            new OpcodeEncoding { Function = CommandID.IN,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos2, CommandID.C, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x40,
+                               },
+
+            // ED70: IN C,
+            new OpcodeEncoding { Function = CommandID.IN,
+                                 Params = new CommandID[] { CommandID.C, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x70,
+                               },
+
+            // 03: INC rr,
+            new OpcodeEncoding { Function = CommandID.INC,
+                                 Params = new CommandID[] { CommandID.WordReg | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x03,
+                               },
+
+            // 04: INC r*,
+            new OpcodeEncoding { Function = CommandID.INC,
+                                 Params = new CommandID[] { CommandID.ByteRegIndex | CommandID.Pos2, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x04,
+                               },
+
+            // 34: INC (HL*),
+            new OpcodeEncoding { Function = CommandID.INC,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x34,
+                               },
+
+            // EDAA: IND
+            new OpcodeEncoding { Function = CommandID.IND,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xAA,
+                               },
+
+            // EDBA: INDR
+            new OpcodeEncoding { Function = CommandID.INDR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xBA,
+                               },
+
+            // EDA2: INI
+            new OpcodeEncoding { Function = CommandID.INI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xA2,
+                               },
+
+            // EDB2: INIR
+            new OpcodeEncoding { Function = CommandID.INIR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xB2,
+                               },
+
+            // C2: JP cc, nn,
+            new OpcodeEncoding { Function = CommandID.JP,
+                                 Params = new CommandID[] { CommandID.Flags | CommandID.Pos2, CommandID.Address | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC2,
+                               },
+
+            // C3: JP nn,
+            new OpcodeEncoding { Function = CommandID.JP,
+                                 Params = new CommandID[] { CommandID.Address | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC3,
+                               },
+
+            // E9: JP HL*,
+            new OpcodeEncoding { Function = CommandID.JP,
+                                 Params = new CommandID[] { CommandID.Address_Registers, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xE9,
+                               },
+
+            // 18: JR e-2,
+            new OpcodeEncoding { Function = CommandID.JR,
+                                 Params = new CommandID[] { CommandID.Displacment | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x18,
+                               },
+
+            // 20: JR cc, e-2,
+            new OpcodeEncoding { Function = CommandID.JR,
+                                 Params = new CommandID[] { CommandID.HalfFlags | CommandID.Pos4, CommandID.Displacment | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x20,
+                               },
+
+            // 01: LD rr, nn,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.WordReg | CommandID.Pos3, CommandID.WordData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x01,
+                               },
+
+            // 02: LD (BC), A,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.BC_Pointer, CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x02,
+                               },
+
+            // 06: LD r*, n,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.ByteRegIndex | CommandID.Pos2, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x06,
+                               },
+
+            // 0A: LD A, (BC),
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.BC_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x0A,
+                               },
+
+            // 12: LD (DE), A,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.DE_Pointer, CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x12,
+                               },
+
+            // 1A: LD A, (DE),
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.DE_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x1A,
+                               },
+
+            // 22: LD (**), HL*,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.Address_Pointer | CommandID.PosImmidate, CommandID.Address_Registers, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x22,
+                               },
+
+            // 2A: LD HL*, (**),
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.Address_Registers, CommandID.Address_Pointer | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x2A,
+                               },
+
+            // 32: LD (**), A,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.Address_Pointer | CommandID.PosImmidate, CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x32,
+                               },
+
+            // 36: LD (HL*), n,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x36,
+                               },
+
+            // 3A: LD A, (**),
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Address_Pointer | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x3A,
+                               },
+
+            // 40: LD r*, r*,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.ByteRegIndex | CommandID.Pos2, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x40,
+                               },
+
+            // 46: LD r*, (HL*),
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.ByteRegIndex | CommandID.Pos2, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x46,
+                               },
+
+            // 70: LD (HL*), r*,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x70,
+                               },
+
+            // F9: LD SP, HL*,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.SP, CommandID.Address_Registers, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xF9,
+                               },
+
+            // ED43: LD (**), rr,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.Address_Pointer | CommandID.PosImmidate, CommandID.WordReg | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x43,
+                               },
+
+            // ED47: LD I, A,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.I, CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x47,
+                               },
+
+            // ED4B: LD rr, (**),
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.WordReg | CommandID.Pos3, CommandID.Address_Pointer | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x4B,
+                               },
+
+            // ED4F: LD R, A,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.R, CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x4F,
+                               },
+
+            // ED57: LD A, I,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.I, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x57,
+                               },
+
+            // ED5F: LD A, R,
+            new OpcodeEncoding { Function = CommandID.LD,
+                                 Params = new CommandID[] { CommandID.A, CommandID.R, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x5F,
+                               },
+
+            // EDA8: LDD
+            new OpcodeEncoding { Function = CommandID.LDD,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xA8,
+                               },
+
+            // EDB8: LDDR
+            new OpcodeEncoding { Function = CommandID.LDDR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xB8,
+                               },
+
+            // EDA0: LDI
+            new OpcodeEncoding { Function = CommandID.LDI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xA0,
+                               },
+
+            // EDB0: LDIR
+            new OpcodeEncoding { Function = CommandID.LDIR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xB0,
+                               },
+
+            // ED44: NEG A,
+            new OpcodeEncoding { Function = CommandID.NEG,
+                                 Params = new CommandID[] { CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x44,
+                               },
+
+            // 00: NOP
+            new OpcodeEncoding { Function = CommandID.NOP,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x00,
+                               },
+
+            // B0: OR A, r*,
+            new OpcodeEncoding { Function = CommandID.OR,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xB0,
+                               },
+
+            // B6: OR A, (HL*),
+            new OpcodeEncoding { Function = CommandID.OR,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xB6,
+                               },
+
+            // F6: OR A, n,
+            new OpcodeEncoding { Function = CommandID.OR,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xF6,
+                               },
+
+            // EDBB: OTDR
+            new OpcodeEncoding { Function = CommandID.OTDR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xBB,
+                               },
+
+            // EDB3: OTIR
+            new OpcodeEncoding { Function = CommandID.OTIR,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xB3,
+                               },
+
+            // D3: OUT n, A,
+            new OpcodeEncoding { Function = CommandID.OUT,
+                                 Params = new CommandID[] { CommandID.ByteData | CommandID.PosImmidate, CommandID.A, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xD3,
+                               },
+
+            // ED41: OUT C, r,
+            new OpcodeEncoding { Function = CommandID.OUT,
+                                 Params = new CommandID[] { CommandID.C, CommandID.ByteReg | CommandID.Pos2, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x41,
+                               },
+
+            // ED71: OUT C, 0,
+            new OpcodeEncoding { Function = CommandID.OUT,
+                                 Params = new CommandID[] { CommandID.C, (CommandID)((int)CommandID.Encoded + 00), },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x71,
+                               },
+
+            // EDAB: OUTD
+            new OpcodeEncoding { Function = CommandID.OUTD,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xAB,
+                               },
+
+            // EDA3: OUTI
+            new OpcodeEncoding { Function = CommandID.OUTI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0xA3,
+                               },
+
+            // C1: POP rr,
+            new OpcodeEncoding { Function = CommandID.POP,
+                                 Params = new CommandID[] { CommandID.WordRegAF | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC1,
+                               },
+
+            // C5: PUSH rr,
+            new OpcodeEncoding { Function = CommandID.PUSH,
+                                 Params = new CommandID[] { CommandID.WordRegAF | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC5,
+                               },
+
+            // CB80: RES n, r,
+            new OpcodeEncoding { Function = CommandID.RES,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x80,
+                               },
+
+            // CB80: RES n, (IX*), r,
+            new OpcodeEncoding { Function = CommandID.RES,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x80,
+                               },
+
+            // CB86: RES n, (HL*),
+            new OpcodeEncoding { Function = CommandID.RES,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x86,
+                               },
+
+            // C0: RET cc, nn,
+            new OpcodeEncoding { Function = CommandID.RET,
+                                 Params = new CommandID[] { CommandID.Flags | CommandID.Pos2, CommandID.Address | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC0,
+                               },
+
+            // C9: RET
+            new OpcodeEncoding { Function = CommandID.RET,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC9,
+                               },
+
+            // ED4D: RETI
+            new OpcodeEncoding { Function = CommandID.RETI,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x4D,
+                               },
+
+            // ED45: RETN
+            new OpcodeEncoding { Function = CommandID.RETN,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x45,
+                               },
+
+            // CB10: RL r,
+            new OpcodeEncoding { Function = CommandID.RL,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x10,
+                               },
+
+            // CB10: RL (IX*), r,
+            new OpcodeEncoding { Function = CommandID.RL,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x10,
+                               },
+
+            // CB16: RL (HL*),
+            new OpcodeEncoding { Function = CommandID.RL,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x16,
+                               },
+
+            // 17: RLA
+            new OpcodeEncoding { Function = CommandID.RLA,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x17,
+                               },
+
+            // CB00: RLC r,
+            new OpcodeEncoding { Function = CommandID.RLC,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x00,
+                               },
+
+            // CB00: RLC (IX*), r,
+            new OpcodeEncoding { Function = CommandID.RLC,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x00,
+                               },
+
+            // CB06: RLC (HL*),
+            new OpcodeEncoding { Function = CommandID.RLC,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x06,
+                               },
+
+            // 07: RLCA
+            new OpcodeEncoding { Function = CommandID.RLCA,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x07,
+                               },
+
+            // ED6F: RLD
+            new OpcodeEncoding { Function = CommandID.RLD,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x6F,
+                               },
+
+            // CB18: RR r,
+            new OpcodeEncoding { Function = CommandID.RR,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x18,
+                               },
+
+            // CB18: RR (IX*), r,
+            new OpcodeEncoding { Function = CommandID.RR,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x18,
+                               },
+
+            // CB1E: RR (HL*),
+            new OpcodeEncoding { Function = CommandID.RR,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x1E,
+                               },
+
+            // 1F: RRA
+            new OpcodeEncoding { Function = CommandID.RRA,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x1F,
+                               },
+
+            // CB08: RRC r,
+            new OpcodeEncoding { Function = CommandID.RRC,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x08,
+                               },
+
+            // CB08: RRC (IX*), r,
+            new OpcodeEncoding { Function = CommandID.RRC,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x08,
+                               },
+
+            // CB0E: RRC (HL*),
+            new OpcodeEncoding { Function = CommandID.RRC,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x0E,
+                               },
+
+            // 0F: RRCA
+            new OpcodeEncoding { Function = CommandID.RRCA,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x0F,
+                               },
+
+            // ED67: RRD
+            new OpcodeEncoding { Function = CommandID.RRD,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x67,
+                               },
+
+            // C7: RST n,
+            new OpcodeEncoding { Function = CommandID.RST,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xC7,
+                               },
+
+            // 98: SBC A, r*,
+            new OpcodeEncoding { Function = CommandID.SBC,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x98,
+                               },
+
+            // 9E: SBC A, (HL*),
+            new OpcodeEncoding { Function = CommandID.SBC,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x9E,
+                               },
+
+            // DE: SBC A, n,
+            new OpcodeEncoding { Function = CommandID.SBC,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xDE,
+                               },
+
+            // ED42: SBC HL, rr,
+            new OpcodeEncoding { Function = CommandID.SBC,
+                                 Params = new CommandID[] { CommandID.HL, CommandID.WordReg | CommandID.Pos3, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0xED, Base = 0x42,
+                               },
+
+            // 37: SCF
+            new OpcodeEncoding { Function = CommandID.SCF,
+                                 Params = new CommandID[] { },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x37,
+                               },
+
+            // CBC0: SET n, r,
+            new OpcodeEncoding { Function = CommandID.SET,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0xC0,
+                               },
+
+            // CBC0: SET n, (IX*), r,
+            new OpcodeEncoding { Function = CommandID.SET,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0xC0,
+                               },
+
+            // CBC6: SET n, (HL*),
+            new OpcodeEncoding { Function = CommandID.SET,
+                                 Params = new CommandID[] { CommandID.Encoded | CommandID.Pos2, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0xC6,
+                               },
+
+            // CB20: SLA r,
+            new OpcodeEncoding { Function = CommandID.SLA,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x20,
+                               },
+
+            // CB20: SLA (IX*), r,
+            new OpcodeEncoding { Function = CommandID.SLA,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x20,
+                               },
+
+            // CB26: SLA (HL*),
+            new OpcodeEncoding { Function = CommandID.SLA,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x26,
+                               },
+
+            // CB30: SLL r,
+            new OpcodeEncoding { Function = CommandID.SLL,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x30,
+                               },
+
+            // CB30: SLL (IX*), r,
+            new OpcodeEncoding { Function = CommandID.SLL,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x30,
+                               },
+
+            // CB36: SLL (HL*),
+            new OpcodeEncoding { Function = CommandID.SLL,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x36,
+                               },
+
+            // CB28: SRA r,
+            new OpcodeEncoding { Function = CommandID.SRA,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x28,
+                               },
+
+            // CB28: SRA (IX*), r,
+            new OpcodeEncoding { Function = CommandID.SRA,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x28,
+                               },
+
+            // CB2E: SRA (HL*),
+            new OpcodeEncoding { Function = CommandID.SRA,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x2E,
+                               },
+
+            // CB38: SRL r,
+            new OpcodeEncoding { Function = CommandID.SRL,
+                                 Params = new CommandID[] { CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x38,
+                               },
+
+            // CB38: SRL (IX*), r,
+            new OpcodeEncoding { Function = CommandID.SRL,
+                                 Params = new CommandID[] { CommandID.Index_Pointer, CommandID.ByteReg | CommandID.Pos1, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x38,
+                               },
+
+            // CB3E: SRL (HL*),
+            new OpcodeEncoding { Function = CommandID.SRL,
+                                 Params = new CommandID[] { CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.EmbededIndex,
+                                 Prefix = 0xCB, Base = 0x3E,
+                               },
+
+            // 90: SUB A, r*,
+            new OpcodeEncoding { Function = CommandID.SUB,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x90,
+                               },
+
+            // 96: SUB A, (HL*),
+            new OpcodeEncoding { Function = CommandID.SUB,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0x96,
+                               },
+
+            // D6: SUB A, n,
+            new OpcodeEncoding { Function = CommandID.SUB,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xD6,
+                               },
+
+            // A8: XOR A, r*,
+            new OpcodeEncoding { Function = CommandID.XOR,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteRegIndex | CommandID.Pos1, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xA8,
+                               },
+
+            // AE: XOR A, (HL*),
+            new OpcodeEncoding { Function = CommandID.XOR,
+                                 Params = new CommandID[] { CommandID.A, CommandID.Byte_Pointer, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xAE,
+                               },
+
+            // EE: XOR A, n,
+            new OpcodeEncoding { Function = CommandID.XOR,
+                                 Params = new CommandID[] { CommandID.A, CommandID.ByteData | CommandID.PosImmidate, },
+                                 Flags = ParamFlags.None,
+                                 Prefix = 0x00, Base = 0xEE,
+                               },
+
         };
     }
 }

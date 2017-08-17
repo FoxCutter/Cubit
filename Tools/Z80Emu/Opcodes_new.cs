@@ -5,4111 +5,6159 @@ namespace Z80Emu
         static public OpcodeData[,] ByteData = new OpcodeData[,]
         {
             {
-                new OpcodeData { Name = "NOP",	// 00: NOP
+                // 00: NOP
+                new OpcodeData { Name = "NOP",
                                  Function = Operation.NOP,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "LD",	// 01: LD BC, nn,
+
+                // 01: LD BC, nn,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BC | CommandID.Pos3, CommandID.WordImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.BC, CommandID.WordData, },
                                },
-                new OpcodeData { Name = "LD",	// 02: LD (BC), A,
+
+                // 02: LD (BC), A,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.BC_Pointer, CommandID.A, },
                                },
-                new OpcodeData { Name = "INC",	// 03: INC BC,
+
+                // 03: INC BC,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.BC | CommandID.Pos3, },
+                                 new Param[] { CommandID.BC, },
                                },
-                new OpcodeData { Name = "INC",	// 04: INC B,
+
+                // 04: INC B,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.B | CommandID.Pos2, },
+                                 new Param[] { CommandID.B, },
                                },
-                new OpcodeData { Name = "DEC",	// 05: DEC B,
+
+                // 05: DEC B,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.B | CommandID.Pos2, },
+                                 new Param[] { CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 06: LD B, n,
+
+                // 06: LD B, n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.B, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RLCA",	// 07: RLCA
-                                 Function = Operation.RLCA,
+
+                // 07: RLCA
+                new OpcodeData { Name = "RLCA",
+                                 Function = Operation.RL_A_CY,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "EX",	// 08: EX AF, AF,
+
+                // 08: EX AF, AF,
+                new OpcodeData { Name = "EX",
                                  Function = Operation.EX,
                                  new Param[] { CommandID.AF, CommandID.AF, },
                                },
-                new OpcodeData { Name = "ADD",	// 09: ADD (HL), BC,
+
+                // 09: ADD HL, BC,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.AddrReg, CommandID.BC | CommandID.Pos3, },
+                                 new Param[] { CommandID.HL, CommandID.BC, },
                                },
-                new OpcodeData { Name = "LD",	// 0A: LD A, (BC),
+
+                // 0A: LD A, (BC),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.A, CommandID.BC_Pointer, },
                                },
-                new OpcodeData { Name = "DEC",	// 0B: DEC BC,
+
+                // 0B: DEC BC,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.BC | CommandID.Pos3, },
+                                 new Param[] { CommandID.BC, },
                                },
-                new OpcodeData { Name = "INC",	// 0C: INC C,
+
+                // 0C: INC C,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.C | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, },
                                },
-                new OpcodeData { Name = "DEC",	// 0D: DEC C,
+
+                // 0D: DEC C,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.C | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 0E: LD C, n,
+
+                // 0E: LD C, n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.C, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RRCA",	// 0F: RRCA
-                                 Function = Operation.RRCA,
+
+                // 0F: RRCA
+                new OpcodeData { Name = "RRCA",
+                                 Function = Operation.RR_A_CY,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "DJNZ",	// 10: DJNZ e-2,
+
+                // 10: DJNZ e-2,
+                new OpcodeData { Name = "DJNZ",
                                  Function = Operation.DJNZ,
-                                 new Param[] { CommandID.Displacment | CommandID.Immidate, },
+                                 new Param[] { CommandID.Displacment, },
                                },
-                new OpcodeData { Name = "LD",	// 11: LD DE, nn,
+
+                // 11: LD DE, nn,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.DE | CommandID.Pos3, CommandID.WordImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.DE, CommandID.WordData, },
                                },
-                new OpcodeData { Name = "LD",	// 12: LD (DE), A,
+
+                // 12: LD (DE), A,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.DE_Pointer, CommandID.A, },
                                },
-                new OpcodeData { Name = "INC",	// 13: INC DE,
+
+                // 13: INC DE,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.DE | CommandID.Pos3, },
+                                 new Param[] { CommandID.DE, },
                                },
-                new OpcodeData { Name = "INC",	// 14: INC D,
+
+                // 14: INC D,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.D | CommandID.Pos2, },
+                                 new Param[] { CommandID.D, },
                                },
-                new OpcodeData { Name = "DEC",	// 15: DEC D,
+
+                // 15: DEC D,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.D | CommandID.Pos2, },
+                                 new Param[] { CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 16: LD D, n,
+
+                // 16: LD D, n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.D, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RLA",	// 17: RLA
-                                 Function = Operation.RLA,
+
+                // 17: RLA
+                new OpcodeData { Name = "RLA",
+                                 Function = Operation.RL_A,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "JR",	// 18: JR e-2,
+
+                // 18: JR e-2,
+                new OpcodeData { Name = "JR",
                                  Function = Operation.JR,
-                                 new Param[] { CommandID.Displacment | CommandID.Immidate, },
+                                 new Param[] { CommandID.Displacment, },
                                },
-                new OpcodeData { Name = "ADD",	// 19: ADD (HL), DE,
+
+                // 19: ADD HL, DE,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.AddrReg, CommandID.DE | CommandID.Pos3, },
+                                 new Param[] { CommandID.HL, CommandID.DE, },
                                },
-                new OpcodeData { Name = "LD",	// 1A: LD A, (DE),
+
+                // 1A: LD A, (DE),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.A, CommandID.DE_Pointer, },
                                },
-                new OpcodeData { Name = "DEC",	// 1B: DEC DE,
+
+                // 1B: DEC DE,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.DE | CommandID.Pos3, },
+                                 new Param[] { CommandID.DE, },
                                },
-                new OpcodeData { Name = "INC",	// 1C: INC E,
+
+                // 1C: INC E,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.E | CommandID.Pos2, },
+                                 new Param[] { CommandID.E, },
                                },
-                new OpcodeData { Name = "DEC",	// 1D: DEC E,
+
+                // 1D: DEC E,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.E | CommandID.Pos2, },
+                                 new Param[] { CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 1E: LD E, n,
+
+                // 1E: LD E, n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.E, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RRA",	// 1F: RRA
-                                 Function = Operation.RRA,
+
+                // 1F: RRA
+                new OpcodeData { Name = "RRA",
+                                 Function = Operation.RR_A,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "JR",	// 20: JR NZ, e-2,
+
+                // 20: JR Flag_NZ, e-2,
+                new OpcodeData { Name = "JR",
                                  Function = Operation.JR,
-                                 new Param[] { CommandID.NZ | CommandID.Pos4, CommandID.Displacment | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_NZ, CommandID.Displacment, },
                                },
-                new OpcodeData { Name = "LD",	// 21: LD HL, nn,
+
+                // 21: LD HL, nn,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL | CommandID.Pos3, CommandID.WordImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.HL, CommandID.WordData, },
                                },
-                new OpcodeData { Name = "LD",	// 22: LD (**), (HL),
+
+                // 22: LD (**), HL,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.AddressPtr | CommandID.Immidate, CommandID.AddrReg, },
+                                 new Param[] { CommandID.Address_Pointer, CommandID.HL, },
                                },
-                new OpcodeData { Name = "INC",	// 23: INC HL,
-                                 Function = Operation.INC,
-                                 new Param[] { CommandID.HL | CommandID.Pos3, },
+
+                // 23: LD (**), IX,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.Address_Pointer, CommandID.IX, },
                                },
-                new OpcodeData { Name = "INC",	// 24: INC H,
-                                 Function = Operation.INC,
-                                 new Param[] { CommandID.H | CommandID.Pos2, },
+
+                // 24: LD (**), IY,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.Address_Pointer, CommandID.IY, },
                                },
-                new OpcodeData { Name = "DEC",	// 25: DEC H,
+
+                // 25: DEC H,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.H | CommandID.Pos2, },
+                                 new Param[] { CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 26: LD H, n,
+
+                // 26: LD H, n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.H, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "DAA",	// 27: DAA
-                                 Function = Operation.DAA,
+
+                // 27: DAA
+                new OpcodeData { Name = "DAA",
+                                 Function = Operation.BCD_Adjust,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "JR",	// 28: JR Z, e-2,
+
+                // 28: JR Flag_Z, e-2,
+                new OpcodeData { Name = "JR",
                                  Function = Operation.JR,
-                                 new Param[] { CommandID.Z | CommandID.Pos4, CommandID.Displacment | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_Z, CommandID.Displacment, },
                                },
-                new OpcodeData { Name = "ADD",	// 29: ADD (HL), HL,
+
+                // 29: ADD HL, HL,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.AddrReg, CommandID.HL | CommandID.Pos3, },
+                                 new Param[] { CommandID.HL, CommandID.HL, },
                                },
-                new OpcodeData { Name = "LD",	// 2A: LD (HL), (**),
+
+                // 2A: LD HL, (**),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.AddrReg, CommandID.AddressPtr | CommandID.Immidate, },
+                                 new Param[] { CommandID.HL, CommandID.Address_Pointer, },
                                },
-                new OpcodeData { Name = "DEC",	// 2B: DEC HL,
+
+                // 2B: LD IX, (**),
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.IX, CommandID.Address_Pointer, },
+                               },
+
+                // 2C: LD IY, (**),
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.IY, CommandID.Address_Pointer, },
+                               },
+
+                // 2D: DEC IXH,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.HL | CommandID.Pos3, },
+                                 new Param[] { CommandID.IXH, },
                                },
-                new OpcodeData { Name = "INC",	// 2C: INC L,
+
+                // 2E: LD IXH, n,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.IXH, CommandID.ByteData, },
+                               },
+
+                // 2F: CPL A,
+                new OpcodeData { Name = "CPL",
+                                 Function = Operation.NOT,
+                                 new Param[] { CommandID.A, },
+                               },
+
+                // 30: JR Flag_NC, e-2,
+                new OpcodeData { Name = "JR",
+                                 Function = Operation.JR,
+                                 new Param[] { CommandID.Flag_NC, CommandID.Displacment, },
+                               },
+
+                // 31: LD SP, nn,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.SP, CommandID.WordData, },
+                               },
+
+                // 32: LD (**), A,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.Address_Pointer, CommandID.A, },
+                               },
+
+                // 33: INC SP,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.L | CommandID.Pos2, },
+                                 new Param[] { CommandID.SP, },
                                },
-                new OpcodeData { Name = "DEC",	// 2D: DEC L,
+
+                // 34: INC (HL),
+                new OpcodeData { Name = "INC",
+                                 Function = Operation.INC,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // 35: DEC (HL),
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.L | CommandID.Pos2, },
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 2E: LD L, n,
+
+                // 36: LD (HL), n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "CPL",	// 2F: CPL
-                                 Function = Operation.CPL,
+
+                // 37: SCF
+                new OpcodeData { Name = "SCF",
+                                 Function = Operation.CY_SET,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "JR",	// 30: JR NC, e-2,
+
+                // 38: JR Flag_CY, e-2,
+                new OpcodeData { Name = "JR",
                                  Function = Operation.JR,
-                                 new Param[] { CommandID.NC | CommandID.Pos4, CommandID.Displacment | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_CY, CommandID.Displacment, },
                                },
-                new OpcodeData { Name = "LD",	// 31: LD SP, nn,
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.SP | CommandID.Pos3, CommandID.WordImmidate | CommandID.Immidate, },
-                               },
-                new OpcodeData { Name = "LD",	// 32: LD (**), A,
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.AddressPtr | CommandID.Immidate, CommandID.A, },
-                               },
-                new OpcodeData { Name = "INC",	// 33: INC SP,
-                                 Function = Operation.INC,
-                                 new Param[] { CommandID.SP | CommandID.Pos3, },
-                               },
-                new OpcodeData { Name = "INC",	// 34: INC BytePtr,
-                                 Function = Operation.INC,
-                                 new Param[] { CommandID.BytePtr, },
-                               },
-                new OpcodeData { Name = "DEC",	// 35: DEC BytePtr,
-                                 Function = Operation.DEC,
-                                 new Param[] { CommandID.BytePtr, },
-                               },
-                new OpcodeData { Name = "LD",	// 36: LD BytePtr, n,
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.ByteImmidate | CommandID.Immidate, },
-                               },
-                new OpcodeData { Name = "SCF",	// 37: SCF
-                                 Function = Operation.SCF,
-                                 new Param[] { },
-                               },
-                new OpcodeData { Name = "JR",	// 38: JR CY, e-2,
-                                 Function = Operation.JR,
-                                 new Param[] { CommandID.CY | CommandID.Pos4, CommandID.Displacment | CommandID.Immidate, },
-                               },
-                new OpcodeData { Name = "ADD",	// 39: ADD (HL), SP,
+
+                // 39: ADD HL, SP,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.AddrReg, CommandID.SP | CommandID.Pos3, },
+                                 new Param[] { CommandID.HL, CommandID.SP, },
                                },
-                new OpcodeData { Name = "LD",	// 3A: LD A, (**),
+
+                // 3A: LD A, (**),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A, CommandID.AddressPtr | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.Address_Pointer, },
                                },
-                new OpcodeData { Name = "DEC",	// 3B: DEC SP,
+
+                // 3B: DEC SP,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.SP | CommandID.Pos3, },
+                                 new Param[] { CommandID.SP, },
                                },
-                new OpcodeData { Name = "INC",	// 3C: INC A,
+
+                // 3C: INC L,
+                new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.A | CommandID.Pos2, },
+                                 new Param[] { CommandID.L, },
                                },
-                new OpcodeData { Name = "DEC",	// 3D: DEC A,
+
+                // 3D: DEC L,
+                new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.A | CommandID.Pos2, },
+                                 new Param[] { CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 3E: LD A, n,
+
+                // 3E: LD L, n,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.L, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "CCF",	// 3F: CCF
-                                 Function = Operation.CCF,
+
+                // 3F: CCF
+                new OpcodeData { Name = "CCF",
+                                 Function = Operation.CY_Invert,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "LD",	// 40: LD B, B,
+
+                // 40: LD B, B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 41: LD B, C,
+
+                // 41: LD B, C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 42: LD B, D,
+
+                // 42: LD B, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 43: LD B, E,
+
+                // 43: LD B, E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 44: LD B, H,
+
+                // 44: LD B, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 45: LD B, L,
+
+                // 45: LD B, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 46: LD B, BytePtr,
+
+                // 46: LD B, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.B, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 47: LD B, A,
+
+                // 47: LD B, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 48: LD C, B,
+
+                // 48: LD C, B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 49: LD C, C,
+
+                // 49: LD C, C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 4A: LD C, D,
+
+                // 4A: LD C, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 4B: LD C, E,
+
+                // 4B: LD C, E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 4C: LD C, H,
+
+                // 4C: LD C, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 4D: LD C, L,
+
+                // 4D: LD C, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 4E: LD C, BytePtr,
+
+                // 4E: LD C, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.C, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 4F: LD C, A,
+
+                // 4F: LD C, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 50: LD D, B,
+
+                // 50: LD D, B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 51: LD D, C,
+
+                // 51: LD D, C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 52: LD D, D,
+
+                // 52: LD D, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 53: LD D, E,
+
+                // 53: LD D, E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 54: LD D, H,
+
+                // 54: LD D, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 55: LD D, L,
+
+                // 55: LD D, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 56: LD D, BytePtr,
+
+                // 56: LD D, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.D, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 57: LD D, A,
+
+                // 57: LD D, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 58: LD E, B,
+
+                // 58: LD E, B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 59: LD E, C,
+
+                // 59: LD E, C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 5A: LD E, D,
+
+                // 5A: LD E, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 5B: LD E, E,
+
+                // 5B: LD E, E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 5C: LD E, H,
+
+                // 5C: LD E, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 5D: LD E, L,
+
+                // 5D: LD E, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 5E: LD E, BytePtr,
+
+                // 5E: LD E, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.E, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 5F: LD E, A,
+
+                // 5F: LD E, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 60: LD H, B,
+
+                // 60: LD H, B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 61: LD H, C,
+
+                // 61: LD H, C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 62: LD H, D,
+
+                // 62: LD H, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 63: LD H, E,
+
+                // 63: LD H, E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 64: LD H, H,
+
+                // 64: LD H, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 65: LD H, L,
+
+                // 65: LD H, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 66: LD H, BytePtr,
+
+                // 66: LD H, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.H, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 67: LD H, A,
+
+                // 67: LD H, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 68: LD L, B,
+
+                // 68: LD IXH, B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 69: LD L, C,
+
+                // 69: LD IXH, C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 6A: LD L, D,
+
+                // 6A: LD IXH, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 6B: LD L, E,
+
+                // 6B: LD IXH, E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 6C: LD L, H,
+
+                // 6C: LD IXH, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 6D: LD L, L,
+
+                // 6D: LD IXH, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 6E: LD L, BytePtr,
+
+                // 6E: LD IXH, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.IXH, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 6F: LD L, A,
+
+                // 6F: LD IXH, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 70: LD BytePtr, B,
+
+                // 70: LD (HL), B,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.B, },
                                },
-                new OpcodeData { Name = "LD",	// 71: LD BytePtr, C,
+
+                // 71: LD (HL), C,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.C, },
                                },
-                new OpcodeData { Name = "LD",	// 72: LD BytePtr, D,
+
+                // 72: LD (HL), D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 73: LD BytePtr, E,
+
+                // 73: LD (HL), E,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.E, },
                                },
-                new OpcodeData { Name = "LD",	// 74: LD BytePtr, H,
+
+                // 74: LD (HL), H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 75: LD BytePtr, L,
+
+                // 75: LD (HL), IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "HALT",	// 76: HALT
+
+                // 76: HALT
+                new OpcodeData { Name = "HALT",
                                  Function = Operation.HALT,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "LD",	// 77: LD BytePtr, A,
+
+                // 77: LD (HL), L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BytePtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.L, },
                                },
-                new OpcodeData { Name = "LD",	// 78: LD A, B,
+
+                // 78: LD (HL), IXL,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.IXL, },
                                },
-                new OpcodeData { Name = "LD",	// 79: LD A, C,
+
+                // 79: LD (HL), IYL,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.IYL, },
                                },
-                new OpcodeData { Name = "LD",	// 7A: LD A, D,
+
+                // 7A: LD L, D,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.L, CommandID.D, },
                                },
-                new OpcodeData { Name = "LD",	// 7B: LD A, E,
+
+                // 7B: LD (HL), A,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, CommandID.A, },
                                },
-                new OpcodeData { Name = "LD",	// 7C: LD A, H,
+
+                // 7C: LD L, H,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.L, CommandID.H, },
                                },
-                new OpcodeData { Name = "LD",	// 7D: LD A, L,
+
+                // 7D: LD L, IXH,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.L, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "LD",	// 7E: LD A, BytePtr,
+
+                // 7E: LD L, (HL),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.BytePtr, },
+                                 new Param[] { CommandID.L, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "LD",	// 7F: LD A, A,
+
+                // 7F: LD L, L,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.L, CommandID.L, },
                                },
-                new OpcodeData { Name = "ADD",	// 80: ADD A, B,
+
+                // 80: ADD A, B,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "ADD",	// 81: ADD A, C,
+
+                // 81: ADD A, C,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "ADD",	// 82: ADD A, D,
+
+                // 82: ADD A, D,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "ADD",	// 83: ADD A, E,
+
+                // 83: ADD A, E,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "ADD",	// 84: ADD A, H,
+
+                // 84: ADD A, H,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "ADD",	// 85: ADD A, L,
+
+                // 85: ADD A, IXH,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "ADD",	// 86: ADD A, BytePtr,
+
+                // 86: ADD A, (HL),
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "ADD",	// 87: ADD A, A,
+
+                // 87: ADD A, L,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "ADC",	// 88: ADC A, B,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+
+                // 88: ADC A, B,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "ADC",	// 89: ADC A, C,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+
+                // 89: ADC A, C,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "ADC",	// 8A: ADC A, D,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+
+                // 8A: ADC A, D,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "ADC",	// 8B: ADC A, E,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+
+                // 8B: ADC A, E,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "ADC",	// 8C: ADC A, H,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+
+                // 8C: ADC A, H,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "ADC",	// 8D: ADC A, L,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+
+                // 8D: ADC A, IXH,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "ADC",	// 8E: ADC A, BytePtr,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+
+                // 8E: ADC A, (HL),
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "ADC",	// 8F: ADC A, A,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+
+                // 8F: ADC A, L,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "SUB",	// 90: SUB A, B,
+
+                // 90: SUB A, B,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "SUB",	// 91: SUB A, C,
+
+                // 91: SUB A, C,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "SUB",	// 92: SUB A, D,
+
+                // 92: SUB A, D,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "SUB",	// 93: SUB A, E,
+
+                // 93: SUB A, E,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "SUB",	// 94: SUB A, H,
+
+                // 94: SUB A, H,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "SUB",	// 95: SUB A, L,
+
+                // 95: SUB A, IXH,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SUB",	// 96: SUB A, BytePtr,
+
+                // 96: SUB A, (HL),
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SUB",	// 97: SUB A, A,
+
+                // 97: SUB A, L,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "SBC",	// 98: SBC A, B,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+
+                // 98: SBC A, B,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "SBC",	// 99: SBC A, C,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+
+                // 99: SBC A, C,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "SBC",	// 9A: SBC A, D,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+
+                // 9A: SBC A, D,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "SBC",	// 9B: SBC A, E,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+
+                // 9B: SBC A, E,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "SBC",	// 9C: SBC A, H,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+
+                // 9C: SBC A, H,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "SBC",	// 9D: SBC A, L,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+
+                // 9D: SBC A, IXH,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SBC",	// 9E: SBC A, BytePtr,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+
+                // 9E: SBC A, (HL),
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SBC",	// 9F: SBC A, A,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+
+                // 9F: SBC A, L,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "AND",	// A0: AND A, B,
+
+                // A0: AND A, B,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "AND",	// A1: AND A, C,
+
+                // A1: AND A, C,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "AND",	// A2: AND A, D,
+
+                // A2: AND A, D,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "AND",	// A3: AND A, E,
+
+                // A3: AND A, E,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "AND",	// A4: AND A, H,
+
+                // A4: AND A, H,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "AND",	// A5: AND A, L,
+
+                // A5: AND A, IXH,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "AND",	// A6: AND A, BytePtr,
+
+                // A6: AND A, (HL),
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "AND",	// A7: AND A, A,
+
+                // A7: AND A, L,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "XOR",	// A8: XOR A, B,
+
+                // A8: XOR A, B,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "XOR",	// A9: XOR A, C,
+
+                // A9: XOR A, C,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "XOR",	// AA: XOR A, D,
+
+                // AA: XOR A, D,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "XOR",	// AB: XOR A, E,
+
+                // AB: XOR A, E,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "XOR",	// AC: XOR A, H,
+
+                // AC: XOR A, H,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "XOR",	// AD: XOR A, L,
+
+                // AD: XOR A, IXH,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "XOR",	// AE: XOR A, BytePtr,
+
+                // AE: XOR A, (HL),
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "XOR",	// AF: XOR A, A,
+
+                // AF: XOR A, L,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "OR",	// B0: OR A, B,
+
+                // B0: OR A, B,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "OR",	// B1: OR A, C,
+
+                // B1: OR A, C,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "OR",	// B2: OR A, D,
+
+                // B2: OR A, D,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "OR",	// B3: OR A, E,
+
+                // B3: OR A, E,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "OR",	// B4: OR A, H,
+
+                // B4: OR A, H,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "OR",	// B5: OR A, L,
+
+                // B5: OR A, IXH,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "OR",	// B6: OR A, BytePtr,
+
+                // B6: OR A, (HL),
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "OR",	// B7: OR A, A,
+
+                // B7: OR A, L,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "CP",	// B8: CP A, B,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.B | CommandID.Pos1, },
+
+                // B8: CP A, B,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
-                new OpcodeData { Name = "CP",	// B9: CP A, C,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.C | CommandID.Pos1, },
+
+                // B9: CP A, C,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "CP",	// BA: CP A, D,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.D | CommandID.Pos1, },
+
+                // BA: CP A, D,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
-                new OpcodeData { Name = "CP",	// BB: CP A, E,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.E | CommandID.Pos1, },
+
+                // BB: CP A, E,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
-                new OpcodeData { Name = "CP",	// BC: CP A, H,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.H | CommandID.Pos1, },
+
+                // BC: CP A, H,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.H, },
                                },
-                new OpcodeData { Name = "CP",	// BD: CP A, L,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.L | CommandID.Pos1, },
+
+                // BD: CP A, IXH,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "CP",	// BE: CP A, BytePtr,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.BytePtr, },
+
+                // BE: CP A, (HL),
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "CP",	// BF: CP A, A,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.A | CommandID.Pos1, },
+
+                // BF: CP A, L,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.L, },
                                },
-                new OpcodeData { Name = "RET",	// C0: RET NZ,
+
+                // C0: RET Flag_NZ, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.NZ | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_NZ, CommandID.Address, },
                                },
-                new OpcodeData { Name = "POP",	// C1: POP BC,
+
+                // C1: POP BC,
+                new OpcodeData { Name = "POP",
                                  Function = Operation.POP,
-                                 new Param[] { CommandID.BC | CommandID.Pos3, },
+                                 new Param[] { CommandID.BC, },
                                },
-                new OpcodeData { Name = "JP",	// C2: JP NZ, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.NZ | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // C2: JP Flag_NZ, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Flag_NZ, CommandID.Address, },
                                },
-                new OpcodeData { Name = "JP",	// C3: JP nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.Address | CommandID.Immidate, },
+
+                // C3: JP nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Address, },
                                },
-                new OpcodeData { Name = "CALL",	// C4: CALL NZ, nn,
+
+                // C4: CALL Flag_NZ, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.NZ | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_NZ, CommandID.Address, },
                                },
-                new OpcodeData { Name = "PUSH",	// C5: PUSH BC,
+
+                // C5: PUSH BC,
+                new OpcodeData { Name = "PUSH",
                                  Function = Operation.PUSH,
-                                 new Param[] { CommandID.BC | CommandID.Pos3, },
+                                 new Param[] { CommandID.BC, },
                                },
-                new OpcodeData { Name = "ADD",	// C6: ADD A, n,
+
+                // C6: ADD A, n,
+                new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// C7: RST 0,
+
+                // C7: RST 0,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), },
                                },
-                new OpcodeData { Name = "RET",	// C8: RET Z,
+
+                // C8: RET Flag_Z, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Z | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_Z, CommandID.Address, },
                                },
-                new OpcodeData { Name = "RET",	// C9: RET
+
+                // C9: RET
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "JP",	// CA: JP Z, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.Z | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // CA: JP Flag_Z, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Flag_Z, CommandID.Address, },
                                },
-                new OpcodeData { Name = "",		// CB
+
+                // CB
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "CALL",	// CC: CALL Z, nn,
+
+                // CC: CALL Flag_Z, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.Z | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_Z, CommandID.Address, },
                                },
-                new OpcodeData { Name = "CALL",	// CD: CALL nn,
+
+                // CD: CALL nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Address, },
                                },
-                new OpcodeData { Name = "ADC",	// CE: ADC A, n,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+
+                // CE: ADC A, n,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// CF: RST 8,
+
+                // CF: RST 8,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 08), },
                                },
-                new OpcodeData { Name = "RET",	// D0: RET NC,
+
+                // D0: RET Flag_NC, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.NC | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_NC, CommandID.Address, },
                                },
-                new OpcodeData { Name = "POP",	// D1: POP DE,
+
+                // D1: POP DE,
+                new OpcodeData { Name = "POP",
                                  Function = Operation.POP,
-                                 new Param[] { CommandID.DE | CommandID.Pos3, },
+                                 new Param[] { CommandID.DE, },
                                },
-                new OpcodeData { Name = "JP",	// D2: JP NC, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.NC | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // D2: JP Flag_NC, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Flag_NC, CommandID.Address, },
                                },
-                new OpcodeData { Name = "OUT",	// D3: OUT n, A,
+
+                // D3: OUT n, A,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.ByteImmidate | CommandID.Immidate, CommandID.A, },
+                                 new Param[] { CommandID.ByteData, CommandID.A, },
                                },
-                new OpcodeData { Name = "CALL",	// D4: CALL NC, nn,
+
+                // D4: CALL Flag_NC, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.NC | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_NC, CommandID.Address, },
                                },
-                new OpcodeData { Name = "PUSH",	// D5: PUSH DE,
+
+                // D5: PUSH DE,
+                new OpcodeData { Name = "PUSH",
                                  Function = Operation.PUSH,
-                                 new Param[] { CommandID.DE | CommandID.Pos3, },
+                                 new Param[] { CommandID.DE, },
                                },
-                new OpcodeData { Name = "SUB",	// D6: SUB A, n,
+
+                // D6: SUB A, n,
+                new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// D7: RST 10,
+
+                // D7: RST 10,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 10), },
                                },
-                new OpcodeData { Name = "RET",	// D8: RET CY,
+
+                // D8: RET Flag_CY, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.CY | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_CY, CommandID.Address, },
                                },
-                new OpcodeData { Name = "EXX",	// D9: EXX
+
+                // D9: EXX
+                new OpcodeData { Name = "EXX",
                                  Function = Operation.EXX,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "JP",	// DA: JP CY, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.CY | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // DA: JP Flag_CY, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Flag_CY, CommandID.Address, },
                                },
-                new OpcodeData { Name = "IN",	// DB: IN A, n,
+
+                // DB: IN A, n,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "CALL",	// DC: CALL CY, nn,
+
+                // DC: CALL Flag_CY, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.CY | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_CY, CommandID.Address, },
                                },
-                new OpcodeData { Name = "",		// DD
+
+                // DD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "SBC",	// DE: SBC A, n,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+
+                // DE: SBC A, n,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// DF: RST 18,
+
+                // DF: RST 18,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 18), },
                                },
-                new OpcodeData { Name = "RET",	// E0: RET PO,
+
+                // E0: RET Flag_PO, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.PO | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_PO, CommandID.Address, },
                                },
-                new OpcodeData { Name = "POP",	// E1: POP HL,
+
+                // E1: POP HL,
+                new OpcodeData { Name = "POP",
                                  Function = Operation.POP,
-                                 new Param[] { CommandID.HL | CommandID.Pos3, },
+                                 new Param[] { CommandID.HL, },
                                },
-                new OpcodeData { Name = "JP",	// E2: JP PO, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.PO | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // E2: JP Flag_PO, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Flag_PO, CommandID.Address, },
                                },
-                new OpcodeData { Name = "EX",	// E3: EX (SP), (HL),
+
+                // E3: EX (SP), HL,
+                new OpcodeData { Name = "EX",
                                  Function = Operation.EX,
-                                 new Param[] { CommandID.SP_Pointer, CommandID.AddrReg, },
+                                 new Param[] { CommandID.SP_Pointer, CommandID.HL, },
                                },
-                new OpcodeData { Name = "CALL",	// E4: CALL PO, nn,
-                                 Function = Operation.CALL,
-                                 new Param[] { CommandID.PO | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // E4: EX (SP), IX,
+                new OpcodeData { Name = "EX",
+                                 Function = Operation.EX,
+                                 new Param[] { CommandID.SP_Pointer, CommandID.IX, },
                                },
-                new OpcodeData { Name = "PUSH",	// E5: PUSH HL,
-                                 Function = Operation.PUSH,
-                                 new Param[] { CommandID.HL | CommandID.Pos3, },
+
+                // E5: EX (SP), IY,
+                new OpcodeData { Name = "EX",
+                                 Function = Operation.EX,
+                                 new Param[] { CommandID.SP_Pointer, CommandID.IY, },
                                },
-                new OpcodeData { Name = "AND",	// E6: AND A, n,
+
+                // E6: AND A, n,
+                new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// E7: RST 20,
+
+                // E7: RST 20,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 20), },
                                },
-                new OpcodeData { Name = "RET",	// E8: RET PE,
+
+                // E8: RET Flag_PE, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.PE | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_PE, CommandID.Address, },
                                },
-                new OpcodeData { Name = "JP",	// E9: JP BytePtr,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.BytePtr, },
+
+                // E9: JP HL,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.HL, },
                                },
-                new OpcodeData { Name = "JP",	// EA: JP PE, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.PE | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // EA: JP IX,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.IX, },
                                },
-                new OpcodeData { Name = "EX",	// EB: EX DE, HL,
+
+                // EB: EX DE, HL,
+                new OpcodeData { Name = "EX",
                                  Function = Operation.EX,
                                  new Param[] { CommandID.DE, CommandID.HL, },
                                },
-                new OpcodeData { Name = "CALL",	// EC: CALL PE, nn,
+
+                // EC: CALL Flag_PE, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.PE | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_PE, CommandID.Address, },
                                },
-                new OpcodeData { Name = "",		// ED
+
+                // ED
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "XOR",	// EE: XOR A, n,
+
+                // EE: XOR A, n,
+                new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// EF: RST 28,
+
+                // EF: RST 28,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 28), },
                                },
-                new OpcodeData { Name = "RET",	// F0: RET P,
+
+                // F0: RET Flag_P, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.P | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_P, CommandID.Address, },
                                },
-                new OpcodeData { Name = "POP",	// F1: POP AF,
+
+                // F1: POP AF,
+                new OpcodeData { Name = "POP",
                                  Function = Operation.POP,
-                                 new Param[] { CommandID.AF | CommandID.Pos3, },
+                                 new Param[] { CommandID.AF, },
                                },
-                new OpcodeData { Name = "JP",	// F2: JP P, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.P | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // F2: JP Flag_P, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.Flag_P, CommandID.Address, },
                                },
-                new OpcodeData { Name = "DI",	// F3: DI
+
+                // F3: DI
+                new OpcodeData { Name = "DI",
                                  Function = Operation.DI,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "CALL",	// F4: CALL P, nn,
+
+                // F4: CALL Flag_P, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.P | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_P, CommandID.Address, },
                                },
-                new OpcodeData { Name = "PUSH",	// F5: PUSH AF,
+
+                // F5: PUSH AF,
+                new OpcodeData { Name = "PUSH",
                                  Function = Operation.PUSH,
-                                 new Param[] { CommandID.AF | CommandID.Pos3, },
+                                 new Param[] { CommandID.AF, },
                                },
-                new OpcodeData { Name = "OR",	// F6: OR A, n,
+
+                // F6: OR A, n,
+                new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// F7: RST 30,
+
+                // F7: RST 30,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 30), },
                                },
-                new OpcodeData { Name = "RET",	// F8: RET M,
+
+                // F8: RET Flag_M, nn,
+                new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.M | CommandID.Pos2, },
+                                 new Param[] { CommandID.Flag_M, CommandID.Address, },
                                },
-                new OpcodeData { Name = "LD",	// F9: LD SP, (HL),
+
+                // F9: LD SP, HL,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.SP, CommandID.AddrReg, },
+                                 new Param[] { CommandID.SP, CommandID.HL, },
                                },
-                new OpcodeData { Name = "JP",	// FA: JP M, nn,
-                                 Function = Operation.JP,
-                                 new Param[] { CommandID.M | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+
+                // FA: LD SP, IX,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.SP, CommandID.IX, },
                                },
-                new OpcodeData { Name = "EI",	// FB: EI
+
+                // FB: EI
+                new OpcodeData { Name = "EI",
                                  Function = Operation.EI,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "CALL",	// FC: CALL M, nn,
+
+                // FC: CALL Flag_M, nn,
+                new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.M | CommandID.Pos2, CommandID.Address | CommandID.Immidate, },
+                                 new Param[] { CommandID.Flag_M, CommandID.Address, },
                                },
-                new OpcodeData { Name = "",		// FD
+
+                // FD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "CP",	// FE: CP A, n,
-                                 Function = Operation.CP,
-                                 new Param[] { CommandID.A, CommandID.ByteImmidate | CommandID.Immidate, },
+
+                // FE: CP A, n,
+                new OpcodeData { Name = "CP",
+                                 Function = Operation.CMP,
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
-                new OpcodeData { Name = "RST",	// FF: RST 38,
+
+                // FF: RST 38,
+                new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 38), },
                                },
+
             },
 
             {
-                new OpcodeData { Name = "RLC",	// CB00: RLC (rx + *), B,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                // CB00: SET 7, IXL,
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXL, },
                                },
-                new OpcodeData { Name = "RLC",	// CB01: RLC (rx + *), C,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+
+                // CB01: SET 7, IYL,
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IYL, },
                                },
-                new OpcodeData { Name = "RLC",	// CB02: RLC (rx + *), D,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+
+                // CB02: RLC D,
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.D, },
                                },
-                new OpcodeData { Name = "RLC",	// CB03: RLC (rx + *), E,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+
+                // CB03: SET 7, A,
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.A, },
                                },
-                new OpcodeData { Name = "RLC",	// CB04: RLC (rx + *), H,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+
+                // CB04: RLC H,
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.H, },
                                },
-                new OpcodeData { Name = "RLC",	// CB05: RLC (rx + *), L,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+
+                // CB05: RLC IXH,
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RLC",	// CB06: RLC BytePtr,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.BytePtr, },
+
+                // CB06: RLC (HL),
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RLC",	// CB07: RLC (rx + *), A,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+
+                // CB07: RLC L,
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.L, },
                                },
-                new OpcodeData { Name = "RRC",	// CB08: RRC (rx + *), B,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+
+                // CB08: RRC B,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.B, },
                                },
-                new OpcodeData { Name = "RRC",	// CB09: RRC (rx + *), C,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+
+                // CB09: RRC C,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.C, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0A: RRC (rx + *), D,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+
+                // CB0A: RRC D,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.D, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0B: RRC (rx + *), E,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+
+                // CB0B: RRC E,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.E, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0C: RRC (rx + *), H,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+
+                // CB0C: RRC H,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.H, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0D: RRC (rx + *), L,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+
+                // CB0D: RRC IXH,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0E: RRC BytePtr,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.BytePtr, },
+
+                // CB0E: RRC (HL),
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0F: RRC (rx + *), A,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+
+                // CB0F: RRC L,
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.L, },
                                },
-                new OpcodeData { Name = "RL",	// CB10: RL (rx + *), B,
+
+                // CB10: RL B,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, },
                                },
-                new OpcodeData { Name = "RL",	// CB11: RL (rx + *), C,
+
+                // CB11: RL C,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, },
                                },
-                new OpcodeData { Name = "RL",	// CB12: RL (rx + *), D,
+
+                // CB12: RL D,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, },
                                },
-                new OpcodeData { Name = "RL",	// CB13: RL (rx + *), E,
+
+                // CB13: RL E,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, },
                                },
-                new OpcodeData { Name = "RL",	// CB14: RL (rx + *), H,
+
+                // CB14: RL H,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, },
                                },
-                new OpcodeData { Name = "RL",	// CB15: RL (rx + *), L,
+
+                // CB15: RL IXH,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RL",	// CB16: RL BytePtr,
+
+                // CB16: RL (HL),
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.BytePtr, },
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RL",	// CB17: RL (rx + *), A,
+
+                // CB17: RL L,
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { CommandID.L, },
                                },
-                new OpcodeData { Name = "RR",	// CB18: RR (rx + *), B,
+
+                // CB18: RR B,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.B, },
                                },
-                new OpcodeData { Name = "RR",	// CB19: RR (rx + *), C,
+
+                // CB19: RR C,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { CommandID.C, },
                                },
-                new OpcodeData { Name = "RR",	// CB1A: RR (rx + *), D,
+
+                // CB1A: RR D,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { CommandID.D, },
                                },
-                new OpcodeData { Name = "RR",	// CB1B: RR (rx + *), E,
+
+                // CB1B: RR E,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { CommandID.E, },
                                },
-                new OpcodeData { Name = "RR",	// CB1C: RR (rx + *), H,
+
+                // CB1C: RR H,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { CommandID.H, },
                                },
-                new OpcodeData { Name = "RR",	// CB1D: RR (rx + *), L,
+
+                // CB1D: RR IXH,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RR",	// CB1E: RR BytePtr,
+
+                // CB1E: RR (HL),
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.BytePtr, },
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RR",	// CB1F: RR (rx + *), A,
+
+                // CB1F: RR L,
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB20: SLA (rx + *), B,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB21: SLA (rx + *), C,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB22: SLA (rx + *), D,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB23: SLA (rx + *), E,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB24: SLA (rx + *), H,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB25: SLA (rx + *), L,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB26: SLA BytePtr,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.BytePtr, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB27: SLA (rx + *), A,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB28: SRA (rx + *), B,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB29: SRA (rx + *), C,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2A: SRA (rx + *), D,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2B: SRA (rx + *), E,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2C: SRA (rx + *), H,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2D: SRA (rx + *), L,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2E: SRA BytePtr,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.BytePtr, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2F: SRA (rx + *), A,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB30: SLL (rx + *), B,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB31: SLL (rx + *), C,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB32: SLL (rx + *), D,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB33: SLL (rx + *), E,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB34: SLL (rx + *), H,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB35: SLL (rx + *), L,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB36: SLL BytePtr,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.BytePtr, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB37: SLL (rx + *), A,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB38: SRL (rx + *), B,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB39: SRL (rx + *), C,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3A: SRL (rx + *), D,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3B: SRL (rx + *), E,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3C: SRL (rx + *), H,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3D: SRL (rx + *), L,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3E: SRL BytePtr,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.BytePtr, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3F: SRL (rx + *), A,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB40: BIT 0, (rx + *), B,
+                                 new Param[] { CommandID.L, },
+                               },
+
+                // CB20: SLA B,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.B, },
+                               },
+
+                // CB21: SLA C,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.C, },
+                               },
+
+                // CB22: SLA D,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.D, },
+                               },
+
+                // CB23: SLA E,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.E, },
+                               },
+
+                // CB24: SLA H,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.H, },
+                               },
+
+                // CB25: SLA IXH,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.IXH, },
+                               },
+
+                // CB26: SLA (HL),
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // CB27: SLA L,
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.L, },
+                               },
+
+                // CB28: SRA B,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.B, },
+                               },
+
+                // CB29: SRA C,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.C, },
+                               },
+
+                // CB2A: SRA D,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.D, },
+                               },
+
+                // CB2B: SRA E,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.E, },
+                               },
+
+                // CB2C: SRA H,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.H, },
+                               },
+
+                // CB2D: SRA IXH,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.IXH, },
+                               },
+
+                // CB2E: SRA (HL),
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // CB2F: SRA L,
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.L, },
+                               },
+
+                // CB30: SLL B,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.B, },
+                               },
+
+                // CB31: SLL C,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.C, },
+                               },
+
+                // CB32: SLL D,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.D, },
+                               },
+
+                // CB33: SLL E,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.E, },
+                               },
+
+                // CB34: SLL H,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.H, },
+                               },
+
+                // CB35: SLL IXH,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.IXH, },
+                               },
+
+                // CB36: SLL (HL),
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // CB37: SLL L,
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.L, },
+                               },
+
+                // CB38: SRL B,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.B, },
+                               },
+
+                // CB39: SRL C,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.C, },
+                               },
+
+                // CB3A: SRL D,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.D, },
+                               },
+
+                // CB3B: SRL E,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.E, },
+                               },
+
+                // CB3C: SRL H,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.H, },
+                               },
+
+                // CB3D: SRL IXH,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.IXH, },
+                               },
+
+                // CB3E: SRL (HL),
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // CB3F: SRL L,
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.L, },
+                               },
+
+                // CB40: BIT 0, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB41: BIT 0, (rx + *), C,
+
+                // CB41: BIT 0, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB42: BIT 0, (rx + *), D,
+
+                // CB42: BIT 0, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB43: BIT 0, (rx + *), E,
+
+                // CB43: BIT 0, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB44: BIT 0, (rx + *), H,
+
+                // CB44: BIT 0, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB45: BIT 0, (rx + *), L,
+
+                // CB45: BIT 0, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB46: BIT 0, BytePtr,
+
+                // CB46: BIT 0, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB47: BIT 0, (rx + *), A,
+
+                // CB47: BIT 0, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB48: BIT 1, (rx + *), B,
+
+                // CB48: BIT 1, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB49: BIT 1, (rx + *), C,
+
+                // CB49: BIT 1, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB4A: BIT 1, (rx + *), D,
+
+                // CB4A: BIT 1, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB4B: BIT 1, (rx + *), E,
+
+                // CB4B: BIT 1, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB4C: BIT 1, (rx + *), H,
+
+                // CB4C: BIT 1, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB4D: BIT 1, (rx + *), L,
+
+                // CB4D: BIT 1, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB4E: BIT 1, BytePtr,
+
+                // CB4E: BIT 1, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB4F: BIT 1, (rx + *), A,
+
+                // CB4F: BIT 1, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB50: BIT 2, (rx + *), B,
+
+                // CB50: BIT 2, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB51: BIT 2, (rx + *), C,
+
+                // CB51: BIT 2, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB52: BIT 2, (rx + *), D,
+
+                // CB52: BIT 2, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB53: BIT 2, (rx + *), E,
+
+                // CB53: BIT 2, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB54: BIT 2, (rx + *), H,
+
+                // CB54: BIT 2, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB55: BIT 2, (rx + *), L,
+
+                // CB55: BIT 2, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB56: BIT 2, BytePtr,
+
+                // CB56: BIT 2, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB57: BIT 2, (rx + *), A,
+
+                // CB57: BIT 2, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB58: BIT 3, (rx + *), B,
+
+                // CB58: BIT 3, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB59: BIT 3, (rx + *), C,
+
+                // CB59: BIT 3, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB5A: BIT 3, (rx + *), D,
+
+                // CB5A: BIT 3, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB5B: BIT 3, (rx + *), E,
+
+                // CB5B: BIT 3, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB5C: BIT 3, (rx + *), H,
+
+                // CB5C: BIT 3, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB5D: BIT 3, (rx + *), L,
+
+                // CB5D: BIT 3, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB5E: BIT 3, BytePtr,
+
+                // CB5E: BIT 3, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB5F: BIT 3, (rx + *), A,
+
+                // CB5F: BIT 3, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB60: BIT 4, (rx + *), B,
+
+                // CB60: BIT 4, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB61: BIT 4, (rx + *), C,
+
+                // CB61: BIT 4, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB62: BIT 4, (rx + *), D,
+
+                // CB62: BIT 4, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB63: BIT 4, (rx + *), E,
+
+                // CB63: BIT 4, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB64: BIT 4, (rx + *), H,
+
+                // CB64: BIT 4, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB65: BIT 4, (rx + *), L,
+
+                // CB65: BIT 4, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB66: BIT 4, BytePtr,
+
+                // CB66: BIT 4, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB67: BIT 4, (rx + *), A,
+
+                // CB67: BIT 4, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB68: BIT 5, (rx + *), B,
+
+                // CB68: BIT 5, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB69: BIT 5, (rx + *), C,
+
+                // CB69: BIT 5, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB6A: BIT 5, (rx + *), D,
+
+                // CB6A: BIT 5, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB6B: BIT 5, (rx + *), E,
+
+                // CB6B: BIT 5, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB6C: BIT 5, (rx + *), H,
+
+                // CB6C: BIT 5, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB6D: BIT 5, (rx + *), L,
+
+                // CB6D: BIT 5, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB6E: BIT 5, BytePtr,
+
+                // CB6E: BIT 5, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB6F: BIT 5, (rx + *), A,
+
+                // CB6F: BIT 5, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB70: BIT 6, (rx + *), B,
+
+                // CB70: BIT 6, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB71: BIT 6, (rx + *), C,
+
+                // CB71: BIT 6, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB72: BIT 6, (rx + *), D,
+
+                // CB72: BIT 6, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB73: BIT 6, (rx + *), E,
+
+                // CB73: BIT 6, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB74: BIT 6, (rx + *), H,
+
+                // CB74: BIT 6, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB75: BIT 6, (rx + *), L,
+
+                // CB75: BIT 6, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB76: BIT 6, BytePtr,
+
+                // CB76: BIT 6, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB77: BIT 6, (rx + *), A,
+
+                // CB77: BIT 6, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.L, },
                                },
-                new OpcodeData { Name = "BIT",	// CB78: BIT 7, (rx + *), B,
+
+                // CB78: BIT 7, B,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.B, },
                                },
-                new OpcodeData { Name = "BIT",	// CB79: BIT 7, (rx + *), C,
+
+                // CB79: BIT 7, C,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.C, },
                                },
-                new OpcodeData { Name = "BIT",	// CB7A: BIT 7, (rx + *), D,
+
+                // CB7A: BIT 7, D,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.D, },
                                },
-                new OpcodeData { Name = "BIT",	// CB7B: BIT 7, (rx + *), E,
+
+                // CB7B: BIT 7, E,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.E, },
                                },
-                new OpcodeData { Name = "BIT",	// CB7C: BIT 7, (rx + *), H,
+
+                // CB7C: BIT 7, H,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.H, },
                                },
-                new OpcodeData { Name = "BIT",	// CB7D: BIT 7, (rx + *), L,
+
+                // CB7D: BIT 7, IXH,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "BIT",	// CB7E: BIT 7, BytePtr,
+
+                // CB7E: BIT 7, (HL),
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "BIT",	// CB7F: BIT 7, (rx + *), A,
+
+                // CB7F: BIT 7, L,
+                new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CB80: RES 0, (rx + *), B,
+
+                // CB80: RES 0, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CB81: RES 0, (rx + *), C,
+
+                // CB81: RES 0, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CB82: RES 0, (rx + *), D,
+
+                // CB82: RES 0, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CB83: RES 0, (rx + *), E,
+
+                // CB83: RES 0, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CB84: RES 0, (rx + *), H,
+
+                // CB84: RES 0, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CB85: RES 0, (rx + *), L,
+
+                // CB85: RES 0, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CB86: RES 0, BytePtr,
+
+                // CB86: RES 0, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CB87: RES 0, (rx + *), A,
+
+                // CB87: RES 0, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CB88: RES 1, (rx + *), B,
+
+                // CB88: RES 1, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CB89: RES 1, (rx + *), C,
+
+                // CB89: RES 1, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CB8A: RES 1, (rx + *), D,
+
+                // CB8A: RES 1, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CB8B: RES 1, (rx + *), E,
+
+                // CB8B: RES 1, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CB8C: RES 1, (rx + *), H,
+
+                // CB8C: RES 1, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CB8D: RES 1, (rx + *), L,
+
+                // CB8D: RES 1, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CB8E: RES 1, BytePtr,
+
+                // CB8E: RES 1, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CB8F: RES 1, (rx + *), A,
+
+                // CB8F: RES 1, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CB90: RES 2, (rx + *), B,
+
+                // CB90: RES 2, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CB91: RES 2, (rx + *), C,
+
+                // CB91: RES 2, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CB92: RES 2, (rx + *), D,
+
+                // CB92: RES 2, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CB93: RES 2, (rx + *), E,
+
+                // CB93: RES 2, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CB94: RES 2, (rx + *), H,
+
+                // CB94: RES 2, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CB95: RES 2, (rx + *), L,
+
+                // CB95: RES 2, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CB96: RES 2, BytePtr,
+
+                // CB96: RES 2, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CB97: RES 2, (rx + *), A,
+
+                // CB97: RES 2, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CB98: RES 3, (rx + *), B,
+
+                // CB98: RES 3, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CB99: RES 3, (rx + *), C,
+
+                // CB99: RES 3, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CB9A: RES 3, (rx + *), D,
+
+                // CB9A: RES 3, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CB9B: RES 3, (rx + *), E,
+
+                // CB9B: RES 3, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CB9C: RES 3, (rx + *), H,
+
+                // CB9C: RES 3, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CB9D: RES 3, (rx + *), L,
+
+                // CB9D: RES 3, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CB9E: RES 3, BytePtr,
+
+                // CB9E: RES 3, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CB9F: RES 3, (rx + *), A,
+
+                // CB9F: RES 3, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CBA0: RES 4, (rx + *), B,
+
+                // CBA0: RES 4, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CBA1: RES 4, (rx + *), C,
+
+                // CBA1: RES 4, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CBA2: RES 4, (rx + *), D,
+
+                // CBA2: RES 4, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CBA3: RES 4, (rx + *), E,
+
+                // CBA3: RES 4, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CBA4: RES 4, (rx + *), H,
+
+                // CBA4: RES 4, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CBA5: RES 4, (rx + *), L,
+
+                // CBA5: RES 4, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CBA6: RES 4, BytePtr,
+
+                // CBA6: RES 4, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CBA7: RES 4, (rx + *), A,
+
+                // CBA7: RES 4, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CBA8: RES 5, (rx + *), B,
+
+                // CBA8: RES 5, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CBA9: RES 5, (rx + *), C,
+
+                // CBA9: RES 5, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CBAA: RES 5, (rx + *), D,
+
+                // CBAA: RES 5, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CBAB: RES 5, (rx + *), E,
+
+                // CBAB: RES 5, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CBAC: RES 5, (rx + *), H,
+
+                // CBAC: RES 5, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CBAD: RES 5, (rx + *), L,
+
+                // CBAD: RES 5, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CBAE: RES 5, BytePtr,
+
+                // CBAE: RES 5, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CBAF: RES 5, (rx + *), A,
+
+                // CBAF: RES 5, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CBB0: RES 6, (rx + *), B,
+
+                // CBB0: RES 6, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CBB1: RES 6, (rx + *), C,
+
+                // CBB1: RES 6, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CBB2: RES 6, (rx + *), D,
+
+                // CBB2: RES 6, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CBB3: RES 6, (rx + *), E,
+
+                // CBB3: RES 6, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CBB4: RES 6, (rx + *), H,
+
+                // CBB4: RES 6, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CBB5: RES 6, (rx + *), L,
+
+                // CBB5: RES 6, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CBB6: RES 6, BytePtr,
+
+                // CBB6: RES 6, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CBB7: RES 6, (rx + *), A,
+
+                // CBB7: RES 6, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.L, },
                                },
-                new OpcodeData { Name = "RES",	// CBB8: RES 7, (rx + *), B,
+
+                // CBB8: RES 7, B,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.B, },
                                },
-                new OpcodeData { Name = "RES",	// CBB9: RES 7, (rx + *), C,
+
+                // CBB9: RES 7, C,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.C, },
                                },
-                new OpcodeData { Name = "RES",	// CBBA: RES 7, (rx + *), D,
+
+                // CBBA: RES 7, D,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.D, },
                                },
-                new OpcodeData { Name = "RES",	// CBBB: RES 7, (rx + *), E,
+
+                // CBBB: RES 7, E,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.E, },
                                },
-                new OpcodeData { Name = "RES",	// CBBC: RES 7, (rx + *), H,
+
+                // CBBC: RES 7, H,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.H, },
                                },
-                new OpcodeData { Name = "RES",	// CBBD: RES 7, (rx + *), L,
+
+                // CBBD: RES 7, IXH,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "RES",	// CBBE: RES 7, BytePtr,
+
+                // CBBE: RES 7, (HL),
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RES",	// CBBF: RES 7, (rx + *), A,
+
+                // CBBF: RES 7, L,
+                new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBC0: SET 0, (rx + *), B,
+
+                // CBC0: SET 0, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBC1: SET 0, (rx + *), C,
+
+                // CBC1: SET 0, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBC2: SET 0, (rx + *), D,
+
+                // CBC2: SET 0, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBC3: SET 0, (rx + *), E,
+
+                // CBC3: SET 0, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBC4: SET 0, (rx + *), H,
+
+                // CBC4: SET 0, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBC5: SET 0, (rx + *), L,
+
+                // CBC5: SET 0, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBC6: SET 0, BytePtr,
+
+                // CBC6: SET 0, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBC7: SET 0, (rx + *), A,
+
+                // CBC7: SET 0, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBC8: SET 1, (rx + *), B,
+
+                // CBC8: SET 1, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBC9: SET 1, (rx + *), C,
+
+                // CBC9: SET 1, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBCA: SET 1, (rx + *), D,
+
+                // CBCA: SET 1, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBCB: SET 1, (rx + *), E,
+
+                // CBCB: SET 1, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBCC: SET 1, (rx + *), H,
+
+                // CBCC: SET 1, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBCD: SET 1, (rx + *), L,
+
+                // CBCD: SET 1, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBCE: SET 1, BytePtr,
+
+                // CBCE: SET 1, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBCF: SET 1, (rx + *), A,
+
+                // CBCF: SET 1, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBD0: SET 2, (rx + *), B,
+
+                // CBD0: SET 2, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBD1: SET 2, (rx + *), C,
+
+                // CBD1: SET 2, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBD2: SET 2, (rx + *), D,
+
+                // CBD2: SET 2, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBD3: SET 2, (rx + *), E,
+
+                // CBD3: SET 2, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBD4: SET 2, (rx + *), H,
+
+                // CBD4: SET 2, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBD5: SET 2, (rx + *), L,
+
+                // CBD5: SET 2, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBD6: SET 2, BytePtr,
+
+                // CBD6: SET 2, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBD7: SET 2, (rx + *), A,
+
+                // CBD7: SET 2, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBD8: SET 3, (rx + *), B,
+
+                // CBD8: SET 3, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBD9: SET 3, (rx + *), C,
+
+                // CBD9: SET 3, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBDA: SET 3, (rx + *), D,
+
+                // CBDA: SET 3, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBDB: SET 3, (rx + *), E,
+
+                // CBDB: SET 3, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBDC: SET 3, (rx + *), H,
+
+                // CBDC: SET 3, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBDD: SET 3, (rx + *), L,
+
+                // CBDD: SET 3, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBDE: SET 3, BytePtr,
+
+                // CBDE: SET 3, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBDF: SET 3, (rx + *), A,
+
+                // CBDF: SET 3, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBE0: SET 4, (rx + *), B,
+
+                // CBE0: SET 4, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBE1: SET 4, (rx + *), C,
+
+                // CBE1: SET 4, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBE2: SET 4, (rx + *), D,
+
+                // CBE2: SET 4, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBE3: SET 4, (rx + *), E,
+
+                // CBE3: SET 4, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBE4: SET 4, (rx + *), H,
+
+                // CBE4: SET 4, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBE5: SET 4, (rx + *), L,
+
+                // CBE5: SET 4, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBE6: SET 4, BytePtr,
+
+                // CBE6: SET 4, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBE7: SET 4, (rx + *), A,
+
+                // CBE7: SET 4, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBE8: SET 5, (rx + *), B,
+
+                // CBE8: SET 5, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBE9: SET 5, (rx + *), C,
+
+                // CBE9: SET 5, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBEA: SET 5, (rx + *), D,
+
+                // CBEA: SET 5, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBEB: SET 5, (rx + *), E,
+
+                // CBEB: SET 5, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBEC: SET 5, (rx + *), H,
+
+                // CBEC: SET 5, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBED: SET 5, (rx + *), L,
+
+                // CBED: SET 5, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBEE: SET 5, BytePtr,
+
+                // CBEE: SET 5, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBEF: SET 5, (rx + *), A,
+
+                // CBEF: SET 5, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBF0: SET 6, (rx + *), B,
+
+                // CBF0: SET 6, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBF1: SET 6, (rx + *), C,
+
+                // CBF1: SET 6, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBF2: SET 6, (rx + *), D,
+
+                // CBF2: SET 6, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBF3: SET 6, (rx + *), E,
+
+                // CBF3: SET 6, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBF4: SET 6, (rx + *), H,
+
+                // CBF4: SET 6, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBF5: SET 6, (rx + *), L,
+
+                // CBF5: SET 6, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBF6: SET 6, BytePtr,
+
+                // CBF6: SET 6, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBF7: SET 6, (rx + *), A,
+
+                // CBF7: SET 6, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.L, },
                                },
-                new OpcodeData { Name = "SET",	// CBF8: SET 7, (rx + *), B,
+
+                // CBF8: SET 7, B,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.B, },
                                },
-                new OpcodeData { Name = "SET",	// CBF9: SET 7, (rx + *), C,
+
+                // CBF9: SET 7, C,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.C, },
                                },
-                new OpcodeData { Name = "SET",	// CBFA: SET 7, (rx + *), D,
+
+                // CBFA: SET 7, D,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.D, },
                                },
-                new OpcodeData { Name = "SET",	// CBFB: SET 7, (rx + *), E,
+
+                // CBFB: SET 7, E,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.E, },
                                },
-                new OpcodeData { Name = "SET",	// CBFC: SET 7, (rx + *), H,
+
+                // CBFC: SET 7, H,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.H, },
                                },
-                new OpcodeData { Name = "SET",	// CBFD: SET 7, (rx + *), L,
+
+                // CBFD: SET 7, IXH,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXH, },
                                },
-                new OpcodeData { Name = "SET",	// CBFE: SET 7, BytePtr,
+
+                // CBFE: SET 7, (HL),
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.BytePtr, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "SET",	// CBFF: SET 7, (rx + *), A,
+
+                // CBFF: SET 7, L,
+                new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.L, },
                                },
+
             },
 
             {
-                new OpcodeData { Name = "",		// 00
+                // 00
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 01
+
+                // 01
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 02
+
+                // 02
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 03
+
+                // 03
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 04
+
+                // 04
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 05
+
+                // 05
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 06
+
+                // 06
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 07
+
+                // 07
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 08
+
+                // 08
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 09
+
+                // 09
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 0A
+
+                // 0A
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 0B
+
+                // 0B
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 0C
+
+                // 0C
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 0D
+
+                // 0D
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 0E
+
+                // 0E
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 0F
+
+                // 0F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 10
+
+                // 10
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 11
+
+                // 11
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 12
+
+                // 12
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 13
+
+                // 13
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 14
+
+                // 14
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 15
+
+                // 15
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 16
+
+                // 16
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 17
+
+                // 17
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 18
+
+                // 18
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 19
+
+                // 19
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 1A
+
+                // 1A
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 1B
+
+                // 1B
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 1C
+
+                // 1C
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 1D
+
+                // 1D
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 1E
+
+                // 1E
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 1F
+
+                // 1F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 20
+
+                // 20
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 21
+
+                // 21
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 22
+
+                // 22
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 23
+
+                // 23
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 24
+
+                // 24
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 25
+
+                // 25
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 26
+
+                // 26
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 27
+
+                // 27
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 28
+
+                // 28
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 29
+
+                // 29
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 2A
+
+                // 2A
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 2B
+
+                // 2B
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 2C
+
+                // 2C
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 2D
+
+                // 2D
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 2E
+
+                // 2E
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 2F
+
+                // 2F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 30
+
+                // 30
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 31
+
+                // 31
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 32
+
+                // 32
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 33
+
+                // 33
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 34
+
+                // 34
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 35
+
+                // 35
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 36
+
+                // 36
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 37
+
+                // 37
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 38
+
+                // 38
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 39
+
+                // 39
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 3A
+
+                // 3A
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 3B
+
+                // 3B
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 3C
+
+                // 3C
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 3D
+
+                // 3D
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 3E
+
+                // 3E
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 3F
+
+                // 3F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "IN",	// ED40: IN B, C,
+
+                // ED40: IN B, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.B | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.B, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED41: OUT C, B,
+
+                // ED41: OUT C, B,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.B | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.B, },
                                },
-                new OpcodeData { Name = "SBC",	// ED42: SBC HL, BC,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.HL, CommandID.BC | CommandID.Pos3, },
+
+                // ED42: SBC HL, BC,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.HL, CommandID.BC, },
                                },
-                new OpcodeData { Name = "LD",	// ED43: LD (**), BC,
+
+                // ED43: LD (**), BC,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.AddressPtr | CommandID.Immidate, CommandID.BC | CommandID.Pos3, },
+                                 new Param[] { CommandID.Address_Pointer, CommandID.BC, },
                                },
-                new OpcodeData { Name = "NEG",	// ED44: NEG A,
+
+                // ED44: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED45: RETN
+
+                // ED45: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED46: IM 0,
+
+                // ED46: IM 0,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), },
                                },
-                new OpcodeData { Name = "LD",	// ED47: LD I, A,
+
+                // ED47: LD I, A,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.I, CommandID.A, },
                                },
-                new OpcodeData { Name = "IN",	// ED48: IN C, C,
+
+                // ED48: IN C, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.C | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.C, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED49: OUT C, C,
+
+                // ED49: OUT C, C,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.C | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.C, },
                                },
-                new OpcodeData { Name = "ADC",	// ED4A: ADC HL, BC,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.HL, CommandID.BC | CommandID.Pos3, },
+
+                // ED4A: ADC HL, BC,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.HL, CommandID.BC, },
                                },
-                new OpcodeData { Name = "LD",	// ED4B: LD BC, (**),
+
+                // ED4B: LD BC, (**),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.BC | CommandID.Pos3, CommandID.AddressPtr | CommandID.Immidate, },
+                                 new Param[] { CommandID.BC, CommandID.Address_Pointer, },
                                },
-                new OpcodeData { Name = "NEG",	// ED4C: NEG A,
+
+                // ED4C: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETI",	// ED4D: RETI
+
+                // ED4D: RETI
+                new OpcodeData { Name = "RETI",
                                  Function = Operation.RETI,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED4E: IM 0,
+
+                // ED4E: IM 0,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), },
                                },
-                new OpcodeData { Name = "LD",	// ED4F: LD R, A,
+
+                // ED4F: LD R, A,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.R, CommandID.A, },
                                },
-                new OpcodeData { Name = "IN",	// ED50: IN D, C,
+
+                // ED50: IN D, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.D | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.D, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED51: OUT C, D,
+
+                // ED51: OUT C, D,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.D | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.D, },
                                },
-                new OpcodeData { Name = "SBC",	// ED52: SBC HL, DE,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.HL, CommandID.DE | CommandID.Pos3, },
+
+                // ED52: SBC HL, DE,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.HL, CommandID.DE, },
                                },
-                new OpcodeData { Name = "LD",	// ED53: LD (**), DE,
+
+                // ED53: LD (**), DE,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.AddressPtr | CommandID.Immidate, CommandID.DE | CommandID.Pos3, },
+                                 new Param[] { CommandID.Address_Pointer, CommandID.DE, },
                                },
-                new OpcodeData { Name = "NEG",	// ED54: NEG A,
+
+                // ED54: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED55: RETN
+
+                // ED55: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED56: IM 1,
+
+                // ED56: IM 1,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 01), },
                                },
-                new OpcodeData { Name = "LD",	// ED57: LD A, I,
+
+                // ED57: LD A, I,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.A, CommandID.I, },
                                },
-                new OpcodeData { Name = "IN",	// ED58: IN E, C,
+
+                // ED58: IN E, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.E | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.E, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED59: OUT C, E,
+
+                // ED59: OUT C, E,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.E | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.E, },
                                },
-                new OpcodeData { Name = "ADC",	// ED5A: ADC HL, DE,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.HL, CommandID.DE | CommandID.Pos3, },
+
+                // ED5A: ADC HL, DE,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.HL, CommandID.DE, },
                                },
-                new OpcodeData { Name = "LD",	// ED5B: LD DE, (**),
+
+                // ED5B: LD DE, (**),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.DE | CommandID.Pos3, CommandID.AddressPtr | CommandID.Immidate, },
+                                 new Param[] { CommandID.DE, CommandID.Address_Pointer, },
                                },
-                new OpcodeData { Name = "NEG",	// ED5C: NEG A,
+
+                // ED5C: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED5D: RETN
+
+                // ED5D: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED5E: IM 2,
+
+                // ED5E: IM 2,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 02), },
                                },
-                new OpcodeData { Name = "LD",	// ED5F: LD A, R,
+
+                // ED5F: LD A, R,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.A, CommandID.R, },
                                },
-                new OpcodeData { Name = "IN",	// ED60: IN H, C,
+
+                // ED60: IN H, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.H | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.H, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED61: OUT C, H,
+
+                // ED61: OUT C, H,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.H | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.H, },
                                },
-                new OpcodeData { Name = "SBC",	// ED62: SBC HL, HL,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.HL, CommandID.HL | CommandID.Pos3, },
+
+                // ED62: SBC HL, HL,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.HL, CommandID.HL, },
                                },
-                new OpcodeData { Name = "LD",	// ED63: LD (**), HL,
+
+                // ED63: LD (**), HL,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.AddressPtr | CommandID.Immidate, CommandID.HL, },
+                                 new Param[] { CommandID.Address_Pointer, CommandID.HL, },
                                },
-                new OpcodeData { Name = "NEG",	// ED64: NEG A,
+
+                // ED64: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED65: RETN
+
+                // ED65: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED66: IM 0,
+
+                // ED66: IM 0,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), },
                                },
-                new OpcodeData { Name = "RRD",	// ED67: RRD
-                                 Function = Operation.RRD,
+
+                // ED67: RRD
+                new OpcodeData { Name = "RRD",
+                                 Function = Operation.ROLL_R,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IN",	// ED68: IN L, C,
+
+                // ED68: IN IXH, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.L | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.IXH, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED69: OUT C, L,
+
+                // ED69: OUT C, IXH,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.L | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.IXH, },
                                },
-                new OpcodeData { Name = "ADC",	// ED6A: ADC HL, HL,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.HL, CommandID.HL | CommandID.Pos3, },
+
+                // ED6A: ADC HL, HL,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.HL, CommandID.HL, },
                                },
-                new OpcodeData { Name = "LD",	// ED6B: LD HL, (**),
+
+                // ED6B: LD HL, (**),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL, CommandID.AddressPtr | CommandID.Immidate, },
+                                 new Param[] { CommandID.HL, CommandID.Address_Pointer, },
                                },
-                new OpcodeData { Name = "NEG",	// ED6C: NEG A,
+
+                // ED6C: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED6D: RETN
+
+                // ED6D: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED6E: IM 0,
+
+                // ED6E: IM 0,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), },
                                },
-                new OpcodeData { Name = "RLD",	// ED6F: RLD
-                                 Function = Operation.RLD,
+
+                // ED6F: RLD
+                new OpcodeData { Name = "RLD",
+                                 Function = Operation.ROLL_L,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IN",	// ED70: IN C,
+
+                // ED70: IN C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
                                  new Param[] { CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED71: OUT C, 0,
+
+                // ED71: OUT C, 0,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
                                  new Param[] { CommandID.C, (CommandID)((int)CommandID.Encoded + 00), },
                                },
-                new OpcodeData { Name = "SBC",	// ED72: SBC HL, SP,
-                                 Function = Operation.SBC,
-                                 new Param[] { CommandID.HL, CommandID.SP | CommandID.Pos3, },
+
+                // ED72: SBC HL, SP,
+                new OpcodeData { Name = "SBC",
+                                 Function = Operation.SUBC,
+                                 new Param[] { CommandID.HL, CommandID.SP, },
                                },
-                new OpcodeData { Name = "LD",	// ED73: LD (**), SP,
+
+                // ED73: LD (**), SP,
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.AddressPtr | CommandID.Immidate, CommandID.SP | CommandID.Pos3, },
+                                 new Param[] { CommandID.Address_Pointer, CommandID.SP, },
                                },
-                new OpcodeData { Name = "NEG",	// ED74: NEG A,
+
+                // ED74: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED75: RETN
+
+                // ED75: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED76: IM 1,
+
+                // ED76: IM 1,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 01), },
                                },
-                new OpcodeData { Name = "",		// 77
+
+                // 77
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "IN",	// ED78: IN A, C,
+
+                // ED78: IN L, C,
+                new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.A | CommandID.Pos2, CommandID.C, },
+                                 new Param[] { CommandID.L, CommandID.C, },
                                },
-                new OpcodeData { Name = "OUT",	// ED79: OUT C, A,
+
+                // ED79: OUT C, L,
+                new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.A | CommandID.Pos2, },
+                                 new Param[] { CommandID.C, CommandID.L, },
                                },
-                new OpcodeData { Name = "ADC",	// ED7A: ADC HL, SP,
-                                 Function = Operation.ADC,
-                                 new Param[] { CommandID.HL, CommandID.SP | CommandID.Pos3, },
+
+                // ED7A: ADC HL, SP,
+                new OpcodeData { Name = "ADC",
+                                 Function = Operation.ADDC,
+                                 new Param[] { CommandID.HL, CommandID.SP, },
                                },
-                new OpcodeData { Name = "LD",	// ED7B: LD SP, (**),
+
+                // ED7B: LD SP, (**),
+                new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.SP | CommandID.Pos3, CommandID.AddressPtr | CommandID.Immidate, },
+                                 new Param[] { CommandID.SP, CommandID.Address_Pointer, },
                                },
-                new OpcodeData { Name = "NEG",	// ED7C: NEG A,
+
+                // ED7C: NEG A,
+                new OpcodeData { Name = "NEG",
                                  Function = Operation.NEG,
                                  new Param[] { CommandID.A, },
                                },
-                new OpcodeData { Name = "RETN",	// ED7D: RETN
+
+                // ED7D: RETN
+                new OpcodeData { Name = "RETN",
                                  Function = Operation.RETN,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IM",	// ED7E: IM 2,
+
+                // ED7E: IM 2,
+                new OpcodeData { Name = "IM",
                                  Function = Operation.IM,
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 02), },
                                },
-                new OpcodeData { Name = "",		// 7F
+
+                // 7F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 80
-                                 Function = Operation.Error,
-                                 new Param[] { },
+
+                // ED80: IN IXL, C,
+                new OpcodeData { Name = "IN",
+                                 Function = Operation.IN,
+                                 new Param[] { CommandID.IXL, CommandID.C, },
                                },
-                new OpcodeData { Name = "",		// 81
-                                 Function = Operation.Error,
-                                 new Param[] { },
+
+                // ED81: OUT C, IXL,
+                new OpcodeData { Name = "OUT",
+                                 Function = Operation.OUT,
+                                 new Param[] { CommandID.C, CommandID.IXL, },
                                },
-                new OpcodeData { Name = "",		// 82
+
+                // 82
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 83
+
+                // 83
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 84
+
+                // 84
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 85
+
+                // 85
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 86
+
+                // 86
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 87
+
+                // 87
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 88
-                                 Function = Operation.Error,
-                                 new Param[] { },
+
+                // ED88: IN IYL, C,
+                new OpcodeData { Name = "IN",
+                                 Function = Operation.IN,
+                                 new Param[] { CommandID.IYL, CommandID.C, },
                                },
-                new OpcodeData { Name = "",		// 89
-                                 Function = Operation.Error,
-                                 new Param[] { },
+
+                // ED89: OUT C, IYL,
+                new OpcodeData { Name = "OUT",
+                                 Function = Operation.OUT,
+                                 new Param[] { CommandID.C, CommandID.IYL, },
                                },
-                new OpcodeData { Name = "",		// 8A
+
+                // 8A
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 8B
+
+                // 8B
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 8C
+
+                // 8C
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 8D
+
+                // 8D
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 8E
+
+                // 8E
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 8F
+
+                // 8F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 90
+
+                // 90
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 91
+
+                // 91
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 92
+
+                // 92
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 93
+
+                // 93
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 94
+
+                // 94
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 95
+
+                // 95
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 96
+
+                // 96
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 97
+
+                // 97
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 98
-                                 Function = Operation.Error,
-                                 new Param[] { },
+
+                // ED98: IN A, C,
+                new OpcodeData { Name = "IN",
+                                 Function = Operation.IN,
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
-                new OpcodeData { Name = "",		// 99
-                                 Function = Operation.Error,
-                                 new Param[] { },
+
+                // ED99: OUT C, A,
+                new OpcodeData { Name = "OUT",
+                                 Function = Operation.OUT,
+                                 new Param[] { CommandID.C, CommandID.A, },
                                },
-                new OpcodeData { Name = "",		// 9A
+
+                // 9A
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 9B
+
+                // 9B
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 9C
+
+                // 9C
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 9D
+
+                // 9D
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 9E
+
+                // 9E
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// 9F
+
+                // 9F
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "LDI",	// EDA0: LDI
-                                 Function = Operation.LDI,
+
+                // EDA0: LDI
+                new OpcodeData { Name = "LDI",
+                                 Function = Operation.LD_I,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "CPI",	// EDA1: CPI
-                                 Function = Operation.CPI,
+
+                // EDA1: CPI
+                new OpcodeData { Name = "CPI",
+                                 Function = Operation.CMP_I,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "INI",	// EDA2: INI
-                                 Function = Operation.INI,
+
+                // EDA2: INI
+                new OpcodeData { Name = "INI",
+                                 Function = Operation.IN_I,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "OUTI",	// EDA3: OUTI
-                                 Function = Operation.OUTI,
+
+                // EDA3: OUTI
+                new OpcodeData { Name = "OUTI",
+                                 Function = Operation.OUT_I,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "",		// A4
+
+                // A4
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// A5
+
+                // A5
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// A6
+
+                // A6
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// A7
+
+                // A7
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "LDD",	// EDA8: LDD
-                                 Function = Operation.LDD,
+
+                // EDA8: LDD
+                new OpcodeData { Name = "LDD",
+                                 Function = Operation.LD_D,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "CPD",	// EDA9: CPD
-                                 Function = Operation.CPD,
+
+                // EDA9: CPD
+                new OpcodeData { Name = "CPD",
+                                 Function = Operation.CMP_D,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "IND",	// EDAA: IND
-                                 Function = Operation.IND,
+
+                // EDAA: IND
+                new OpcodeData { Name = "IND",
+                                 Function = Operation.IN_D,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "OUTD",	// EDAB: OUTD
-                                 Function = Operation.OUTD,
+
+                // EDAB: OUTD
+                new OpcodeData { Name = "OUTD",
+                                 Function = Operation.OUT_D,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "",		// AC
+
+                // AC
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// AD
+
+                // AD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// AE
+
+                // AE
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// AF
+
+                // AF
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "LDIR",	// EDB0: LDIR
-                                 Function = Operation.LDIR,
+
+                // EDB0: LDIR
+                new OpcodeData { Name = "LDIR",
+                                 Function = Operation.LD_IR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "CPIR",	// EDB1: CPIR
-                                 Function = Operation.CPIR,
+
+                // EDB1: CPIR
+                new OpcodeData { Name = "CPIR",
+                                 Function = Operation.CMP_IR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "INIR",	// EDB2: INIR
-                                 Function = Operation.INIR,
+
+                // EDB2: INIR
+                new OpcodeData { Name = "INIR",
+                                 Function = Operation.IN_IR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "OTIR",	// EDB3: OTIR
-                                 Function = Operation.OTIR,
+
+                // EDB3: OTIR
+                new OpcodeData { Name = "OTIR",
+                                 Function = Operation.OUT_IR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "",		// B4
+
+                // B4
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// B5
+
+                // B5
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// B6
+
+                // B6
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// B7
+
+                // B7
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "LDDR",	// EDB8: LDDR
-                                 Function = Operation.LDDR,
+
+                // EDB8: LDDR
+                new OpcodeData { Name = "LDDR",
+                                 Function = Operation.LD_DR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "CPDR",	// EDB9: CPDR
-                                 Function = Operation.CPDR,
+
+                // EDB9: CPDR
+                new OpcodeData { Name = "CPDR",
+                                 Function = Operation.CMP_DR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "INDR",	// EDBA: INDR
-                                 Function = Operation.INDR,
+
+                // EDBA: INDR
+                new OpcodeData { Name = "INDR",
+                                 Function = Operation.IN_DR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "OTDR",	// EDBB: OTDR
-                                 Function = Operation.OTDR,
+
+                // EDBB: OTDR
+                new OpcodeData { Name = "OTDR",
+                                 Function = Operation.OUT_DR,
                                  new Param[] { },
                                },
-                new OpcodeData { Name = "",		// BC
+
+                // BC
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// BD
+
+                // BD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// BE
+
+                // BE
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// BF
+
+                // BF
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C0
+
+                // C0
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C1
+
+                // C1
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C2
+
+                // C2
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C3
+
+                // C3
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C4
+
+                // C4
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C5
+
+                // C5
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C6
+
+                // C6
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C7
+
+                // C7
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C8
+
+                // C8
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// C9
+
+                // C9
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// CA
+
+                // CA
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// CB
+
+                // CB
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// CC
+
+                // CC
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// CD
+
+                // CD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// CE
+
+                // CE
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// CF
+
+                // CF
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D0
+
+                // D0
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D1
+
+                // D1
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D2
+
+                // D2
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D3
+
+                // D3
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D4
+
+                // D4
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D5
+
+                // D5
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D6
+
+                // D6
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D7
+
+                // D7
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D8
+
+                // D8
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// D9
+
+                // D9
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// DA
+
+                // DA
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// DB
+
+                // DB
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// DC
+
+                // DC
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// DD
+
+                // DD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// DE
+
+                // DE
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// DF
+
+                // DF
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E0
+
+                // E0
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E1
+
+                // E1
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E2
+
+                // E2
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E3
+
+                // E3
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E4
+
+                // E4
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E5
+
+                // E5
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E6
+
+                // E6
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E7
+
+                // E7
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E8
+
+                // E8
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// E9
+
+                // E9
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// EA
+
+                // EA
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// EB
+
+                // EB
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// EC
+
+                // EC
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// ED
+
+                // ED
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// EE
+
+                // EE
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// EF
+
+                // EF
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F0
+
+                // F0
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F1
+
+                // F1
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F2
+
+                // F2
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F3
+
+                // F3
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F4
+
+                // F4
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F5
+
+                // F5
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F6
+
+                // F6
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F7
+
+                // F7
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F8
+
+                // F8
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// F9
+
+                // F9
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// FA
+
+                // FA
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// FB
+
+                // FB
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// FC
+
+                // FC
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// FD
+
+                // FD
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// FE
+
+                // FE
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "",		// FF
+
+                // FF
+                new OpcodeData { Name = "",
                                  Function = Operation.Error,
-                                 new Param[] { },
+                                 new Param[] { }
                                },
+
             },
 
             {
-                new OpcodeData { Name = "RLC",	// CB00: RLC (rx + *), B,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                // 00
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RLC",	// CB01: RLC (rx + *), C,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+
+                // 01
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RLC",	// CB02: RLC (rx + *), D,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+
+                // 02
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RLC",	// CB03: RLC (rx + *), E,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+
+                // 03
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RLC",	// CB04: RLC (rx + *), H,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+
+                // 04
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RLC",	// CB05: RLC (rx + *), L,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+
+                // 05
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RLC",	// CB06: RLC (rx + *), None,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
+
+                // CB06: RLC (HL),
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RLC",	// CB07: RLC (rx + *), A,
-                                 Function = Operation.RLC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+
+                // 07
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB08: RRC (rx + *), B,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+
+                // 08
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB09: RRC (rx + *), C,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+
+                // 09
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB0A: RRC (rx + *), D,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+
+                // 0A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB0B: RRC (rx + *), E,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+
+                // 0B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB0C: RRC (rx + *), H,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+
+                // 0C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB0D: RRC (rx + *), L,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+
+                // 0D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RRC",	// CB0E: RRC (rx + *), None,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
+
+                // CB0E: RRC (HL),
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RRC",	// CB0F: RRC (rx + *), A,
-                                 Function = Operation.RRC,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+
+                // 0F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB10: RL (rx + *), B,
+
+                // 10
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 11
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 12
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 13
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 14
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 15
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB16: RL (HL),
+                new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
-                new OpcodeData { Name = "RL",	// CB11: RL (rx + *), C,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
+
+                // 17
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB12: RL (rx + *), D,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
+
+                // 18
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB13: RL (rx + *), E,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
+
+                // 19
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB14: RL (rx + *), H,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
+
+                // 1A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB15: RL (rx + *), L,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
+
+                // 1B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB16: RL (rx + *), None,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
+
+                // 1C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RL",	// CB17: RL (rx + *), A,
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
+
+                // 1D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
-                new OpcodeData { Name = "RR",	// CB18: RR (rx + *), B,
+
+                // CB1E: RR (HL),
+                new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB19: RR (rx + *), C,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB1A: RR (rx + *), D,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB1B: RR (rx + *), E,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB1C: RR (rx + *), H,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB1D: RR (rx + *), L,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB1E: RR (rx + *), None,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RR",	// CB1F: RR (rx + *), A,
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB20: SLA (rx + *), B,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB21: SLA (rx + *), C,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB22: SLA (rx + *), D,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB23: SLA (rx + *), E,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB24: SLA (rx + *), H,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB25: SLA (rx + *), L,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB26: SLA (rx + *), None,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLA",	// CB27: SLA (rx + *), A,
-                                 Function = Operation.SLA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB28: SRA (rx + *), B,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB29: SRA (rx + *), C,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2A: SRA (rx + *), D,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2B: SRA (rx + *), E,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2C: SRA (rx + *), H,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2D: SRA (rx + *), L,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2E: SRA (rx + *), None,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRA",	// CB2F: SRA (rx + *), A,
-                                 Function = Operation.SRA,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB30: SLL (rx + *), B,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB31: SLL (rx + *), C,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB32: SLL (rx + *), D,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB33: SLL (rx + *), E,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB34: SLL (rx + *), H,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB35: SLL (rx + *), L,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB36: SLL (rx + *), None,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SLL",	// CB37: SLL (rx + *), A,
-                                 Function = Operation.SLL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB38: SRL (rx + *), B,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB39: SRL (rx + *), C,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3A: SRL (rx + *), D,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3B: SRL (rx + *), E,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3C: SRL (rx + *), H,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3D: SRL (rx + *), L,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3E: SRL (rx + *), None,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SRL",	// CB3F: SRL (rx + *), A,
-                                 Function = Operation.SRL,
-                                 new Param[] { CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB40: BIT 0, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB41: BIT 0, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB42: BIT 0, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB43: BIT 0, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB44: BIT 0, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB45: BIT 0, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB46: BIT 0, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB47: BIT 0, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB48: BIT 1, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB49: BIT 1, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB4A: BIT 1, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB4B: BIT 1, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB4C: BIT 1, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB4D: BIT 1, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB4E: BIT 1, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB4F: BIT 1, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB50: BIT 2, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB51: BIT 2, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB52: BIT 2, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB53: BIT 2, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB54: BIT 2, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB55: BIT 2, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB56: BIT 2, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB57: BIT 2, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB58: BIT 3, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB59: BIT 3, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB5A: BIT 3, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB5B: BIT 3, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB5C: BIT 3, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB5D: BIT 3, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB5E: BIT 3, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB5F: BIT 3, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB60: BIT 4, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB61: BIT 4, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB62: BIT 4, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB63: BIT 4, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB64: BIT 4, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB65: BIT 4, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB66: BIT 4, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB67: BIT 4, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB68: BIT 5, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB69: BIT 5, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB6A: BIT 5, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB6B: BIT 5, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB6C: BIT 5, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB6D: BIT 5, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB6E: BIT 5, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB6F: BIT 5, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB70: BIT 6, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB71: BIT 6, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB72: BIT 6, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB73: BIT 6, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB74: BIT 6, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB75: BIT 6, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB76: BIT 6, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB77: BIT 6, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB78: BIT 7, (rx + *), B,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB79: BIT 7, (rx + *), C,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB7A: BIT 7, (rx + *), D,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB7B: BIT 7, (rx + *), E,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB7C: BIT 7, (rx + *), H,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB7D: BIT 7, (rx + *), L,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB7E: BIT 7, (rx + *), None,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "BIT",	// CB7F: BIT 7, (rx + *), A,
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB80: RES 0, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB81: RES 0, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB82: RES 0, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB83: RES 0, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB84: RES 0, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB85: RES 0, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB86: RES 0, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB87: RES 0, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB88: RES 1, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB89: RES 1, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB8A: RES 1, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB8B: RES 1, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB8C: RES 1, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB8D: RES 1, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB8E: RES 1, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB8F: RES 1, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB90: RES 2, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB91: RES 2, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB92: RES 2, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB93: RES 2, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB94: RES 2, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB95: RES 2, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB96: RES 2, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB97: RES 2, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB98: RES 3, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB99: RES 3, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB9A: RES 3, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB9B: RES 3, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB9C: RES 3, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB9D: RES 3, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB9E: RES 3, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CB9F: RES 3, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA0: RES 4, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA1: RES 4, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA2: RES 4, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA3: RES 4, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA4: RES 4, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA5: RES 4, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA6: RES 4, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA7: RES 4, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA8: RES 5, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBA9: RES 5, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBAA: RES 5, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBAB: RES 5, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBAC: RES 5, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBAD: RES 5, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBAE: RES 5, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBAF: RES 5, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB0: RES 6, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB1: RES 6, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB2: RES 6, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB3: RES 6, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB4: RES 6, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB5: RES 6, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB6: RES 6, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB7: RES 6, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB8: RES 7, (rx + *), B,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBB9: RES 7, (rx + *), C,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBBA: RES 7, (rx + *), D,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBBB: RES 7, (rx + *), E,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBBC: RES 7, (rx + *), H,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBBD: RES 7, (rx + *), L,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBBE: RES 7, (rx + *), None,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "RES",	// CBBF: RES 7, (rx + *), A,
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC0: SET 0, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC1: SET 0, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC2: SET 0, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC3: SET 0, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC4: SET 0, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC5: SET 0, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC6: SET 0, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC7: SET 0, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC8: SET 1, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBC9: SET 1, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBCA: SET 1, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBCB: SET 1, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBCC: SET 1, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBCD: SET 1, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBCE: SET 1, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBCF: SET 1, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD0: SET 2, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD1: SET 2, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD2: SET 2, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD3: SET 2, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD4: SET 2, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD5: SET 2, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD6: SET 2, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD7: SET 2, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD8: SET 3, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBD9: SET 3, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBDA: SET 3, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBDB: SET 3, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBDC: SET 3, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBDD: SET 3, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBDE: SET 3, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBDF: SET 3, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE0: SET 4, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE1: SET 4, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE2: SET 4, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE3: SET 4, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE4: SET 4, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE5: SET 4, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE6: SET 4, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE7: SET 4, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE8: SET 5, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBE9: SET 5, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBEA: SET 5, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBEB: SET 5, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBEC: SET 5, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBED: SET 5, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBEE: SET 5, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBEF: SET 5, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF0: SET 6, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF1: SET 6, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF2: SET 6, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF3: SET 6, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF4: SET 6, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF5: SET 6, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF6: SET 6, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF7: SET 6, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF8: SET 7, (rx + *), B,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.B | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBF9: SET 7, (rx + *), C,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.C | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBFA: SET 7, (rx + *), D,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.D | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBFB: SET 7, (rx + *), E,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.E | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBFC: SET 7, (rx + *), H,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.H | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBFD: SET 7, (rx + *), L,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.L | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBFE: SET 7, (rx + *), None,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.None | CommandID.Pos1, },
-                               },
-                new OpcodeData { Name = "SET",	// CBFF: SET 7, (rx + *), A,
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IndexPtr, CommandID.A | CommandID.Pos1, },
-                               },
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // 1F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 20
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 21
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 22
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 23
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 24
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 25
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB26: SLA (HL),
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // 27
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 28
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 29
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 2A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 2B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 2C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 2D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB2E: SRA (HL),
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // 2F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 30
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 31
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 32
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 33
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 34
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 35
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB36: SLL (HL),
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // 37
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 38
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 39
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 3A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 3B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 3C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 3D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB3E: SRL (HL),
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.HL_Pointer, },
+                               },
+
+                // 3F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 40
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 41
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 42
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 43
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 44
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 45
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB46: BIT 0, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                               },
+
+                // 47
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 48
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 49
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 4A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 4B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 4C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 4D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB4E: BIT 1, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                               },
+
+                // 4F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 50
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 51
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 52
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 53
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 54
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 55
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB56: BIT 2, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                               },
+
+                // 57
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 58
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 59
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 5A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 5B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 5C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 5D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB5E: BIT 3, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                               },
+
+                // 5F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 60
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 61
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 62
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 63
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 64
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 65
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB66: BIT 4, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                               },
+
+                // 67
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 68
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 69
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 6A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 6B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 6C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 6D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB6E: BIT 5, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                               },
+
+                // 6F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 70
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 71
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 72
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 73
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 74
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 75
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB76: BIT 6, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                               },
+
+                // 77
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 78
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 79
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 7A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 7B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 7C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 7D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB7E: BIT 7, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                               },
+
+                // 7F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 80
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 81
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 82
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 83
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 84
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 85
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB86: RES 0, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                               },
+
+                // 87
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 88
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 89
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 8A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 8B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 8C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 8D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB8E: RES 1, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                               },
+
+                // 8F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 90
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 91
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 92
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 93
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 94
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 95
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB96: RES 2, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                               },
+
+                // 97
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 98
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 99
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 9A
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 9B
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 9C
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 9D
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB9E: RES 3, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                               },
+
+                // 9F
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A0
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A1
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A2
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A3
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A4
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A5
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBA6: RES 4, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                               },
+
+                // A7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A8
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // A9
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // AA
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // AB
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // AC
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // AD
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBAE: RES 5, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                               },
+
+                // AF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B0
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B1
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B2
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B3
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B4
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B5
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBB6: RES 6, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                               },
+
+                // B7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B8
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // B9
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // BA
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // BB
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // BC
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // BD
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBBE: RES 7, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                               },
+
+                // BF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C0
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C1
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C2
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C3
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C4
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C5
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBC6: SET 0, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                               },
+
+                // C7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C8
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // C9
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CA
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CB
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CC
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CD
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBCE: SET 1, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                               },
+
+                // CF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D0
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D1
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D2
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D3
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D4
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D5
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBD6: SET 2, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                               },
+
+                // D7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D8
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // D9
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // DA
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // DB
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // DC
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // DD
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBDE: SET 3, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                               },
+
+                // DF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E0
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E1
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E2
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E3
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E4
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E5
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBE6: SET 4, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                               },
+
+                // E7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E8
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // E9
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // EA
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // EB
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // EC
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // ED
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBEE: SET 5, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                               },
+
+                // EF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F0
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F1
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F2
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F3
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F4
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F5
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBF6: SET 6, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                               },
+
+                // F7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F8
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // F9
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // FA
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // FB
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // FC
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // FD
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // CBFE: SET 7, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                               },
+
+                // FF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
             },
         };
     }

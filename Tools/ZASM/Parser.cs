@@ -141,9 +141,10 @@ namespace ZASM
 
         OpcodeEncoding FindOpcode(ObjectInformation CurrentObject)
         {
-            if (CurrentObject.Type != ObjectType.Opcode)
+            //if (CurrentObject.Type != ObjectType.Opcode)
                 return default(OpcodeEncoding);
 
+            /*
             OpcodeInformation OpcodeObject = (OpcodeInformation)CurrentObject;
 
             // Search based on the Command ID
@@ -235,6 +236,7 @@ namespace ZASM
             {
                 return default(OpcodeEncoding);
             }
+             * */
         }
         
         LabelInformation ParseLabel(Token LabelToken, bool AddressLabel)
@@ -365,7 +367,7 @@ namespace ZASM
                     if (Param.Value.CommandID == CommandID.C)
                     {
                         Token Temp = Param.Value;
-                        Temp.CommandID = CommandID.CY;
+                        Temp.CommandID = CommandID.Flag_C;
                         Temp.Type = TokenType.Flag;
 
                         Param.Value = Temp;
