@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandID.cs" />
     <Compile Include="DataTables.cs" />
     <Compile Include="MessageLog.cs" />
     <Compile Include="ObjectInformation.cs" />

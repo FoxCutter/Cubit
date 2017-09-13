@@ -47,8 +47,9 @@ namespace ZASM
             //string TestLine = " label:  ld, ($0AAh << 8) + 0x55		; Load the byte at the return address into C\n  JP 	NZ, SETUP";
             //System.IO.MemoryStream Data = new System.IO.MemoryStream(UTF8Encoding.UTF8.GetBytes(TestLine));
 
-            //var Data = System.IO.File.OpenRead(@"D:\Programing\Code\Cubit\Tools\basic8k78-2.mac");
             var Data = System.IO.File.OpenRead(@"..\..\..\basic8k78-2.mac");
+            //var Data = System.IO.File.OpenRead(@"..\..\..\test.asm");
+
 
             Parser Parse = new Parser();
             Parse.Parse(Data);

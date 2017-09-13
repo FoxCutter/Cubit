@@ -123,7 +123,7 @@ namespace ZASM
                 Token Current = TokenList[Pos];
                 Pos++;
 
-                if (Current.IsIndexWord())
+                if (Current.IsIndexWord() && Pointer == true)
                 {
                     if (TempToken != null)
                     {

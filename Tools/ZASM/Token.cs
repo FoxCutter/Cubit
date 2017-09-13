@@ -82,9 +82,12 @@ namespace ZASM
         public TokenType Type;
         public CommandID CommandID;
         public SymbolTableEntry Symbol;
-        public string StringValue;
 
+        public string StringValue;
         public int NumericValue;
+
+        public int Line;
+        public int Character;
 
         public Token()
         {
@@ -94,6 +97,9 @@ namespace ZASM
 
             NumericValue = 0;
             StringValue = "";
+
+            Line = 0;
+            Character = 0;
         }
 
         public bool CanHaveFlag()
@@ -188,7 +194,8 @@ namespace ZASM
                   CommandID == ZASM.CommandID.SUB || CommandID == ZASM.CommandID.SBC ||
                   CommandID == ZASM.CommandID.OR || CommandID == ZASM.CommandID.XOR ||
                   CommandID == ZASM.CommandID.AND || CommandID == ZASM.CommandID.CP ||
-                  CommandID == ZASM.CommandID.IN || CommandID == ZASM.CommandID.OUT);
+                  CommandID == ZASM.CommandID.IN || CommandID == ZASM.CommandID.OUT || 
+                  CommandID== ZASM.CommandID.CPL);
         }
 
         public bool IsBreak()
@@ -259,6 +266,8 @@ namespace ZASM
         override public string ToString()
         {
             StringBuilder Ret = new StringBuilder();
+
+            //Ret.AppendFormat("[{0},{1}] ", Line, Character);
 
             if(Type == TokenType.Number || Type == TokenType.Result)
                 Ret.AppendFormat("0{0:X2}h", NumericValue);

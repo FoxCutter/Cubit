@@ -15,6 +15,7 @@ namespace ZASM
 
         Warning                     = 0x4000,
         SyntaxWarning,
+        RegisterMissingAssumingA,
 
 
         Error                       = 0x8000,
@@ -30,6 +31,7 @@ namespace ZASM
 
         UndefinedSymbol,
         DivisionByZero,
+        InternalError,
 
         UnknownError                = 0xFFFF,
     }

@@ -47,10 +47,10 @@ namespace Z80Emu
                                  new Param[] { CommandID.B, CommandID.ByteData, },
                                },
 
-                // 07: RLCA
-                new OpcodeData { Name = "RLCA",
-                                 Function = Operation.RL_A_CY,
-                                 new Param[] { },
+                // 07: RST 28,
+                new OpcodeData { Name = "RST",
+                                 Function = Operation.RST,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 28), },
                                },
 
                 // 08: EX AF, AF,
@@ -59,10 +59,10 @@ namespace Z80Emu
                                  new Param[] { CommandID.AF, CommandID.AF, },
                                },
 
-                // 09: ADD HL, BC,
+                // 09: ADD IY, BC,
                 new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.HL, CommandID.BC, },
+                                 new Param[] { CommandID.IY, CommandID.BC, },
                                },
 
                 // 0A: LD A, (BC),
@@ -155,10 +155,10 @@ namespace Z80Emu
                                  new Param[] { CommandID.Displacment, },
                                },
 
-                // 19: ADD HL, DE,
+                // 19: ADD IY, DE,
                 new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.HL, CommandID.DE, },
+                                 new Param[] { CommandID.IY, CommandID.DE, },
                                },
 
                 // 1A: LD A, (DE),
@@ -209,34 +209,34 @@ namespace Z80Emu
                                  new Param[] { CommandID.HL, CommandID.WordData, },
                                },
 
-                // 22: LD (**), HL,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.Address_Pointer, CommandID.HL, },
-                               },
-
-                // 23: LD (**), IX,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.Address_Pointer, CommandID.IX, },
-                               },
-
-                // 24: LD (**), IY,
+                // 22: LD (**), IY,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.Address_Pointer, CommandID.IY, },
                                },
 
-                // 25: DEC H,
-                new OpcodeData { Name = "DEC",
-                                 Function = Operation.DEC,
-                                 new Param[] { CommandID.H, },
+                // 23: INC HL,
+                new OpcodeData { Name = "INC",
+                                 Function = Operation.INC,
+                                 new Param[] { CommandID.HL, },
                                },
 
-                // 26: LD H, n,
+                // 24: INC IYH,
+                new OpcodeData { Name = "INC",
+                                 Function = Operation.INC,
+                                 new Param[] { CommandID.IYH, },
+                               },
+
+                // 25: DEC IYH,
+                new OpcodeData { Name = "DEC",
+                                 Function = Operation.DEC,
+                                 new Param[] { CommandID.IYH, },
+                               },
+
+                // 26: LD IYH, n,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.ByteData, },
+                                 new Param[] { CommandID.IYH, CommandID.ByteData, },
                                },
 
                 // 27: DAA
@@ -251,40 +251,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.Flag_Z, CommandID.Displacment, },
                                },
 
-                // 29: ADD HL, HL,
+                // 29: ADD IY, HL,
                 new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.HL, CommandID.HL, },
+                                 new Param[] { CommandID.IY, CommandID.HL, },
                                },
 
-                // 2A: LD HL, (**),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.HL, CommandID.Address_Pointer, },
-                               },
-
-                // 2B: LD IX, (**),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.IX, CommandID.Address_Pointer, },
-                               },
-
-                // 2C: LD IY, (**),
+                // 2A: LD IY, (**),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
                                  new Param[] { CommandID.IY, CommandID.Address_Pointer, },
                                },
 
-                // 2D: DEC IXH,
+                // 2B: DEC HL,
                 new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.HL, },
                                },
 
-                // 2E: LD IXH, n,
+                // 2C: INC IYL,
+                new OpcodeData { Name = "INC",
+                                 Function = Operation.INC,
+                                 new Param[] { CommandID.IYL, },
+                               },
+
+                // 2D: DEC IYL,
+                new OpcodeData { Name = "DEC",
+                                 Function = Operation.DEC,
+                                 new Param[] { CommandID.IYL, },
+                               },
+
+                // 2E: LD IYL, n,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.ByteData, },
+                                 new Param[] { CommandID.IYL, CommandID.ByteData, },
                                },
 
                 // 2F: CPL A,
@@ -317,22 +317,22 @@ namespace Z80Emu
                                  new Param[] { CommandID.SP, },
                                },
 
-                // 34: INC (HL),
+                // 34
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 35
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // 36: INC (IY + *),
                 new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.HL_Pointer, },
-                               },
-
-                // 35: DEC (HL),
-                new OpcodeData { Name = "DEC",
-                                 Function = Operation.DEC,
-                                 new Param[] { CommandID.HL_Pointer, },
-                               },
-
-                // 36: LD (HL), n,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.ByteData, },
+                                 new Param[] { CommandID.IY_Pointer, },
                                },
 
                 // 37: SCF
@@ -341,16 +341,16 @@ namespace Z80Emu
                                  new Param[] { },
                                },
 
-                // 38: JR Flag_CY, e-2,
-                new OpcodeData { Name = "JR",
-                                 Function = Operation.JR,
-                                 new Param[] { CommandID.Flag_CY, CommandID.Displacment, },
+                // 38: LD (IY + *), n,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.IY_Pointer, CommandID.ByteData, },
                                },
 
-                // 39: ADD HL, SP,
+                // 39: ADD IY, SP,
                 new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.HL, CommandID.SP, },
+                                 new Param[] { CommandID.IY, CommandID.SP, },
                                },
 
                 // 3A: LD A, (**),
@@ -365,22 +365,22 @@ namespace Z80Emu
                                  new Param[] { CommandID.SP, },
                                },
 
-                // 3C: INC L,
+                // 3C: INC A,
                 new OpcodeData { Name = "INC",
                                  Function = Operation.INC,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.A, },
                                },
 
-                // 3D: DEC L,
+                // 3D: DEC A,
                 new OpcodeData { Name = "DEC",
                                  Function = Operation.DEC,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.A, },
                                },
 
-                // 3E: LD L, n,
+                // 3E: LD A, n,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L, CommandID.ByteData, },
+                                 new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
                 // 3F: CCF
@@ -413,34 +413,34 @@ namespace Z80Emu
                                  new Param[] { CommandID.B, CommandID.E, },
                                },
 
-                // 44: LD B, H,
+                // 44: LD B, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B, CommandID.H, },
+                                 new Param[] { CommandID.B, CommandID.IYH, },
                                },
 
-                // 45: LD B, IXH,
+                // 45: LD B, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.B, CommandID.IXH, },
+                                 new Param[] { CommandID.B, CommandID.IYL, },
                                },
 
-                // 46: LD B, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.B, CommandID.HL_Pointer, },
+                // 46
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 47: LD B, L,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.B, CommandID.L, },
+                // 47: RST 30,
+                new OpcodeData { Name = "RST",
+                                 Function = Operation.RST,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 30), },
                                },
 
-                // 48: LD C, B,
+                // 48: LD B, (IY + *),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C, CommandID.B, },
+                                 new Param[] { CommandID.B, CommandID.IY_Pointer, },
                                },
 
                 // 49: LD C, C,
@@ -461,34 +461,34 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, CommandID.E, },
                                },
 
-                // 4C: LD C, H,
+                // 4C: LD C, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C, CommandID.H, },
+                                 new Param[] { CommandID.C, CommandID.IYH, },
                                },
 
-                // 4D: LD C, IXH,
+                // 4D: LD C, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C, CommandID.IXH, },
+                                 new Param[] { CommandID.C, CommandID.IYL, },
                                },
 
-                // 4E: LD C, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.C, CommandID.HL_Pointer, },
+                // 4E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 4F: LD C, L,
+                // 4F: LD C, A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.C, CommandID.L, },
+                                 new Param[] { CommandID.C, CommandID.A, },
                                },
 
-                // 50: LD D, B,
+                // 50: LD C, (IY + *),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D, CommandID.B, },
+                                 new Param[] { CommandID.C, CommandID.IY_Pointer, },
                                },
 
                 // 51: LD D, C,
@@ -509,34 +509,34 @@ namespace Z80Emu
                                  new Param[] { CommandID.D, CommandID.E, },
                                },
 
-                // 54: LD D, H,
+                // 54: LD D, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D, CommandID.H, },
+                                 new Param[] { CommandID.D, CommandID.IYH, },
                                },
 
-                // 55: LD D, IXH,
+                // 55: LD D, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D, CommandID.IXH, },
+                                 new Param[] { CommandID.D, CommandID.IYL, },
                                },
 
-                // 56: LD D, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.D, CommandID.HL_Pointer, },
+                // 56
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 57: LD D, L,
+                // 57: LD D, A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.D, CommandID.L, },
+                                 new Param[] { CommandID.D, CommandID.A, },
                                },
 
-                // 58: LD E, B,
+                // 58: LD D, (IY + *),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E, CommandID.B, },
+                                 new Param[] { CommandID.D, CommandID.IY_Pointer, },
                                },
 
                 // 59: LD E, C,
@@ -557,160 +557,160 @@ namespace Z80Emu
                                  new Param[] { CommandID.E, CommandID.E, },
                                },
 
-                // 5C: LD E, H,
+                // 5C: LD E, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E, CommandID.H, },
+                                 new Param[] { CommandID.E, CommandID.IYH, },
                                },
 
-                // 5D: LD E, IXH,
+                // 5D: LD E, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E, CommandID.IXH, },
+                                 new Param[] { CommandID.E, CommandID.IYL, },
                                },
 
-                // 5E: LD E, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.E, CommandID.HL_Pointer, },
+                // 5E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 5F: LD E, L,
+                // 5F: LD E, A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.E, CommandID.L, },
+                                 new Param[] { CommandID.E, CommandID.A, },
                                },
 
-                // 60: LD H, B,
+                // 60: LD E, (IY + *),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.B, },
+                                 new Param[] { CommandID.E, CommandID.IY_Pointer, },
                                },
 
-                // 61: LD H, C,
+                // 61: LD IYH, C,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.C, },
+                                 new Param[] { CommandID.IYH, CommandID.C, },
                                },
 
-                // 62: LD H, D,
+                // 62: LD IYH, D,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.D, },
+                                 new Param[] { CommandID.IYH, CommandID.D, },
                                },
 
-                // 63: LD H, E,
+                // 63: LD IYH, E,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.E, },
+                                 new Param[] { CommandID.IYH, CommandID.E, },
                                },
 
-                // 64: LD H, H,
+                // 64: LD IYH, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.H, },
+                                 new Param[] { CommandID.IYH, CommandID.IYH, },
                                },
 
-                // 65: LD H, IXH,
+                // 65: LD IYH, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.IXH, },
+                                 new Param[] { CommandID.IYH, CommandID.IYL, },
                                },
 
-                // 66: LD H, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.HL_Pointer, },
+                // 66
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 67: LD H, L,
+                // 67: LD IYH, A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.H, CommandID.L, },
+                                 new Param[] { CommandID.IYH, CommandID.A, },
                                },
 
-                // 68: LD IXH, B,
+                // 68: LD IYH, (IY + *),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.B, },
+                                 new Param[] { CommandID.IYH, CommandID.IY_Pointer, },
                                },
 
-                // 69: LD IXH, C,
+                // 69: LD IYL, C,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.C, },
+                                 new Param[] { CommandID.IYL, CommandID.C, },
                                },
 
-                // 6A: LD IXH, D,
+                // 6A: LD IYL, D,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.D, },
+                                 new Param[] { CommandID.IYL, CommandID.D, },
                                },
 
-                // 6B: LD IXH, E,
+                // 6B: LD IYL, E,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.E, },
+                                 new Param[] { CommandID.IYL, CommandID.E, },
                                },
 
-                // 6C: LD IXH, H,
+                // 6C: LD IYL, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.H, },
+                                 new Param[] { CommandID.IYL, CommandID.IYH, },
                                },
 
-                // 6D: LD IXH, IXH,
+                // 6D: LD IYL, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.IXH, },
+                                 new Param[] { CommandID.IYL, CommandID.IYL, },
                                },
 
-                // 6E: LD IXH, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.HL_Pointer, },
+                // 6E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 6F: LD IXH, L,
+                // 6F: LD IYL, A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.IXH, CommandID.L, },
+                                 new Param[] { CommandID.IYL, CommandID.A, },
                                },
 
-                // 70: LD (HL), B,
+                // 70: LD IYL, (IY + *),
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.B, },
+                                 new Param[] { CommandID.IYL, CommandID.IY_Pointer, },
                                },
 
-                // 71: LD (HL), C,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.C, },
+                // 71
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 72: LD (HL), D,
+                // 72: LD (IY + *), B,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // 73: LD (HL), E,
+                // 73: LD (IY + *), C,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // 74: LD (HL), H,
+                // 74: LD (IY + *), D,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // 75: LD (HL), IXH,
+                // 75: LD (IY + *), E,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
                 // 76: HALT
@@ -719,58 +719,58 @@ namespace Z80Emu
                                  new Param[] { },
                                },
 
-                // 77: LD (HL), L,
+                // 77: LD (IY + *), IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.IYL, },
                                },
 
-                // 78: LD (HL), IXL,
+                // 78: LD A, B,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.IXL, },
+                                 new Param[] { CommandID.A, CommandID.B, },
                                },
 
-                // 79: LD (HL), IYL,
+                // 79: LD (IY + *), A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.IYL, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // 7A: LD L, D,
+                // 7A: LD A, D,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L, CommandID.D, },
+                                 new Param[] { CommandID.A, CommandID.D, },
                                },
 
-                // 7B: LD (HL), A,
+                // 7B: LD A, E,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.HL_Pointer, CommandID.A, },
+                                 new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // 7C: LD L, H,
+                // 7C: LD A, IYH,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // 7D: LD L, IXH,
+                // 7D: LD A, IYL,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // 7E: LD L, (HL),
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.L, CommandID.HL_Pointer, },
+                // 7E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 7F: LD L, L,
+                // 7F: LD A, A,
                 new OpcodeData { Name = "LD",
                                  Function = Operation.LD,
-                                 new Param[] { CommandID.L, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // 80: ADD A, B,
@@ -797,28 +797,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // 84: ADD A, H,
+                // 84: ADD A, IYH,
                 new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // 85: ADD A, IXH,
+                // 85: ADD A, IYL,
                 new OpcodeData { Name = "ADD",
                                  Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // 86: ADD A, (HL),
-                new OpcodeData { Name = "ADD",
-                                 Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // 86
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 87: ADD A, L,
-                new OpcodeData { Name = "ADD",
-                                 Function = Operation.ADD,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                // 87: RST 38,
+                new OpcodeData { Name = "RST",
+                                 Function = Operation.RST,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 38), },
                                },
 
                 // 88: ADC A, B,
@@ -845,28 +845,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // 8C: ADC A, H,
+                // 8C: ADC A, IYH,
                 new OpcodeData { Name = "ADC",
                                  Function = Operation.ADDC,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // 8D: ADC A, IXH,
+                // 8D: ADC A, IYL,
                 new OpcodeData { Name = "ADC",
                                  Function = Operation.ADDC,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // 8E: ADC A, (HL),
-                new OpcodeData { Name = "ADC",
-                                 Function = Operation.ADDC,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // 8E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 8F: ADC A, L,
+                // 8F: ADC A, A,
                 new OpcodeData { Name = "ADC",
                                  Function = Operation.ADDC,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // 90: SUB A, B,
@@ -893,28 +893,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // 94: SUB A, H,
+                // 94: SUB A, IYH,
                 new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // 95: SUB A, IXH,
+                // 95: SUB A, IYL,
                 new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // 96: SUB A, (HL),
-                new OpcodeData { Name = "SUB",
-                                 Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // 96
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 97: SUB A, L,
+                // 97: SUB A, A,
                 new OpcodeData { Name = "SUB",
                                  Function = Operation.SUB,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // 98: SBC A, B,
@@ -941,28 +941,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // 9C: SBC A, H,
+                // 9C: SBC A, IYH,
                 new OpcodeData { Name = "SBC",
                                  Function = Operation.SUBC,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // 9D: SBC A, IXH,
+                // 9D: SBC A, IYL,
                 new OpcodeData { Name = "SBC",
                                  Function = Operation.SUBC,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // 9E: SBC A, (HL),
-                new OpcodeData { Name = "SBC",
-                                 Function = Operation.SUBC,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // 9E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // 9F: SBC A, L,
+                // 9F: SBC A, A,
                 new OpcodeData { Name = "SBC",
                                  Function = Operation.SUBC,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // A0: AND A, B,
@@ -989,28 +989,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // A4: AND A, H,
+                // A4: AND A, IYH,
                 new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // A5: AND A, IXH,
+                // A5: AND A, IYL,
                 new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // A6: AND A, (HL),
-                new OpcodeData { Name = "AND",
-                                 Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // A6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // A7: AND A, L,
+                // A7: AND A, A,
                 new OpcodeData { Name = "AND",
                                  Function = Operation.AND,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // A8: XOR A, B,
@@ -1037,28 +1037,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // AC: XOR A, H,
+                // AC: XOR A, IYH,
                 new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // AD: XOR A, IXH,
+                // AD: XOR A, IYL,
                 new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // AE: XOR A, (HL),
-                new OpcodeData { Name = "XOR",
-                                 Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // AE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // AF: XOR A, L,
+                // AF: XOR A, A,
                 new OpcodeData { Name = "XOR",
                                  Function = Operation.XOR,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // B0: OR A, B,
@@ -1085,28 +1085,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // B4: OR A, H,
+                // B4: OR A, IYH,
                 new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // B5: OR A, IXH,
+                // B5: OR A, IYL,
                 new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // B6: OR A, (HL),
-                new OpcodeData { Name = "OR",
-                                 Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                // B6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // B7: OR A, L,
+                // B7: OR A, A,
                 new OpcodeData { Name = "OR",
                                  Function = Operation.OR,
-                                 new Param[] { CommandID.A, CommandID.L, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
                 // B8: CP A, B,
@@ -1133,34 +1133,34 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.E, },
                                },
 
-                // BC: CP A, H,
+                // BC: CP A, IYH,
                 new OpcodeData { Name = "CP",
                                  Function = Operation.CMP,
-                                 new Param[] { CommandID.A, CommandID.H, },
+                                 new Param[] { CommandID.A, CommandID.IYH, },
                                },
 
-                // BD: CP A, IXH,
+                // BD: CP A, IYL,
                 new OpcodeData { Name = "CP",
                                  Function = Operation.CMP,
-                                 new Param[] { CommandID.A, CommandID.IXH, },
+                                 new Param[] { CommandID.A, CommandID.IYL, },
                                },
 
-                // BE: CP A, (HL),
+                // BE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
+                               },
+
+                // BF: CP A, A,
                 new OpcodeData { Name = "CP",
                                  Function = Operation.CMP,
-                                 new Param[] { CommandID.A, CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.A, CommandID.A, },
                                },
 
-                // BF: CP A, L,
-                new OpcodeData { Name = "CP",
-                                 Function = Operation.CMP,
-                                 new Param[] { CommandID.A, CommandID.L, },
-                               },
-
-                // C0: RET Flag_NZ, nn,
+                // C0: RET Flag_NZ,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Flag_NZ, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_NZ, },
                                },
 
                 // C1: POP BC,
@@ -1199,16 +1199,16 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // C7: RST 0,
+                // C7: RST 20,
                 new OpcodeData { Name = "RST",
                                  Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 20), },
                                },
 
-                // C8: RET Flag_Z, nn,
+                // C8: RET Flag_Z,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Flag_Z, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_Z, },
                                },
 
                 // C9: RET
@@ -1247,16 +1247,16 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // CF: RST 8,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 08), },
+                // CF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // D0: RET Flag_NC, nn,
+                // D0: RET Flag_NC,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Flag_NC, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_NC, },
                                },
 
                 // D1: POP DE,
@@ -1295,16 +1295,16 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // D7: RST 10,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 10), },
+                // D7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // D8: RET Flag_CY, nn,
+                // D8: RET Flag_C,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Flag_CY, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_C, },
                                },
 
                 // D9: EXX
@@ -1313,10 +1313,10 @@ namespace Z80Emu
                                  new Param[] { },
                                },
 
-                // DA: JP Flag_CY, nn,
+                // DA: JP Flag_C, nn,
                 new OpcodeData { Name = "JP",
                                  Function = Operation.JMP,
-                                 new Param[] { CommandID.Flag_CY, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_C, CommandID.Address, },
                                },
 
                 // DB: IN A, n,
@@ -1325,10 +1325,10 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // DC: CALL Flag_CY, nn,
+                // DC: CALL Flag_C, nn,
                 new OpcodeData { Name = "CALL",
                                  Function = Operation.CALL,
-                                 new Param[] { CommandID.Flag_CY, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_C, CommandID.Address, },
                                },
 
                 // DD
@@ -1343,16 +1343,16 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // DF: RST 18,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 18), },
+                // DF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // E0: RET Flag_PO, nn,
+                // E0: RET Flag_PO,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Flag_PO, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_PO, },
                                },
 
                 // E1: POP HL,
@@ -1367,22 +1367,22 @@ namespace Z80Emu
                                  new Param[] { CommandID.Flag_PO, CommandID.Address, },
                                },
 
-                // E3: EX (SP), HL,
-                new OpcodeData { Name = "EX",
-                                 Function = Operation.EX,
-                                 new Param[] { CommandID.SP_Pointer, CommandID.HL, },
-                               },
-
-                // E4: EX (SP), IX,
-                new OpcodeData { Name = "EX",
-                                 Function = Operation.EX,
-                                 new Param[] { CommandID.SP_Pointer, CommandID.IX, },
-                               },
-
-                // E5: EX (SP), IY,
+                // E3: EX (SP), IY,
                 new OpcodeData { Name = "EX",
                                  Function = Operation.EX,
                                  new Param[] { CommandID.SP_Pointer, CommandID.IY, },
+                               },
+
+                // E4: CALL Flag_PO, nn,
+                new OpcodeData { Name = "CALL",
+                                 Function = Operation.CALL,
+                                 new Param[] { CommandID.Flag_PO, CommandID.Address, },
+                               },
+
+                // E5: PUSH HL,
+                new OpcodeData { Name = "PUSH",
+                                 Function = Operation.PUSH,
+                                 new Param[] { CommandID.HL, },
                                },
 
                 // E6: AND A, n,
@@ -1391,28 +1391,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // E7: RST 20,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 20), },
+                // E7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // E8: RET Flag_PE, nn,
+                // E8: RET Flag_PE,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
+                                 new Param[] { CommandID.Flag_PE, },
+                               },
+
+                // E9: JP IY,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
+                                 new Param[] { CommandID.IY, },
+                               },
+
+                // EA: JP Flag_PE, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
                                  new Param[] { CommandID.Flag_PE, CommandID.Address, },
-                               },
-
-                // E9: JP HL,
-                new OpcodeData { Name = "JP",
-                                 Function = Operation.JMP,
-                                 new Param[] { CommandID.HL, },
-                               },
-
-                // EA: JP IX,
-                new OpcodeData { Name = "JP",
-                                 Function = Operation.JMP,
-                                 new Param[] { CommandID.IX, },
                                },
 
                 // EB: EX DE, HL,
@@ -1439,16 +1439,16 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // EF: RST 28,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 28), },
+                // EF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // F0: RET Flag_P, nn,
+                // F0: RET Flag_P,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
-                                 new Param[] { CommandID.Flag_P, CommandID.Address, },
+                                 new Param[] { CommandID.Flag_P, },
                                },
 
                 // F1: POP AF,
@@ -1487,28 +1487,28 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // F7: RST 30,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 30), },
+                // F7
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // F8: RET Flag_M, nn,
+                // F8: RET Flag_M,
                 new OpcodeData { Name = "RET",
                                  Function = Operation.RET,
+                                 new Param[] { CommandID.Flag_M, },
+                               },
+
+                // F9: LD SP, IY,
+                new OpcodeData { Name = "LD",
+                                 Function = Operation.LD,
+                                 new Param[] { CommandID.SP, CommandID.IY, },
+                               },
+
+                // FA: JP Flag_M, nn,
+                new OpcodeData { Name = "JP",
+                                 Function = Operation.JMP,
                                  new Param[] { CommandID.Flag_M, CommandID.Address, },
-                               },
-
-                // F9: LD SP, HL,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.SP, CommandID.HL, },
-                               },
-
-                // FA: LD SP, IX,
-                new OpcodeData { Name = "LD",
-                                 Function = Operation.LD,
-                                 new Param[] { CommandID.SP, CommandID.IX, },
                                },
 
                 // FB: EI
@@ -1535,61 +1535,61 @@ namespace Z80Emu
                                  new Param[] { CommandID.A, CommandID.ByteData, },
                                },
 
-                // FF: RST 38,
-                new OpcodeData { Name = "RST",
-                                 Function = Operation.RST,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 38), },
+                // FF
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
             },
 
             {
-                // CB00: SET 7, IXL,
+                // CB00: SET 7, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXL, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, },
                                },
 
-                // CB01: SET 7, IYL,
+                // CB01: SET 7, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IYL, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB02: RLC D,
+                // CB02: RLC (IY + *), B,
                 new OpcodeData { Name = "RLC",
                                  Function = Operation.RL_CY,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB03: SET 7, A,
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.A, },
-                               },
-
-                // CB04: RLC H,
+                // CB03: RLC (IY + *), C,
                 new OpcodeData { Name = "RLC",
                                  Function = Operation.RL_CY,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB05: RLC IXH,
+                // CB04: RLC (IY + *), D,
                 new OpcodeData { Name = "RLC",
                                  Function = Operation.RL_CY,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB06: RLC (HL),
+                // CB05: RLC (IY + *), E,
                 new OpcodeData { Name = "RLC",
                                  Function = Operation.RL_CY,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB07: RLC L,
+                // CB06: RLC (IY + *), H,
                 new OpcodeData { Name = "RLC",
                                  Function = Operation.RL_CY,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
+                               },
+
+                // CB07: RLC (IY + *), L,
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB08: RRC B,
@@ -1604,40 +1604,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB0A: RRC D,
+                // CB0A: RRC (IY + *), B,
                 new OpcodeData { Name = "RRC",
                                  Function = Operation.RR_CY,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB0B: RRC E,
+                // CB0B: RRC (IY + *), C,
                 new OpcodeData { Name = "RRC",
                                  Function = Operation.RR_CY,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB0C: RRC H,
+                // CB0C: RRC (IY + *), D,
                 new OpcodeData { Name = "RRC",
                                  Function = Operation.RR_CY,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB0D: RRC IXH,
+                // CB0D: RRC (IY + *), E,
                 new OpcodeData { Name = "RRC",
                                  Function = Operation.RR_CY,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB0E: RRC (HL),
+                // CB0E: RRC (IY + *), H,
                 new OpcodeData { Name = "RRC",
                                  Function = Operation.RR_CY,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB0F: RRC L,
+                // CB0F: RRC (IY + *), L,
                 new OpcodeData { Name = "RRC",
                                  Function = Operation.RR_CY,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB10: RL B,
@@ -1652,40 +1652,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB12: RL D,
+                // CB12: RL (IY + *), B,
                 new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB13: RL E,
+                // CB13: RL (IY + *), C,
                 new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB14: RL H,
+                // CB14: RL (IY + *), D,
                 new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB15: RL IXH,
+                // CB15: RL (IY + *), E,
                 new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB16: RL (HL),
+                // CB16: RL (IY + *), H,
                 new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB17: RL L,
+                // CB17: RL (IY + *), L,
                 new OpcodeData { Name = "RL",
                                  Function = Operation.RL,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB18: RR B,
@@ -1700,40 +1700,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB1A: RR D,
+                // CB1A: RR (IY + *), B,
                 new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB1B: RR E,
+                // CB1B: RR (IY + *), C,
                 new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB1C: RR H,
+                // CB1C: RR (IY + *), D,
                 new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB1D: RR IXH,
+                // CB1D: RR (IY + *), E,
                 new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB1E: RR (HL),
+                // CB1E: RR (IY + *), H,
                 new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB1F: RR L,
+                // CB1F: RR (IY + *), L,
                 new OpcodeData { Name = "RR",
                                  Function = Operation.RR,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB20: SLA B,
@@ -1748,40 +1748,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB22: SLA D,
+                // CB22: SLA (IY + *), B,
                 new OpcodeData { Name = "SLA",
                                  Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB23: SLA E,
+                // CB23: SLA (IY + *), C,
                 new OpcodeData { Name = "SLA",
                                  Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB24: SLA H,
+                // CB24: SLA (IY + *), D,
                 new OpcodeData { Name = "SLA",
                                  Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB25: SLA IXH,
+                // CB25: SLA (IY + *), E,
                 new OpcodeData { Name = "SLA",
                                  Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB26: SLA (HL),
+                // CB26: SLA (IY + *), H,
                 new OpcodeData { Name = "SLA",
                                  Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB27: SLA L,
+                // CB27: SLA (IY + *), L,
                 new OpcodeData { Name = "SLA",
                                  Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB28: SRA B,
@@ -1796,40 +1796,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB2A: SRA D,
+                // CB2A: SRA (IY + *), B,
                 new OpcodeData { Name = "SRA",
                                  Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB2B: SRA E,
+                // CB2B: SRA (IY + *), C,
                 new OpcodeData { Name = "SRA",
                                  Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB2C: SRA H,
+                // CB2C: SRA (IY + *), D,
                 new OpcodeData { Name = "SRA",
                                  Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB2D: SRA IXH,
+                // CB2D: SRA (IY + *), E,
                 new OpcodeData { Name = "SRA",
                                  Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB2E: SRA (HL),
+                // CB2E: SRA (IY + *), H,
                 new OpcodeData { Name = "SRA",
                                  Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB2F: SRA L,
+                // CB2F: SRA (IY + *), L,
                 new OpcodeData { Name = "SRA",
                                  Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB30: SLL B,
@@ -1844,40 +1844,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB32: SLL D,
+                // CB32: SLL (IY + *), B,
                 new OpcodeData { Name = "SLL",
                                  Function = Operation.SL_L,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB33: SLL E,
+                // CB33: SLL (IY + *), C,
                 new OpcodeData { Name = "SLL",
                                  Function = Operation.SL_L,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB34: SLL H,
+                // CB34: SLL (IY + *), D,
                 new OpcodeData { Name = "SLL",
                                  Function = Operation.SL_L,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB35: SLL IXH,
+                // CB35: SLL (IY + *), E,
                 new OpcodeData { Name = "SLL",
                                  Function = Operation.SL_L,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB36: SLL (HL),
+                // CB36: SLL (IY + *), H,
                 new OpcodeData { Name = "SLL",
                                  Function = Operation.SL_L,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB37: SLL L,
+                // CB37: SLL (IY + *), L,
                 new OpcodeData { Name = "SLL",
                                  Function = Operation.SL_L,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB38: SRL B,
@@ -1892,40 +1892,40 @@ namespace Z80Emu
                                  new Param[] { CommandID.C, },
                                },
 
-                // CB3A: SRL D,
+                // CB3A: SRL (IY + *), B,
                 new OpcodeData { Name = "SRL",
                                  Function = Operation.SR_L,
-                                 new Param[] { CommandID.D, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB3B: SRL E,
+                // CB3B: SRL (IY + *), C,
                 new OpcodeData { Name = "SRL",
                                  Function = Operation.SR_L,
-                                 new Param[] { CommandID.E, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB3C: SRL H,
+                // CB3C: SRL (IY + *), D,
                 new OpcodeData { Name = "SRL",
                                  Function = Operation.SR_L,
-                                 new Param[] { CommandID.H, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB3D: SRL IXH,
+                // CB3D: SRL (IY + *), E,
                 new OpcodeData { Name = "SRL",
                                  Function = Operation.SR_L,
-                                 new Param[] { CommandID.IXH, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB3E: SRL (HL),
+                // CB3E: SRL (IY + *), H,
                 new OpcodeData { Name = "SRL",
                                  Function = Operation.SR_L,
-                                 new Param[] { CommandID.HL_Pointer, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB3F: SRL L,
+                // CB3F: SRL (IY + *), L,
                 new OpcodeData { Name = "SRL",
                                  Function = Operation.SR_L,
-                                 new Param[] { CommandID.L, },
+                                 new Param[] { CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB40: BIT 0, B,
@@ -1940,376 +1940,376 @@ namespace Z80Emu
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.C, },
                                },
 
-                // CB42: BIT 0, D,
+                // CB42: BIT 0, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB43: BIT 0, E,
+                // CB43: BIT 0, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB44: BIT 0, H,
+                // CB44: BIT 0, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB45: BIT 0, IXH,
+                // CB45: BIT 0, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB46: BIT 0, (HL),
+                // CB46: BIT 0, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB47: BIT 0, L,
+                // CB47: BIT 0, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB48: BIT 1, B,
+                // CB48: BIT 0, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, },
                                },
 
-                // CB49: BIT 1, C,
+                // CB49: BIT 0, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB4A: BIT 1, D,
+                // CB4A: BIT 1, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB4B: BIT 1, E,
+                // CB4B: BIT 1, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB4C: BIT 1, H,
+                // CB4C: BIT 1, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB4D: BIT 1, IXH,
+                // CB4D: BIT 1, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB4E: BIT 1, (HL),
+                // CB4E: BIT 1, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB4F: BIT 1, L,
+                // CB4F: BIT 1, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB50: BIT 2, B,
+                // CB50: BIT 1, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, },
                                },
 
-                // CB51: BIT 2, C,
+                // CB51: BIT 1, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB52: BIT 2, D,
+                // CB52: BIT 2, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB53: BIT 2, E,
+                // CB53: BIT 2, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB54: BIT 2, H,
+                // CB54: BIT 2, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB55: BIT 2, IXH,
+                // CB55: BIT 2, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB56: BIT 2, (HL),
+                // CB56: BIT 2, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB57: BIT 2, L,
+                // CB57: BIT 2, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB58: BIT 3, B,
+                // CB58: BIT 2, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, },
                                },
 
-                // CB59: BIT 3, C,
+                // CB59: BIT 2, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB5A: BIT 3, D,
+                // CB5A: BIT 3, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB5B: BIT 3, E,
+                // CB5B: BIT 3, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB5C: BIT 3, H,
+                // CB5C: BIT 3, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB5D: BIT 3, IXH,
+                // CB5D: BIT 3, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB5E: BIT 3, (HL),
+                // CB5E: BIT 3, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB5F: BIT 3, L,
+                // CB5F: BIT 3, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB60: BIT 4, B,
+                // CB60: BIT 3, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, },
                                },
 
-                // CB61: BIT 4, C,
+                // CB61: BIT 3, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB62: BIT 4, D,
+                // CB62: BIT 4, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB63: BIT 4, E,
+                // CB63: BIT 4, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB64: BIT 4, H,
+                // CB64: BIT 4, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB65: BIT 4, IXH,
+                // CB65: BIT 4, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB66: BIT 4, (HL),
+                // CB66: BIT 4, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB67: BIT 4, L,
+                // CB67: BIT 4, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB68: BIT 5, B,
+                // CB68: BIT 4, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, },
                                },
 
-                // CB69: BIT 5, C,
+                // CB69: BIT 4, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB6A: BIT 5, D,
+                // CB6A: BIT 5, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB6B: BIT 5, E,
+                // CB6B: BIT 5, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB6C: BIT 5, H,
+                // CB6C: BIT 5, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB6D: BIT 5, IXH,
+                // CB6D: BIT 5, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB6E: BIT 5, (HL),
+                // CB6E: BIT 5, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB6F: BIT 5, L,
+                // CB6F: BIT 5, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB70: BIT 6, B,
+                // CB70: BIT 5, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, },
                                },
 
-                // CB71: BIT 6, C,
+                // CB71: BIT 5, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB72: BIT 6, D,
+                // CB72: BIT 6, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB73: BIT 6, E,
+                // CB73: BIT 6, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB74: BIT 6, H,
+                // CB74: BIT 6, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB75: BIT 6, IXH,
+                // CB75: BIT 6, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB76: BIT 6, (HL),
+                // CB76: BIT 6, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB77: BIT 6, L,
+                // CB77: BIT 6, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB78: BIT 7, B,
+                // CB78: BIT 6, (IY + *),
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, },
                                },
 
-                // CB79: BIT 7, C,
+                // CB79: BIT 6, (IY + *), A,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB7A: BIT 7, D,
+                // CB7A: BIT 7, (IY + *), B,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB7B: BIT 7, E,
+                // CB7B: BIT 7, (IY + *), C,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB7C: BIT 7, H,
+                // CB7C: BIT 7, (IY + *), D,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB7D: BIT 7, IXH,
+                // CB7D: BIT 7, (IY + *), E,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB7E: BIT 7, (HL),
+                // CB7E: BIT 7, (IY + *), H,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB7F: BIT 7, L,
+                // CB7F: BIT 7, (IY + *), L,
                 new OpcodeData { Name = "BIT",
                                  Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CB80: RES 0, B,
@@ -2324,376 +2324,376 @@ namespace Z80Emu
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.C, },
                                },
 
-                // CB82: RES 0, D,
+                // CB82: RES 0, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB83: RES 0, E,
+                // CB83: RES 0, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB84: RES 0, H,
+                // CB84: RES 0, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB85: RES 0, IXH,
+                // CB85: RES 0, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB86: RES 0, (HL),
+                // CB86: RES 0, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB87: RES 0, L,
+                // CB87: RES 0, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB88: RES 1, B,
+                // CB88: RES 0, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, },
                                },
 
-                // CB89: RES 1, C,
+                // CB89: RES 0, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB8A: RES 1, D,
+                // CB8A: RES 1, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB8B: RES 1, E,
+                // CB8B: RES 1, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB8C: RES 1, H,
+                // CB8C: RES 1, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB8D: RES 1, IXH,
+                // CB8D: RES 1, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB8E: RES 1, (HL),
+                // CB8E: RES 1, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB8F: RES 1, L,
+                // CB8F: RES 1, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB90: RES 2, B,
+                // CB90: RES 1, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, },
                                },
 
-                // CB91: RES 2, C,
+                // CB91: RES 1, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB92: RES 2, D,
+                // CB92: RES 2, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB93: RES 2, E,
+                // CB93: RES 2, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB94: RES 2, H,
+                // CB94: RES 2, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB95: RES 2, IXH,
+                // CB95: RES 2, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB96: RES 2, (HL),
+                // CB96: RES 2, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB97: RES 2, L,
+                // CB97: RES 2, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CB98: RES 3, B,
+                // CB98: RES 2, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, },
                                },
 
-                // CB99: RES 3, C,
+                // CB99: RES 2, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CB9A: RES 3, D,
+                // CB9A: RES 3, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CB9B: RES 3, E,
+                // CB9B: RES 3, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CB9C: RES 3, H,
+                // CB9C: RES 3, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CB9D: RES 3, IXH,
+                // CB9D: RES 3, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CB9E: RES 3, (HL),
+                // CB9E: RES 3, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CB9F: RES 3, L,
+                // CB9F: RES 3, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBA0: RES 4, B,
+                // CBA0: RES 3, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, },
                                },
 
-                // CBA1: RES 4, C,
+                // CBA1: RES 3, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBA2: RES 4, D,
+                // CBA2: RES 4, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBA3: RES 4, E,
+                // CBA3: RES 4, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBA4: RES 4, H,
+                // CBA4: RES 4, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBA5: RES 4, IXH,
+                // CBA5: RES 4, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBA6: RES 4, (HL),
+                // CBA6: RES 4, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBA7: RES 4, L,
+                // CBA7: RES 4, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBA8: RES 5, B,
+                // CBA8: RES 4, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, },
                                },
 
-                // CBA9: RES 5, C,
+                // CBA9: RES 4, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBAA: RES 5, D,
+                // CBAA: RES 5, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBAB: RES 5, E,
+                // CBAB: RES 5, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBAC: RES 5, H,
+                // CBAC: RES 5, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBAD: RES 5, IXH,
+                // CBAD: RES 5, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBAE: RES 5, (HL),
+                // CBAE: RES 5, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBAF: RES 5, L,
+                // CBAF: RES 5, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBB0: RES 6, B,
+                // CBB0: RES 5, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, },
                                },
 
-                // CBB1: RES 6, C,
+                // CBB1: RES 5, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBB2: RES 6, D,
+                // CBB2: RES 6, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBB3: RES 6, E,
+                // CBB3: RES 6, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBB4: RES 6, H,
+                // CBB4: RES 6, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBB5: RES 6, IXH,
+                // CBB5: RES 6, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBB6: RES 6, (HL),
+                // CBB6: RES 6, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBB7: RES 6, L,
+                // CBB7: RES 6, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBB8: RES 7, B,
+                // CBB8: RES 6, (IY + *),
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, },
                                },
 
-                // CBB9: RES 7, C,
+                // CBB9: RES 6, (IY + *), A,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBBA: RES 7, D,
+                // CBBA: RES 7, (IY + *), B,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBBB: RES 7, E,
+                // CBBB: RES 7, (IY + *), C,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBBC: RES 7, H,
+                // CBBC: RES 7, (IY + *), D,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBBD: RES 7, IXH,
+                // CBBD: RES 7, (IY + *), E,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBBE: RES 7, (HL),
+                // CBBE: RES 7, (IY + *), H,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBBF: RES 7, L,
+                // CBBF: RES 7, (IY + *), L,
                 new OpcodeData { Name = "RES",
                                  Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.L, },
                                },
 
                 // CBC0: SET 0, B,
@@ -2708,376 +2708,376 @@ namespace Z80Emu
                                  new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.C, },
                                },
 
-                // CBC2: SET 0, D,
+                // CBC2: SET 0, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBC3: SET 0, E,
+                // CBC3: SET 0, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBC4: SET 0, H,
+                // CBC4: SET 0, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBC5: SET 0, IXH,
+                // CBC5: SET 0, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBC6: SET 0, (HL),
+                // CBC6: SET 0, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBC7: SET 0, L,
+                // CBC7: SET 0, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBC8: SET 1, B,
+                // CBC8: SET 0, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, },
                                },
 
-                // CBC9: SET 1, C,
+                // CBC9: SET 0, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBCA: SET 1, D,
+                // CBCA: SET 1, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBCB: SET 1, E,
+                // CBCB: SET 1, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBCC: SET 1, H,
+                // CBCC: SET 1, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBCD: SET 1, IXH,
+                // CBCD: SET 1, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBCE: SET 1, (HL),
+                // CBCE: SET 1, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBCF: SET 1, L,
+                // CBCF: SET 1, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBD0: SET 2, B,
+                // CBD0: SET 1, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, },
                                },
 
-                // CBD1: SET 2, C,
+                // CBD1: SET 1, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBD2: SET 2, D,
+                // CBD2: SET 2, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBD3: SET 2, E,
+                // CBD3: SET 2, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBD4: SET 2, H,
+                // CBD4: SET 2, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBD5: SET 2, IXH,
+                // CBD5: SET 2, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBD6: SET 2, (HL),
+                // CBD6: SET 2, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBD7: SET 2, L,
+                // CBD7: SET 2, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBD8: SET 3, B,
+                // CBD8: SET 2, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, },
                                },
 
-                // CBD9: SET 3, C,
+                // CBD9: SET 2, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBDA: SET 3, D,
+                // CBDA: SET 3, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBDB: SET 3, E,
+                // CBDB: SET 3, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBDC: SET 3, H,
+                // CBDC: SET 3, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBDD: SET 3, IXH,
+                // CBDD: SET 3, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBDE: SET 3, (HL),
+                // CBDE: SET 3, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBDF: SET 3, L,
+                // CBDF: SET 3, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBE0: SET 4, B,
+                // CBE0: SET 3, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, },
                                },
 
-                // CBE1: SET 4, C,
+                // CBE1: SET 3, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBE2: SET 4, D,
+                // CBE2: SET 4, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBE3: SET 4, E,
+                // CBE3: SET 4, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBE4: SET 4, H,
+                // CBE4: SET 4, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBE5: SET 4, IXH,
+                // CBE5: SET 4, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBE6: SET 4, (HL),
+                // CBE6: SET 4, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBE7: SET 4, L,
+                // CBE7: SET 4, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBE8: SET 5, B,
+                // CBE8: SET 4, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, },
                                },
 
-                // CBE9: SET 5, C,
+                // CBE9: SET 4, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBEA: SET 5, D,
+                // CBEA: SET 5, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBEB: SET 5, E,
+                // CBEB: SET 5, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBEC: SET 5, H,
+                // CBEC: SET 5, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBED: SET 5, IXH,
+                // CBED: SET 5, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBEE: SET 5, (HL),
+                // CBEE: SET 5, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBEF: SET 5, L,
+                // CBEF: SET 5, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBF0: SET 6, B,
+                // CBF0: SET 5, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, },
                                },
 
-                // CBF1: SET 6, C,
+                // CBF1: SET 5, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBF2: SET 6, D,
+                // CBF2: SET 6, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBF3: SET 6, E,
+                // CBF3: SET 6, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBF4: SET 6, H,
+                // CBF4: SET 6, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBF5: SET 6, IXH,
+                // CBF5: SET 6, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBF6: SET 6, (HL),
+                // CBF6: SET 6, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBF7: SET 6, L,
+                // CBF7: SET 6, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.L, },
                                },
 
-                // CBF8: SET 7, B,
+                // CBF8: SET 6, (IY + *),
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.B, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, },
                                },
 
-                // CBF9: SET 7, C,
+                // CBF9: SET 6, (IY + *), A,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.C, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.IY_Pointer, CommandID.A, },
                                },
 
-                // CBFA: SET 7, D,
+                // CBFA: SET 7, (IY + *), B,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.D, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.B, },
                                },
 
-                // CBFB: SET 7, E,
+                // CBFB: SET 7, (IY + *), C,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.E, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.C, },
                                },
 
-                // CBFC: SET 7, H,
+                // CBFC: SET 7, (IY + *), D,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.H, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.D, },
                                },
 
-                // CBFD: SET 7, IXH,
+                // CBFD: SET 7, (IY + *), E,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IXH, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.E, },
                                },
 
-                // CBFE: SET 7, (HL),
+                // CBFE: SET 7, (IY + *), H,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.H, },
                                },
 
-                // CBFF: SET 7, L,
+                // CBFF: SET 7, (IY + *), L,
                 new OpcodeData { Name = "SET",
                                  Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.L, },
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.IY_Pointer, CommandID.L, },
                                },
 
             },
@@ -3707,16 +3707,16 @@ namespace Z80Emu
                                  new Param[] { },
                                },
 
-                // ED68: IN IXH, C,
+                // ED68: IN L, C,
                 new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.IXH, CommandID.C, },
+                                 new Param[] { CommandID.L, CommandID.C, },
                                },
 
-                // ED69: OUT C, IXH,
+                // ED69: OUT C, L,
                 new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.IXH, },
+                                 new Param[] { CommandID.C, CommandID.L, },
                                },
 
                 // ED6A: ADC HL, HL,
@@ -3803,16 +3803,16 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // ED78: IN L, C,
+                // ED78: IN A, C,
                 new OpcodeData { Name = "IN",
                                  Function = Operation.IN,
-                                 new Param[] { CommandID.L, CommandID.C, },
+                                 new Param[] { CommandID.A, CommandID.C, },
                                },
 
-                // ED79: OUT C, L,
+                // ED79: OUT C, A,
                 new OpcodeData { Name = "OUT",
                                  Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.L, },
+                                 new Param[] { CommandID.C, CommandID.A, },
                                },
 
                 // ED7A: ADC HL, SP,
@@ -3851,16 +3851,16 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // ED80: IN IXL, C,
-                new OpcodeData { Name = "IN",
-                                 Function = Operation.IN,
-                                 new Param[] { CommandID.IXL, CommandID.C, },
+                // 80
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // ED81: OUT C, IXL,
-                new OpcodeData { Name = "OUT",
-                                 Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.IXL, },
+                // 81
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 82
@@ -3899,16 +3899,16 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // ED88: IN IYL, C,
-                new OpcodeData { Name = "IN",
-                                 Function = Operation.IN,
-                                 new Param[] { CommandID.IYL, CommandID.C, },
+                // 88
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // ED89: OUT C, IYL,
-                new OpcodeData { Name = "OUT",
-                                 Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.IYL, },
+                // 89
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 8A
@@ -3995,16 +3995,16 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // ED98: IN A, C,
-                new OpcodeData { Name = "IN",
-                                 Function = Operation.IN,
-                                 new Param[] { CommandID.A, CommandID.C, },
+                // 98
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
-                // ED99: OUT C, A,
-                new OpcodeData { Name = "OUT",
-                                 Function = Operation.OUT,
-                                 new Param[] { CommandID.C, CommandID.A, },
+                // 99
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 9A
@@ -4622,10 +4622,10 @@ namespace Z80Emu
             },
 
             {
-                // 00
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB00: SET 7, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
                                },
 
                 // 01
@@ -4658,10 +4658,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB06: RLC (HL),
-                new OpcodeData { Name = "RLC",
-                                 Function = Operation.RL_CY,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 06
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 07
@@ -4670,10 +4670,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 08
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB08: RLC (HL),
+                new OpcodeData { Name = "RLC",
+                                 Function = Operation.RL_CY,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 09
@@ -4706,10 +4706,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB0E: RRC (HL),
-                new OpcodeData { Name = "RRC",
-                                 Function = Operation.RR_CY,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 0E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 0F
@@ -4718,10 +4718,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 10
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB10: RRC (HL),
+                new OpcodeData { Name = "RRC",
+                                 Function = Operation.RR_CY,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 11
@@ -4754,10 +4754,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB16: RL (HL),
-                new OpcodeData { Name = "RL",
-                                 Function = Operation.RL,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 16
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 17
@@ -4766,10 +4766,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 18
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB18: RL (HL),
+                new OpcodeData { Name = "RL",
+                                 Function = Operation.RL,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 19
@@ -4802,10 +4802,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB1E: RR (HL),
-                new OpcodeData { Name = "RR",
-                                 Function = Operation.RR,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 1E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 1F
@@ -4814,10 +4814,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 20
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB20: RR (HL),
+                new OpcodeData { Name = "RR",
+                                 Function = Operation.RR,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 21
@@ -4850,10 +4850,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB26: SLA (HL),
-                new OpcodeData { Name = "SLA",
-                                 Function = Operation.SL_Signed,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 26
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 27
@@ -4862,10 +4862,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 28
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB28: SLA (HL),
+                new OpcodeData { Name = "SLA",
+                                 Function = Operation.SL_Signed,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 29
@@ -4898,10 +4898,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB2E: SRA (HL),
-                new OpcodeData { Name = "SRA",
-                                 Function = Operation.SR_Signed,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 2E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 2F
@@ -4910,10 +4910,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 30
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB30: SRA (HL),
+                new OpcodeData { Name = "SRA",
+                                 Function = Operation.SR_Signed,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 31
@@ -4946,10 +4946,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB36: SLL (HL),
-                new OpcodeData { Name = "SLL",
-                                 Function = Operation.SL_L,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 36
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 37
@@ -4958,10 +4958,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 38
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB38: SLL (HL),
+                new OpcodeData { Name = "SLL",
+                                 Function = Operation.SL_L,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 39
@@ -4994,10 +4994,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB3E: SRL (HL),
-                new OpcodeData { Name = "SRL",
-                                 Function = Operation.SR_L,
-                                 new Param[] { CommandID.HL_Pointer, },
+                // 3E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 3F
@@ -5006,10 +5006,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 40
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB40: SRL (HL),
+                new OpcodeData { Name = "SRL",
+                                 Function = Operation.SR_L,
+                                 new Param[] { CommandID.HL_Pointer, },
                                },
 
                 // 41
@@ -5042,10 +5042,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB46: BIT 0, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                // 46
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 47
@@ -5054,10 +5054,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 48
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB48: BIT 0, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
                                },
 
                 // 49
@@ -5090,10 +5090,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB4E: BIT 1, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                // 4E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 4F
@@ -5102,10 +5102,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 50
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB50: BIT 1, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
                                },
 
                 // 51
@@ -5138,10 +5138,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB56: BIT 2, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                // 56
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 57
@@ -5150,10 +5150,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 58
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB58: BIT 2, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
                                },
 
                 // 59
@@ -5186,10 +5186,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB5E: BIT 3, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                // 5E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 5F
@@ -5198,10 +5198,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 60
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB60: BIT 3, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
                                },
 
                 // 61
@@ -5234,10 +5234,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB66: BIT 4, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                // 66
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 67
@@ -5246,10 +5246,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 68
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB68: BIT 4, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
                                },
 
                 // 69
@@ -5282,10 +5282,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB6E: BIT 5, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                // 6E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 6F
@@ -5294,10 +5294,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 70
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB70: BIT 5, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
                                },
 
                 // 71
@@ -5330,10 +5330,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB76: BIT 6, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                // 76
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 77
@@ -5342,10 +5342,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 78
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB78: BIT 6, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
                                },
 
                 // 79
@@ -5378,10 +5378,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB7E: BIT 7, (HL),
-                new OpcodeData { Name = "BIT",
-                                 Function = Operation.BIT,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                // 7E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 7F
@@ -5390,10 +5390,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 80
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB80: BIT 7, (HL),
+                new OpcodeData { Name = "BIT",
+                                 Function = Operation.BIT,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
                                },
 
                 // 81
@@ -5426,10 +5426,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB86: RES 0, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                // 86
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 87
@@ -5438,10 +5438,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 88
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB88: RES 0, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
                                },
 
                 // 89
@@ -5474,10 +5474,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB8E: RES 1, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                // 8E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 8F
@@ -5486,10 +5486,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 90
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB90: RES 1, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
                                },
 
                 // 91
@@ -5522,10 +5522,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB96: RES 2, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                // 96
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 97
@@ -5534,10 +5534,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // 98
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CB98: RES 2, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
                                },
 
                 // 99
@@ -5570,10 +5570,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CB9E: RES 3, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                // 9E
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // 9F
@@ -5582,10 +5582,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // A0
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBA0: RES 3, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
                                },
 
                 // A1
@@ -5618,10 +5618,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBA6: RES 4, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                // A6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // A7
@@ -5630,10 +5630,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // A8
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBA8: RES 4, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
                                },
 
                 // A9
@@ -5666,10 +5666,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBAE: RES 5, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                // AE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // AF
@@ -5678,10 +5678,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // B0
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBB0: RES 5, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
                                },
 
                 // B1
@@ -5714,10 +5714,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBB6: RES 6, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                // B6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // B7
@@ -5726,10 +5726,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // B8
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBB8: RES 6, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
                                },
 
                 // B9
@@ -5762,10 +5762,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBBE: RES 7, (HL),
-                new OpcodeData { Name = "RES",
-                                 Function = Operation.RES,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                // BE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // BF
@@ -5774,10 +5774,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // C0
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBC0: RES 7, (HL),
+                new OpcodeData { Name = "RES",
+                                 Function = Operation.RES,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
                                },
 
                 // C1
@@ -5810,10 +5810,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBC6: SET 0, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
+                // C6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // C7
@@ -5822,10 +5822,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // C8
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBC8: SET 0, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 00), CommandID.HL_Pointer, },
                                },
 
                 // C9
@@ -5858,10 +5858,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBCE: SET 1, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
+                // CE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // CF
@@ -5870,10 +5870,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // D0
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBD0: SET 1, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 01), CommandID.HL_Pointer, },
                                },
 
                 // D1
@@ -5906,10 +5906,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBD6: SET 2, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
+                // D6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // D7
@@ -5918,10 +5918,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // D8
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBD8: SET 2, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 02), CommandID.HL_Pointer, },
                                },
 
                 // D9
@@ -5954,10 +5954,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBDE: SET 3, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
+                // DE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // DF
@@ -5966,10 +5966,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // E0
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBE0: SET 3, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 03), CommandID.HL_Pointer, },
                                },
 
                 // E1
@@ -6002,10 +6002,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBE6: SET 4, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
+                // E6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // E7
@@ -6014,10 +6014,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // E8
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBE8: SET 4, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 04), CommandID.HL_Pointer, },
                                },
 
                 // E9
@@ -6050,10 +6050,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBEE: SET 5, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
+                // EE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // EF
@@ -6062,10 +6062,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // F0
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBF0: SET 5, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 05), CommandID.HL_Pointer, },
                                },
 
                 // F1
@@ -6098,10 +6098,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBF6: SET 6, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
+                // F6
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // F7
@@ -6110,10 +6110,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // F8
-                new OpcodeData { Name = "",
-                                 Function = Operation.Error,
-                                 new Param[] { }
+                // CBF8: SET 6, (HL),
+                new OpcodeData { Name = "SET",
+                                 Function = Operation.SET,
+                                 new Param[] { (CommandID)((int)CommandID.Encoded + 06), CommandID.HL_Pointer, },
                                },
 
                 // F9
@@ -6146,10 +6146,10 @@ namespace Z80Emu
                                  new Param[] { }
                                },
 
-                // CBFE: SET 7, (HL),
-                new OpcodeData { Name = "SET",
-                                 Function = Operation.SET,
-                                 new Param[] { (CommandID)((int)CommandID.Encoded + 07), CommandID.HL_Pointer, },
+                // FE
+                new OpcodeData { Name = "",
+                                 Function = Operation.Error,
+                                 new Param[] { }
                                },
 
                 // FF

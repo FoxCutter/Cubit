@@ -28,9 +28,33 @@ namespace ZASM
             { TokenType.Comma,              16 },   
             { TokenType.Address,            20 },
         };
-        
-        ////static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
-        public static SortedList<string, CommandID> i8080 = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
+
+        public static SortedList<string, CommandID> Common = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
+        {
+            // Speical Opperators
+            { "HIGH",	    CommandID.HIGH },       { "LOW",	    CommandID.LOW },        { "TIMES",	    CommandID.TIMES },        
+            
+            // Psudo ops            
+            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DD",	        CommandID.DWORD },      { "DC",	        CommandID.DC },         
+            { "DS",	        CommandID.RESB },       { "RESB",       CommandID.RESB },       { "RESW",       CommandID.RESW },       { "RESD",       CommandID.RESD }, 
+            { "EQU",        CommandID.EQU },        { "CONST",	    CommandID.CONST },      { "DEFL",	    CommandID.CONST },       
+
+            // Commands
+            //{ "PROC",       CommandID.PROC },        { "ENDPROC",   CommandID.ENDPROC },    { "CALLPROC",   CommandID.CALLPROC },
+            //{ "STRUCT",     CommandID.STRUCT },      { "ENDSTRUCT", CommandID.ENDSTRUCT },
+                        
+            // Directives
+            { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },
+            { ".INCLUDE",   CommandID.INCLUDE },     { ".INCBIN",   CommandID.INCLUDE },     
+            { ".Z80",       CommandID.Z80 },         { ".8080",     CommandID.i8080 },     
+            { ".ORG",       CommandID.ORG },        
+            { ".SECTION",   CommandID.SECTION },     { ".FILL",     CommandID.FILL},        { ".SIZE",   CommandID.SIZE },
+            
+            { ".END",	    CommandID.END },        
+
+        };
+
+        public static SortedList<string, CommandID> i8080Opcodes = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
         {
             // Registers  
             { "A",	    CommandID.A },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
@@ -91,11 +115,10 @@ namespace ZASM
             { "XTHL",	CommandID.XTHL },
         };
 
-        //static Dictionary<string, CommandID> Commands = new Dictionary<string, CommandID>(Comparer<string>.Create(a, b => string.Compare(a, b, true))
-        public static SortedList<string, CommandID> Commands = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
+        public static SortedList<string, CommandID> z80Opcodes = new SortedList<string, CommandID>(Comparer<string>.Create((a, b) => string.Compare(a, b, true)))
         {
             // Register    
-            { "A",	    CommandID.A },      { "F",	    CommandID.F },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
+            { "A",	    CommandID.A },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
             { "E",	    CommandID.E },      { "H",	    CommandID.H },      { "L",	    CommandID.L },      { "I",	    CommandID.I },      { "R",	    CommandID.R },
             { "AF",	    CommandID.AF },     { "BC",	    CommandID.BC },     { "DE",	    CommandID.DE },     { "HL",	    CommandID.HL },     { "IX",	    CommandID.IX }, 
             { "IY",	    CommandID.IY },     { "PC",	    CommandID.PC },     { "SP",	    CommandID.SP },     { "SPH",	CommandID.SPH },    { "SPL",	CommandID.SPL },
@@ -120,25 +143,6 @@ namespace ZASM
             { "RRC",	CommandID.RRC },    { "RRCA",	CommandID.RRCA },   { "RRD",	CommandID.RRD },    { "RST",	CommandID.RST },    { "SBC",	CommandID.SBC },
             { "SCF",	CommandID.SCF },    { "SET",	CommandID.SET },    { "SLA",	CommandID.SLA },    { "SLL",	CommandID.SLL },    { "SRA",	CommandID.SRA },
             { "SRL",	CommandID.SRL },    { "SUB",	CommandID.SUB },    { "XOR",	CommandID.XOR },
-            
-            // Speical Opperators
-            { "HIGH",	    CommandID.HIGH },       { "LOW",	    CommandID.LOW },        { "TIMES",	    CommandID.TIMES },        
-            
-            
-            // Psudo ops            
-            { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DD",	        CommandID.DWORD },      { "DC",	        CommandID.DC },         
-            { "DS",	        CommandID.RESB },       { "RESB",       CommandID.RESB },       { "RESW",       CommandID.RESW },       { "RESD",       CommandID.RESD }, 
-            { "EQU",        CommandID.EQU },        { "CONST",	    CommandID.CONST },      { "DEFL",	    CommandID.CONST },       
-
-            // Commands
-            { "PROC",       CommandID.PROC },        { "ENDPROC",   CommandID.ENDPROC },    { "CALLPROC",   CommandID.CALLPROC },
-            { "STRUCT",     CommandID.STRUCT },      { "ENDSTRUCT", CommandID.ENDSTRUCT },
-                        
-            // Directives
-            { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },
-            { ".INCLUDE",   CommandID.INCLUDE },     { ".INCBIN",   CommandID.INCLUDE },     
-            { ".Z80",       CommandID.Z80 },         { ".8080",     CommandID.i8080 },     { ".ORG",        CommandID.ORG },        { ".END",	    CommandID.END },        
-            { "END",	    CommandID.END },        
         };
 
         public static TokenType[] CharacterData = new TokenType[]
@@ -210,6 +214,8 @@ namespace ZASM
             { MessageCode.DataTypeMisMatch, "Datatype mismatch"},
             { MessageCode.SyntaxError, "Syntax Error"},
             { MessageCode.SyntaxWarning, "Syntax Warning"},
+            { MessageCode.RegisterMissingAssumingA, "Register Missing, using 'A'"},
+            { MessageCode.InternalError, "Internal Error" },
             
         };
     }

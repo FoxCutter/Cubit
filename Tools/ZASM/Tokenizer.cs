@@ -73,133 +73,6 @@ namespace ZASM
 
      */
 
-    enum CommandID
-    {
-        // Not used
-        None,
-
-        // 8-bit Registers and Indexs into the register array
-        A,
-        F,
-        B,
-        C,
-        D,
-        E,
-        H, L,
-        SPH, SPL,
-        PCH, PCL,
-        IXH, IXL,
-        IYH, IYL,
-        I,
-        R,
-
-        // 16-bit Registers
-        Word = 0x40,
-        AF = Word + A,
-        BC = Word + B,
-        DE = Word + D,
-        HL = Word + H,
-        SP = Word + SPH,
-        PC = Word + PCH,
-        IX = Word + IXH,
-        IY = Word + IYH,
-
-        // Immediate data
-        ImmediateByte = 0x80,
-        ImmediateWord, 
-        
-        RegisterMax = 0xFF,
-
-        // Flags
-        Flag_NZ,
-        Flag_Z,
-        Flag_NC,
-        Flag_C,
-        Flag_PO,
-        Flag_PE,
-        Flag_P,
-        Flag_M,
-
-        //CY, NC, Z, NZ, PE, PO, P, M,
-
-        FlagsMax,
-
-        // Opcodes
-        ADC, ADD, AND, BIT, CALL, CCF, CP, CPD, CPDR, CPI, CPIR, CPL,
-        DAA, DEC, DI, DJNZ, EI, EX, EXX, HALT, IM, IN, INC, IND,
-        INDR, INI, INIR, JP, JR, LD, LDD, LDDR, LDI, LDIR, NEG, NOP,
-        OR, OTDR, OTIR, OUT, OUTD, OUTI, POP, PUSH, RES, RET, RETI,
-        RETN, RL, RLA, RLC, RLCA, RLD, RR, RRA, RRC, RRCA, RRD,
-        RST, SBC, SCF, SET, SLA, SLL, SRA, SRL, SUB, XOR,
-
-        // i8080 Opcodes
-        ACI, ADI, ANA, CNZ, CZ, CNC, CC, CPO, CPE, CM,
-        CMA, CMC, CMP, DAD, DCR, DCX, INR, INX,
-        JMP, JNZ, JZ, JNC, JC, JPO, JPE, JM,
-        LDA, LXI, LDAX, LHLD, MOV, MVI,
-        ORA, ORI, PCHL, RAL, RAR,
-        RNZ, RZ, RNC, RC, RPO, RPE, RP, RM,        
-        SBB, SBI,
-        SHLD, SPHL, STA, STAX,
-        STC, SUI, XCHG, XRA, XRI, XTHL,
-
-        // Psudo Operators
-        HIGH, LOW, TIMES,
-
-        OpcodeMax,
-
-        // Commands
-        CONST, BYTE, WORD, DWORD, DC, RESB, RESW, RESD,
-        EQU, PROC, ENDPROC, CALLPROC, STRUCT, ENDSTRUCT,
-
-        // Directives
-        EXTERN, PUBLIC, INCLUDE, Z80, i8080, ORG, END,
-
-
-        CommandMax,
-
-        // Encoding Flags
-        ByteReg,            // B, C, D, E, H, L, A
-        ByteRegIndex,       // B, C, D, E, IXH, IYH, IXL, IYL, A
-        WordReg,            // BC, DE, HL, SP, IX, IY
-        WordRegAF,          // BC, DE, HL, AF, IX, IY
-        Flags,              // NZ, Z, NC, CY, PO, PE, P, M
-        HalfFlags,          // NZ, Z, NC, CY
-
-
-        Byte_Pointer,       // (HL), (IX + *), (IY + *)
-        Address_Registers,  // HL, IX, IY
-        Index_Pointer,      // (IX+*), (IY+*)
-
-        Address_Pointer,    // (nn)
-
-        ByteData,           // n
-        WordData,           // nn
-        Displacment,        // e-2
-        Address,            // nn
-
-        HL_Pointer,         // (HL)
-        BC_Pointer,         // (BC)
-        DE_Pointer,         // (DE)
-        SP_Pointer,         // (SP)
-
-        HLInc_Pointer,      // (HL+) Gameboy
-        HLDec_Pointer,      // (HL-) Gameboy
-        High_Pointer,       // (+Word) Gameboy
-        High_C_Pointer,     // (+C) Gameboy
-        SP_Offset,          // SP + Byte Gameboy
-
-        PosImmidate,        // Encoded as Immidate data
-        Pos1,
-        Pos2,
-        Pos3,
-        Pos4,
-
-        EncodingMax,
-
-        Encoded = 0xF000,
-    }
-
     class Tokenizer
     {
         StreamReader _DataStream;
@@ -208,8 +81,6 @@ namespace ZASM
         TokenType _LastToken;
         CommandID _LastCommand;
 
-        public int CurrentLine { get; private set; }
-        public int CurrentCharacter { get; private set; }
         public List<char> CurrentValue { get; private set; }
         public string CurrentString { get { return string.Concat(CurrentValue); } }
 
@@ -220,8 +91,6 @@ namespace ZASM
             _Line = 1;
             _Character = 1;
             
-            CurrentLine = 0;
-            CurrentCharacter = 0;
             CurrentValue = new List<char>();
             _LastToken = TokenType.None;
             _LastCommand = CommandID.None;
@@ -478,15 +347,15 @@ namespace ZASM
 
         public Token GetNextToken()
         {
-            CurrentLine = _Line;
-            CurrentCharacter = _Character;
-            
             Token Ret = new Token();
             
             CurrentValue.Clear();
 
+            Ret.Line = _Line;
+            Ret.Character = _Character;
+
             Ret.Type = TokenType.End;
-            Ret.Type = PeekNextTokenType();
+            Ret.Type = PeekNextTokenType();            
             if (Ret.Type == TokenType.End)
                 return Ret;
 
@@ -617,10 +486,17 @@ namespace ZASM
 
             if (Ret.Type == TokenType.Identifier)
             {
-                if (DataTables.Commands.ContainsKey(CurrentString))
+                if (DataTables.Common.ContainsKey(CurrentString))
                 {
-                    Ret.CommandID = DataTables.Commands[CurrentString];
+                    Ret.CommandID = DataTables.Common[CurrentString];
+                }
+                else if (DataTables.z80Opcodes.ContainsKey(CurrentString))
+                {
+                    Ret.CommandID = DataTables.z80Opcodes[CurrentString];
+                }
 
+                if(Ret.CommandID != CommandID.None)
+                {
                     if (Ret.CommandID < CommandID.RegisterMax)
                         Ret.Type = TokenType.Register;
 

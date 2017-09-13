@@ -7,23 +7,58 @@ using System.IO;
 
 namespace ZASM
 {
+    class DataSection
+    {
+        // The name of the section (Optinoal)
+        public string Name;
+        
+        // The placement of this block in the output, if not provide will follow right after the last block (-1 = I don't care)
+        public int Placement;
+                
+        // The max size of this section, will be padded to this length when writen out.
+        public ushort Size;
+
+        // Byte to fill empty space with if there is a need to pad the section
+        public byte EmptyFill;
+
+        // Current address in this section
+        public int CurrentAddress;
+        
+        // Object list
+        public List<ObjectInformation> ObjectData;
+    }
+    
     class Parser
     {
         Tokenizer _Tokenizer;
         SymbolTable _SymbolTable;
 
-        List<ObjectInformation> _ObjectData;
-        int _CurrentAddress;
+        List<DataSection> _Sections;
+        DataSection _CurrentSection;
+
+        public Parser()
+        {
+            _SymbolTable = new SymbolTable();
+            
+            _Sections = new List<DataSection>();
+            _CurrentSection = new DataSection()
+            {
+                Name = "Default",
+                Placement = 0x0000,
+                Size = 0x0000,
+                EmptyFill = 0x00,
+                CurrentAddress = 0x00,
+                ObjectData = new List<ObjectInformation>(),
+            };
+
+            _Sections.Add(_CurrentSection);
+        }
 
         public bool Parse(Stream InputStream)
         {
             StreamReader InputFile = new StreamReader(InputStream);
 
             _Tokenizer = new Tokenizer(InputStream);
-            _SymbolTable = new SymbolTable();
-
-            _ObjectData = new List<ObjectInformation>();
-            _CurrentAddress = 0;
 
             // Preprossesor
             
@@ -34,13 +69,13 @@ namespace ZASM
 
             // Stage 2
 
-            foreach (ObjectInformation Entry in _ObjectData)
+            foreach (ObjectInformation Entry in _CurrentSection.ObjectData)
             {
                 //var Res = FindOpcode(Entry);
 
                 if (Entry.Type >= ObjectType.Meta)
                     continue;
-                
+
                 Console.Write("{0:X4} ", Entry.Address);
 
                 if (Entry.Type == ObjectType.Label)
@@ -70,7 +105,7 @@ namespace ZASM
                 {
                     CommandInformation Command = (CommandInformation)Entry;
 
-                    Console.Write("{0,-6} ", Command.Command.ToString());
+                    Console.Write(".{0,-6} ", Command.Command.ToString());
 
                     for (int x = 0; x < Command.Params.Count; x++)
                     {
@@ -141,26 +176,35 @@ namespace ZASM
 
         OpcodeEncoding FindOpcode(ObjectInformation CurrentObject)
         {
-            //if (CurrentObject.Type != ObjectType.Opcode)
+            if (CurrentObject.Type != ObjectType.Opcode)
                 return default(OpcodeEncoding);
 
-            /*
             OpcodeInformation OpcodeObject = (OpcodeInformation)CurrentObject;
 
             // Search based on the Command ID
-            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData[OpcodeObject.Opcode];
+            IEnumerable<OpcodeEncoding> Opcodes = Ops.EncodingData.Where(e => e.Function == OpcodeObject.Opcode);
 
             if (Opcodes.Count() == 0)
             {
                 // Error, invalid opcode
+                MessageLog.Log.Add("Parser", CurrentObject.Line, CurrentObject.Character, MessageCode.InternalError, string.Format("Can't match Opcode {0}", OpcodeObject.Opcode.ToString()));
                 return default(OpcodeEncoding);
             }
 
             if (OpcodeObject.Params.Count == 0)
             {
-                Opcodes = Opcodes.Where(e => e.Param1Type == ParameterType.None && e.Param2Type == ParameterType.None);
+                Opcodes = Opcodes.Where(e => e.Params.Length == 0);
+
+                if(Opcodes.Count() > 1)
+                    MessageLog.Log.Add("Parser", CurrentObject.Line, CurrentObject.Character, MessageCode.InternalError, string.Format("Opcode {0} 0-Param lookup error", OpcodeObject.Opcode.ToString()));
             }
 
+            if (OpcodeObject.Params.Count >= 1)
+            {
+            
+            }
+
+            /*
             if (OpcodeObject.Params.Count >= 1)
             {
                 ParameterInformation CurrentParam = OpcodeObject.Params[0];
@@ -232,17 +276,18 @@ namespace ZASM
             {
                 return Opcodes.FirstOrDefault();
             }
-            else
+            else*/
             {
                 return default(OpcodeEncoding);
             }
-             * */
         }
         
         LabelInformation ParseLabel(Token LabelToken, bool AddressLabel)
         {
             SymbolTableEntry SymbolEntry = _SymbolTable[_Tokenizer.CurrentString];
             LabelInformation NewLabel = new LabelInformation(SymbolEntry);
+            NewLabel.Line = LabelToken.Line;
+            NewLabel.Character = LabelToken.Character;
 
             if (AddressLabel)
             {
@@ -254,14 +299,14 @@ namespace ZASM
                 }
 
                 SymbolEntry.Type = SymbolType.Address;
-                SymbolEntry.DefinedLine = _Tokenizer.CurrentLine;
+                SymbolEntry.DefinedLine = LabelToken.Line;
 
-                NewLabel.Address = _CurrentAddress;
+                NewLabel.Address = _CurrentSection.CurrentAddress;
                 SymbolEntry.Object = NewLabel;
                 SymbolEntry.State = SymbolState.ValueSet;
             }
 
-            SymbolEntry.LineIDs.Add(_Tokenizer.CurrentLine);
+            SymbolEntry.LineIDs.Add(LabelToken.Line);
 
             // If the label has a colon, eat it.
             if (_Tokenizer.PeekNextTokenType() == TokenType.Colon)
@@ -273,7 +318,7 @@ namespace ZASM
         ObjectInformation ParseAssignment(Token ValueToken, LabelInformation LabelObject)
         {
             ValueInformation NewValue = new ValueInformation(LabelObject.Symbol);
-            NewValue.Symbol.LineIDs.Add(_Tokenizer.CurrentLine);
+            NewValue.Symbol.LineIDs.Add(ValueToken.Line);
             NewValue.Symbol.Object = NewValue;
 
             // Read the paramters
@@ -282,8 +327,8 @@ namespace ZASM
             if (NewValue.Symbol.State == SymbolState.Undefined)
             {
                 // This is the first time this symbol has been referenced
-                NewValue.Symbol.Type = ValueToken.CommandID == CommandID.CONST ? SymbolType.Value : SymbolType.Constant;
-                NewValue.Symbol.DefinedLine = _Tokenizer.CurrentLine;
+                NewValue.Symbol.Type = ValueToken.CommandID == CommandID.CONST ? SymbolType.Constant : SymbolType.Value;
+                NewValue.Symbol.DefinedLine = ValueToken.Line;
             }
             else
             {
@@ -303,7 +348,7 @@ namespace ZASM
             }
             else
             {
-                if (NewValue.Params.Simplify(_CurrentAddress))
+                if (NewValue.Params.Simplify(_CurrentSection.CurrentAddress))
                 {
                     NewValue.Value = NewValue.Params.Value.NumericValue;
                     NewValue.Symbol.State = SymbolState.ValueSet;
@@ -321,7 +366,9 @@ namespace ZASM
         ObjectInformation ParseOpcode(Token OpcodeToken)
         {
             OpcodeInformation Opcode = new OpcodeInformation(OpcodeToken.CommandID);
-            Opcode.Address = _CurrentAddress;
+            Opcode.Line = OpcodeToken.Line;
+            Opcode.Character = OpcodeToken.Character;
+            Opcode.Address = _CurrentSection.CurrentAddress;
 
             if (_Tokenizer.PeekNextTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextTokenType() != TokenType.Comment && _Tokenizer.PeekNextTokenType() != TokenType.End)
             {
@@ -337,7 +384,7 @@ namespace ZASM
                 }
             }
 
-            if (OpcodeToken.AssumeA() && Opcode.Params.Count == 1)
+            if (OpcodeToken.AssumeA() && Opcode.Params.Count <= 1)
             {
                 ParameterInformation NewParam = new ParameterInformation();
                 NewParam.Pointer = false;
@@ -354,6 +401,9 @@ namespace ZASM
 
                 if (OpcodeToken.CommandID != CommandID.OUT)
                     Opcode.Params.Reverse();
+
+                //MessageLog.Log.Add("Parser", OpcodeToken.Line, OpcodeToken.Character, MessageCode.RegisterMissingAssumingA);
+
             }
 
             foreach (ParameterInformation Param in Opcode.Params)
@@ -374,14 +424,14 @@ namespace ZASM
                     }
                 }
 
-                Param.Simplify(_CurrentAddress);
+                Param.Simplify(_CurrentSection.CurrentAddress);
 
                 if (OpcodeToken.IsEncoded() && Param.Type == ParameterType.Immediate)
                     Param.Type = ParameterType.Encoded;
             }
 
             Opcode.Encoding = FindOpcode(Opcode);
-            _CurrentAddress += Opcode.GetOpcodeLength();
+            _CurrentSection.CurrentAddress += Opcode.GetOpcodeLength();
 
             return Opcode;
         }
@@ -389,7 +439,7 @@ namespace ZASM
         ObjectInformation ParseCommand(Token CommandToken)
         {
             CommandInformation NewCommand = new CommandInformation(CommandToken.CommandID);
-            NewCommand.Address = _CurrentAddress;
+            NewCommand.Address = _CurrentSection.CurrentAddress;
 
             if (_Tokenizer.PeekNextTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextTokenType() != TokenType.Comment && _Tokenizer.PeekNextTokenType() != TokenType.End)
             {
@@ -414,7 +464,7 @@ namespace ZASM
                     break;
 
                 case CommandID.ORG:
-                    _CurrentAddress = NewCommand.Params[0].Value.NumericValue;
+                    _CurrentSection.CurrentAddress = NewCommand.Params[0].Value.NumericValue;
                     break;
             }
 
@@ -425,14 +475,14 @@ namespace ZASM
         {
             DataInformation NewData = new DataInformation(CommandToken.CommandID);
 
-            NewData.Address = _CurrentAddress;
+            NewData.Address = _CurrentSection.CurrentAddress;
 
             if (_Tokenizer.PeekNextTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextTokenType() != TokenType.Comment && _Tokenizer.PeekNextTokenType() != TokenType.End)
             {
                 while (true)
                 {
                     ParameterInformation Params = ParseParams(NewData);
-                    Params.Simplify(_CurrentAddress);
+                    Params.Simplify(_CurrentSection.CurrentAddress);
                     NewData.Params.Add(Params);
 
                     if (CommandToken.IsReserved() && Params.Value.Type != TokenType.Result)
@@ -447,7 +497,7 @@ namespace ZASM
                 }
             }
 
-            _CurrentAddress += NewData.GetDataLength();
+            _CurrentSection.CurrentAddress += NewData.GetDataLength();
 
             return NewData;
         }
@@ -487,7 +537,7 @@ namespace ZASM
                             CurrentToken.Symbol.State = SymbolState.Undefined;
                         }
 
-                        CurrentToken.Symbol.LineIDs.Add(_Tokenizer.CurrentLine);
+                        CurrentToken.Symbol.LineIDs.Add(CurrentToken.Line);
                     }
 
                     if (CurrentToken.IsGroupLeft())
@@ -626,14 +676,14 @@ namespace ZASM
         bool StageOne()
         {
             bool Done = false;
+            
             ObjectInformation CurrentObject = null;
             LabelInformation LabelObject = null;
-
-            _ObjectData.Add(new LineInformation(_Tokenizer.CurrentLine + 1));
 
             while (!Done)
             {
                 Token CurrentToken = _Tokenizer.GetNextToken();
+
                 switch (CurrentToken.Type)
                 {
                     case TokenType.End:
@@ -643,14 +693,17 @@ namespace ZASM
                     // Ignore comments and line breaks.
                     case TokenType.Comment:
                     case TokenType.LineBreak:
-                        CurrentObject = new LineInformation(_Tokenizer.CurrentLine + 1);
                         break;
 
                     case TokenType.Identifier:
-                        {
-                            if (_Tokenizer.PeekNextTokenType() == TokenType.Colon)
+                            if (LabelObject != null)
                             {
-                                CurrentObject = ParseLabel(CurrentToken, true);
+                                MessageLog.Log.Add("Parser", LabelObject.Line, LabelObject.Character, MessageCode.SyntaxError, string.Format("Unable to define label '{0}', missing colon", LabelObject.Symbol.Name));
+                                CurrentToken.Type = TokenType.Error;
+                            }
+                            else if (_Tokenizer.PeekNextTokenType() == TokenType.Colon)
+                            {
+                                    CurrentObject = ParseLabel(CurrentToken, true);
                             }
                             else if (_Tokenizer.PeekNextTokenType() == TokenType.Equal || _Tokenizer.PeekNextTokenType() == TokenType.Identifier)
                             {
@@ -658,10 +711,9 @@ namespace ZASM
                             }
                             else
                             {
-                                MessageLog.Log.Add("Parser", 0, 0, MessageCode.SyntaxError, string.Format("Unable to define label {0}, missing colon", _Tokenizer.CurrentString));
+                                MessageLog.Log.Add("Parser", CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, string.Format("Unable to define label '{0}', missing colon", _Tokenizer.CurrentString));
                                 CurrentToken.Type = TokenType.Error;
                             }
-                        }
                         break;
 
                     case TokenType.Opcode:
@@ -702,13 +754,12 @@ namespace ZASM
                         break;
                 }
 
-
                 // Resync if we have an error
                 if (CurrentToken.Type == TokenType.Error)
                 {
                     CurrentObject = null;
+                    LabelObject = null;
                     _Tokenizer.FlushLine();
-                    _ObjectData.Add(new LineInformation(_Tokenizer.CurrentLine + 1));
                 }
                 else
                 {
@@ -716,10 +767,10 @@ namespace ZASM
                     {
                         if (LabelObject != null)
                         {
-                            MessageLog.Log.Add("Parser", 0,0, MessageCode.UnexpectedSymbol, LabelObject.Symbol.Name);
+                            MessageLog.Log.Add("Parser", 0, 0, MessageCode.UnexpectedSymbol, LabelObject.Symbol.Name);
                             LabelObject = null;
                         }
-                        _ObjectData.Add(CurrentObject);
+                        _CurrentSection.ObjectData.Add(CurrentObject);
                         if (CurrentObject.Error)
                             _Tokenizer.FlushLine();
                     }

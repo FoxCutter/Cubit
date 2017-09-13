@@ -31,12 +31,17 @@ namespace ZASM
 
         public bool                 Error;
         public int                  Address;
+        public int                  Line;
+        public int                  Character;
+
 
         public ObjectInformation(ObjectType Type = ObjectType.None)
         {
             this.Type = Type;
             Error = false;
             Address = 0;
+            Line = 0;
+            Character = 0;
         }
         
         public override string ToString()
@@ -58,20 +63,6 @@ namespace ZASM
         public override string ToString()
         {
             return FileName;
-        }
-    }
-
-    class LineInformation : ObjectInformation
-    {
-        public LineInformation(int LineNumber)
-            : base(ObjectType.Line)
-        {
-            this.Address = LineNumber;
-        }
-
-        public override string ToString()
-        {
-            return Address.ToString();
         }
     }
 
@@ -251,8 +242,9 @@ namespace ZASM
 
         public int GetOpcodeLength()
         {
+            return 1;
             //if (Encoding.Function == CommandID.None)
-                return 0;
+            //    return 0;
 
             //int Ret = Encoding.Encoding.Length;
 

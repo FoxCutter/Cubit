@@ -29,6 +29,12 @@ namespace TableBuilder
                 case OpcodeMatrix.ParamType.HL_Pointer:
                     return "(HL)";
 
+                case OpcodeMatrix.ParamType.IX_Pointer:
+                    return "(IX + *)";
+
+                case OpcodeMatrix.ParamType.IY_Pointer:
+                    return "(IY + *)";
+
                 case OpcodeMatrix.ParamType.BC_Pointer:
                     return "(BC)";
 
@@ -104,7 +110,7 @@ namespace TableBuilder
             if (Entry.Offical == false)
                 Ret.Append("ParamFlags.Unoffical");
 
-            if (Entry.Prefix == 0xCB)
+            if (Entry.Prefix == 0xCB && Entry.IsIndexed())
             {
                 if (Ret.Length != 0)
                     Ret.Append(" | ");
@@ -151,8 +157,12 @@ namespace TableBuilder
                         case OpcodeMatrix.ParamPos.Pos4:
                             Res.AppendFormat(" | CommandID.Pos4");
                             break;
-                        case OpcodeMatrix.ParamPos.Immidate:
-                            Res.AppendFormat(" | CommandID.PosImmidate");
+                        case OpcodeMatrix.ParamPos.ImmidateByte:
+                            Res.AppendFormat(" | CommandID.ImmidateByte");
+                            break;
+
+                        case OpcodeMatrix.ParamPos.ImmidateWord:
+                            Res.AppendFormat(" | CommandID.ImmidateWord");
                             break;
                     }
                 }
@@ -160,7 +170,7 @@ namespace TableBuilder
 
             return Res.ToString();
         }
-        
+
         static string GetOpcodeEncoding(OpcodeMatrix.OpcodeEntry Entry)
         {
             StringBuilder Res = new StringBuilder();
@@ -177,6 +187,7 @@ namespace TableBuilder
                 }
             }
             Res.AppendFormat("}},\r\n");
+
             Res.AppendFormat("                                 Flags = {0},\r\n", ConvertFlags(Entry));
             Res.AppendFormat("                                 Prefix = 0x{0}, Base = 0x{1},\r\n", Entry.Prefix.ToString("X2"), Entry.Base.ToString("X2"));
             Res.AppendFormat("                               }},\r\n");
@@ -301,7 +312,7 @@ namespace TableBuilder
             OutputFile.WriteLine("        static public OpcodeEncoding[] EncodingData = ");
             OutputFile.WriteLine("        {");
 
-            foreach (var Entry in Matrix._OpcodeList.Where(e => e.Offical).OrderBy(e => e.Opcode))
+            foreach (var Entry in Matrix._OpcodeList.Where(e => e.Offical).OrderBy(e => (e.Prefix << 8) + e.Base))
             {
                 OutputFile.WriteLine(GetOpcodeEncoding(Entry));
             }
