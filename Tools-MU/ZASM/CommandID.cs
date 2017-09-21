@@ -69,6 +69,9 @@ namespace ZASM
         // Commands
         EXTERN, PUBLIC, INCLUDE, Z80, i8080, GAMEBOY, ORG, END, SECTION, SIZE, FILL,
 
+        // Preprossor commands
+        IF, ELSE, ELSEIF, ENDIF,
+
         CommandMax,
     }
 }

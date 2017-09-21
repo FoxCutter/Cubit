@@ -20,12 +20,30 @@ namespace ZASM
         Address,
     }
 
+    enum SymbolState
+    {
+        // The Symbol has no values associated with it and represents nothing
+        Empty,
+
+        // The Symbol is known but undefined, 
+        Undefined,
+
+        // Object is non-null, but may need additinal processing to produce a value
+        ValuePending,
+
+        // The object is Non-null and has a finalized/current value.
+        ValueSet,
+    }
+    
     class SymbolTableEntry
     {
         public string Name;
         public SymbolType Type;
+        public SymbolState State;
         public int FileID;
         public int Line;
+
+        public ObjectInformation Object;
 
         public SymbolTableEntry(string SymbolName = "", SymbolType InitialType = SymbolType.None)
         {
@@ -34,8 +52,8 @@ namespace ZASM
             FileID = -1;
             Line = -1;
 
-            //State = Name == "" ? SymbolState.Empty : SymbolState.Undefined;
-            //Object = null;
+            State = Name == "" ? SymbolState.Empty : SymbolState.Undefined;
+            Object = null;
         }
     }
 

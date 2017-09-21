@@ -14,20 +14,27 @@ namespace ZASM
 
         Tokenizer _Tokenizer;
         SymbolTable _SymbolTable;
+        List<DataSection> _SectionList;
+        DataSection _CurrentSection;
 
         public Parser()
         {
             _AllowIndex = true;
             _OpcodeTable = DataTables.z80Opcodes;
+            _SectionList = new List<DataSection>();
+
+            _SymbolTable = null;
         }
 
-        public bool Parse(string FileName, SymbolTable ExistingTable = null)
+        public bool Parse(string FileName)
         {
             FileStream Data = System.IO.File.OpenRead(FileName);
             _Tokenizer = new Tokenizer(0, Data);
-            _SymbolTable = ExistingTable;
+
             if (_SymbolTable == null)
                 _SymbolTable = new SymbolTable();
+
+            _CurrentSection = new DataSection("");
             
             StageOne();
 
@@ -81,12 +88,85 @@ namespace ZASM
             return CurrentToken;
         }
 
+        public ObjectInformation ReadLine(Token CurrentToken)
+        {
+            ObjectInformation CurrentObject = new ObjectInformation(CurrentToken);
+
+            while (_Tokenizer.PeekNextCharacterType() != CharacterType.CarriageReturn && _Tokenizer.PeekNextCharacterType() != CharacterType.LineFeed && _Tokenizer.PeekNextCharacterType() != CharacterType.End)
+                CurrentObject.TokenList.Add(_Tokenizer.GetNextToken());
+
+            return CurrentObject;        
+        }
+        
+        public ObjectInformation ReadLabel(Token CurrentToken)
+        {
+            SymbolTableEntry SymbolEntry = _SymbolTable[_Tokenizer.CurrentString];
+            LabelInformation NewLabel = new LabelInformation(CurrentToken, SymbolEntry);
+
+            if (SymbolEntry.State != SymbolState.Undefined)
+            {
+                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, string.Format("{0} redefined", SymbolEntry.Name));
+                NewLabel.Error = true;
+            }
+            else
+            {
+                SymbolEntry.Type = SymbolType.Address;
+                SymbolEntry.FileID = CurrentToken.FileID;
+                SymbolEntry.Line = CurrentToken.Line;
+
+                NewLabel.Address = 0;
+                
+                SymbolEntry.Object = NewLabel;
+                SymbolEntry.State = SymbolState.ValuePending;
+            }
+            
+            // If the label has a colon, eat it.
+            if (_Tokenizer.PeekNextCharacterType() == CharacterType.Colon)
+                _Tokenizer.GetNextToken();
+            else
+                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.InternalError, "Colon missing!");
+
+            return NewLabel;
+        }
+
+        public ObjectInformation ReadIdentifier(Token CurrentToken)
+        {
+            SymbolTableEntry SymbolEntry = _SymbolTable[_Tokenizer.CurrentString];
+            LabelInformation NewLabel = new LabelInformation(CurrentToken, SymbolEntry);
+
+            if (SymbolEntry.State != SymbolState.Undefined)
+            {
+                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, string.Format("{0} redefined", SymbolEntry.Name));
+                NewLabel.Error = true;
+            }
+            else
+            {
+                SymbolEntry.Type = SymbolType.Address;
+                SymbolEntry.FileID = CurrentToken.FileID;
+                SymbolEntry.Line = CurrentToken.Line;
+
+                NewLabel.Address = 0;
+
+                SymbolEntry.Object = NewLabel;
+                SymbolEntry.State = SymbolState.ValuePending;
+            }
+
+            // If the label has a colon, eat it.
+            if (_Tokenizer.PeekNextCharacterType() == CharacterType.Colon)
+                _Tokenizer.GetNextToken();
+            else
+                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.InternalError, "Colon missing!");
+
+            return NewLabel;
+        }
+        
         public bool StageOne()
         {
             bool Done = false;
             while (!Done)
             {
                 Token CurrentToken = GetNextToken();
+                ObjectInformation CurrentObject = null;
 
                 switch (CurrentToken.Type)
                 {
@@ -100,20 +180,32 @@ namespace ZASM
                     case TokenType.Error:
                         break;
 
-                    case TokenType.Command:
-                        _Tokenizer.FlushLine();
+                    case TokenType.Assignment:
+                    case TokenType.Command:                        
+                        if (CurrentToken.Type == TokenType.Assignment || CurrentToken.CommandID == CommandID.EQU || CurrentToken.CommandID == CommandID.CONST)
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                        CurrentObject = ReadLine(CurrentToken);    
+                        //_Tokenizer.FlushLine();
                         break;
 
                     case TokenType.Label:
-                        _Tokenizer.FlushLine();
+                        CurrentObject = ReadLabel(CurrentToken);    
                         break;
 
                     case TokenType.Opcode:
-                        _Tokenizer.FlushLine();
+                        CurrentObject = ReadLine(CurrentToken);    
+                        //_Tokenizer.FlushLine();
                         break;
 
                     case TokenType.Identifier:
-                        _Tokenizer.FlushLine();
+                        CurrentObject = ReadLine(CurrentToken);    
+                        //_Tokenizer.FlushLine();
                         break;
 
                     default:
@@ -125,6 +217,16 @@ namespace ZASM
                 if (CurrentToken.Type == TokenType.Error)
                 {
                     _Tokenizer.FlushLine();
+                }
+                else
+                {
+                    if (CurrentObject != null)
+                    {
+                        _CurrentSection.ObjectData.Add(CurrentObject);
+
+                        if (CurrentObject.Error)
+                            _Tokenizer.FlushLine();
+                    }
                 }
             }
 

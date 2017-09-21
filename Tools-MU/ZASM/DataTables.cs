@@ -13,10 +13,11 @@ namespace ZASM
 
         public static CommandList Commands = new CommandList(CommandListComparer)
         {
-            { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },     { ".INCLUDE",   CommandID.INCLUDE },        { ".INCBIN",   CommandID.INCLUDE },     
+            { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },     { ".INCLUDE",   CommandID.INCLUDE },        { ".INCBIN",    CommandID.INCLUDE },     
             { ".Z80",       CommandID.Z80 },         { ".8080",     CommandID.i8080 },      { ".GAMEBOY",   CommandID.GAMEBOY },      
-            { ".ORG",       CommandID.ORG },         { ".SECTION",   CommandID.SECTION },   { ".FILL",     CommandID.FILL},             { ".SIZE",   CommandID.SIZE },            
+            { ".ORG",       CommandID.ORG },         { ".SECTION",  CommandID.SECTION },    { ".FILL",      CommandID.FILL},            { ".SIZE",      CommandID.SIZE },            
             { ".END",	    CommandID.END },        
+            { ".IF",        CommandID.IF },          { ".ELSE",     CommandID.ELSE },       { ".ELSEIF",    CommandID.ELSEIF},          { ".ENDIF",     CommandID.ENDIF }, 
         };
 
         public static CommandList PsudoOpcodes = new CommandList(CommandListComparer)
