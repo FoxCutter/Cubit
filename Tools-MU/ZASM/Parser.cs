@@ -51,7 +51,14 @@ namespace ZASM
                     if (DataTables.Commands.ContainsKey(CurrentToken.StringValue))
                     {
                         CurrentToken.CommandID = DataTables.Commands[CurrentToken.StringValue];
-                        CurrentToken.Type = TokenType.Command;
+                        if (CurrentToken.CommandID < CommandID.CommandMax)
+                            CurrentToken.Type = TokenType.Command;
+
+                        else if (CurrentToken.CommandID < CommandID.PreprocessorMax)
+                            CurrentToken.Type = TokenType.Preprocessor;
+
+                        else
+                            Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.UnknownCommand, _Tokenizer.CurrentString);
                     }
                     else
                     {
@@ -68,7 +75,11 @@ namespace ZASM
                     if (DataTables.PsudoOpcodes.ContainsKey(CurrentToken.StringValue))
                     {
                         CurrentToken.CommandID = DataTables.PsudoOpcodes[CurrentToken.StringValue];
-                        CurrentToken.Type = TokenType.Command;
+                        
+                        if (CurrentToken.CommandID < CommandID.DataCommandsMax)
+                            CurrentToken.Type = TokenType.Data;
+                        else
+                            CurrentToken.Type = TokenType.Command;
                     }
                     else if (_OpcodeTable.ContainsKey(CurrentToken.StringValue))
                     {
@@ -97,10 +108,18 @@ namespace ZASM
 
             return CurrentObject;        
         }
+
+        SymbolTableEntry FindSymbol(Token CurrentToken)
+        {
+            SymbolTableEntry SymbolEntry = _SymbolTable[CurrentToken.StringValue];
+            SymbolEntry.RefrencedLines.Add(new Tuple<int, int>(CurrentToken.FileID, CurrentToken.Line));
+            
+            return SymbolEntry;
+        }
         
         public ObjectInformation ReadLabel(Token CurrentToken)
         {
-            SymbolTableEntry SymbolEntry = _SymbolTable[_Tokenizer.CurrentString];
+            SymbolTableEntry SymbolEntry = FindSymbol(CurrentToken);
             LabelInformation NewLabel = new LabelInformation(CurrentToken, SymbolEntry);
 
             if (SymbolEntry.State != SymbolState.Undefined)
@@ -129,44 +148,126 @@ namespace ZASM
             return NewLabel;
         }
 
-        public ObjectInformation ReadIdentifier(Token CurrentToken)
+        public ValueInformation ReadIdentifier(Token CurrentToken)
         {
-            SymbolTableEntry SymbolEntry = _SymbolTable[_Tokenizer.CurrentString];
-            LabelInformation NewLabel = new LabelInformation(CurrentToken, SymbolEntry);
+            SymbolTableEntry SymbolEntry = FindSymbol(CurrentToken);
+            ValueInformation NewValue = new ValueInformation(CurrentToken, SymbolEntry);
 
-            if (SymbolEntry.State != SymbolState.Undefined)
+            return NewValue;
+        }
+
+        public ValueInformation ReadAssignment(ValueInformation CurrentIdentifier, Token CurrentToken)
+        {
+            CurrentIdentifier.TokenList.Add(CurrentToken);
+
+            while (_Tokenizer.PeekNextCharacterType() != CharacterType.CarriageReturn && _Tokenizer.PeekNextCharacterType() != CharacterType.LineFeed && _Tokenizer.PeekNextCharacterType() != CharacterType.SemiColon && _Tokenizer.PeekNextCharacterType() != CharacterType.End)
+                CurrentIdentifier.TokenList.Add(_Tokenizer.GetNextToken());
+
+            if (CurrentIdentifier.Symbol.State == SymbolState.Undefined)
             {
-                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, string.Format("{0} redefined", SymbolEntry.Name));
-                NewLabel.Error = true;
+                // This is the first time this symbol has been referenced
+                CurrentIdentifier.Symbol.Type = CurrentToken.CommandID == CommandID.CONST ? SymbolType.Constant : SymbolType.Value;
+                CurrentIdentifier.Symbol.FileID = CurrentToken.FileID;
+                CurrentIdentifier.Symbol.Line = CurrentToken.Line;
             }
             else
             {
-                SymbolEntry.Type = SymbolType.Address;
-                SymbolEntry.FileID = CurrentToken.FileID;
-                SymbolEntry.Line = CurrentToken.Line;
-
-                NewLabel.Address = 0;
-
-                SymbolEntry.Object = NewLabel;
-                SymbolEntry.State = SymbolState.ValuePending;
+                // Redefining the value                
+                // We can't redefine a value created with CONST
+                if (CurrentIdentifier.Symbol.Type == SymbolType.Constant)
+                {
+                    Message.Log.Add("Parser", CurrentIdentifier.FileID, CurrentIdentifier.Line, CurrentIdentifier.Character, MessageCode.SyntaxWarning, string.Format("Can't redefine the value of {0}", CurrentIdentifier.Symbol.Name));
+                    CurrentIdentifier.Error = true;
+                }
             }
 
-            // If the label has a colon, eat it.
-            if (_Tokenizer.PeekNextCharacterType() == CharacterType.Colon)
-                _Tokenizer.GetNextToken();
+            if (CurrentIdentifier.Params.Count == 0)
+            {
+                Message.Log.Add("Parser", CurrentIdentifier.FileID, CurrentIdentifier.Line, CurrentIdentifier.Character, MessageCode.ValueMissing, CurrentIdentifier.Symbol.Name);
+                CurrentIdentifier.Error = true;
+            }
             else
-                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.InternalError, "Colon missing!");
+            {
+                //if (CurrentIdentifier.Params.Simplify(_CurrentSection.CurrentAddress))
+                //{
+                //    CurrentIdentifier.Value = CurrentIdentifier.Params.Value.NumericValue;
+                //    CurrentIdentifier.Symbol.State = SymbolState.ValueSet;
+                //}
+                //else
+                {
+                    CurrentIdentifier.Symbol.State = SymbolState.ValuePending;
+                }
+            }
 
-            return NewLabel;
+
+            return CurrentIdentifier;
+        }
+
+        public DataInformation ReadData(Token CurrentToken)
+        {
+            DataInformation NewData = new DataInformation(CurrentToken);
+
+            while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
+                NewData.TokenList.Add(_Tokenizer.GetNextToken());
+
+            return NewData;
+        }
+
+        public CommandInformation ReadCommand(Token CurrentToken)
+        {
+            CommandInformation NewCommand = new CommandInformation(CurrentToken);
+
+            while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.Comment && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
+                NewCommand.TokenList.Add(_Tokenizer.GetNextToken());
+
+            switch (NewCommand.Command)
+            {
+                case CommandID.Z80:
+                case CommandID.i8080:
+                case CommandID.GAMEBOY:
+                    break;
+
+                case CommandID.SECTION:
+                case CommandID.FILL:
+                case CommandID.SIZE:
+                case CommandID.POS:
+                    break;
+
+                case CommandID.ORG:
+                    break;
+
+                case CommandID.INCLUDE:
+                    break;
+                    
+                case CommandID.EXTERN:
+                case CommandID.PUBLIC:
+                    break;
+
+                case CommandID.END:
+                    break;
+            }
+            
+            return NewCommand;
+        }
+
+        public OpcodeInformation ReadOpcode(Token CurrentToken)
+        {
+            OpcodeInformation NewOpcode = new OpcodeInformation(CurrentToken);
+
+            while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.Comment && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
+                NewOpcode.TokenList.Add(_Tokenizer.GetNextToken());
+
+            return NewOpcode;
         }
         
         public bool StageOne()
         {
             bool Done = false;
+            ObjectInformation CurrentObject = null;
+            ValueInformation CurrentIdentifier = null;
             while (!Done)
             {
                 Token CurrentToken = GetNextToken();
-                ObjectInformation CurrentObject = null;
 
                 switch (CurrentToken.Type)
                 {
@@ -181,17 +282,29 @@ namespace ZASM
                         break;
 
                     case TokenType.Assignment:
-                    case TokenType.Command:                        
+                    case TokenType.Command:
+                    case TokenType.Preprocessor:
                         if (CurrentToken.Type == TokenType.Assignment || CurrentToken.CommandID == CommandID.EQU || CurrentToken.CommandID == CommandID.CONST)
                         {
-
+                            if (CurrentIdentifier == null)
+                            {
+                                Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, "Can't set a value without a label");
+                                CurrentToken.Type = TokenType.Error;
+                            }
+                            else
+                            {
+                                CurrentObject = ReadAssignment(CurrentIdentifier, CurrentToken);
+                                CurrentIdentifier = null;
+                            }
                         }
                         else
                         {
+                            CurrentObject = ReadCommand(CurrentToken);                                
+                        }                        
+                        break;
 
-                        }
-                        CurrentObject = ReadLine(CurrentToken);    
-                        //_Tokenizer.FlushLine();
+                    case TokenType.Data:
+                        CurrentObject = ReadData(CurrentToken);
                         break;
 
                     case TokenType.Label:
@@ -199,13 +312,24 @@ namespace ZASM
                         break;
 
                     case TokenType.Opcode:
-                        CurrentObject = ReadLine(CurrentToken);    
-                        //_Tokenizer.FlushLine();
+                        CurrentObject = ReadOpcode(CurrentToken);    
                         break;
 
                     case TokenType.Identifier:
-                        CurrentObject = ReadLine(CurrentToken);    
-                        //_Tokenizer.FlushLine();
+                        if (CurrentIdentifier != null)
+                        {
+                            Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, string.Format("Unable to define label '{0}', missing colon", CurrentIdentifier.Symbol.Name));
+                            CurrentToken.Type = TokenType.Error;
+                        }
+                        else if (_Tokenizer.PeekNextCharacterType() == CharacterType.Equal || _Tokenizer.PeekNextCharacterType() == CharacterType.Identifier)
+                        {
+                            CurrentIdentifier = ReadIdentifier(CurrentToken);
+                        }
+                        else
+                        {
+                            Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, string.Format("Unable to define label '{0}', missing colon", _Tokenizer.CurrentString));
+                            CurrentToken.Type = TokenType.Error;
+                        }
                         break;
 
                     default:
@@ -216,16 +340,27 @@ namespace ZASM
 
                 if (CurrentToken.Type == TokenType.Error)
                 {
+                    CurrentObject = null;
+                    CurrentIdentifier = null;
+
                     _Tokenizer.FlushLine();
                 }
                 else
                 {
                     if (CurrentObject != null)
                     {
+                        if (CurrentIdentifier != null)
+                        {
+                            Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.UnexpectedSymbol, CurrentIdentifier.Symbol.Name);
+                            CurrentIdentifier = null;
+                        }
+                        
                         _CurrentSection.ObjectData.Add(CurrentObject);
 
                         if (CurrentObject.Error)
                             _Tokenizer.FlushLine();
+
+                        CurrentObject = null;
                     }
                 }
             }

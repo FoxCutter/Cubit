@@ -46,6 +46,7 @@
     <Compile Include="DataTables.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="ObjectInformation.cs" />
+    <Compile Include="ParameterInformation.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="SymbolTable.cs" />
     <Compile Include="Token.cs" />

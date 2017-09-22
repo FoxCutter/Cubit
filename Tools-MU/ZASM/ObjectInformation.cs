@@ -10,12 +10,12 @@ namespace ZASM
     {
         None,
         Label,
-        //Value,
+        Value,
         ////Macro,
         ////Procedure,
-        //Opcode,
-        //Command,
-        //Data,
+        Opcode,
+        Command,
+        Data,
 
         //Meta,
 
@@ -68,13 +68,47 @@ namespace ZASM
         }
     }
 
-    class ValueInformation : ObjectInformation
+    class ParamInformation : ObjectInformation
+    {
+        public List<ParameterInformation> Params;
+        
+        public ParamInformation(Token CurrentToken, ObjectType ofType = ObjectType.None)
+            : base(CurrentToken, ofType)
+        {
+            Params = new List<ParameterInformation>();
+        }
+
+        public override string ToString()
+        {
+            StringBuilder Ret = new StringBuilder();
+
+            for (int x = 0; x < Params.Count; x++)
+            {
+                if (x != 0)
+                    Ret.Append(", ");
+
+                Ret.Append(ParamString(x));
+            }
+
+            return Ret.ToString();
+        }
+
+        public string ParamString(int Index)
+        {
+            if (Params.Count <= Index)
+                return "";
+
+            return Params[Index].ToString();
+        }
+    }
+
+    class ValueInformation : ParamInformation
     {
         public SymbolTableEntry Symbol;
         public int Value;
 
         public ValueInformation(Token CurrentToken, SymbolTableEntry Symbol)
-            : base(CurrentToken, ObjectType.Label)
+            : base(CurrentToken, ObjectType.Value)
         {
             this.Symbol = Symbol;
             Value = 0;
@@ -83,6 +117,94 @@ namespace ZASM
         public override string ToString()
         {
             return Symbol.Name + " = 0x" + Value.ToString("X");
+        }
+    }
+
+    class DataInformation : ParamInformation
+    {
+        public CommandID DataType;
+
+        public DataInformation(Token CurrentToken)
+            : base(CurrentToken, ObjectType.Data)
+        {
+            this.DataType = CurrentToken.CommandID;
+        }
+
+        public int GetDataLength()
+        {
+            int Ret = 0;
+
+            //foreach (ParameterInformation Param in Params)
+            //{
+            //    switch (DataType)
+            //    {
+            //        case CommandID.BYTE:
+            //            if (Param.Value.Type == TokenType.String)
+            //                Ret += Param.Value.StringValue.Length;
+            //            else
+            //                Ret += 1;
+            //            break;
+
+            //        case CommandID.WORD:
+            //            Ret += 2;
+            //            break;
+
+            //        case CommandID.DC:
+            //            Ret += Param.Value.StringValue.Length;
+            //            break;
+
+            //        case CommandID.RESB:
+            //            Ret += Param.Value.NumericValue;
+            //            break;
+
+            //        case CommandID.RESW:
+            //            Ret += Param.Value.NumericValue * 2;
+            //            break;
+
+            //        case CommandID.RESD:
+            //            Ret += Param.Value.NumericValue * 4;
+            //            break;
+            //    }
+            //}
+
+            return Ret;
+        }
+
+        public override string ToString()
+        {
+            return DataType.ToString() + base.ToString();
+        }
+    }
+
+    class CommandInformation : ParamInformation
+    {
+        public CommandID Command;
+
+        public CommandInformation(Token CurrentToken)
+            : base(CurrentToken, ObjectType.Command)
+        {
+            Command = CurrentToken.CommandID;
+        }
+
+        public override string ToString()
+        {
+            return Command.ToString() + base.ToString();
+        }
+    }
+
+    class OpcodeInformation : ParamInformation
+    {
+        public CommandID Opcode;
+
+        public OpcodeInformation(Token CurrentToken)
+            : base(CurrentToken, ObjectType.Opcode)
+        {
+            Opcode = CurrentToken.CommandID;
+        }
+
+        public override string ToString()
+        {
+            return Opcode.ToString() + base.ToString();
         }
     }
 }

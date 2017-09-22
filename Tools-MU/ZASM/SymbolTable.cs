@@ -14,7 +14,7 @@ namespace ZASM
         Value,
         
         // A symbol with a fixed value
-        Constast,
+        Constant,
 
         // The symbol is an address
         Address,
@@ -43,6 +43,7 @@ namespace ZASM
         public int FileID;
         public int Line;
 
+        public List<Tuple<int, int>> RefrencedLines;
         public ObjectInformation Object;
 
         public SymbolTableEntry(string SymbolName = "", SymbolType InitialType = SymbolType.None)
@@ -54,6 +55,8 @@ namespace ZASM
 
             State = Name == "" ? SymbolState.Empty : SymbolState.Undefined;
             Object = null;
+
+            RefrencedLines = new List<Tuple<int, int>>();
         }
     }
 
@@ -78,7 +81,7 @@ namespace ZASM
                 NameList[SymbolName.ToUpper()] = value;
             }
         }
-
+        
         public IEnumerator<SymbolTableEntry> GetEnumerator()
         {
             //return NameList.Values.OrderBy(e => e.Symbol.ToUpper()).GetEnumerator();

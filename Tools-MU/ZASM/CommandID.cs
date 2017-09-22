@@ -62,16 +62,22 @@ namespace ZASM
         SUB, XOR,
 
         OpcodeMax,
-        
+
         // Psudo Operators
-        CONST, BYTE, WORD, DWORD, DC, RESB, RESW, RESD, EQU, 
+        BYTE, WORD, DWORD, DC, RESB, RESW, RESD, 
+
+        DataCommandsMax, 
+
+        CONST, EQU, 
 
         // Commands
-        EXTERN, PUBLIC, INCLUDE, Z80, i8080, GAMEBOY, ORG, END, SECTION, SIZE, FILL,
-
-        // Preprossor commands
-        IF, ELSE, ELSEIF, ENDIF,
+        EXTERN, PUBLIC, INCLUDE, Z80, i8080, GAMEBOY, ORG, END, SECTION, SIZE, FILL, POS,
 
         CommandMax,
+
+        // Preprocessor commands
+        IF, ELSE, ELSEIF, ENDIF,
+
+        PreprocessorMax,
     }
 }

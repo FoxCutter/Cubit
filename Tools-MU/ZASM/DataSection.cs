@@ -15,7 +15,7 @@ namespace ZASM
         public int Placement;
 
         // The max size of this section, will be padded to this length when writen out.
-        public ushort Size;
+        public int Size;
 
         // Byte to fill empty space with if there is a need to pad the section
         public byte EmptyFill;
@@ -30,7 +30,7 @@ namespace ZASM
         {
             Name = SectionName;
             Placement = -1;
-            Size = 0;
+            Size = -1;
             EmptyFill = 0x00;
             CurrentOffset = 0;
             ObjectData = new List<ObjectInformation>();

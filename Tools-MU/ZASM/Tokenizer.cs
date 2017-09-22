@@ -43,6 +43,48 @@ namespace ZASM
                 return DataTables.CharacterData[Current];
         }
 
+        public TokenType PeekNextRoughTokenType()
+        {
+            CharacterType Current = PeekNextCharacterType();
+
+            switch (Current)
+            {
+                case CharacterType.End:
+                    return TokenType.End;
+
+                case CharacterType.Unknown:
+                    return TokenType.Unknown;
+
+                case CharacterType.CarriageReturn:
+                case CharacterType.LineFeed:
+                    return TokenType.LineBreak;
+
+                case CharacterType.Tab:
+                case CharacterType.Space:
+                    return TokenType.WhiteSpace;
+
+                case CharacterType.Number:
+                    return TokenType.Number;
+
+                case CharacterType.Period:
+                case CharacterType.Identifier:
+                    return TokenType.Identifier;
+
+                case CharacterType.DoubleQuote:
+                case CharacterType.SingleQuote:
+                case CharacterType.ReverseQuote:
+                    return TokenType.String;
+                
+                case CharacterType.SemiColon:
+                    return TokenType.Comment;
+
+                default:
+                    return TokenType.Symbol;
+
+            }
+        }
+        
+        
         char PeekNextCharacter()
         {
             int Value = _DataStream.Peek();

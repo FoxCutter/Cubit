@@ -16,7 +16,7 @@ namespace ZASM
             { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },     { ".INCLUDE",   CommandID.INCLUDE },        { ".INCBIN",    CommandID.INCLUDE },     
             { ".Z80",       CommandID.Z80 },         { ".8080",     CommandID.i8080 },      { ".GAMEBOY",   CommandID.GAMEBOY },      
             { ".ORG",       CommandID.ORG },         { ".SECTION",  CommandID.SECTION },    { ".FILL",      CommandID.FILL},            { ".SIZE",      CommandID.SIZE },            
-            { ".END",	    CommandID.END },        
+            { ".POS",       CommandID.POS },         { ".END",	    CommandID.END },        
             { ".IF",        CommandID.IF },          { ".ELSE",     CommandID.ELSE },       { ".ELSEIF",    CommandID.ELSEIF},          { ".ENDIF",     CommandID.ENDIF }, 
         };
 

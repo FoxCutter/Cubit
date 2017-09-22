@@ -78,6 +78,8 @@ namespace ZASM
         Identifier,
         Symbol,
         Command,
+        Data,
+        Preprocessor,
         Label,
         Register,
         Flag,
