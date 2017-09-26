@@ -116,7 +116,10 @@ namespace ZASM
 
         public override string ToString()
         {
-            return Symbol.Name + " = 0x" + Value.ToString("X");
+            if(Symbol.State == SymbolState.ValueSet)
+                return Symbol.Name + " = 0x" + Value.ToString("X");
+            else
+                return Symbol.Name + " = " + base.ToString();
         }
     }
 
@@ -172,7 +175,7 @@ namespace ZASM
 
         public override string ToString()
         {
-            return DataType.ToString() + base.ToString();
+            return DataType.ToString() + " " + base.ToString();
         }
     }
 
@@ -188,7 +191,7 @@ namespace ZASM
 
         public override string ToString()
         {
-            return Command.ToString() + base.ToString();
+            return Command.ToString() + " " + base.ToString();
         }
     }
 
@@ -204,7 +207,7 @@ namespace ZASM
 
         public override string ToString()
         {
-            return Opcode.ToString() + base.ToString();
+            return Opcode.ToString() + " " + base.ToString();
         }
     }
 }

@@ -99,16 +99,6 @@ namespace ZASM
             return CurrentToken;
         }
 
-        public ObjectInformation ReadLine(Token CurrentToken)
-        {
-            ObjectInformation CurrentObject = new ObjectInformation(CurrentToken);
-
-            while (_Tokenizer.PeekNextCharacterType() != CharacterType.CarriageReturn && _Tokenizer.PeekNextCharacterType() != CharacterType.LineFeed && _Tokenizer.PeekNextCharacterType() != CharacterType.End)
-                CurrentObject.TokenList.Add(_Tokenizer.GetNextToken());
-
-            return CurrentObject;        
-        }
-
         SymbolTableEntry FindSymbol(Token CurrentToken)
         {
             SymbolTableEntry SymbolEntry = _SymbolTable[CurrentToken.StringValue];
@@ -116,8 +106,8 @@ namespace ZASM
             
             return SymbolEntry;
         }
-        
-        public ObjectInformation ReadLabel(Token CurrentToken)
+
+        public LabelInformation ReadLabel(Token CurrentToken)
         {
             SymbolTableEntry SymbolEntry = FindSymbol(CurrentToken);
             LabelInformation NewLabel = new LabelInformation(CurrentToken, SymbolEntry);
@@ -160,8 +150,11 @@ namespace ZASM
         {
             CurrentIdentifier.TokenList.Add(CurrentToken);
 
-            while (_Tokenizer.PeekNextCharacterType() != CharacterType.CarriageReturn && _Tokenizer.PeekNextCharacterType() != CharacterType.LineFeed && _Tokenizer.PeekNextCharacterType() != CharacterType.SemiColon && _Tokenizer.PeekNextCharacterType() != CharacterType.End)
-                CurrentIdentifier.TokenList.Add(_Tokenizer.GetNextToken());
+            if (!IsBreakType(_Tokenizer.PeekNextRoughTokenType()))
+            {
+                ParameterInformation Params = ParseParams(CurrentIdentifier);
+                CurrentIdentifier.Params.Add(Params);
+            }
 
             if (CurrentIdentifier.Symbol.State == SymbolState.Undefined)
             {
@@ -181,12 +174,12 @@ namespace ZASM
                 }
             }
 
-            if (CurrentIdentifier.Params.Count == 0)
-            {
-                Message.Log.Add("Parser", CurrentIdentifier.FileID, CurrentIdentifier.Line, CurrentIdentifier.Character, MessageCode.ValueMissing, CurrentIdentifier.Symbol.Name);
-                CurrentIdentifier.Error = true;
-            }
-            else
+            //if (CurrentIdentifier.Params.Count == 0)
+            //{
+            //    Message.Log.Add("Parser", CurrentIdentifier.FileID, CurrentIdentifier.Line, CurrentIdentifier.Character, MessageCode.ValueMissing, CurrentIdentifier.Symbol.Name);
+            //    CurrentIdentifier.Error = true;
+            //}
+            //else
             {
                 //if (CurrentIdentifier.Params.Simplify(_CurrentSection.CurrentAddress))
                 //{
@@ -207,8 +200,19 @@ namespace ZASM
         {
             DataInformation NewData = new DataInformation(CurrentToken);
 
-            while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
-                NewData.TokenList.Add(_Tokenizer.GetNextToken());
+            while (!IsBreakType(_Tokenizer.PeekNextRoughTokenType()))
+            {
+                ParameterInformation Params = ParseParams(NewData);
+                NewData.Params.Add(Params);
+
+                if (_Tokenizer.PeekNextCharacterType() != CharacterType.Comma)
+                    break;
+                else
+                    NewData.TokenList.Add(_Tokenizer.GetNextToken());
+            }
+           
+            //while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
+            //    NewData.TokenList.Add(GetNextToken());
 
             return NewData;
         }
@@ -218,7 +222,7 @@ namespace ZASM
             CommandInformation NewCommand = new CommandInformation(CurrentToken);
 
             while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.Comment && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
-                NewCommand.TokenList.Add(_Tokenizer.GetNextToken());
+                NewCommand.TokenList.Add(GetNextToken());
 
             switch (NewCommand.Command)
             {
@@ -255,9 +259,147 @@ namespace ZASM
             OpcodeInformation NewOpcode = new OpcodeInformation(CurrentToken);
 
             while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.Comment && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
-                NewOpcode.TokenList.Add(_Tokenizer.GetNextToken());
+            {
+                ParameterInformation Params = ParseParams(NewOpcode);
+                NewOpcode.Params.Add(Params);
 
+                if (_Tokenizer.PeekNextCharacterType() != CharacterType.Comma)
+                    break;
+                else
+                    NewOpcode.TokenList.Add(_Tokenizer.GetNextToken());
+            }
+
+            if (CurrentToken.AssumeA() && NewOpcode.Params.Count <= 1)
+            {
+                ParameterInformation NewParam = new ParameterInformation();
+                NewParam.Pointer = false;
+                //NewParam.Type = ParameterType.RegisterByte;
+
+                Token NewToken = new Token();
+                NewToken.CommandID = CommandID.A;
+                NewToken.Type = TokenType.Register;
+                //NewToken.Symbol = null;
+
+                NewParam.TokenList.Add(NewToken);
+
+                NewOpcode.Params.Add(NewParam);
+
+                if (CurrentToken.CommandID != CommandID.OUT)
+                    NewOpcode.Params.Reverse();
+
+                //Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.RegisterMissingAssumingA);
+
+            } 
+            
             return NewOpcode;
+        }
+
+        bool IsBreakType(TokenType Type)
+        {
+            if (Type == TokenType.LineBreak || Type == TokenType.Comment || Type == TokenType.End)
+                return true;
+
+            return false;
+        }
+
+
+        public ParameterInformation ParseParams(ObjectInformation CurrentObject)
+        {
+            ParameterInformation Ret = new ParameterInformation();
+
+            Stack<Token> GroupStack = new Stack<Token>();
+
+            bool Done = false;
+
+            while (!Done)
+            {
+                TokenType NextToken = _Tokenizer.PeekNextRoughTokenType();
+                CharacterType NextCharacter = _Tokenizer.PeekNextCharacterType();
+
+                if (IsBreakType(NextToken))
+                {
+                    Done = true;
+                }
+                else if (NextToken == TokenType.Symbol && NextCharacter == CharacterType.Comma && GroupStack.Count == 0)
+                {
+                    Done = true;
+                }
+                else
+                {
+                    Token CurrentToken = GetNextToken();
+
+                    switch (CurrentToken.Type)
+                    {
+                        case TokenType.Identifier:
+                            {
+                                SymbolTableEntry SymbolEntry = FindSymbol(CurrentToken);
+
+                                if (SymbolEntry.Type == SymbolType.None)
+                                {
+                                    SymbolEntry.Type = SymbolType.Unknown;
+                                    SymbolEntry.State = SymbolState.Undefined;
+                                }
+                            }
+                            break;
+
+                        case TokenType.GroupLeft:
+                            if (CurrentObject.Type == ObjectType.Opcode && GroupStack.Count == 0 && Ret.TokenList.Count == 0)
+                                Ret.Pointer = true;
+
+                            GroupStack.Push(CurrentToken);
+                            break;
+
+                        case TokenType.GroupRight:
+                            if (GroupStack.Count == 0)
+                            {
+                                CurrentObject.Error = true;
+                                if (CurrentToken.CharacterType == CharacterType.ParenthesesRight)
+                                    Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Opening (");
+
+                                else
+                                    Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Opening [");
+                            }
+                            else
+                            {
+                                Token OldGroup = GroupStack.Pop();
+
+                                if (OldGroup.CharacterType == CharacterType.ParenthesesLeft && CurrentToken.CharacterType != CharacterType.ParenthesesRight)
+                                {
+                                    Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Expected ')' found ']'");
+                                }
+                                else if (OldGroup.CharacterType == CharacterType.BracketLeft && CurrentToken.CharacterType != CharacterType.BracketRight)
+                                {
+                                    Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Expected ']' found ')'");
+                                }
+                                else if (OldGroup.Type == TokenType.GroupLeft && CurrentToken.Type == TokenType.GroupRight)
+                                {
+                                    if (CurrentObject.Type == ObjectType.Opcode && GroupStack.Count == 0 && (!IsBreakType(_Tokenizer.PeekNextRoughTokenType()) && _Tokenizer.PeekNextCharacterType() != CharacterType.Comma))
+                                    {
+                                        Ret.Pointer = false;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case TokenType.Opcode:
+                        case TokenType.Register:
+                        case TokenType.Flag:
+                        case TokenType.Label:
+                        case TokenType.Command:
+                        case TokenType.Symbol:
+                            break;
+
+                        default:
+                            break;
+                            
+                    }
+                    
+                    Ret.TokenList.Add(CurrentToken);
+                    CurrentObject.TokenList.Add(CurrentToken);
+                }
+            };
+
+            return Ret;
         }
         
         public bool StageOne()

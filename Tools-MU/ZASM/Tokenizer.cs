@@ -78,6 +78,14 @@ namespace ZASM
                 case CharacterType.SemiColon:
                     return TokenType.Comment;
 
+                case CharacterType.ParenthesesLeft:
+                case CharacterType.BracketLeft:
+                    return TokenType.GroupLeft;
+
+                case CharacterType.ParenthesesRight:
+                case CharacterType.BracketRight:
+                    return TokenType.GroupRight;
+                
                 default:
                     return TokenType.Symbol;
 
@@ -292,7 +300,8 @@ namespace ZASM
         bool ReadSymbol(ref Token Data)
         {
             while (PeekNextCharacterType() == CharacterType.PoundSign || PeekNextCharacterType() ==  CharacterType.Comma || PeekNextCharacterType() == CharacterType.Colon ||
-                   PeekNextCharacterType() == CharacterType.QuestionMark || PeekNextCharacterType() == CharacterType.Backslash)
+                   PeekNextCharacterType() == CharacterType.QuestionMark || PeekNextCharacterType() == CharacterType.Backslash || PeekNextCharacterType() == CharacterType.CurlyBraceLeft || 
+                   PeekNextCharacterType() == CharacterType.CurlyBraceRight)
                 CurrentValue.Add(ReadNextCharacter());
 
             Data.StringValue = CurrentString;
@@ -338,10 +347,10 @@ namespace ZASM
             Ret.Line = _Line;
             Ret.Character = _Character;
 
-            CharacterType Type = PeekNextCharacterType();
+            Ret.CharacterType = PeekNextCharacterType();
             CurrentValue.Add(ReadNextCharacter());
 
-            if (Type == CharacterType.End)
+            if (Ret.CharacterType == CharacterType.End)
             {
                 Ret.Type = TokenType.End;
                 return Ret;
@@ -349,7 +358,7 @@ namespace ZASM
 
             bool Success = true;
 
-            switch (Type)
+            switch (Ret.CharacterType)
             {
                 case CharacterType.Unknown:
                     Message.Log.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
@@ -524,16 +533,16 @@ namespace ZASM
                 
                 case CharacterType.ParenthesesLeft:
                 case CharacterType.BracketLeft:
-                case CharacterType.GroupLeft:
                     Ret.Type = TokenType.GroupLeft;
                     break;
 
                 case CharacterType.ParenthesesRight:
                 case CharacterType.BracketRight:
-                case CharacterType.GroupRight:
                     Ret.Type = TokenType.GroupRight;
                     break;
 
+                case CharacterType.CurlyBraceRight:
+                case CharacterType.CurlyBraceLeft:
                 case CharacterType.PoundSign:
                 case CharacterType.Comma:
                 case CharacterType.Colon:

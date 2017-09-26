@@ -105,7 +105,7 @@ namespace ZASM
             CharacterType.Identifier,
 
             // {|}~
-            CharacterType.GroupLeft, CharacterType.Pipe, CharacterType.GroupRight, CharacterType.Tilde, CharacterType.Unknown,
+            CharacterType.CurlyBraceLeft, CharacterType.Pipe, CharacterType.CurlyBraceRight, CharacterType.Tilde, CharacterType.Unknown,
         };
 
         public static Dictionary<MessageCode, string> MessageStrings = new Dictionary<MessageCode, string>()

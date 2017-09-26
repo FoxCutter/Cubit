@@ -23,11 +23,11 @@ namespace ZASM
 
         ParenthesesLeft,
         BracketLeft,
-        GroupLeft,
+        CurlyBraceLeft,
 
         ParenthesesRight,
         BracketRight,
-        GroupRight,
+        CurlyBraceRight,
 
         Plus,
         Minus,
@@ -60,6 +60,8 @@ namespace ZASM
         Identifier,
 
         End,
+
+        None,
     }
     
     enum TokenType
@@ -129,6 +131,7 @@ namespace ZASM
     class Token
     {
         public TokenType Type;
+        public CharacterType CharacterType;
         public CommandID CommandID;
 
         public int FileID;
@@ -141,12 +144,14 @@ namespace ZASM
         public Token()
         {
             Type = TokenType.None;
+            CharacterType = ZASM.CharacterType.None;
             Line = 0;
             Character = 0;
 
             StringValue = null;
             NumericValue = 0;
         }
+
 
         override public string ToString()
         {
@@ -172,6 +177,17 @@ namespace ZASM
             }
 
             return Ret.ToString();
+        }
+
+        public bool AssumeA()
+        {
+            return Type == TokenType.Opcode &&
+                (CommandID == ZASM.CommandID.ADC || CommandID == ZASM.CommandID.ADD ||
+                  CommandID == ZASM.CommandID.SUB || CommandID == ZASM.CommandID.SBC ||
+                  CommandID == ZASM.CommandID.OR || CommandID == ZASM.CommandID.XOR ||
+                  CommandID == ZASM.CommandID.AND || CommandID == ZASM.CommandID.CP ||
+                  CommandID == ZASM.CommandID.IN || CommandID == ZASM.CommandID.OUT ||
+                  CommandID == ZASM.CommandID.CPL);
         }
     
     }

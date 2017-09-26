@@ -18,6 +18,9 @@ namespace ZASM
 
         // The symbol is an address
         Address,
+
+        // A symbol that has been used as a param, but we know nothing about it.
+        Unknown,
     }
 
     enum SymbolState
