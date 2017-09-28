@@ -28,6 +28,7 @@ namespace ZASM
         DataTypeMisMatch,
         SyntaxError,
         UnknownCommand,
+        ReservedWord,
 
 
         UndefinedSymbol,

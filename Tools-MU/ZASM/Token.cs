@@ -86,11 +86,12 @@ namespace ZASM
         Register,
         Flag,
         Opcode,
+        CurrentPos,
         //Result,
         //Displacment,
 
         // Operators        
-        CurrentPos,
+        Operator,
 
         Comparison,
         Assignment,
@@ -123,9 +124,12 @@ namespace ZASM
 
         Address,
 
-        //UnarrayPlus,
-        //UnarrayMinus,
+        UnarrayPlus,
+        UnarrayMinus,
         //Ternary,
+
+        High,
+        Low,
     }
 
     class Token
@@ -139,7 +143,7 @@ namespace ZASM
         public int Character;
 
         public string StringValue;
-        public int NumericValue;
+        public short NumericValue;
 
         public Token()
         {
@@ -164,7 +168,7 @@ namespace ZASM
             {
                 Ret.AppendFormat("'{0}'", StringValue);
             }
-            else if (Type == TokenType.Symbol)
+            else if (Type == TokenType.Symbol || Type == TokenType.Identifier)
             {
                 Ret.Append(StringValue);
             }
@@ -189,6 +193,37 @@ namespace ZASM
                   CommandID == ZASM.CommandID.IN || CommandID == ZASM.CommandID.OUT ||
                   CommandID == ZASM.CommandID.CPL);
         }
-    
+
+        public bool CanHaveFlag()
+        {
+            return (CommandID == CommandID.JR || CommandID == CommandID.JP || CommandID == CommandID.CALL || CommandID == CommandID.RET);
+        }
+
+        public bool RightToLeft()
+        {
+            return Type == TokenType.UnarrayMinus ||
+                    Type == TokenType.UnarrayPlus ||
+                    Type == TokenType.LogicalNot ||
+                    Type == TokenType.BitwiseNot ||
+                    Type == TokenType.High ||
+                    Type == TokenType.Low ||
+                    Type == TokenType.Address;
+        }
+
+        public bool IsOperator()
+        {
+            return Type > TokenType.Operator;
+        }
+
+        public bool IsGroup()
+        {
+            return Type == TokenType.GroupLeft || Type == TokenType.GroupRight;
+        }
+
+        public bool IsIndex()
+        {
+            return Type == TokenType.Register && (CommandID == ZASM.CommandID.IX || CommandID == ZASM.CommandID.IY);
+        }
+
     }
 }

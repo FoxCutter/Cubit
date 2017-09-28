@@ -9,6 +9,27 @@ namespace ZASM
 {
     class DataTables
     {
+        public static Dictionary<TokenType, int> PrecedenceMap = new Dictionary<TokenType, int>()
+        {
+            { TokenType.Command,            2 },   { TokenType.Opcode,             2 },   { TokenType.Register,       2},   { TokenType.Flag,          2 },
+            { TokenType.GroupLeft,          2 },   { TokenType.GroupRight,         2 },
+            //{ TokenType.High,               2 },   { TokenType.Low,                2 },
+            { TokenType.UnarrayPlus,        3 },   { TokenType.UnarrayMinus,       3 },   { TokenType.LogicalNot,     3 },   { TokenType.BitwiseNot,     3 },   
+            { TokenType.Multiplication,     5 },   { TokenType.Division,           5 },   { TokenType.Remainder,      5 },   
+            { TokenType.Plus,               6 },   { TokenType.Minus,              6 },
+            { TokenType.LeftShift,          7 },   { TokenType.RightShift,         7 },
+            { TokenType.LessThen,           8 },   { TokenType.LessEqual,          8 },   { TokenType.GreaterThen,    8 },   { TokenType.GreaterEqual,   8 },
+            { TokenType.Comparison,         9 },   { TokenType.NotEqual,           9 },
+            { TokenType.BitwiseAnd,         10 },   
+            { TokenType.BitwiseXOR,         11 },   
+            { TokenType.BitwiseOR,          12 },   
+            { TokenType.LogicalAnd,         13 },   
+            { TokenType.LogicalOR,          14 },   
+            //{ TokenType.Ternary,            15 },   
+            //{ TokenType.Comma,              16 },   
+            { TokenType.Address,            20 },
+        }; 
+        
         static Comparer<string> CommandListComparer = Comparer<string>.Create((a, b) => string.Compare(a, b, true));
 
         public static CommandList Commands = new CommandList(CommandListComparer)
@@ -127,6 +148,7 @@ namespace ZASM
             { MessageCode.SyntaxWarning, "Syntax Warning"},
             { MessageCode.RegisterMissingAssumingA, "Register Missing, using 'A'"},
             { MessageCode.InternalError, "Internal Error" },
+            { MessageCode.ReservedWord, "Unexpected Reserved Word" },
 
             { MessageCode.UnknownCommand, "Unknown Command" },
             

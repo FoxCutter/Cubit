@@ -105,7 +105,7 @@ namespace ZASM
     class ValueInformation : ParamInformation
     {
         public SymbolTableEntry Symbol;
-        public int Value;
+        public short Value;
 
         public ValueInformation(Token CurrentToken, SymbolTableEntry Symbol)
             : base(CurrentToken, ObjectType.Value)
@@ -120,6 +120,14 @@ namespace ZASM
                 return Symbol.Name + " = 0x" + Value.ToString("X");
             else
                 return Symbol.Name + " = " + base.ToString();
+        }
+
+        public string ToValueString()
+        {
+            if (Symbol.State == SymbolState.ValueSet)
+                return "0x" + Value.ToString("X");
+            else
+                return base.ToString();
         }
     }
 
@@ -137,38 +145,38 @@ namespace ZASM
         {
             int Ret = 0;
 
-            //foreach (ParameterInformation Param in Params)
-            //{
-            //    switch (DataType)
-            //    {
-            //        case CommandID.BYTE:
-            //            if (Param.Value.Type == TokenType.String)
-            //                Ret += Param.Value.StringValue.Length;
-            //            else
-            //                Ret += 1;
-            //            break;
+            foreach (ParameterInformation Param in Params)
+            {
+                switch (DataType)
+                {
+                    case CommandID.BYTE:
+                        if (Param.Value.Type == TokenType.String)
+                            Ret += Param.Value.StringValue.Length;
+                        else
+                            Ret += 1;
+                        break;
 
-            //        case CommandID.WORD:
-            //            Ret += 2;
-            //            break;
+                    case CommandID.WORD:
+                        Ret += 2;
+                        break;
 
-            //        case CommandID.DC:
-            //            Ret += Param.Value.StringValue.Length;
-            //            break;
+                    case CommandID.DC:
+                        Ret += Param.Value.StringValue.Length;
+                        break;
 
-            //        case CommandID.RESB:
-            //            Ret += Param.Value.NumericValue;
-            //            break;
+                    case CommandID.RESB:
+                        Ret += Param.Value.NumericValue;
+                        break;
 
-            //        case CommandID.RESW:
-            //            Ret += Param.Value.NumericValue * 2;
-            //            break;
+                    case CommandID.RESW:
+                        Ret += Param.Value.NumericValue * 2;
+                        break;
 
-            //        case CommandID.RESD:
-            //            Ret += Param.Value.NumericValue * 4;
-            //            break;
-            //    }
-            //}
+                    case CommandID.RESD:
+                        Ret += Param.Value.NumericValue * 4;
+                        break;
+                }
+            }
 
             return Ret;
         }
