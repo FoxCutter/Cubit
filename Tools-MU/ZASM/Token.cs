@@ -220,9 +220,24 @@ namespace ZASM
             return Type == TokenType.GroupLeft || Type == TokenType.GroupRight;
         }
 
-        public bool IsIndex()
+        public bool IsWordIndexRegister()
         {
             return Type == TokenType.Register && (CommandID == ZASM.CommandID.IX || CommandID == ZASM.CommandID.IY);
+        }
+
+        public bool IsByteRegister()
+        {
+            return Type == TokenType.Register && (CommandID < ZASM.CommandID.Word);
+        }
+
+        public bool IsByteIndexRegister()
+        {
+            return Type == TokenType.Register && (CommandID == ZASM.CommandID.IXH || CommandID == ZASM.CommandID.IXL || CommandID == ZASM.CommandID.IYH || CommandID == ZASM.CommandID.IYL);
+        }
+
+        public bool IsWordRegister()
+        {
+            return Type == TokenType.Register && (CommandID > ZASM.CommandID.Word && CommandID < ZASM.CommandID.RegisterMax);
         }
 
     }

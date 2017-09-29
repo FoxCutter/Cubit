@@ -37,11 +37,11 @@ namespace ZASM
         IX = Word + IXH,
         IY = Word + IYH,
 
-        // Immediate data
-        ImmediateByte = 0x80,
-        ImmediateWord,
+        RegisterMax = 0x80,
 
-        RegisterMax = 0xFF,
+        // Immediate data
+        ImmediateByte,
+        ImmediateWord,
 
         // Flags
         Flag_NZ,

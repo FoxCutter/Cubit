@@ -238,6 +238,7 @@ namespace ZASM
                 {
                     Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxWarning, "Registers/Flags can't be used in equations");
                     CurrentIdentifier.Error = true;
+                    Param.Type = ParameterType.Error;
                 }
 
                 Param.Simplify(_SymbolTable);
@@ -300,6 +301,7 @@ namespace ZASM
                 {
                     Message.Log.Add("Parser", NewData.FileID, NewData.Line, NewData.Character, MessageCode.SyntaxWarning, "Registers/Flags can't be used in data statments");
                     NewData.Error = true;
+                    Param.Type = ParameterType.Error;
                 }
 
                 Param.Simplify(_SymbolTable);
@@ -325,6 +327,7 @@ namespace ZASM
                 {
                     Message.Log.Add("Parser", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxWarning, "Registers/Flags can't be used in equations");
                     NewCommand.Error = true;
+                    Param.Type = ParameterType.Error;
                 }
 
                 Param.Simplify(_SymbolTable); 
@@ -423,19 +426,22 @@ namespace ZASM
                     {
                         Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "To many registers in parameter");
                         NewOpcode.Error = true;
+                        Param.Type = ParameterType.Error;
                     }
-                    else if(Param.HasIndex())
+                    else if(Param.HasWordIndexRegister())
                     {
                         if (Param.HasOperators() && !Param.Pointer)
                         {
                             Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "Index offsets can only be used on memory refereces");
                             NewOpcode.Error = true;
+                            Param.Type = ParameterType.Error;
                         }                        
                     }
                     else if (Param.HasOperators())
                     {
                         Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "Registers can't be used in equations");
                         NewOpcode.Error = true;
+                        Param.Type = ParameterType.Error;
                     }
                 }
                 
@@ -443,6 +449,7 @@ namespace ZASM
                 {
                     Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "Flags can't be used in equations");
                     NewOpcode.Error = true;
+                    Param.Type = ParameterType.Error;
                 }                
                 
                 Param.Simplify(_SymbolTable);
@@ -544,7 +551,7 @@ namespace ZASM
                             {
                                 Token LastToken = Ret.TokenList[Ret.TokenList.Count - 1];
 
-                                if (LastToken.IsIndex() || (LastToken.Type != TokenType.GroupRight && LastToken.IsOperator()))
+                                if (LastToken.IsWordIndexRegister() || (LastToken.Type != TokenType.GroupRight && LastToken.IsOperator()))
                                     CurrentToken.Type = TokenType.UnarrayPlus;
                             }
 
@@ -559,7 +566,7 @@ namespace ZASM
                             {
                                 Token LastToken = Ret.TokenList[Ret.TokenList.Count - 1];
 
-                                if (LastToken.IsIndex() || (LastToken.Type != TokenType.GroupRight && LastToken.IsOperator()))
+                                if (LastToken.IsWordIndexRegister() || (LastToken.Type != TokenType.GroupRight && LastToken.IsOperator()))
                                     CurrentToken.Type = TokenType.UnarrayMinus;
                             }
 

@@ -6,17 +6,51 @@ using System.Threading.Tasks;
 
 namespace ZASM
 {
+    enum ParameterType
+    {
+        Unknown,
+
+        // B, C, D, E, H, L, A, R, I
+        ByteRegister,
+
+        // BC, DE, HL, SP, AF
+        WordRegister,
+
+        // IXL, IXH, IYL, IYH
+        ByteIndexRegister,
+        
+        // IX, IY
+        WordIndexRegister,
+        
+        // (**)
+        AddressPointer,        
+        
+        // (BC), (DE), (HL), (SP)
+        AddressRegister,
+        
+        // (IX) (IY)
+        AddressIndexRegister,
+        
+        // C, NC, Z, NZ, E, O, M, P
+        Flag,
+
+        // Immidate, Encoded
+        Value,
+
+        Error,
+    }
+    
     class ParameterInformation
     {
         public List<Token> TokenList;
         public bool Pointer;
-        public bool Error;
+        public ParameterType Type;
 
         public ParameterInformation()
         {
             TokenList = new List<Token>();
             Pointer = false;
-            Error = false;
+            Type = ParameterType.Unknown;
         }
 
         public Token Value
@@ -77,9 +111,57 @@ namespace ZASM
             return TokenList.Where(e => e.IsOperator()).Count() != 0;
         }
 
-        public bool HasIndex()
+        public bool HasByteRegister()
         {
-            return TokenList.Where(e => e.IsIndex()).Count() != 0;
+            return TokenList.Where(e => e.IsByteRegister()).Count() != 0;
+        }
+
+        public bool HasByteIndexRegister()
+        {
+            return TokenList.Where(e => e.IsByteIndexRegister()).Count() != 0;
+        }
+
+        public bool HasWordRegister()
+        {
+            return TokenList.Where(e => e.IsWordRegister()).Count() != 0;
+        }
+
+        public bool HasWordIndexRegister()
+        {
+            return TokenList.Where(e => e.IsWordIndexRegister()).Count() != 0;
+        }
+
+
+        void SetTokenType()
+        {
+            if (Pointer)
+            {
+                if (HasWordIndexRegister())
+                    Type = ParameterType.AddressIndexRegister;
+
+                else if (HasWordRegister())
+                    Type = ParameterType.AddressRegister;
+
+                else
+                    Type = ParameterType.AddressPointer;
+            }
+            else
+            {
+                if (HasTokenType(TokenType.Flag))
+                    Type = ParameterType.Flag;
+
+                else if (HasWordIndexRegister())
+                    Type = ParameterType.WordIndexRegister;
+
+                else if (HasWordRegister())
+                    Type = ParameterType.WordRegister;
+
+                else if (HasByteRegister())
+                    Type = ParameterType.ByteRegister;
+
+                else
+                    Type = ParameterType.Value;
+            }
         }
         
         string TokenListToString()
@@ -280,7 +362,7 @@ namespace ZASM
 
         public bool Simplify(SymbolTable Symbols)
         {
-            if (Error)
+            if (Type == ParameterType.Error)
                 return false;
             
             //Token TempToken = null;
@@ -314,7 +396,7 @@ namespace ZASM
                         if (TempStack.Count < 1)
                         {
                             Message.Log.Add("Evaluator", Current.FileID, Current.Line, Current.Character, MessageCode.ValueMissing);
-                            Error = true;
+                            Type = ParameterType.Error;
                             return false;
                         }
                         
@@ -336,7 +418,7 @@ namespace ZASM
                         if (TempStack.Count < 2)
                         {
                             Message.Log.Add("Evaluator", Current.FileID, Current.Line, Current.Character, MessageCode.ValueMissing);
-                            Error = true;
+                            Type = ParameterType.Error;
                             return false;
                         }
 
@@ -381,7 +463,9 @@ namespace ZASM
             //    TokenList.RemoveAt(0);
             //    TokenList.Insert(0, Current);
             //}
-            
+
+            SetTokenType();
+
             return TokenList.Count == 1;
         }
 
