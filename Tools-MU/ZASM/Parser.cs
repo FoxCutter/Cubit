@@ -383,7 +383,7 @@ namespace ZASM
             {
                 ParameterInformation NewParam = new ParameterInformation();
                 NewParam.Pointer = false;
-                //NewParam.Type = ParameterType.RegisterByte;
+                NewParam.Type = ParameterType.ByteRegister;
 
                 Token NewToken = new Token();
                 NewToken.CommandID = CommandID.A;
@@ -402,7 +402,7 @@ namespace ZASM
 
             foreach (ParameterInformation Param in NewOpcode.Params)
             {
-                // These documentation for these opcodes use () even though they arn't being used as addresses, so take care of that here.
+                // The documentation for these opcodes use () even though they arn't being used as addresses, so take care of that here.
                 if (NewOpcode.Opcode == CommandID.IN || NewOpcode.Opcode == CommandID.OUT || NewOpcode.Opcode == CommandID.JP)
                     Param.Pointer = false;
 

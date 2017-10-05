@@ -1,14 +1,14 @@
-	ADD 10
-	
-	ld IX, $4000
-	ld A, (IX - Alpha - 12)
-
+temp = 'BCK'
+	db	Temp
 
 .z80
                   
-.section size $4000 
+.section "" size $4000 pos $10000 fill $42
 .org $0000 
 
+
+	LD 	BC, Temp
 	
+
 .end
 

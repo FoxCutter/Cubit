@@ -6,31 +6,38 @@ using System.Threading.Tasks;
 
 namespace ZASM
 {
+
     enum ParameterType
     {
         Unknown,
 
-        // B, C, D, E, H, L, A, R, I
+        // B, C, D, E, H, L, M, A, R, I, 
         ByteRegister,
 
-        // BC, DE, HL, SP, AF
+        // BC, DE, HL, SP, AF, PSW
         WordRegister,
 
         // IXL, IXH, IYL, IYH
         ByteIndexRegister,
-        
+
         // IX, IY
         WordIndexRegister,
-        
+
+        // SP + *
+        ByteOffset,
+
+        // ($FF00 + c), ($FF00 + *), (C), (*) 
+        ByteOffsetPointer,
+
         // (**)
-        AddressPointer,        
-        
-        // (BC), (DE), (HL), (SP)
+        AddressPointer,
+
+        // (BC), (DE), (HL), (SP), (HLI), (HLD), M
         AddressRegister,
-        
+
         // (IX) (IY)
         AddressIndexRegister,
-        
+
         // C, NC, Z, NZ, E, O, M, P
         Flag,
 

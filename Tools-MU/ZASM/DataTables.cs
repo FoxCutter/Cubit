@@ -50,15 +50,16 @@ namespace ZASM
 
         public static CommandList z80Opcodes = new CommandList(CommandListComparer)
         {
+            // Registers
             { "A",	    CommandID.A },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
             { "E",	    CommandID.E },      { "H",	    CommandID.H },      { "L",	    CommandID.L },      { "I",	    CommandID.I },      { "R",	    CommandID.R },
-            { "AF",	    CommandID.AF },     { "BC",	    CommandID.BC },     { "DE",	    CommandID.DE },     { "HL",	    CommandID.HL },     { "IX",	    CommandID.IX }, 
-            { "IY",	    CommandID.IY },     { "PC",	    CommandID.PC },     { "SP",	    CommandID.SP },     { "SPH",	CommandID.SPH },    { "SPL",	CommandID.SPL },
-            { "IXH",	CommandID.IXH },    { "IXL",	CommandID.IXL },    { "IYH",	CommandID.IYH },    { "IYL",	CommandID.IYL },    { "AF'",	CommandID.AF },
+            { "AF",	    CommandID.AF },     { "BC",	    CommandID.BC },     { "DE",	    CommandID.DE },     { "HL",	    CommandID.HL },     { "SP",	    CommandID.SP }, 
+            { "AF'",	CommandID.AF_Alt }, { "IX",	    CommandID.IX },     { "IY",	    CommandID.IY },     
+            { "IXH",	CommandID.IXH },    { "IXL",	CommandID.IXL },    { "IYH",	CommandID.IYH },    { "IYL",	CommandID.IYL },
 
             // Flags
-            { "CY",	    CommandID.Flag_C },  { "NC",	CommandID.Flag_NC }, { "Z",	    CommandID.Flag_Z },  { "NZ",	CommandID.Flag_NZ }, { "PE",	CommandID.Flag_PE },
-            { "PO",	    CommandID.Flag_PO }, { "P",	    CommandID.Flag_P },  { "M",	    CommandID.Flag_M },
+            { "CY",	    CommandID.Flag_C },  { "NC",	CommandID.Flag_NC }, { "Z",	    CommandID.Flag_Z },  { "NZ",	CommandID.Flag_NZ }, 
+            { "PE",	    CommandID.Flag_PE }, { "PO",	CommandID.Flag_PO }, { "P",	    CommandID.Flag_P },  { "M",	    CommandID.Flag_M },
 
             // Opcodes
             { "ADC",	CommandID.ADC },    { "ADD",	CommandID.ADD },    { "AND",	CommandID.AND },    { "BIT",	CommandID.BIT },    { "CALL",	CommandID.CALL },
@@ -77,6 +78,29 @@ namespace ZASM
             { "SRL",	CommandID.SRL },    { "SUB",	CommandID.SUB },    { "XOR",	CommandID.XOR },
         };
 
+        public static CommandList i8080Opcodes = new CommandList(CommandListComparer)
+        {
+            // Registers    
+            { "A",	    CommandID.A },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
+            { "E",	    CommandID.E },      { "H",	    CommandID.H },      { "L",	    CommandID.L },      { "HL",	    CommandID.M },     
+            { "AF",	    CommandID.AF },     { "BC",	    CommandID.BC },     { "DE",	    CommandID.DE },     { "SP",	    CommandID.SP }, 
+
+            // Opcodes
+        };
+
+        public static CommandList GameBoyOpcodes = new CommandList(CommandListComparer)
+        {
+            // Registers
+            { "A",	    CommandID.A },      { "B",	    CommandID.B },      { "C",	    CommandID.C },      { "D",	    CommandID.D },
+            { "E",	    CommandID.E },      { "H",	    CommandID.H },      { "L",	    CommandID.L },
+            { "AF",	    CommandID.AF },     { "BC",	    CommandID.BC },     { "DE",	    CommandID.DE },     { "HL",	    CommandID.HL },     { "SP",	    CommandID.SP }, 
+
+            // Flags
+            { "CY",	    CommandID.Flag_C },  { "NC",	CommandID.Flag_NC }, { "Z",	    CommandID.Flag_Z },  { "NZ",	CommandID.Flag_NZ }, 
+
+            // Opcodes
+
+        };
 
         public static CharacterType[] CharacterData = new CharacterType[]
         {
