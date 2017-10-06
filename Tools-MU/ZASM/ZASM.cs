@@ -19,8 +19,13 @@ namespace ZASM
 
             Console.WriteLine("ZASM Results: Messages: {0}, Warnings: {1}, Errors: {2}", Message.Log.MessageCount(), Message.Log.WarningCount(), Message.Log.ErrorCount());
 
+            int Max = 0;
+            
             foreach (MessageInformation CurrentMessage in Message.Log)
             {
+                if (Max > 50)
+                    break;
+
                 if (CurrentMessage.Code >= MessageCode.Warning && CurrentMessage.Code < MessageCode.Error)
                     Console.Write("Warning: ");
 
@@ -51,6 +56,7 @@ namespace ZASM
                     Console.Write(CurrentMessage.Details);
                 }
 
+                Max++;
 
                 Console.WriteLine();
             }

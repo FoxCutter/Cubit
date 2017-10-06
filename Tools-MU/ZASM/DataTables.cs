@@ -34,6 +34,7 @@ namespace ZASM
 
         public static CommandList Commands = new CommandList(CommandListComparer)
         {
+            { ".DB",        CommandID.BYTE },        { ".DW",        CommandID.WORD },      { ".DD",	    CommandID.DWORD },          { ".DC",	    CommandID.DC },         
             { ".EXTERN",	CommandID.EXTERN },      { ".PUBLIC",	CommandID.PUBLIC },     { ".INCLUDE",   CommandID.INCLUDE },        { ".INCBIN",    CommandID.INCLUDE },     
             { ".Z80",       CommandID.Z80 },         { ".8080",     CommandID.i8080 },      { ".GAMEBOY",   CommandID.GAMEBOY },      
             { ".ORG",       CommandID.ORG },         { ".SECTION",  CommandID.SECTION },    { ".FILL",      CommandID.FILL},            { ".SIZE",      CommandID.SIZE },            

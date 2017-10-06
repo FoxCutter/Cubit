@@ -16,6 +16,7 @@ namespace ZASM
         SymbolTable _SymbolTable;
         List<DataSection> _SectionList;
         DataSection _CurrentSection;
+        ValueInformation _CurrentPosition;
 
         public Parser()
         {
@@ -24,6 +25,8 @@ namespace ZASM
             _SectionList = new List<DataSection>();
 
             _SymbolTable = null;
+
+            _CurrentPosition = null;
         }
 
         public bool Parse(string FileName)
@@ -34,10 +37,22 @@ namespace ZASM
             if (_SymbolTable == null)
                 _SymbolTable = new SymbolTable();
 
-            _CurrentSection = new DataSection("");
-            
-            StageOne();
+            if(_CurrentSection == null)
+                _CurrentSection = new DataSection("");
 
+            if (_CurrentPosition == null)
+            {
+                SymbolTableEntry SymbolEntry = _SymbolTable["$"];
+                Token TempToken = new Token();
+                TempToken.Type = TokenType.CurrentPos;
+
+                _CurrentPosition = new ValueInformation(TempToken, SymbolEntry);
+                _CurrentPosition.Value = 0;
+                SymbolEntry.Object = _CurrentPosition;
+                SymbolEntry.State = SymbolState.ValuePending;
+            }
+
+            StageOne();
 
             foreach (ObjectInformation Entry in _CurrentSection.ObjectData)
             {
@@ -46,7 +61,7 @@ namespace ZASM
                 //if (Entry.Type >= ObjectType.Meta)
                 //    continue;
 
-                Console.Write("{0} ", Entry.Line);
+                Console.Write("{0} {1} ", Entry.Line, Entry.Address.ToString("X4"));
 
                 if (Entry.Type == ObjectType.Label)
                 {
@@ -116,9 +131,9 @@ namespace ZASM
 
 
                 Console.WriteLine();
-            }             
-            
-            
+            }
+
+
             return true;
         }
 
@@ -132,7 +147,10 @@ namespace ZASM
                     if (DataTables.Commands.ContainsKey(CurrentToken.StringValue))
                     {
                         CurrentToken.CommandID = DataTables.Commands[CurrentToken.StringValue];
-                        if (CurrentToken.CommandID < CommandID.CommandMax)
+                        if (CurrentToken.CommandID < CommandID.DataCommandsMax)
+                            CurrentToken.Type = TokenType.Data;
+                        
+                        else if (CurrentToken.CommandID < CommandID.CommandMax)
                             CurrentToken.Type = TokenType.Command;
 
                         else if (CurrentToken.CommandID < CommandID.PreprocessorMax)
@@ -312,7 +330,9 @@ namespace ZASM
                 else
                     NewData.TokenList.Add(_Tokenizer.GetNextToken());
             }
-           
+
+            _CurrentSection.CurrentOffset += NewData.GetDataLength();
+
             return NewData;
         }
 
@@ -428,14 +448,14 @@ namespace ZASM
                         NewOpcode.Error = true;
                         Param.Type = ParameterType.Error;
                     }
-                    else if(Param.HasWordIndexRegister())
+                    else if (Param.HasWordIndexRegister())
                     {
                         if (Param.HasOperators() && !Param.Pointer)
                         {
                             Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "Index offsets can only be used on memory refereces");
                             NewOpcode.Error = true;
                             Param.Type = ParameterType.Error;
-                        }                        
+                        }
                     }
                     else if (Param.HasOperators())
                     {
@@ -444,19 +464,130 @@ namespace ZASM
                         Param.Type = ParameterType.Error;
                     }
                 }
-                
+
                 if (Param.HasTokenType(TokenType.Flag) && Param.HasOperators())
                 {
                     Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "Flags can't be used in equations");
                     NewOpcode.Error = true;
                     Param.Type = ParameterType.Error;
-                }                
-                
+                }
+
                 Param.Simplify(_SymbolTable);
             }
-            
+
+            // Look up the opcode
+            LookupOpcode(NewOpcode);
+
+            _CurrentSection.CurrentOffset += NewOpcode.Encoding.Length;
+
             return NewOpcode;
         }
+
+        bool OpcodeMatch(ParameterInformation NewOpcode, System.Tuple<ZASM.CommandID, ZASM.ParameterType, bool, int> Encoding)
+        {
+            if (NewOpcode.Type != Encoding.Item2)
+                return false;
+
+            if (NewOpcode.Pointer != Encoding.Item3)
+                return false;
+
+            if (Encoding.Item1 == CommandID.ImmediateByte || Encoding.Item1 == CommandID.ImmediateWord || Encoding.Item1 == CommandID.EncodedByte)
+                return true;
+
+            if (Encoding.Item1 >= CommandID.Encoded0 && Encoding.Item1 <= CommandID.Encoded2)
+            {
+                if (Encoding.Item1 == CommandID.Encoded0 && NewOpcode.Value.NumericValue != 0)
+                    return false;
+
+                if (Encoding.Item1 == CommandID.Encoded1 && NewOpcode.Value.NumericValue != 1)
+                    return false;
+
+                if (Encoding.Item1 == CommandID.Encoded2 && NewOpcode.Value.NumericValue != 2)
+                    return false;
+            }
+            else if (Encoding.Item1 != CommandID.RegisterAny && Encoding.Item1 != CommandID.FlagsAny)
+            {
+                if (NewOpcode.Value.CommandID != Encoding.Item1)
+                    return false;
+            }
+
+
+            return true;
+        }
+        
+        bool LookupOpcode(OpcodeInformation NewOpcode)
+        {
+            IEnumerable<OpcodeData> Opcodes = OpcodeTables.z80OpcodeList.Where(e => e.Name == NewOpcode.Opcode);
+            if (Opcodes.Count() == 0)
+            {
+                Message.Log.Add("Parser", NewOpcode.FileID, NewOpcode.Line, NewOpcode.Character, MessageCode.InternalError, string.Format("Can't match Opcode {0}", NewOpcode.Opcode.ToString()));
+                NewOpcode.Error = true;
+                return false;
+            }
+
+            if (NewOpcode.Params.Count == 0)
+            {
+                Opcodes = Opcodes.Where(e => e.Param0 == null);
+
+                if (Opcodes.Count() > 1)
+                {
+                    Message.Log.Add("Parser", NewOpcode.FileID, NewOpcode.Line, NewOpcode.Character, MessageCode.InternalError, string.Format("Opcode {0} 0-Param lookup error", NewOpcode.Opcode.ToString()));
+                    NewOpcode.Error = true;
+                    return false;
+                }
+            }
+
+            // Match them on the type information
+            if (NewOpcode.Params.Count >= 1)
+            {
+                ParameterInformation CurrentParam = NewOpcode.Params[0];
+                Opcodes = Opcodes.Where(e => (e.Param0 != null && OpcodeMatch(CurrentParam, e.Param0)));
+
+                if (Opcodes.Count() == 0)
+                {
+                    Message.Log.Add("Parser", CurrentParam.TokenList[0].FileID, CurrentParam.TokenList[0].Line, CurrentParam.TokenList[0].Character, MessageCode.InvalidParamaterForOpcode, string.Format("{0} >{1}<", NewOpcode.Opcode.ToString(), NewOpcode.ParamString(0)));
+                    NewOpcode.Error = true;
+                    return false;
+                }
+            }
+
+            if (NewOpcode.Params.Count >= 2)
+            {
+                ParameterInformation CurrentParam = NewOpcode.Params[1];
+                Opcodes = Opcodes.Where(e => (e.Param1 != null && OpcodeMatch(CurrentParam, e.Param1)));
+
+                if (Opcodes.Count() == 0)
+                {
+                    Message.Log.Add("Parser", CurrentParam.TokenList[0].FileID, CurrentParam.TokenList[0].Line, CurrentParam.TokenList[0].Character, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, >{2}<", NewOpcode.Opcode.ToString(), NewOpcode.ParamString(0), NewOpcode.ParamString(1)));
+                    NewOpcode.Error = true;
+                    return false;
+                }
+            }
+            if (NewOpcode.Params.Count == 3)
+            {
+                ParameterInformation CurrentParam = NewOpcode.Params[2];
+                Opcodes = Opcodes.Where(e => (e.Param2 != null && OpcodeMatch(CurrentParam, e.Param2)));
+
+                if (Opcodes.Count() == 0)
+                {
+                    Message.Log.Add("Parser", CurrentParam.TokenList[0].FileID, CurrentParam.TokenList[0].Line, CurrentParam.TokenList[0].Character, MessageCode.InvalidParamaterForOpcode, string.Format("{0} {1}, {2} >{3}<", NewOpcode.Opcode.ToString(), NewOpcode.ParamString(0), NewOpcode.ParamString(1), NewOpcode.ParamString(2)));
+                    NewOpcode.Error = true;
+                    return false;
+                }
+            }
+
+            if (Opcodes.Count() > 1)
+            {
+                Message.Log.Add("Parser", NewOpcode.FileID, NewOpcode.Line, NewOpcode.Character, MessageCode.InternalError, string.Format("Multi match for {0} {1}, {2}, {3}", NewOpcode.Opcode.ToString(), NewOpcode.ParamString(0), NewOpcode.ParamString(1), NewOpcode.ParamString(2)));
+                NewOpcode.Error = true;
+                return false;
+            }
+
+            NewOpcode.Encoding = Opcodes.First();
+
+            return true;
+        }
+
 
         bool IsBreakType(TokenType Type)
         {

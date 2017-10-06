@@ -33,7 +33,9 @@ namespace ZASM
         public int Character;
 
         public bool Error;
-        
+
+        public int Address;
+
         public List<Token> TokenList;
 
         public ObjectInformation(Token CurrentToken, ObjectType ofType = ObjectType.None)
@@ -44,6 +46,7 @@ namespace ZASM
             Line = CurrentToken.Line;
             Character = CurrentToken.Character;
             Type = ofType;
+            Address = 0;
 
             TokenList = new List<Token>();
             TokenList.Add(CurrentToken);
@@ -53,13 +56,11 @@ namespace ZASM
     class LabelInformation : ObjectInformation
     {
         public SymbolTableEntry Symbol;
-        public int Address;
 
         public LabelInformation(Token CurrentToken, SymbolTableEntry Symbol)
             : base(CurrentToken, ObjectType.Label)
         {
             this.Symbol = Symbol;
-            Address = 0;
         }
 
         public override string ToString()
@@ -206,11 +207,13 @@ namespace ZASM
     class OpcodeInformation : ParamInformation
     {
         public CommandID Opcode;
+        public OpcodeData Encoding;
 
         public OpcodeInformation(Token CurrentToken)
             : base(CurrentToken, ObjectType.Opcode)
         {
             Opcode = CurrentToken.CommandID;
+            Encoding = null;
         }
 
         public override string ToString()

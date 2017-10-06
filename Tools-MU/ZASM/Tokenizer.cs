@@ -153,7 +153,7 @@ namespace ZASM
                 else if (NextType == CharacterType.Identifier)
                     CurrentValue.Add(ReadNextCharacter());
 
-                else if (NextType == CharacterType.DollarSign)
+                else if (NextType == CharacterType.DollarSign || NextType == CharacterType.SingleQuote)
                     CurrentValue.Add(ReadNextCharacter());
 
                 else if (NextType == CharacterType.Period)
@@ -405,7 +405,7 @@ namespace ZASM
 
                 // Number or Current Position
                 case CharacterType.DollarSign:
-                    if (PeekNextCharacterType() == CharacterType.Number)
+                    if (PeekNextCharacterType() == CharacterType.Number || PeekNextCharacterType() == CharacterType.Identifier)
                     {
                         Ret.Type = TokenType.Number;
                         Success = ReadNumber(ref Ret);

@@ -226,17 +226,17 @@ namespace ZASM
                         }
                     }
                 }
-                //else if (Current.Type == TokenType.Displacment)
-                //{
-                //    TempStack.Push(string.Format("<Index> {0}", Current.CommandID));
-                //}
-                //else if (Current.Type == TokenType.Result)
-                //{
-                //    TempStack.Push(string.Format("0{0:X}h", (short)Current.NumericValue));
-                //}
+                else if (Current.Type == TokenType.Register && Current.CommandID == CommandID.AF_Alt)
+                {
+                    TempStack.Push("AF'");
+                }
                 else if (Current.Type == TokenType.Identifier)
                 {
                     TempStack.Push(Current.StringValue);
+                }
+                else if (Current.Type == TokenType.CurrentPos)
+                {
+                    TempStack.Push("$");
                 }
                 else
                 {
@@ -485,6 +485,26 @@ namespace ZASM
                     CurrentToken.Type = TokenType.Number;
                 }
             }
+            else if (CurrentToken.Type == TokenType.CurrentPos)
+            {
+                SymbolTableEntry Symbol = Symbols["$"];
+                if (Symbol.State == SymbolState.Undefined || Symbol.State == SymbolState.ValuePending)
+                {
+                    // Value hasn't been defined yet, so we can't do any more to it.                    
+                }
+                else if (Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant)
+                {
+                    CurrentToken.Type = TokenType.Number;
+
+                    if (Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Value)
+                    {
+                        CurrentToken.NumericValue = ((ValueInformation)Symbol.Object).Value;
+                    }
+
+                    else
+                        Message.Log.Add("Evaluator", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.UnknownError, "Unexpected symbol table type");
+                }
+            }
             else if (CurrentToken.Type == TokenType.Identifier)
             {
                 SymbolTableEntry Symbol = Symbols[CurrentToken.StringValue];
@@ -520,6 +540,10 @@ namespace ZASM
         {
             Token Result = new Token();
             Result.Type = TokenType.Unknown;
+            Result.FileID = Op1.FileID;
+            Result.Line = Op1.Line;
+            Result.Character = Op1.Character;
+
             //Result.Value = new List<char>();
 
             if (!CurrentToken.IsOperator())
