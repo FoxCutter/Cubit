@@ -58,7 +58,23 @@ namespace TableBuilder
                 Output.Append("OpcodeFlags.Undocumented");
             }
             
+            if(Entry.HasType(ParameterType.HalfFlag))
+            {
+                if (Output.Length != 0)
+                    Output.Append(" | ");
+
+                Output.Append("OpcodeFlags.HalfFlag");
+
+            }
             
+            if(Entry.HasType(ParameterType.WordRegisterAF))
+            {
+                if (Output.Length != 0)
+                    Output.Append(" | ");
+
+                Output.Append("OpcodeFlags.WordRegisterAF");
+            }
+
             if (Output.Length == 0)
                 Output.Append("OpcodeFlags.None");
 
@@ -98,8 +114,13 @@ namespace TableBuilder
                 Output.Append(", ParameterType.");
                 Output.Append(GetParamaterType(Entry.Params[x]));
                 Output.Append(", ");
-                Output.Append(Entry.Params[x].Pointer.ToString().ToLower());                
-                Output.Append("),\t");
+                Output.Append(Entry.Params[x].Pointer.ToString().ToLower());
+                if (!ForDecoding)
+                {
+                    Output.Append(", ");
+                    Output.Append(Entry.Params[x].Pos);
+                    Output.Append("),\t");
+                }
                 v++;
             }
 

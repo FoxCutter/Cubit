@@ -126,6 +126,17 @@ namespace TableBuilder
             return false;
         }
 
+        public bool HasType(ParameterType Type)
+        {
+            foreach (ParamInfo Entry in Params)
+            {
+                if (Entry.Type == Type)
+                    return true;
+            }
+
+            return false;
+        }
+        
         public bool CanExpand()
         {
             foreach (ParamInfo Entry in Params)
@@ -288,12 +299,12 @@ namespace TableBuilder
 
                 case "AF":
                     Ret.ID = ZASM.CommandID.AF;
-                    Ret.Type = ParameterType.WordRegisterAF;
+                    Ret.Type = ParameterType.WordRegister;
                     break;
 
                 case "AF'":
                     Ret.ID = ZASM.CommandID.AF_Alt;
-                    Ret.Type = ParameterType.WordRegisterAF;
+                    Ret.Type = ParameterType.WordRegister;
                     break;
 
                 case "DE":
@@ -443,7 +454,7 @@ namespace TableBuilder
 
                 case "IX/IY":
                     Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.AddressIndexRegister;
+                    Ret.Type = ParameterType.WordIndexRegister;
                     break;
 
                 case "(IX/IY)":
@@ -470,7 +481,6 @@ namespace TableBuilder
         static ZASM.CommandID[] ByteRegister = { ZASM.CommandID.B, ZASM.CommandID.C, ZASM.CommandID.D, ZASM.CommandID.E, ZASM.CommandID.H, ZASM.CommandID.L, ZASM.CommandID.None, ZASM.CommandID.A };
         static ZASM.CommandID[] WordRegister = { ZASM.CommandID.BC, ZASM.CommandID.DE, ZASM.CommandID.HL, ZASM.CommandID.SP };
         static ZASM.CommandID[] WordRegisterAF = { ZASM.CommandID.BC, ZASM.CommandID.DE, ZASM.CommandID.HL, ZASM.CommandID.AF };
-        static ZASM.CommandID[] AddressRegister = { ZASM.CommandID.HL };
         
         static ZASM.CommandID[] ByteIndexRegister = { ZASM.CommandID.IYH, ZASM.CommandID.IXH, ZASM.CommandID.IXL, ZASM.CommandID.IYL };
         static ZASM.CommandID[] WordIndexRegister = { ZASM.CommandID.IX, ZASM.CommandID.IY };
@@ -638,6 +648,7 @@ namespace TableBuilder
                 if (ExpandList[x].Pos != 0)
                     NewEntry.Base += GetValue(ExpandList[x].ID) << ShiftMap[ExpandList[x].Pos];
 
+
                 if (ExpandList[x].ID == ZASM.CommandID.IX || ExpandList[x].ID == ZASM.CommandID.IXL || ExpandList[x].ID == ZASM.CommandID.IXH)
                 {
                     if (NewEntry.Prefix != 0xDD && NewEntry.Prefix != 0xFD)
@@ -754,7 +765,6 @@ namespace TableBuilder
 
                     if(NewEntry.HasOffset())
                         NewEntry.Length++;
-
                 }
 
                 Ret.OpcodeList.Add(NewEntry);
@@ -790,7 +800,7 @@ namespace TableBuilder
 
             Ret.OpcodeMatrix = Ret.OpcodeMatrix.OrderBy(e => (e.Prefix << 8) + e.Base).ToList();
 
-            var dups = Ret.OpcodeMatrix.GroupBy(e => (e.Prefix << 8) + e.Base).Where(e => e.Count() > 1).ToDictionary(e=>e.Key, e2=>e2.ToList() );
+            //var dups = Ret.OpcodeMatrix.GroupBy(e => (e.Prefix << 8) + e.Base).Where(e => e.Count() > 1).ToDictionary(e=>e.Key, e2=>e2.ToList() );
 
             return Ret;
         }
