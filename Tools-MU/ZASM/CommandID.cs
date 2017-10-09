@@ -94,9 +94,9 @@ namespace ZASM
         // Psudo Operators
         BYTE, WORD, DWORD, DC, RESB, RESW, RESD, 
 
-        DataCommandsMax, 
+        DataCommandsMax,
 
-        CONST, EQU, 
+        DEFL, EQU, 
 
         // Commands
         EXTERN, PUBLIC, INCLUDE, Z80, i8080, GAMEBOY, ORG, END, SECTION, SIZE, FILL, POS,

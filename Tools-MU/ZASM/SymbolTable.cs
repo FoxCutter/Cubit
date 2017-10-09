@@ -61,6 +61,11 @@ namespace ZASM
 
             RefrencedLines = new List<Tuple<int, int>>();
         }
+
+        public override string ToString()
+        {
+            return Name + ":" + Type.ToString() + "-" + State.ToString();
+        }
     }
 
     class SymbolTable : IEnumerable<SymbolTableEntry>

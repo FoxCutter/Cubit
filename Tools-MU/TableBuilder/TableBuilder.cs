@@ -119,8 +119,8 @@ namespace TableBuilder
                 {
                     Output.Append(", ");
                     Output.Append(Entry.Params[x].Pos);
-                    Output.Append("),\t");
                 }
+                Output.Append("),\t");
                 v++;
             }
 

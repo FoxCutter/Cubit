@@ -44,6 +44,9 @@ namespace ZASM
         // Immidate, Encoded
         Value,
 
+        // String values
+        String,
+
         Error,
     }
     
@@ -52,12 +55,14 @@ namespace ZASM
         public List<Token> TokenList;
         public bool Pointer;
         public ParameterType Type;
+        public bool Resolved;
 
         public ParameterInformation()
         {
             TokenList = new List<Token>();
             Pointer = false;
             Type = ParameterType.Unknown;
+            Resolved = false;
         }
 
         public Token Value
@@ -166,6 +171,9 @@ namespace ZASM
                 else if (HasByteRegister())
                     Type = ParameterType.ByteRegister;
 
+                else if (TokenTypeCount(TokenType.String) != 0)
+                    Type = ParameterType.String;
+                
                 else
                     Type = ParameterType.Value;
             }
@@ -372,8 +380,6 @@ namespace ZASM
             if (Type == ParameterType.Error)
                 return false;
             
-            //Token TempToken = null;
-
             Stack<Token> TempStack = new Stack<Token>();
             int Pos = 0;
 
@@ -381,20 +387,6 @@ namespace ZASM
             {
                 Token Current = TokenList[Pos];
                 Pos++;
-
-                //if (Current.IsIndexWord() && Pointer == true)
-                //{
-                //    if (TempToken != null)
-                //    {
-                //        MessageLog.Log.Add("Parser", 0, 0, MessageCode.SyntaxError, "Can not have two Index's in the same memory refrence");
-                //        return false;
-                //    }
-
-                //    TempToken = Current;
-                //    Current = new Token();
-                //    Current.Type = TokenType.Result;
-                //    Current.NumericValue = 0;
-                //}
 
                 if (Current.IsOperator())
                 {
@@ -435,6 +427,9 @@ namespace ZASM
                         Token Result = ExecuteToken(LHS, Current, RHS);
                         if (Result.Type != TokenType.Number)
                         {
+                            if (Result.Type == TokenType.Error)
+                                Type = ParameterType.Error;
+
                             TempStack.Push(LHS);
                             TempStack.Push(RHS);
                             TempStack.Push(Current);
@@ -453,25 +448,12 @@ namespace ZASM
 
             TokenList = TempStack.Reverse().ToList();
 
-            //if (TempToken != null)
-            //{
-            //    TempToken.Type = TokenType.Displacment;
-            //    TokenList.Insert(0, TempToken);
-
-            //    //TempToken = new Token();
-            //    //TempToken.Type = TokenType.Plus;
-            //    //TokenList.Add(TempToken);                
-            //}
-
-            //if (TokenList[0].IsIndexWord() && TokenList.Last().IsOperator())
-            //{
-            //    Token Current = TokenList[0];
-            //    Current.Type = TokenType.Displacment;
-            //    TokenList.RemoveAt(0);
-            //    TokenList.Insert(0, Current);
-            //}
-
             SetTokenType();
+            if (TokenList.Count != 1 || TokenList[0].Type == TokenType.Identifier)
+                Resolved = false;
+            else
+                Resolved = true;
+
 
             return TokenList.Count == 1;
         }
@@ -480,8 +462,8 @@ namespace ZASM
         {
             if (CurrentToken.Type == TokenType.String)
             {
-                if (CurrentToken.StringValue.Length <= 2)
-                {
+                if (CurrentToken.StringValue.Length == 1)
+                { 
                     CurrentToken.Type = TokenType.Number;
                 }
             }
@@ -492,17 +474,10 @@ namespace ZASM
                 {
                     // Value hasn't been defined yet, so we can't do any more to it.                    
                 }
-                else if (Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant)
+                else
                 {
                     CurrentToken.Type = TokenType.Number;
-
-                    if (Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Value)
-                    {
-                        CurrentToken.NumericValue = ((ValueInformation)Symbol.Object).Value;
-                    }
-
-                    else
-                        Message.Log.Add("Evaluator", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.UnknownError, "Unexpected symbol table type");
+                    CurrentToken.NumericValue = (short)Symbol.Object.Address;
                 }
             }
             else if (CurrentToken.Type == TokenType.Identifier)
@@ -518,13 +493,17 @@ namespace ZASM
                 {
                     // Value hasn't been defined yet, so we can't do any more to it.                    
                 }
-                else if (Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant)
+                else if (Symbol.Type == SymbolType.Value || Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Address)
                 {
                     CurrentToken.Type = TokenType.Number;
 
                     if (Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Value)
                     {
                         CurrentToken.NumericValue = ((ValueInformation)Symbol.Object).Value;
+                    }
+                    else if (Symbol.Type == SymbolType.Address)
+                    {
+                        CurrentToken.NumericValue = (short)Symbol.Object.Address;
                     }
 
                     else
@@ -551,13 +530,29 @@ namespace ZASM
 
             if (CurrentToken.RightToLeft())
             {
-                if (Op2.Type != TokenType.Number)
+                if (Op2.Type == TokenType.String)
+                {
+                    Message.Log.Add("Evaluator", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, "Unable to apply formulas to strings");
+                    Result.Type = TokenType.Error;
                     return Result;
+                }
+                else if (Op2.Type != TokenType.Number)
+                {
+                    return Result;
+                }
             }
             else
             {
-                if (Op1.Type != TokenType.Number || Op2.Type != TokenType.Number)
+                if (Op1.Type == TokenType.String || Op2.Type == TokenType.String)
+                {
+                    Message.Log.Add("Evaluator", CurrentToken.FileID, CurrentToken.Line, CurrentToken.Character, MessageCode.SyntaxError, "Unable to apply formulas to strings");
+                    Result.Type = TokenType.Error;
                     return Result;
+                }
+                else if (Op1.Type != TokenType.Number || Op2.Type != TokenType.Number)
+                {
+                    return Result;
+                }
             }
 
             if (Op2.NumericValue == 0 && (CurrentToken.Type == TokenType.Division || CurrentToken.Type == TokenType.Remainder))

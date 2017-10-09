@@ -146,6 +146,9 @@ namespace ZASM
         {
             int Ret = 0;
 
+            if (Error)
+                return Ret;
+
             foreach (ParameterInformation Param in Params)
             {
                 switch (DataType)
@@ -162,7 +165,8 @@ namespace ZASM
                         break;
 
                     case CommandID.DC:
-                        Ret += Param.Value.StringValue.Length;
+                        if(Param.Type == ParameterType.String && Param.Value.Type == TokenType.String)
+                            Ret += Param.Value.StringValue.Length;
                         break;
 
                     case CommandID.RESB:

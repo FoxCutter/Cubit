@@ -46,7 +46,7 @@ namespace ZASM
         {
             { "DB",	        CommandID.BYTE },       { "DW",	        CommandID.WORD },       { "DD",	        CommandID.DWORD },      { "DC",	        CommandID.DC },         
             { "DS",	        CommandID.RESB },       { "RESB",       CommandID.RESB },       { "RESW",       CommandID.RESW },       { "RESD",       CommandID.RESD }, 
-            { "EQU",        CommandID.EQU },        { "CONST",	    CommandID.CONST },      { "DEFL",	    CommandID.CONST },       
+            { "EQU",        CommandID.EQU },        { "CONST",	    CommandID.EQU },        { "DEFL",	    CommandID.DEFL },       
         };
 
         public static CommandList z80Opcodes = new CommandList(CommandListComparer)

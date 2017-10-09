@@ -37,7 +37,7 @@ namespace ZASM
             if (_SymbolTable == null)
                 _SymbolTable = new SymbolTable();
 
-            if(_CurrentSection == null)
+            if (_CurrentSection == null)
                 _CurrentSection = new DataSection("");
 
             if (_CurrentPosition == null)
@@ -47,94 +47,157 @@ namespace ZASM
                 TempToken.Type = TokenType.CurrentPos;
 
                 _CurrentPosition = new ValueInformation(TempToken, SymbolEntry);
+                _CurrentPosition.Address = 0;
                 _CurrentPosition.Value = 0;
                 SymbolEntry.Object = _CurrentPosition;
-                SymbolEntry.State = SymbolState.ValuePending;
+                SymbolEntry.Type = SymbolType.Address;
+                SymbolEntry.State = SymbolState.ValueSet;
             }
 
             StageOne();
 
+            StreamWriter Catch = new StreamWriter(System.IO.File.OpenWrite(FileName + ".out"));
+          
             foreach (ObjectInformation Entry in _CurrentSection.ObjectData)
             {
+                StringBuilder Output = new StringBuilder();
+
                 //var Res = FindOpcode(Entry);
 
                 //if (Entry.Type >= ObjectType.Meta)
                 //    continue;
 
-                Console.Write("{0} {1} ", Entry.Line, Entry.Address.ToString("X4"));
+                Output.AppendFormat("{0} {1} ", Entry.Line, Entry.Address.ToString("X4"));
 
                 if (Entry.Type == ObjectType.Label)
                 {
                     LabelInformation Label = (LabelInformation)Entry;
-                    Console.Write("{0,-10} ", Label.Symbol.Name + ":");
-                    //Console.Write("{0,-10} ", Entry.Symbol.DefinedLine.ToString());
+                    Output.AppendFormat("{0,-10} ", Label.Symbol.Name + ":");
+                    //Output.AppendFormat("{0,-10} ", Entry.Symbol.DefinedLine.ToString());
                 }
                 else if (Entry.Type == ObjectType.Value)
                 {
                     ValueInformation Value = (ValueInformation)Entry;
-                    Console.Write("{0,-10} ", Value.Symbol.Name);
+                    Output.AppendFormat("{0,-10} ", Value.Symbol.Name);
                 }
                 else
                 {
-                    Console.Write("           ");
+                    Output.Append("           ");
                 }
 
                 if (Entry.Type == ObjectType.Value)
                 {
                     ValueInformation Value = (ValueInformation)Entry;
-                    Console.Write("EQU    ");
-                    Console.Write(Value.ToValueString());
+                    Output.Append("EQU    ");
+                    Output.Append(Value.ToValueString());
 
                 }
                 else if (Entry.Type == ObjectType.Command)
                 {
                     CommandInformation Command = (CommandInformation)Entry;
 
-                    Console.Write(".{0,-6} ", Command.Command.ToString());
+                    Output.AppendFormat(".{0,-6} ", Command.Command.ToString());
 
                     for (int x = 0; x < Command.Params.Count; x++)
                     {
                         if (x != 0)
-                            Console.Write(", ");
+                            Output.Append(", ");
 
-                        Console.Write(Command.ParamString(x));
+                        Output.Append(Command.ParamString(x));
                     }
                 }
                 else if (Entry.Type == ObjectType.Data)
                 {
                     DataInformation Command = (DataInformation)Entry;
 
-                    Console.Write("{0,-6} ", Command.DataType.ToString());
+                    Output.AppendFormat("{0,-6} ", Command.DataType.ToString());
 
                     for (int x = 0; x < Command.Params.Count; x++)
                     {
                         if (x != 0)
-                            Console.Write(", ");
+                            Output.Append(", ");
 
-                        Console.Write(Command.ParamString(x));
+                        Output.Append(Command.ParamString(x));
                     }
                 }
                 else if (Entry.Type == ObjectType.Opcode)
                 {
                     OpcodeInformation Opcode = (OpcodeInformation)Entry;
 
-                    Console.Write("{0,-6} ", Opcode.Opcode.ToString());
+                    Output.AppendFormat("{0,-6} ", Opcode.Opcode.ToString());
 
                     for (int x = 0; x < Opcode.Params.Count; x++)
                     {
                         if (x != 0)
-                            Console.Write(", ");
+                            Output.Append(", ");
 
-                        Console.Write(Opcode.ParamString(x));
+                        Output.Append(Opcode.ParamString(x));
                     }
                 }
 
 
-                Console.WriteLine();
+                Console.WriteLine(Output.ToString());
+                Catch.WriteLine(Output.ToString());
+            }
+            
+            foreach (SymbolTableEntry Entry in _SymbolTable.OrderBy(e => e.Name))
+            {
+                StringBuilder Output = new StringBuilder();
+
+                if (Entry.Type == SymbolType.Value || Entry.Type == SymbolType.Constant)
+                {
+                    Output.Append(Entry.Name);
+                    Output.Append(' ', 20 - Output.Length);
+
+                    Output.Append(" = ");
+
+                    if (Entry.State == SymbolState.Undefined)
+                        Output.Append("Undefined");
+
+                    else if (Entry.State == SymbolState.ValuePending)
+                        Output.Append("Pending");
+
+                    else
+                        Output.Append(((ValueInformation)Entry.Object).Value.ToString("X4"));
+                }
+                else if (Entry.Type == SymbolType.Address)
+                {
+                    Output.Append(Entry.Name);
+                    Output.Append(' ', 23 - Output.Length);
+                    Output.Append(Entry.Object.Address.ToString("X4"));
+                }
+                else
+                {
+                    Output.Append(Entry.Name);
+                    Output.Append(' ', 23 - Output.Length);
+                    Output.Append("UNKNOWN");
+                }
+                Console.WriteLine(Output.ToString());
+                Catch.WriteLine(Output.ToString());
             }
 
-
+            Catch.Close();
             return true;
+        }
+
+        void UpdateCurrentPosition(int Value)
+        {
+            _CurrentSection.CurrentOffset += Value;
+            _CurrentPosition.Address = (short)GetCurrentPosition();
+        }
+
+        int GetCurrentPosition()
+        {
+            if (_CurrentSection.Placement == -1)
+                return _CurrentSection.CurrentOffset;
+            else
+                return _CurrentSection.Placement + _CurrentSection.CurrentOffset;
+        }
+
+        void SetCurrentPosition(int Value)
+        {
+            _CurrentSection.CurrentOffset = Value;
+            _CurrentPosition.Address = (short)GetCurrentPosition();
         }
 
         Token GetNextToken(bool WithLables = false)
@@ -210,6 +273,7 @@ namespace ZASM
         {
             SymbolTableEntry SymbolEntry = FindSymbol(CurrentToken);
             LabelInformation NewLabel = new LabelInformation(CurrentToken, SymbolEntry);
+            NewLabel.Address = GetCurrentPosition();
 
             if (SymbolEntry.State != SymbolState.Undefined)
             {
@@ -221,11 +285,9 @@ namespace ZASM
                 SymbolEntry.Type = SymbolType.Address;
                 SymbolEntry.FileID = CurrentToken.FileID;
                 SymbolEntry.Line = CurrentToken.Line;
-
-                NewLabel.Address = 0;
-                
+              
                 SymbolEntry.Object = NewLabel;
-                SymbolEntry.State = SymbolState.ValuePending;
+                SymbolEntry.State = SymbolState.ValueSet;
             }
             
             // If the label has a colon, eat it.
@@ -241,6 +303,7 @@ namespace ZASM
         {
             SymbolTableEntry SymbolEntry = FindSymbol(CurrentToken);
             ValueInformation NewValue = new ValueInformation(CurrentToken, SymbolEntry);
+            NewValue.Address = GetCurrentPosition();
 
             return NewValue;
         }
@@ -266,7 +329,7 @@ namespace ZASM
             if (CurrentIdentifier.Symbol.State == SymbolState.Undefined)
             {
                 // This is the first time this symbol has been referenced
-                CurrentIdentifier.Symbol.Type = CurrentToken.CommandID == CommandID.CONST ? SymbolType.Constant : SymbolType.Value;
+                CurrentIdentifier.Symbol.Type = CurrentToken.CommandID == CommandID.EQU ? SymbolType.Constant : SymbolType.Value;
                 CurrentIdentifier.Symbol.FileID = CurrentToken.FileID;
                 CurrentIdentifier.Symbol.Line = CurrentToken.Line;
 
@@ -275,13 +338,13 @@ namespace ZASM
             else
             {
                 // Redefining the value                
-                // We can't redefine a value created with CONST
+                // We can't redefine a value created with EQU
                 if (CurrentIdentifier.Symbol.Type == SymbolType.Constant)
                 {
                     Message.Log.Add("Parser", CurrentIdentifier.FileID, CurrentIdentifier.Line, CurrentIdentifier.Character, MessageCode.SyntaxWarning, string.Format("Can't redefine the value of {0}", CurrentIdentifier.Symbol.Name));
                     CurrentIdentifier.Error = true;
                 }
-                else if (CurrentToken.CommandID == CommandID.CONST)
+                else if (CurrentToken.CommandID == CommandID.EQU)
                 {
                     Message.Log.Add("Parser", CurrentIdentifier.FileID, CurrentIdentifier.Line, CurrentIdentifier.Character, MessageCode.SyntaxWarning, string.Format("Can't convert {0} to const", CurrentIdentifier.Symbol.Name));
                 }
@@ -299,6 +362,12 @@ namespace ZASM
                     CurrentIdentifier.Value = CurrentIdentifier.Params[0].Value.NumericValue;
                     CurrentIdentifier.Symbol.State = SymbolState.ValueSet;
                 }
+                else if (CurrentIdentifier.Params[0].Value.Type == TokenType.String)
+                {
+                    CurrentIdentifier.Symbol.State = SymbolState.Empty;
+                    Message.Log.Add("Parser", CurrentIdentifier.Params[0].Value.FileID, CurrentIdentifier.Params[0].Value.Line, CurrentIdentifier.Params[0].Value.Character, MessageCode.SyntaxWarning, string.Format("{0}: values can not be strings", CurrentIdentifier.Symbol.Name));
+                    CurrentIdentifier.Error = true;
+                }
                 else
                 {
                     CurrentIdentifier.Symbol.State = SymbolState.ValuePending;
@@ -311,6 +380,7 @@ namespace ZASM
         public DataInformation ReadData(Token CurrentToken)
         {
             DataInformation NewData = new DataInformation(CurrentToken);
+            NewData.Address = GetCurrentPosition();
 
             while (!IsBreakType(_Tokenizer.PeekNextRoughTokenType()))
             {
@@ -324,6 +394,22 @@ namespace ZASM
 
                 Param.Simplify(_SymbolTable);
                 NewData.Params.Add(Param);
+                if (CurrentToken.CommandID == CommandID.DC && Param.Type != ParameterType.String)
+                {
+                    Message.Log.Add("Parser", NewData.FileID, NewData.Line, NewData.Character, MessageCode.SyntaxError, "'DC' can only contain strings");
+                    NewData.Error = true;
+                    Param.Type = ParameterType.Error;
+                }
+
+                if (CurrentToken.CommandID == CommandID.RESB || CurrentToken.CommandID == CommandID.RESW || CurrentToken.CommandID == CommandID.RESD)
+                {
+                    // Reserved values have to evaluate.
+                    if (Param.Type == ParameterType.Error || Param.Resolved == false)
+                    {
+                        Message.Log.Add("Parser", Param.TokenList[0].FileID, Param.TokenList[0].Line, Param.TokenList[0].Character, MessageCode.SyntaxError, "Unable to resolved length of reserved data");
+                        NewData.Error = true;
+                    }
+                }
 
                 if (_Tokenizer.PeekNextCharacterType() != CharacterType.Comma)
                     break;
@@ -331,7 +417,15 @@ namespace ZASM
                     NewData.TokenList.Add(_Tokenizer.GetNextToken());
             }
 
-            _CurrentSection.CurrentOffset += NewData.GetDataLength();
+            if (NewData.GetDataLength() < 0)
+            {
+                Message.Log.Add("Parser", NewData.FileID, NewData.Line, NewData.Character, MessageCode.SyntaxError, "Can't reserve negitive space");
+                NewData.Error = true;
+            }
+
+            
+            UpdateCurrentPosition(NewData.GetDataLength());
+
 
             return NewData;
         }
@@ -339,6 +433,7 @@ namespace ZASM
         public CommandInformation ReadCommand(Token CurrentToken)
         {
             CommandInformation NewCommand = new CommandInformation(CurrentToken);
+            NewCommand.Address = GetCurrentPosition();
 
             if (!IsBreakType(_Tokenizer.PeekNextRoughTokenType()))
             {
@@ -368,6 +463,7 @@ namespace ZASM
                     break;
 
                 case CommandID.ORG:
+                    SetCurrentPosition(NewCommand.Params[0].Value.NumericValue);
                     break;
 
                 case CommandID.INCLUDE:
@@ -387,6 +483,7 @@ namespace ZASM
         public OpcodeInformation ReadOpcode(Token CurrentToken)
         {
             OpcodeInformation NewOpcode = new OpcodeInformation(CurrentToken);
+            NewOpcode.Address = GetCurrentPosition();
 
             while (_Tokenizer.PeekNextRoughTokenType() != TokenType.LineBreak && _Tokenizer.PeekNextRoughTokenType() != TokenType.Comment && _Tokenizer.PeekNextRoughTokenType() != TokenType.End)
             {
@@ -478,7 +575,7 @@ namespace ZASM
             // Look up the opcode
             LookupOpcode(NewOpcode);
 
-            _CurrentSection.CurrentOffset += NewOpcode.Encoding.Length;
+            UpdateCurrentPosition(NewOpcode.Encoding.Length);
 
             return NewOpcode;
         }
@@ -769,7 +866,7 @@ namespace ZASM
                     case TokenType.Assignment:
                     case TokenType.Command:
                     case TokenType.Preprocessor:
-                        if (CurrentToken.Type == TokenType.Assignment || CurrentToken.CommandID == CommandID.EQU || CurrentToken.CommandID == CommandID.CONST)
+                        if (CurrentToken.Type == TokenType.Assignment || CurrentToken.CommandID == CommandID.EQU || CurrentToken.CommandID == CommandID.DEFL)
                         {
                             if (CurrentIdentifier == null)
                             {
@@ -855,31 +952,50 @@ namespace ZASM
             }
 
             // Evaluate any values that are value based. 
-            foreach (SymbolTableEntry Symbol in _SymbolTable)
+            int Pass = 0;
+            while (_SymbolTable.Count(e => e.State == SymbolState.ValuePending) != 0 && Pass != 0x25)
             {
-                if (Symbol.Type == SymbolType.Unknown)
+                
+                
+                foreach (SymbolTableEntry Symbol in _SymbolTable)
                 {
-                    Message.Log.Add("Parser", Symbol.RefrencedLines[0].Item1, Symbol.RefrencedLines[0].Item2, 0, MessageCode.UndefinedSymbol, Symbol.Name);
-                    Error = true;
-                }                
-                else if ((Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Value) && Symbol.State == SymbolState.ValuePending)
-                {
-                    ValueInformation ValueObject = (ValueInformation)Symbol.Object;
-                    if (ValueObject.Params.Count == 0)
+                    if (Symbol.Type == SymbolType.Unknown)
                     {
-                        Message.Log.Add("Parser", ValueObject.FileID, ValueObject.Line, 0, MessageCode.InternalError, "Missing Param list in post stage 1");
+                        Message.Log.Add("Parser", Symbol.RefrencedLines[0].Item1, Symbol.RefrencedLines[0].Item2, 0, MessageCode.UndefinedSymbol, Symbol.Name);
                         Error = true;
                     }
-                    else
+                    else if ((Symbol.Type == SymbolType.Constant || Symbol.Type == SymbolType.Value) && Symbol.State == SymbolState.ValuePending)
                     {
-                        ValueObject.Params[0].Simplify(_SymbolTable);
-
-                        if (ValueObject.Params[0].Value.Type == TokenType.Number)
+                        ValueInformation ValueObject = (ValueInformation)Symbol.Object;
+                        if (ValueObject.Params.Count == 0)
                         {
-                            ValueObject.Value = ValueObject.Params[0].Value.NumericValue;
-                            ValueObject.Symbol.State = SymbolState.ValueSet;
+                            Message.Log.Add("Parser", ValueObject.FileID, ValueObject.Line, ValueObject.Character, MessageCode.InternalError, "Missing Param list in post stage 1");
+                            Error = true;
                         }
-                    }                    
+                        else
+                        {
+                            ValueObject.Params[0].Simplify(_SymbolTable);
+
+                            if (ValueObject.Params[0].Value.Type == TokenType.Number)
+                            {
+                                ValueObject.Value = ValueObject.Params[0].Value.NumericValue;
+                                ValueObject.Symbol.State = SymbolState.ValueSet;
+                            }
+                        }
+                    }
+                }
+
+                Pass++;
+            }
+
+            if (Pass == 0x25)
+            {
+                foreach (SymbolTableEntry Symbol in _SymbolTable.Where(e => e.State == SymbolState.ValuePending))
+                {
+                    ValueInformation ValueObject = (ValueInformation)Symbol.Object;
+
+                    Message.Log.Add("Parser", ValueObject.FileID, ValueObject.Line, ValueObject.Character, MessageCode.SyntaxError, string.Format("Unable to resolve '{0}'", ValueObject.Symbol.Name));
+                    Error = true;
                 }
             }
 
