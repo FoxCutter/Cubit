@@ -12,8 +12,8 @@
 ; /CS     | 04 PD2     PC2 25 | IRQ2
 ; /INTACK | 05 PD3     PC1 24 | IRQ1
 ; /INTREQ | 06 PD4     PC0 23 | IRQ0
-; +5v     | 07 GND     GND 22 | GND
-; GND     | 08 VCC     PC7 21 | IRQ7
+; +5v     | 07 VCC     GND 22 | GND
+; GND     | 08 GND     PC7 21 | IRQ7
 ; D6      | 09 PB6    AVCC 20 | +5v
 ; D7      | 10 PB7     PB5 19 | D5
 ; /WAIT   | 11 PD5     PB4 18 | D4
@@ -182,8 +182,8 @@
 ;
 .def YH = r28
 .def YL = r29
-.def ZH = r31
-.def ZL = r30
+;.def ZH = r31
+;.def ZL = r30
 
 ; ===================================================================================
 ;
@@ -271,7 +271,7 @@
 .equ RegisterConfig      = 0x01
 .equ RegisterIRR         = 0x02
 .equ RegisterVectors     = 0x03
-.equ RegisterDebug       = 0x42
+;.equ RegisterDebug       = 0x42
 .equ RegisterVectorBase  = 0x80
 .equ RegisterSpuriousInt = 0x8F
 .equ RegisterSoftReset   = 0xFF
@@ -328,10 +328,20 @@ Reset:
 
   ; Clear any watch dog that might have reset us
   wdr
-  ldi Scratch, 0x18
+
+  ; Clear WDRF in MCUSR
+  in Scratch, MCUSR
+  andi Scratch, (0xFF & (1 << WDRF))
+  out MCUSR, Scratch
+
+  ; Keep old prescaler setting to prevent unintentional time-out
+  lds Scratch, WDTCSR
+  ori Scratch, (1<<WDCE) | (1<<WDE)
   sts WDTCSR, Scratch
-  sts WDTCSR, r0
-  
+
+  ; Turn off WDT
+  sts WDTCSR, ZeroReg
+
 
   ; Clear out the Registers
   clr ISR
@@ -921,13 +931,13 @@ ActiveFound:
 
 SoftReset:
   ; Set up the watch dog timer to go off and force a reset.
-  clr Scratch
-  out MCUSR, Scratch
-
-  ldi Scratch, 0x18
+  wdr
+  
+  lds Scratch, WDTCSR
+  ori Scratch, (1<<WDCE) | (1<<WDE)
   sts WDTCSR, Scratch
 
-  ldi Scratch, 0x08
+  ldi Scratch, (1<<WDE)
   sts WDTCSR, Scratch
   
 ResetLoop:  
