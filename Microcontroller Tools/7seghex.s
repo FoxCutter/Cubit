@@ -1,14 +1,14 @@
 .device ATtiny48
 
 ;         =====================
-; /RESET  | 01 /RESET  PC5 28 | *F
-; !AOut   | 02 PD0     PC4 27 | *G
-; !BOut   | 03 PD1     PC3 26 | *A
-; /LATCH  | 04 PD2     PC2 25 | *B
-; oHI/oLO | 05 PD3     PC1 24 | *C
-; NC      | 06 PD4     PC0 23 | *D
+; /RESET  | 01 /RESET  PC5 28 | *F      F
+; !AOut   | 02 PD0     PC4 27 | *E      G
+; !BOut   | 03 PD1     PC3 26 | *D      A
+; /LATCH  | 04 PD2     PC2 25 | *C      B
+; oHI/oLO | 05 PD3     PC1 24 | *B      C
+; NC      | 06 PD4     PC0 23 | *A      D
 ; +5v     | 07 VCC     GND 22 | GND
-; GND     | 08 GND     PC7 21 | *E
+; GND     | 08 GND     PC7 21 | *G      E
 ; DB2     | 09 PB6    AVCC 20 | +5v
 ; DB3     | 10 PB7     PB5 19 | DB1
 ; NC      | 11 PD5     PB4 18 | DB0
@@ -17,7 +17,6 @@
 ; DA0     | 14 PB0     PB1 15 | DA1
 ;         =====================
 ;
-;FGABCDE
 ; /Latch = Int0
 ;
 ; ISP Header
@@ -33,7 +32,7 @@
 
 ;!AOut, !BOut Active nibble (reverse of the oHI/oLO state)
 ;*A - *G, *DP = Output segments
-;        D               D
+;        D              D
 ;  abcdefPg	  dcbagfPe		  abcdefg-dp
 ;0b11111100	0b11110101	; 0	0b1111110-0
 ;0b01100000	0b01100000	; 1	0b0110000-0
@@ -184,7 +183,7 @@ Reset:
   out TCCR0A, Scratch
 
   ; Set the interval
-  lds Scratch, 0xFF
+  lds Scratch, 0x7F
   out OCR0A, Scratch
 
   ; And enable it to trigger when it overflows
@@ -354,20 +353,41 @@ SegementLookup:
 ; -----------------------------------------------------------------------------------
 
 SegmentTable:
-     ;  abcdefPg 	  abcdefg-dp
-  .DW 0b11111100 ; 0	0b1111110-0
-  .DW 0b01100000 ; 1	0b0110000-0
-  .DW 0b11011001 ; 2	0b1101101-0
-  .DW 0b11110001 ; 3	0b1111001-0
-  .DW 0b01100101 ; 4	0b0110011-0
-  .DW 0b10110101 ; 5	0b1011011-0
+     ;   D              
+     ;  gPfedcba 	  abcdefg-dp
+  .DW 0b00111111 ; 0	0b1111110-0
+  .DW 0b00000110 ; 1	0b0110000-0
+  .DW 0b10011011 ; 2	0b1101101-0
+  .DW 0b10001111 ; 3	0b1111001-0
+  .DW 0b10100110 ; 4	0b0110011-0
+  .DW 0b10101101 ; 5	0b1011011-0
   .DW 0b10111101 ; 6	0b1011111-0
-  .DW 0b11100000 ; 7	0b1110000-0
-  .DW 0b11111101 ; 8	0b1111111-0
-  .DW 0b11100101 ; 9	0b1110011-0
-  .DW 0b11101111 ; A	0b1110111-1
-  .DW 0b00111111 ; b	0b0011111-1
-  .DW 0b10011110 ; C	0b1001110-1
-  .DW 0b01111011 ; d	0b0111101-1
-  .DW 0b10011111 ; E	0b1001111-1
-  .DW 0b10001111 ; F	0b1000111-1
+  .DW 0b00000111 ; 7	0b1110000-0
+  .DW 0b10111111 ; 8	0b1111111-0
+  .DW 0b10100111 ; 9	0b1110011-0
+  .DW 0b11110111 ; A	0b1110111-1
+  .DW 0b11111100 ; b	0b0011111-1
+  .DW 0b01111001 ; C	0b1001110-1
+  .DW 0b11011110 ; d	0b0111101-1
+  .DW 0b11111001 ; E	0b1001111-1
+  .DW 0b11110001 ; F	0b1000111-1
+  
+  
+;     ;   D  
+;     ;  ePfgabcd 	  abcdefg-dp
+;  .DW 0b10101111 ; 0	0b1111110-0
+;  .DW 0b00000110 ; 1	0b0110000-0
+;  .DW 0b10011101 ; 2	0b1101101-0
+;  .DW 0b00011111 ; 3	0b1111001-0
+;  .DW 0b00110110 ; 4	0b0110011-0
+;  .DW 0b00111011 ; 5	0b1011011-0
+;  .DW 0b10111011 ; 6	0b1011111-0
+;  .DW 0b00001110 ; 7	0b1110000-0
+;  .DW 0b10111111 ; 8	0b1111111-0
+;  .DW 0b00111110 ; 9	0b1110011-0
+;  .DW 0b11111110 ; A	0b1110111-1
+;  .DW 0b11110011 ; b	0b0011111-1
+;  .DW 0b11101001 ; C	0b1001110-1
+;  .DW 0b11010111 ; d	0b0111101-1
+;  .DW 0b11111001 ; E	0b1001111-1
+;  .DW 0b11111000 ; F	0b1000111-1
