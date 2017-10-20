@@ -348,6 +348,31 @@ void WaitForPin(int Pin)
 }
 */
 
+void CycleWait()
+{
+	digitalWrite(BusWait, HIGH);
+	digitalWrite(BusWait, LOW);
+
+	// Digital 13 (BusWait) == PORTB5
+
+
+	//PORTB |= _BV(PORTB5); // HIGH
+	//__builtin_avr_nop();
+	//PORTB &= ~(_BV(PORTB5)); // LOW
+
+	//bitSet(PORTB, PORTB5); // HIGH
+	//__builtin_avr_nop();
+	//bitClear(PORTB, PORTB5); // LOW
+
+	//__extension__ __asm__ __volatile__ ("sbi PORTB, PORTB5"); // HIGH
+	//__builtin_avr_nop();
+	//__extension__ __asm__ __volatile__ ("cbi PORTB, PORTB5"); // LOW
+
+	//__builtin_avr_delay_cycles(5);
+	//__builtin_avr_nop();
+
+}
+
 // Executes a no op on the Z80
 void ExecuteNoOp()
 {
@@ -361,16 +386,14 @@ void ExecuteNoOp()
 	// Cycle wait until we are at M1
 	while(digitalRead(M1Input) == HIGH)
 	{
-		digitalWrite(BusWait, HIGH);
-		digitalWrite(BusWait, LOW);
+		CycleWait();
 	}
 
 	// Put the NoOp on the data buss
 	SetData(0x00);
     digitalWrite(DataDisplay, LOW);
 
-	digitalWrite(BusWait, HIGH);
-	digitalWrite(BusWait, LOW);
+	CycleWait();
 
 	// Get the bus and stop waiting
 	digitalWrite(BusReq, LOW);
@@ -399,8 +422,7 @@ void ExecuteJump(unsigned short Address)
 	// Cycle wait until we are at M1
 	while(digitalRead(M1Input) == HIGH)
 	{
-		digitalWrite(BusWait, HIGH);
-		digitalWrite(BusWait, LOW);
+		CycleWait();
 	}
 
 	// Put the jump op code on the bus
@@ -408,8 +430,7 @@ void ExecuteJump(unsigned short Address)
     digitalWrite(DataDisplay, LOW);
 
 	// Cycle the CPU to the next wait state
-	digitalWrite(BusWait, HIGH);
-	digitalWrite(BusWait, LOW);
+	CycleWait();
 
 	// Low byte of the address
 	digitalWrite(DataDisplay, HIGH);
@@ -417,8 +438,7 @@ void ExecuteJump(unsigned short Address)
     digitalWrite(DataDisplay, LOW);
 
 	// Cycle
-	digitalWrite(BusWait, HIGH);
-	digitalWrite(BusWait, LOW);
+	CycleWait();
 
 	// High byte of the address
 	digitalWrite(DataDisplay, HIGH);
