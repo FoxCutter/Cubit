@@ -257,7 +257,21 @@ namespace ZASM
                     }
                 }
             }
-            
+
+            if (CurrentToken.Type == TokenType.Register && CurrentToken.CommandID == CommandID.HL)
+            {
+                if (_Tokenizer.PeekNextRoughTokenType() == TokenType.Plus)
+                {
+                    CurrentToken.CommandID = CommandID.HLI;
+                    _Tokenizer.GetNextToken();
+                }
+                else if (_Tokenizer.PeekNextRoughTokenType() == TokenType.Minus)
+                {
+                    CurrentToken.CommandID = CommandID.HLD;
+                    _Tokenizer.GetNextToken();
+                }
+            }
+
             return CurrentToken;
         }
 

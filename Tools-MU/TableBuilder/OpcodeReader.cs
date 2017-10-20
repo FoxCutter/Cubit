@@ -307,6 +307,11 @@ namespace TableBuilder
                     Ret.Type = ParameterType.WordRegister;
                     break;
 
+                case "BC":
+                    Ret.ID = ZASM.CommandID.BC;
+                    Ret.Type = ParameterType.WordRegister;
+                    break;
+
                 case "DE":
                     Ret.ID = ZASM.CommandID.DE;
                     Ret.Type = ParameterType.WordRegister;

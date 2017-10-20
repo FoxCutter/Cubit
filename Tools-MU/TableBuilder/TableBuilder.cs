@@ -7,6 +7,15 @@ using System.IO;
 
 namespace TableBuilder
 {
+    public static class DistinctHelper
+    {
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            var identifiedKeys = new HashSet<TKey>();
+            return source.Where(element => identifiedKeys.Add(keySelector(element)));
+        }
+    }
+    
     class TableBuilder
     {
         static void Main(string[] args)
@@ -24,7 +33,31 @@ namespace TableBuilder
             SaveGroupInfo(GroupInfo, "GB");
         }
 
-        static string GetParamaterType(ParamInfo Param)
+        static string GetParamater(ParamInfo Param, bool ForDecoding)
+        {
+            if(!ForDecoding)
+                return Param.ID.ToString();
+            
+            switch (Param.ID)
+            {
+                case ZASM.CommandID.IX:
+                case ZASM.CommandID.IY:
+                    return "Index";
+
+                case ZASM.CommandID.IXH:
+                case ZASM.CommandID.IYH:
+                    return "IndexHigh";
+
+                case ZASM.CommandID.IXL:
+                case ZASM.CommandID.IYL:
+                    return "IndexLow";
+
+                default:
+                    return Param.ID.ToString();
+            }
+        }
+
+        static string GetParamaterType(ParamInfo Param, bool ForDecoding)
         {
             switch (Param.Type)
             {
@@ -86,9 +119,7 @@ namespace TableBuilder
             StringBuilder Output = new StringBuilder();
 
             Output.Append("            new OpcodeData { ");
-            if (ForDecoding)
-                Output.AppendFormat("Prefix = 0x{0}, ", Entry.Prefix.ToString("X4"));
-            else
+            if (!ForDecoding)
                 Output.AppendFormat("Prefix = 0x{0}, ", Entry.Prefix.ToString("X2"));
             
             Output.AppendFormat("Encoding = 0x{0}, ", Entry.Base.ToString("X2"));
@@ -110,9 +141,9 @@ namespace TableBuilder
                 
                 //Output.AppendFormat("Param{0} = new ParamEntry(CommandID.{1}, ParameterType.{2}, {3}), ", x, Entry.Params[x].ID.ToString(), Entry.Params[x].Type.ToString(), Entry.Params[x].Pointer);
                 Output.AppendFormat("Param{0} = new ParamEntry(CommandID.", v);
-                Output.Append(Entry.Params[x].ID.ToString());
+                Output.Append(GetParamater(Entry.Params[x], ForDecoding));
                 Output.Append(", ParameterType.");
-                Output.Append(GetParamaterType(Entry.Params[x]));
+                Output.Append(GetParamaterType(Entry.Params[x], ForDecoding));
                 Output.Append(", ");
                 Output.Append(Entry.Params[x].Pointer.ToString().ToLower());
                 if (!ForDecoding)
@@ -137,6 +168,34 @@ namespace TableBuilder
             return Output.ToString();
         }
 
+        static void WriteDecodingRange(StreamWriter OutputFile, IEnumerable<OpcodeData> Range)
+        {
+            int Count = 0;
+            OpcodeData Dummy = new OpcodeData();
+            Dummy.Function = "None";
+
+            foreach (OpcodeData Entry in Range)
+            {
+                while (Count < Entry.Base)
+                {
+                    Dummy.Base = Count;
+                    OutputFile.WriteLine(GenerateOpcode(Dummy, true));
+                    Count++;
+                }
+
+                OutputFile.WriteLine(GenerateOpcode(Entry, true));
+
+                Count++;
+            }
+
+            while (Count < 0x100)
+            {
+                Dummy.Base = Count;
+                OutputFile.WriteLine(GenerateOpcode(Dummy, true));
+                Count++;
+            }
+        }
+      
         static void SaveGroupInfo(OpcodeGroup GroupInfo, string Prefix)
         {
             string FileName = Prefix + " Output.txt";
@@ -148,52 +207,25 @@ namespace TableBuilder
                     continue;
 
                 OutputFile.WriteLine(GenerateOpcode(Entry, false));
-
-                //if (Entry.Prefix == 0)
-                //{
-                //    OutputFile.Write("    ");
-                //}
-                //else if (Entry.Prefix < 0x100)
-                //{
-                //    OutputFile.Write("  ");
-                //    OutputFile.Write(Entry.Prefix.ToString("X2"));
-                //}
-                //else
-                //{
-                //    OutputFile.Write(Entry.Prefix.ToString("X4"));
-                //}
-
-                //OutputFile.Write(Entry.Base.ToString("X2"));
-                //OutputFile.Write(": ");
-                //OutputFile.Write(Entry.ID.ToString());
-
-                //foreach (ParamInfo Param in Entry.Params)
-                //{
-                //    OutputFile.Write(" ");
-                //    if (Param.Pointer)
-                //        OutputFile.Write("(");
-
-                //    if (Param.ID != ZASM.CommandID.RegisterMax)
-                //        OutputFile.Write(Param.ID.ToString());
-                //    else
-                //        OutputFile.Write(Param.Type.ToString());
-
-                //    if (Param.Pointer)
-                //        OutputFile.Write(")");
-                //}
-
-                //OutputFile.WriteLine();
             }
 
             OutputFile.WriteLine();
             OutputFile.WriteLine("---------------------------------------");
             OutputFile.WriteLine();
 
-            foreach (OpcodeData Entry in GroupInfo.OpcodeMatrix)
-            {
-                OutputFile.WriteLine(GenerateOpcode(Entry, true));
+            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0x00).DistinctBy(e => e.Base));
+            OutputFile.WriteLine();
 
-            }
+            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xED).DistinctBy(e => e.Base));
+            OutputFile.WriteLine();
+
+            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xCB).DistinctBy(e => e.Base));
+            OutputFile.WriteLine();
+
+            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xDD).DistinctBy(e => e.Base));
+            OutputFile.WriteLine();
+
+            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xDDCB).DistinctBy(e => e.Base));
 
             OutputFile.Close();
         }
