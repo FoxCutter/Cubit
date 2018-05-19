@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+
+  <xs:element name="z80Opcodes">
+    <xs:complexType>
+      <xs:sequence minOccurs="1">
+        <xs:element name="platform" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="opcode" type="opcodeType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string">
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="opcodeType">
+    <xs:sequence>
+      <xs:element name="mnemonic" type="xs:string"/>
+      <xs:element name="args" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="arg" type="argType" minOccurs="0" maxOccurs="3"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="official" type="xs:string" minOccurs="0" />
+      <xs:element name="function" type="xs:string"/>
+      <xs:element name="cycles" type="xs:short" minOccurs="0" default="0" />
+    </xs:sequence>
+    <xs:attribute name="index" type="xs:boolean" use="optional" default="false"/>
+    <xs:attribute name="prefix" type="xs:hexBinary" use="optional"/>
+    <xs:attribute name="value" type="xs:hexBinary" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="argType" >
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <!--<xs:attribute name="pos" type="xs:integer" use="required"/>-->
+        <xs:attribute name="encoding" type="EncodingEnum" use="optional" default="None"/>
+        <xs:attribute name="assumed" type="xs:boolean" use="optional" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+
+  <xs:simpleType name="EncodingEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None"/>
+      <!--0b00000111 0x07-->
+      <xs:enumeration value="1"/>
+      <!--0b00111000 0x38-->
+      <xs:enumeration value="2"/>
+      <!--0b00110000 0x30-->
+      <xs:enumeration value="3"/>
+      <!--0b00011000 0x18-->
+      <xs:enumeration value="4"/>
+
+      <xs:enumeration value="ByteImmidate"/>
+      <xs:enumeration value="WordImmidate"/>
+      <xs:enumeration value="IndexOffset"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

@@ -6,228 +6,274 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace TableBuilder
-{
-    public static class DistinctHelper
-    {
-        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
-        {
-            var identifiedKeys = new HashSet<TKey>();
-            return source.Where(element => identifiedKeys.Add(keySelector(element)));
-        }
-    }
-    
+{  
     class TableBuilder
     {
         static void Main(string[] args)
         {
             OpcodeGroup GroupInfo;
-            //List<string> Data = new List<string>(File.ReadAllLines(@"Z80 Opcode Matrix.txt"));
-            
-            GroupInfo = OpcodeReader.ReadOpcodeData(@"Z80 Opcode Matrix.txt");
-            SaveGroupInfo(GroupInfo, "Z80");
-            
-            GroupInfo = OpcodeReader.ReadOpcodeData(@"i8080 Opcode Matrix.txt");
-            SaveGroupInfo(GroupInfo, "i8080");
+            ////List<string> Data = new List<string>(File.ReadAllLines(@"Z80 Opcode Matrix.txt"));
+            //System.Xml.Serialization.XmlSerializer Tx = new System.Xml.Serialization.XmlSerializer(typeof(z80Opcodes));
 
-            GroupInfo = OpcodeReader.ReadOpcodeData(@"GameBoy Opcode Matrix.txt");
-            SaveGroupInfo(GroupInfo, "GB");
-        }
+            //z80Opcodes KD =(z80Opcodes) Tx.Deserialize(File.OpenText(@"..\..\..\Z80-Opcodes.xml"));
 
-        static string GetParamater(ParamInfo Param, bool ForDecoding)
-        {
-            if(!ForDecoding)
-                return Param.ID.ToString();
+            //var ee = KD.platform.Where(e => e.name == "Z80").First().opcode;
+
+            //System.Resources.ResourceManager rm = new System.Resources.ResourceManager("TableBuilder", typeof(TableBuilder).Assembly);
+            //var ss = rm.GetObject("Z80 Bin-Output.txt");
+            //var ss = (List<OpcodeData>)rm.GetObject("Z80_Bin_Output");
+            //MemoryStream MS = new MemoryStream(ss);
+
+            //var asm = System.Reflection.Assembly.GetExecutingAssembly();
+            //var k =asm.GetManifestResourceNames();
+            //var t = asm.GetManifestResourceStream("TableBuilder.Resources.Z80 Bin-Output.txt");
+            //System.Runtime.Serialization.Formatters.Binary.BinaryFormatter BB = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            //var p = BB.Deserialize(t);
+
+            //var t = OpcodeData.ZASM.z80OpcodeList.Where(e => e.Prefix == 0).ToList();
             
-            switch (Param.ID)
+            System.Xml.Serialization.XmlSerializer Tx = new System.Xml.Serialization.XmlSerializer(typeof(z80Opcodes));
+            z80Opcodes OpcodeInput = (z80Opcodes) Tx.Deserialize(File.OpenText(@"Z80-Opcodes.xml"));
+
+            foreach (z80OpcodesPlatform Platform in OpcodeInput.platform)
             {
-                case ZASM.CommandID.IX:
-                case ZASM.CommandID.IY:
-                    return "Index";
-
-                case ZASM.CommandID.IXH:
-                case ZASM.CommandID.IYH:
-                    return "IndexHigh";
-
-                case ZASM.CommandID.IXL:
-                case ZASM.CommandID.IYL:
-                    return "IndexLow";
-
-                default:
-                    return Param.ID.ToString();
+                GroupInfo = OpcodeReader.ReadOpcodeData(Platform);
+                SaveGroupInfo(GroupInfo, Platform.name);
             }
         }
 
-        static string GetParamaterType(ParamInfo Param, bool ForDecoding)
-        {
-            switch (Param.Type)
-            {
-                case ParameterType.WordRegisterAF:
-                    return ParameterType.WordRegister.ToString();
-
-                case ParameterType.HalfFlag:
-                    return ParameterType.Flag.ToString();
-
-                default:
-                    return Param.Type.ToString();
-            }
-        }
-
-        static string GenerateFlags(OpcodeData Entry)
+        static string GenerateOpcodeExample(OpcodeData.OpcodeEntry Entry, bool ForDecoding)
         {
             StringBuilder Output = new StringBuilder();
 
-            if (Entry.HasIndex())
+            if (Entry.Index == true)
+                Output.AppendFormat("xx");
+
+            if (Entry.Prefix != 0)
             {
-                Output.Append("OpcodeFlags.Index");
-                if(Entry.Prefix == 0xCB)
-                    Output.Append(" | OpcodeFlags.InternalIndex");
+                Output.AppendFormat("{0:X2}", Entry.Prefix);
+
+                if (OpcodeReader.HasType(Entry, OpcodeData.ParameterType.WordIndexRegisterPointer))
+                    Output.AppendFormat("oo");
             }
 
-            if (Entry.Type == OpcodeType.Undocumented)
+            Output.AppendFormat("{0:X2}", Entry.Encoding);
+
+            if (Entry.Prefix == 0 & OpcodeReader.HasType(Entry, OpcodeData.ParameterType.WordIndexRegisterPointer))
+                Output.AppendFormat("oo");
+
+            if (OpcodeReader.HasParam(Entry, OpcodeData.ParameterID.ImmediateByte))
+                Output.AppendFormat("nn");
+
+            if (OpcodeReader.HasParam(Entry, OpcodeData.ParameterID.ImmediateWord))
+                Output.AppendFormat("nnnn");
+
+            Output.AppendFormat(": {0}", Entry.Name);
+
+            bool First = true;
+            foreach (OpcodeData.ParamEntry Param in Entry.Params)
             {
-                if (Output.Length != 0)
-                    Output.Append(" | ");
+                if (!First)
+                    Output.Append(',');
 
-                Output.Append("OpcodeFlags.Undocumented");
-            }
-            
-            if(Entry.HasType(ParameterType.HalfFlag))
-            {
-                if (Output.Length != 0)
-                    Output.Append(" | ");
-
-                Output.Append("OpcodeFlags.HalfFlag");
-
-            }
-            
-            if(Entry.HasType(ParameterType.WordRegisterAF))
-            {
-                if (Output.Length != 0)
-                    Output.Append(" | ");
-
-                Output.Append("OpcodeFlags.WordRegisterAF");
+                if (!Param.Implicit || ForDecoding)
+                {
+                    Output.AppendFormat(" {0}", Param.ToString());
+                    First = false;
+                }
             }
 
-            if (Output.Length == 0)
-                Output.Append("OpcodeFlags.None");
 
             return Output.ToString();
         }
-
-        static string GenerateOpcode(OpcodeData Entry, bool ForDecoding)
+        
+        static string GenerateOpcode(OpcodeData.OpcodeEntry Entry, string Padding, bool ForDecoding)
         {
             StringBuilder Output = new StringBuilder();
 
-            Output.Append("            new OpcodeData { ");
-            if (!ForDecoding)
-                Output.AppendFormat("Prefix = 0x{0}, ", Entry.Prefix.ToString("X2"));
-            
-            Output.AppendFormat("Encoding = 0x{0}, ", Entry.Base.ToString("X2"));
+            Output.Append(Padding);
+            Output.Append("new OpcodeEntry { ");
 
-            if (ForDecoding)
-            {
-                Output.AppendFormat("Name = \"{0}\",\t", Entry.ID.ToString());
-                Output.AppendFormat("Function = FunctionID.{0},\t", Entry.Function);
-            }
-            else
-            {
-                Output.AppendFormat("Name = CommandID.{0},\t", Entry.ID.ToString());
-            }
+            Output.AppendFormat("Index = {0,5}, ", Entry.Index.ToString().ToLower());
+            Output.AppendFormat("Prefix = 0x{0}, ", Entry.Prefix.ToString("X2"));
+            Output.AppendFormat("Encoding = 0x{0}, ", Entry.Encoding.ToString("X2"));
+            Output.AppendFormat("Name = CommandID.{0,-4}, ", Entry.Name);
+            Output.AppendFormat("Function = FunctionID.{0}, ", Entry.Function);
 
-            for (int x = 0, v = 0; x < Entry.Params.Count; x++)
+            //Output.Append("// ");
+            //Output.Append(GenerateOpcodeExample(Entry));
+
+            //Output.AppendLine();
+            //Output.Append(Padding);
+            //Output.Append("                 ");
+
+            Output.Append("Params = new ParamEntry[] { ");
+
+            foreach (OpcodeData.ParamEntry Param in Entry.Params)
             {
-                if (!ForDecoding && Entry.Params[x].Implicit)
-                    continue;
-                
-                //Output.AppendFormat("Param{0} = new ParamEntry(CommandID.{1}, ParameterType.{2}, {3}), ", x, Entry.Params[x].ID.ToString(), Entry.Params[x].Type.ToString(), Entry.Params[x].Pointer);
-                Output.AppendFormat("Param{0} = new ParamEntry(CommandID.", v);
-                Output.Append(GetParamater(Entry.Params[x], ForDecoding));
-                Output.Append(", ParameterType.");
-                Output.Append(GetParamaterType(Entry.Params[x], ForDecoding));
-                Output.Append(", ");
-                Output.Append(Entry.Params[x].Pointer.ToString().ToLower());
-                if (!ForDecoding)
+                //Output.AppendLine();
+                //Output.Append(Padding);
+                //Output.Append("                    ");
+
+                if (!Param.Implicit || ForDecoding)
                 {
-                    Output.Append(", ");
-                    Output.Append(Entry.Params[x].Pos);
+                    Output.AppendFormat("new ParamEntry(ParameterID.{0}, ParameterType.{1}", Param.Param, Param.Type);
+                    Output.AppendFormat(", EncodingType.{0}, {1}", Param.Encoding, Param.Implicit.ToString().ToLower());
+
+                    Output.Append("), ");
                 }
-                Output.Append("),\t");
-                v++;
+
             }
 
-            if (!ForDecoding)
-            {
-                Output.AppendFormat("Flags = {0},\t", GenerateFlags(Entry));
-                Output.AppendFormat("Cycles = {0},\t", Entry.CycleCount);
-                Output.AppendFormat("Length = {0},\t", Entry.Length);
-                
-            }
-            
+            //Output.AppendLine();
+            //Output.Append(Padding);
+            //Output.Append("                 ");
+
             Output.Append("}, ");
 
+            //Output.AppendLine();
+            //Output.Append(Padding);
+            //Output.Append("                 ");
+
+            Output.AppendFormat("Type = OpcodeType.{0}, ", Entry.Type);
+            Output.AppendFormat("Cycles = {0}, ", Entry.Cycles);
+            Output.AppendFormat("Length = {0}, ", Entry.Length);
+
+            //Output.AppendLine();
+            //Output.Append(Padding);
+            //Output.Append("                ");
+
+            Output.Append("}, ");
+
+            Output.Append("// ");
+            Output.Append(GenerateOpcodeExample(Entry, ForDecoding));
+
             return Output.ToString();
         }
 
-        static void WriteDecodingRange(StreamWriter OutputFile, IEnumerable<OpcodeData> Range)
+        static void WriteDecodingRange(StreamWriter OutputFile, IEnumerable<OpcodeData.OpcodeEntry> Range)
         {
             int Count = 0;
-            OpcodeData Dummy = new OpcodeData();
-            Dummy.Function = "None";
+            OpcodeData.OpcodeEntry Dummy = new OpcodeData.OpcodeEntry();
+            Dummy.Function = OpcodeData.FunctionID.None;
+            Dummy.Name = OpcodeData.CommandID.None;
+            Dummy.Params = new OpcodeData.ParamEntry[0];
 
-            foreach (OpcodeData Entry in Range)
+            if (Range.Count() == 0)
+                return;
+
+            OutputFile.WriteLine("           {");
+
+            //for (int x = 0; x < 0x100; x++)
+            //{
+            //    var list = Range.Where(e => e.Base == x);
+            //    if (list.Count() == 0)
+            //    {
+            //        Dummy.Base = x;
+            //        OutputFile.WriteLine(GenerateOpcode(Dummy, "              ", true));
+            //    }
+            //    else foreach (OpcodeDataEntry Entry in list)
+            //    {
+            //        OutputFile.WriteLine(GenerateOpcode(Entry, "              ", true));
+            //    }
+            //}
+            
+            //if (Range.Count() != 0)
             {
-                while (Count < Entry.Base)
+                foreach (OpcodeData.OpcodeEntry Entry in Range)
                 {
-                    Dummy.Base = Count;
-                    OutputFile.WriteLine(GenerateOpcode(Dummy, true));
+                    while (Count < Entry.Encoding)
+                    {
+                        Dummy.Encoding = (byte) Count;
+                        OutputFile.WriteLine(GenerateOpcode(Dummy, "              ", true));
+                        Count++;
+                    }
+
+                    OutputFile.WriteLine(GenerateOpcode(Entry, "              ", true));
+
                     Count++;
                 }
 
-                OutputFile.WriteLine(GenerateOpcode(Entry, true));
-
-                Count++;
+                while (Count < 0x100)
+                {
+                    Dummy.Encoding = (byte) Count;
+                    OutputFile.WriteLine(GenerateOpcode(Dummy, "              ", true));
+                    Count++;
+                }
             }
 
-            while (Count < 0x100)
-            {
-                Dummy.Base = Count;
-                OutputFile.WriteLine(GenerateOpcode(Dummy, true));
-                Count++;
-            }
+            OutputFile.WriteLine("           },");
         }
       
         static void SaveGroupInfo(OpcodeGroup GroupInfo, string Prefix)
         {
-            string FileName = Prefix + " Output.txt";
-            StreamWriter OutputFile = new StreamWriter(FileName, false);
-
-            foreach (OpcodeData Entry in GroupInfo.OpcodeList)
             {
-                if (Entry.Type == OpcodeType.Unoffical)
-                    continue;
+                string FileName = @".\Common\" + Prefix + "_ZASM.cs";
+                using (StreamWriter OutputFile = new StreamWriter(FileName, false))
+                {
+                    OutputFile.WriteLine("namespace OpcodeData");
+                    OutputFile.WriteLine("{"); 
+                    OutputFile.WriteLine("    public static partial class ZASM");
+                    OutputFile.WriteLine("    {");
+                    OutputFile.WriteLine("        public static OpcodeEntry[] {0}OpcodeList = new OpcodeEntry[]", Prefix);
+                    OutputFile.WriteLine("        {");
 
-                OutputFile.WriteLine(GenerateOpcode(Entry, false));
+
+                    foreach (OpcodeData.OpcodeEntry Entry in GroupInfo.OpcodeList.OrderBy(e => e.Name))
+                    {
+                        if (Entry.Type == OpcodeData.OpcodeType.Unofficial)
+                            continue;
+
+                        OutputFile.WriteLine(GenerateOpcode(Entry, "            ", false));
+                    }
+
+                    OutputFile.WriteLine("        };");
+                    OutputFile.WriteLine("    }");
+                    OutputFile.WriteLine("}");
+                }
             }
 
-            OutputFile.WriteLine();
-            OutputFile.WriteLine("---------------------------------------");
-            OutputFile.WriteLine();
+            {
+                string FileName = @".\Common\" + Prefix + "_ZEMU.cs";
+                using (StreamWriter OutputFile = new StreamWriter(FileName, false))
+                {
+                    OutputFile.WriteLine("namespace OpcodeData");
+                    OutputFile.WriteLine("{");
+                    OutputFile.WriteLine("    public static partial class ZEMU");
+                    OutputFile.WriteLine("    {");
+                    OutputFile.WriteLine("        public static OpcodeEntry[,] {0}OpcodeList = new OpcodeEntry[,]", Prefix);
+                    //OutputFile.WriteLine("        public static OpcodeEntry[] {0}OpcodeList = new OpcodeEntry[]", Prefix);
+                    OutputFile.WriteLine("        {");
 
-            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0x00).DistinctBy(e => e.Base));
-            OutputFile.WriteLine();
+                    //foreach (OpcodeDataEntry Entry in GroupInfo.OpcodeMatrix)
+                    //{
+                    //    OutputFile.WriteLine(GenerateOpcode(Entry, "           ", true));
+                    //}
 
-            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xED).DistinctBy(e => e.Base));
-            OutputFile.WriteLine();
+                    OutputFile.WriteLine("           // No Prefix");
+                    WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0x00 && e.Index == false));
+                    OutputFile.WriteLine();
 
-            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xCB).DistinctBy(e => e.Base));
-            OutputFile.WriteLine();
+                    OutputFile.WriteLine("           // 0xCB Prefix");
+                    WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xCB && e.Index == false));
+                    OutputFile.WriteLine();
 
-            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xDD).DistinctBy(e => e.Base));
-            OutputFile.WriteLine();
+                    OutputFile.WriteLine("           // 0xED Prefix");
+                    WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xED && e.Index == false));
+                    OutputFile.WriteLine();
 
-            WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xDDCB).DistinctBy(e => e.Base));
+                    OutputFile.WriteLine("           // Index Prefix");
+                    WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0x00 && e.Index == true));
+                    OutputFile.WriteLine();
 
-            OutputFile.Close();
+                    OutputFile.WriteLine("           // Index 0xCB Prefix");
+                    WriteDecodingRange(OutputFile, GroupInfo.OpcodeMatrix.Where(e => e.Prefix == 0xCB && e.Index == true));
+
+                    OutputFile.WriteLine("        };");
+                    OutputFile.WriteLine("    }");
+                    OutputFile.WriteLine("}");
+                }
+            }
         }
     }
 }

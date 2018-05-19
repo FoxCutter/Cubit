@@ -1,0 +1,4029 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+    <opcode index='false' prefix='00' value='00'> 
+      <mnemonic></mnemonic>
+      <arg pos='0' assumed='true' encoding='0'></arg> See below
+      <official></official>
+      <function></function>
+       
+    </opcode>
+      index - If this is used with the Index prefix (DD IX, FD IY)
+      Prefix and value = Machinecode bytes    
+      name - Opcode mnemonic
+      Arg - see below
+      official - Y = official, N = Undocumented (will execute), X = Undocumented, but can be used in assembly
+      function - General function of this opoeration when executing 
+      cycles - Machine cycle count
+      
+    <arg pos='0' assumed='true' encoding='0'>A</arg> 
+      Pos - Which argument is it (0-2)
+      assumed - If true the argument dosn't have to be provided during assembly, 
+      Encoding - How the argument is encoded into the value of the machine code byte
+      Value - How to argument is to be executed, not how it's assembled. Parsing rules are not provided in this file 
+   
+   Arguments:
+     ByteReg-A, ByteReg-B, ByteReg-C, ByteReg-D, ByteReg-E, ByteReg-H, ByteReg-L - Byte Registers
+     WordRegPtr-BC, WordRegPtr-DE, WordRegPtr-HL, WordRegPtr-SP - Indirect memory access
+     WordReg-AFAlt - Alternate AF register
+     WordReg-AF, WordReg-BC, WordReg-DE, WordReg-HL, WordReg-SP - Word Registers
+     ByteReg-I, ByteReg-R - z80 special byte registers
+     0, 1, 2 - None encoded numbers
+     Byte, Word - Immidate data
+     
+   GameBoy Specific:
+     HighMemPtr+C ($ff00 + C) - Indirect high memory access
+     HighMemPtr+Byte, HighMemPtr ($ff00 + n) (n)  - Indirect high memory access
+     WordRegPtr-HLD, WordRegPtr-HLI (HLD) (HLI) (HL+) (HL-) - Indirect memory access with increment/decrement
+     WordReg-SP+Byte, SP + n - Indirect stack accress with offest
+     
+     WordReg/WordRegF:
+        0 = BC         
+        1 = DE         
+        2 = HL         
+        3 = SP/AF      
+
+     ByteReg:
+        0 = B
+        1 = C
+        2 = D
+        3 = E
+        4 = H
+        5 = L
+        6 = (HL)     
+        7 = A
+
+     ByteIndexReg:
+        4 = IXH/IYH
+        5 = IXL/IYH
+      
+     WordIndexReg:
+        IX/IY
+
+     WordIndexRegPtr:
+        (IX + n)/(IY + n)
+   
+     Flag/HalfFlag:
+        0 = FLAG-NZ         
+        1 = FLAG-Z          
+        2 = FLAG-NC         
+        3 = FLAG-C
+        4 = FLAG-PO         
+        5 = FLAG-PE         
+        6 = FLAG-P          
+        7 = FLAG-M          
+   
+     Encoded
+        0 - 7
+        RST: 00, 08, 10, 18, 20, 28, 30, 38
+
+     Disp:
+        byte data, displacment from current location e-2
+   
+     Address:
+        word data
+   
+     AddressPtr:
+        (Address) - word data
+   
+   
+   encodings
+      1 = 00000111 0x07
+      2 = 00111000 0x38
+      3 = 00110000 0x30
+      4 = 00011000 0x18
+      WordImmidate = 2-byte following opcode
+      ByteImmidate = 1-byte following opcode
+      IndexOffset = 1-byte as part of the opcode
+
+
+-->
+
+<z80Opcodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./z80-Opcodes.xsd">
+  <platform name="z80">
+
+    <opcode value='00'>
+      <mnemonic>NOP</mnemonic>
+      <official>Y</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='01'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+        <arg encoding='WordImmidate'>Word</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='02'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-BC</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='03'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='04'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='05'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='06'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='07'>
+      <mnemonic>RLCA</mnemonic>
+      <official>Y</official>
+      <function>RL_A_CY</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='08'>
+      <mnemonic>EX</mnemonic>
+      <args>
+        <arg>WordReg-AF</arg>
+        <arg>WordReg-AFAlt</arg>
+      </args>
+      <official>Y</official>
+      <function>EX</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='09'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='0A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-BC</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='0B'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='0F'>
+      <mnemonic>RRCA</mnemonic>
+      <official>Y</official>
+      <function>RR_A_CY</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='10'>
+      <mnemonic>DJNZ</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>Disp</arg>
+      </args>
+      <official>Y</official>
+      <function>DJNZ</function>
+      <cycles>13</cycles>
+    </opcode>
+    <opcode value='12'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-DE</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='17'>
+      <mnemonic>RLA</mnemonic>
+      <official>Y</official>
+      <function>RL_A</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='18'>
+      <mnemonic>JR</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>Disp</arg>
+      </args>
+      <official>Y</official>
+      <function>JR</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='1A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-DE</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='1F'>
+      <mnemonic>RRA</mnemonic>
+      <official>Y</official>
+      <function>RR_A</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='20'>
+      <mnemonic>JR</mnemonic>
+      <args>
+        <arg encoding='4'>HalfFlag</arg>
+        <arg encoding='ByteImmidate'>Disp</arg>
+      </args>
+      <official>Y</official>
+      <function>JR</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='22'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='27'>
+      <mnemonic>DAA</mnemonic>
+      <official>Y</official>
+      <function>BCD_ADJUST</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='2A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='2F'>
+      <mnemonic>CPL</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>NOT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='32'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>13</cycles>
+    </opcode>
+    <opcode value='34'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='35'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='36'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='37'>
+      <mnemonic>SCF</mnemonic>
+      <official>Y</official>
+      <function>CY_SET</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='3A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>13</cycles>
+    </opcode>
+    <opcode value='3F'>
+      <mnemonic>CCF</mnemonic>
+      <official>Y</official>
+      <function>CY_INVERT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='40'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='46'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='70'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='76'>
+      <mnemonic>HALT</mnemonic>
+      <official>Y</official>
+      <function>HALT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='80'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='86'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='88'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='8E'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='90'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='96'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='98'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='9E'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='A0'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='A6'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='A8'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='AE'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='B0'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='B6'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='B8'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='BE'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='C0'>
+      <mnemonic>RET</mnemonic>
+      <args>
+        <arg encoding='2'>Flag</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C1'>
+      <mnemonic>POP</mnemonic>
+      <args>
+        <arg encoding='3'>WordRegF</arg>
+      </args>
+      <official>Y</official>
+      <function>POP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='C2'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg encoding='2'>Flag</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='C3'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='C4'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='2'>Flag</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='C5'>
+      <mnemonic>PUSH</mnemonic>
+      <args>
+        <arg encoding='3'>WordRegF</arg>
+      </args>
+      <official>Y</official>
+      <function>PUSH</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C6'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='C7'>
+      <mnemonic>RST</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+      </args>
+      <official>Y</official>
+      <function>RST</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C9'>
+      <mnemonic>RET</mnemonic>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='CD'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='CE'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='D3'>
+      <mnemonic>OUT</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>Byte</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>OUT</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='D6'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='D9'>
+      <mnemonic>EXX</mnemonic>
+      <official>Y</official>
+      <function>EXX</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='DB'>
+      <mnemonic>IN</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>IN</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='DE'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='E3'>
+      <mnemonic>EX</mnemonic>
+      <args>
+        <arg>WordRegPtr-SP</arg>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>EX</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode value='E6'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='E9'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='EB'>
+      <mnemonic>EX</mnemonic>
+      <args>
+        <arg>WordReg-DE</arg>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>EX</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='EE'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='F3'>
+      <mnemonic>DI</mnemonic>
+      <official>Y</official>
+      <function>DI</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='F6'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='F9'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-SP</arg>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='FB'>
+      <mnemonic>EI</mnemonic>
+      <official>Y</official>
+      <function>EI</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='FE'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode prefix='CB' value='00'>
+      <mnemonic>RLC</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RL_CY</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='06'>
+      <mnemonic>RLC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RL_CY</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='08'>
+      <mnemonic>RRC</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RR_CY</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='0E'>
+      <mnemonic>RRC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RR_CY</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='10'>
+      <mnemonic>RL</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RL</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='16'>
+      <mnemonic>RL</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RL</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='18'>
+      <mnemonic>RR</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RR</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='1E'>
+      <mnemonic>RR</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RR</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='20'>
+      <mnemonic>SLA</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SL_SIGNED</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='26'>
+      <mnemonic>SLA</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SL_SIGNED</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='28'>
+      <mnemonic>SRA</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_SIGNED</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='2E'>
+      <mnemonic>SRA</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_SIGNED</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='30'>
+      <mnemonic>SLL</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>SL_L</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='36'>
+      <mnemonic>SLL</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>X</official>
+      <function>SL_L</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='38'>
+      <mnemonic>SRL</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_L</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='3E'>
+      <mnemonic>SRL</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_L</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='CB' value='40'>
+      <mnemonic>BIT</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>BIT</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='46'>
+      <mnemonic>BIT</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>BIT</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode prefix='CB' value='80'>
+      <mnemonic>RES</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RES</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='86'>
+      <mnemonic>RES</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RES</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode prefix='CB' value='C0'>
+      <mnemonic>SET</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SET</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='C6'>
+      <mnemonic>SET</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SET</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='ED' value='40'>
+      <mnemonic>IN</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg>ByteReg-C</arg>
+      </args>
+      <official>Y</official>
+      <function>IN</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode prefix='ED' value='41'>
+      <mnemonic>OUT</mnemonic>
+      <args>
+        <arg>ByteReg-C</arg>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>OUT</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode prefix='ED' value='42'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='ED' value='43'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordReg-BC</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='44'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='45'>
+      <mnemonic>RETN</mnemonic>
+      <official>Y</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='46'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>0</arg>
+      </args>
+      <official>Y</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='47'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-I</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>9</cycles>
+    </opcode>
+    <opcode prefix='ED' value='4A'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode prefix='ED' value='4B'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-BC</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='4C'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='4D'>
+      <mnemonic>RETI</mnemonic>
+      <official>Y</official>
+      <function>RETI</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='4E'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>0</arg>
+      </args>
+      <official>N</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='4F'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-R</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>9</cycles>
+    </opcode>
+    <opcode prefix='ED' value='53'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordReg-DE</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='54'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='55'>
+      <mnemonic>RETN</mnemonic>
+      <official>N</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='56'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>1</arg>
+      </args>
+      <official>Y</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='57'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>ByteReg-I</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>9</cycles>
+    </opcode>
+    <opcode prefix='ED' value='5B'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-DE</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='5C'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='5D'>
+      <mnemonic>RETN</mnemonic>
+      <official>N</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='5E'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>2</arg>
+      </args>
+      <official>Y</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='5F'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>ByteReg-R</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>9</cycles>
+    </opcode>
+    <opcode prefix='ED' value='63'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>N</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='64'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='65'>
+      <mnemonic>RETN</mnemonic>
+      <official>N</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='66'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>0</arg>
+      </args>
+      <official>N</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='67'>
+      <mnemonic>RRD</mnemonic>
+      <official>Y</official>
+      <function>ROLL_R</function>
+      <cycles>18</cycles>
+    </opcode>
+    <opcode prefix='ED' value='6B'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>N</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='6C'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='6D'>
+      <mnemonic>RETN</mnemonic>
+      <official>N</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='6E'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>0</arg>
+      </args>
+      <official>N</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='6F'>
+      <mnemonic>RLD</mnemonic>
+      <official>Y</official>
+      <function>ROLL_L</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode prefix='ED' value='70'>
+      <mnemonic>IN</mnemonic>
+      <args>
+        <arg>ByteReg-C</arg>
+      </args>
+      <official>X</official>
+      <function>IN</function>
+      
+    </opcode>
+    <opcode prefix='ED' value='71'>
+      <mnemonic>OUT</mnemonic>
+      <args>
+        <arg>ByteReg-C</arg>
+        <arg>0</arg>
+      </args>
+      <official>X</official>
+      <function>OUT</function>
+      
+    </opcode>
+    <opcode prefix='ED' value='73'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordReg-SP</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='74'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='75'>
+      <mnemonic>RETN</mnemonic>
+      <official>N</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='76'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>1</arg>
+      </args>
+      <official>N</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='7B'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-SP</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode prefix='ED' value='7C'>
+      <mnemonic>NEG</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>N</official>
+      <function>NEG</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='7D'>
+      <mnemonic>RETN</mnemonic>
+      <official>N</official>
+      <function>RETN</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode prefix='ED' value='7E'>
+      <mnemonic>IM</mnemonic>
+      <args>
+        <arg>2</arg>
+      </args>
+      <official>N</official>
+      <function>IM</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='ED' value='A0'>
+      <mnemonic>LDI</mnemonic>
+      <official>Y</official>
+      <function>LD_I</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='A1'>
+      <mnemonic>CPI</mnemonic>
+      <official>Y</official>
+      <function>CMP_I</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='A2'>
+      <mnemonic>INI</mnemonic>
+      <official>Y</official>
+      <function>IN_I</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='A3'>
+      <mnemonic>OUTI</mnemonic>
+      <official>Y</official>
+      <function>OUT_I</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='A8'>
+      <mnemonic>LDD</mnemonic>
+      <official>Y</official>
+      <function>LD_D</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='A9'>
+      <mnemonic>CPD</mnemonic>
+      <official>Y</official>
+      <function>CMP_D</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='AA'>
+      <mnemonic>IND</mnemonic>
+      <official>Y</official>
+      <function>IN_D</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='AB'>
+      <mnemonic>OUTD</mnemonic>
+      <official>Y</official>
+      <function>OUT_D</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='ED' value='B0'>
+      <mnemonic>LDIR</mnemonic>
+      <official>Y</official>
+      <function>LD_IR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='B1'>
+      <mnemonic>CPIR</mnemonic>
+      <official>Y</official>
+      <function>CMP_IR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='B2'>
+      <mnemonic>INIR</mnemonic>
+      <official>Y</official>
+      <function>IN_IR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='B3'>
+      <mnemonic>OTIR</mnemonic>
+      <official>Y</official>
+      <function>OUT_IR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='B8'>
+      <mnemonic>LDDR</mnemonic>
+      <official>Y</official>
+      <function>LD_DR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='B9'>
+      <mnemonic>CPDR</mnemonic>
+      <official>Y</official>
+      <function>CMP_DR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='BA'>
+      <mnemonic>INDR</mnemonic>
+      <official>Y</official>
+      <function>IN_DR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode prefix='ED' value='BB'>
+      <mnemonic>OTDR</mnemonic>
+      <official>Y</official>
+      <function>OUT_DR</function>
+      <cycles>21</cycles>
+    </opcode>
+    <opcode index='true' value='04'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg encoding='2'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>INC</function>
+      
+    </opcode>
+    <opcode index='true' value='05'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg encoding='2'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>DEC</function>
+      
+    </opcode>
+    <opcode index='true' value='06'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteIndexReg</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>X</official>
+      <function>LD</function>
+      
+    </opcode>
+    <opcode index='true' value='09'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode index='true' value='21'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+        <arg encoding='WordImmidate'>Word</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode index='true' value='22'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode index='true' value='23'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode index='true' value='29'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode index='true' value='2A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode index='true' value='2B'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode index='true' value='34'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>23</cycles>
+    </opcode>
+    <opcode index='true' value='35'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>23</cycles>
+    </opcode>
+    <opcode index='true' value='36'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='40'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteIndexReg</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>LD</function>
+      
+    </opcode>
+    <opcode index='true' value='46'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='70'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='80'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>ADD</function>
+      
+    </opcode>
+    <opcode index='true' value='86'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='88'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>ADD_C</function>
+      
+    </opcode>
+    <opcode index='true' value='8E'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='90'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>SUB</function>
+      
+    </opcode>
+    <opcode index='true' value='96'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='98'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>SUB_C</function>
+      
+    </opcode>
+    <opcode index='true' value='9E'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='A0'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>AND</function>
+      
+    </opcode>
+    <opcode index='true' value='A6'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='A8'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>XOR</function>
+      
+    </opcode>
+    <opcode index='true' value='AE'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='B0'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>OR</function>
+      
+    </opcode>
+    <opcode index='true' value='B6'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='B8'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteIndexReg</arg>
+      </args>
+      <official>X</official>
+      <function>CMP</function>
+      
+    </opcode>
+    <opcode index='true' value='BE'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>19</cycles>
+    </opcode>
+    <opcode index='true' value='E1'>
+      <mnemonic>POP</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>POP</function>
+      <cycles>14</cycles>
+    </opcode>
+    <opcode index='true' value='E3'>
+      <mnemonic>EX</mnemonic>
+      <args>
+        <arg>WordRegPtr-SP</arg>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>EX</function>
+      <cycles>23</cycles>
+    </opcode>
+    <opcode index='true' value='E5'>
+      <mnemonic>PUSH</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>PUSH</function>
+      <cycles>15</cycles>
+    </opcode>
+    <opcode index='true' value='E9'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode index='true' value='F9'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-SP</arg>
+        <arg>WordIndexReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='00'>
+      <mnemonic>RLC</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>RL_CY</function>
+    </opcode>
+
+    <opcode index='true' prefix='CB' value='06'>
+      <mnemonic>RLC</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>RL_CY</function>
+      <cycles>23</cycles>
+    </opcode>
+
+    <opcode index='true' prefix='CB' value='08'>
+      <mnemonic>RRC</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>RR_CY</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='0E'>
+      <mnemonic>RRC</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>RR_CY</function>
+      <cycles>23</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='10'>
+      <mnemonic>RL</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>RL</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='16'>
+      <mnemonic>RL</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>RL</function>
+      <cycles>23</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='18'>
+      <mnemonic>RR</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>RR</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='1E'>
+      <mnemonic>RR</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>RR</function>
+      <cycles>23</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='20'>
+      <mnemonic>SLA</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>SL_SIGNED</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='26'>
+      <mnemonic>SLA</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>SL_SIGNED</function>
+      <cycles>22</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='28'>
+      <mnemonic>SRA</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>SR_SIGNED</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='2E'>
+      <mnemonic>SRA</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_SIGNED</function>
+      <cycles>22</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='30'>
+      <mnemonic>SLL</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>SL_L</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='36'>
+      <mnemonic>SLL</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>X</official>
+      <function>SL_L</function>
+      <cycles>22</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='38'>
+      <mnemonic>SRL</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>SR_L</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='3E'>
+      <mnemonic>SRL</mnemonic>
+      <args>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_L</function>
+      <cycles>22</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='40'>
+      <mnemonic>BIT</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>BIT</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='46'>
+      <mnemonic>BIT</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>BIT</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='80'>
+      <mnemonic>RES</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>RES</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='86'>
+      <mnemonic>RES</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>RES</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode index='true' prefix='CB' value='C0'>
+      <mnemonic>SET</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>X</official>
+      <function>SET</function>
+      
+    </opcode>
+    <opcode index='true' prefix='CB' value='C6'>
+      <mnemonic>SET</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='IndexOffset'>WordIndexRegPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>SET</function>
+      <cycles>23</cycles>
+    </opcode>
+  </platform>
+  <platform name="GameBoy">
+    <opcode value='00'>
+      <mnemonic>NOP</mnemonic>
+      <official>Y</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='01'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+        <arg encoding='WordImmidate'>Word</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='02'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-BC</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='03'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='04'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='05'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='06'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='07'>
+      <mnemonic>RLCA</mnemonic>
+      <official>Y</official>
+      <function>RL_A_CY</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='08'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>WordReg-SP</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode value='09'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='0A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-BC</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='0B'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='0F'>
+      <mnemonic>RRCA</mnemonic>
+      <official>Y</official>
+      <function>RR_A_CY</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='10'>
+      <mnemonic>STOP</mnemonic>
+      <official>Y</official>
+      <function>STOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='12'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-DE</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='17'>
+      <mnemonic>RLA</mnemonic>
+      <official>Y</official>
+      <function>RL_A</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='18'>
+      <mnemonic>JR</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>Disp</arg>
+      </args>
+      <official>Y</official>
+      <function>JR</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='1A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-DE</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='1F'>
+      <mnemonic>RRA</mnemonic>
+      <official>Y</official>
+      <function>RR_A</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='20'>
+      <mnemonic>JR</mnemonic>
+      <args>
+        <arg encoding='4'>HalfFlag</arg>
+        <arg encoding='ByteImmidate'>Disp</arg>
+      </args>
+      <official>Y</official>
+      <function>JR</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='22'>
+      <mnemonic>LDI</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_INC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='22'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HLI</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_INC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='27'>
+      <mnemonic>DAA</mnemonic>
+      <official>Y</official>
+      <function>BCD_ADJUST</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='2A'>
+      <mnemonic>LDI</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_INC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='2A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HLI</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_INC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='2F'>
+      <mnemonic>CPL</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>NOT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='32'>
+      <mnemonic>LDD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_DEC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='32'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HLD</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_DEC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='34'>
+      <mnemonic>INC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='35'>
+      <mnemonic>DEC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='36'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='37'>
+      <mnemonic>SCF</mnemonic>
+      <official>Y</official>
+      <function>CY_SET</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='3A'>
+      <mnemonic>LDD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_DEC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='3A'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HLD</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_DEC</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='3F'>
+      <mnemonic>CCF</mnemonic>
+      <official>Y</official>
+      <function>CY_INVERT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='40'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='46'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='70'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='76'>
+      <mnemonic>HALT</mnemonic>
+      <official>Y</official>
+      <function>HALT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='80'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='86'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='88'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='8E'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='90'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='96'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='98'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='9E'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='A0'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='A6'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='A8'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='AE'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='B0'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='B6'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='B8'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='BE'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='C0'>
+      <mnemonic>RET</mnemonic>
+      <args>
+        <arg encoding='2'>HalfFlag</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>20</cycles>
+    </opcode>
+    <opcode value='C1'>
+      <mnemonic>POP</mnemonic>
+      <args>
+        <arg encoding='3'>WordRegF</arg>
+      </args>
+      <official>Y</official>
+      <function>POP</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='C2'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg encoding='2'>HalfFlag</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='C3'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='C4'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='2'>HalfFlag</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='C5'>
+      <mnemonic>PUSH</mnemonic>
+      <args>
+        <arg encoding='3'>WordRegF</arg>
+      </args>
+      <official>Y</official>
+      <function>PUSH</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='C6'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='C7'>
+      <mnemonic>RST</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+      </args>
+      <official>Y</official>
+      <function>RST</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='C9'>
+      <mnemonic>RET</mnemonic>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='CD'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>24</cycles>
+    </opcode>
+    <opcode value='CE'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='D6'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='D9'>
+      <mnemonic>RETI</mnemonic>
+      <official>Y</official>
+      <function>RETI</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='DE'>
+      <mnemonic>SBC</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='E0'>
+      <mnemonic>LDH</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>HighMemPtr</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='E0'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>HighMemPtr+Byte</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='E2'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>HighMemPtr+C</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='E6'>
+      <mnemonic>AND</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='E8'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg>WordReg-SP</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='E9'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='EA'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='EE'>
+      <mnemonic>XOR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='F0'>
+      <mnemonic>LDH</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>HighMemPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='F0'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>HighMemPtr+Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='F2'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>HighMemPtr+C</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='F3'>
+      <mnemonic>DI</mnemonic>
+      <official>Y</official>
+      <function>DI</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='F6'>
+      <mnemonic>OR</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='F8'>
+      <mnemonic>LDHL</mnemonic>
+      <args>
+        <arg>WordReg-SP</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_SP</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='F8'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-HL</arg>
+        <arg encoding='ByteImmidate'>WordReg-SP+Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_SP</function>
+      <cycles>12</cycles>
+    </opcode>
+    <opcode value='F9'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>WordReg-SP</arg>
+        <arg>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='FA'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='FB'>
+      <mnemonic>EI</mnemonic>
+      <official>Y</official>
+      <function>EI</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='FE'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='00'>
+      <mnemonic>RLC</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RL_CY</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='06'>
+      <mnemonic>RLC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RL_CY</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='08'>
+      <mnemonic>RRC</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RR_CY</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='0E'>
+      <mnemonic>RRC</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RR_CY</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='10'>
+      <mnemonic>RL</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RL</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='16'>
+      <mnemonic>RL</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RL</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='18'>
+      <mnemonic>RR</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RR</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='1E'>
+      <mnemonic>RR</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RR</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='20'>
+      <mnemonic>SLA</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SL_SIGNED</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='26'>
+      <mnemonic>SLA</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SL_SIGNED</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='28'>
+      <mnemonic>SRA</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_SIGNED</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='2E'>
+      <mnemonic>SRA</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_SIGNED</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='30'>
+      <mnemonic>SWAP</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SWAP</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='36'>
+      <mnemonic>SWAP</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SWAP</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='38'>
+      <mnemonic>SRL</mnemonic>
+      <args>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_L</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='3E'>
+      <mnemonic>SRL</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SR_L</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='40'>
+      <mnemonic>BIT</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>BIT</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='46'>
+      <mnemonic>BIT</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>BIT</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='80'>
+      <mnemonic>RES</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>RES</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='86'>
+      <mnemonic>RES</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>RES</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode prefix='CB' value='C0'>
+      <mnemonic>SET</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SET</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode prefix='CB' value='C6'>
+      <mnemonic>SET</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SET</function>
+      <cycles>16</cycles>
+    </opcode>
+  </platform>
+  <platform name="i8080">
+    <opcode value='00'>
+      <mnemonic>NOP</mnemonic>
+      <official>Y</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='01'>
+      <mnemonic>LXI</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+        <arg encoding='WordImmidate'>Word</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='02'>
+      <mnemonic>STAX</mnemonic>
+      <args>
+        <arg>WordRegPtr-BC</arg>
+        <arg assumed='true'>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='03'>
+      <mnemonic>INX</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='04'>
+      <mnemonic>INR</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='05'>
+      <mnemonic>DCR</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='06'>
+      <mnemonic>MVI</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='07'>
+      <mnemonic>RLC</mnemonic>
+      <official>Y</official>
+      <function>RL_A_CY</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='08'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='09'>
+      <mnemonic>DAD</mnemonic>
+      <args>
+        <arg assumed='true'>WordReg-HL</arg>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='0A'>
+      <mnemonic>LDAX</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-BC</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='0B'>
+      <mnemonic>DCX</mnemonic>
+      <args>
+        <arg encoding='3'>WordReg</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='0F'>
+      <mnemonic>RRC</mnemonic>
+      <official>Y</official>
+      <function>RR_A_CY</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='10'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='12'>
+      <mnemonic>STAX</mnemonic>
+      <args>
+        <arg>WordRegPtr-DE</arg>
+        <arg assumed='true'>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='17'>
+      <mnemonic>RAL</mnemonic>
+      <official>Y</official>
+      <function>RL_A</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='18'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='1A'>
+      <mnemonic>LDAX</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-DE</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='1F'>
+      <mnemonic>RAR</mnemonic>
+      <official>Y</official>
+      <function>RR_A</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='20'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='22'>
+      <mnemonic>SHLD</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg assumed='true'>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='27'>
+      <mnemonic>DAA</mnemonic>
+      <official>Y</official>
+      <function>BCD_ADJUST</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='28'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='2A'>
+      <mnemonic>LHLD</mnemonic>
+      <args>
+        <arg assumed='true'>WordReg-HL</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>16</cycles>
+    </opcode>
+    <opcode value='2F'>
+      <mnemonic>CMA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>NOT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='30'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='32'>
+      <mnemonic>STA</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+        <arg assumed='true'>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='34'>
+      <mnemonic>INR</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>INC</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='35'>
+      <mnemonic>DCR</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>DEC</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='36'>
+      <mnemonic>MVI</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='37'>
+      <mnemonic>STC</mnemonic>
+      <official>Y</official>
+      <function>CY_SET</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='38'>
+      <mnemonic>NOP</mnemonic>
+      <official>N</official>
+      <function>NOP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='3A'>
+      <mnemonic>LDA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='WordImmidate'>AddressPtr</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>13</cycles>
+    </opcode>
+    <opcode value='3F'>
+      <mnemonic>CMC</mnemonic>
+      <official>Y</official>
+      <function>CY_INVERT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='40'>
+      <mnemonic>MOV</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='46'>
+      <mnemonic>MOV</mnemonic>
+      <args>
+        <arg encoding='2'>ByteReg</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='70'>
+      <mnemonic>MOV</mnemonic>
+      <args>
+        <arg>WordRegPtr-HL</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='76'>
+      <mnemonic>HLT</mnemonic>
+      <official>Y</official>
+      <function>HALT</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='80'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='86'>
+      <mnemonic>ADD</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='88'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='8E'>
+      <mnemonic>ADC</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='90'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='96'>
+      <mnemonic>SUB</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='98'>
+      <mnemonic>SBB</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='9E'>
+      <mnemonic>SBB</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='A0'>
+      <mnemonic>ANA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='A6'>
+      <mnemonic>ANA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='A8'>
+      <mnemonic>XRA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='AE'>
+      <mnemonic>XRA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='B0'>
+      <mnemonic>ORA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='B6'>
+      <mnemonic>ORA</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='B8'>
+      <mnemonic>CMP</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='1'>ByteReg</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='BE'>
+      <mnemonic>CMP</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg>WordRegPtr-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>6</cycles>
+    </opcode>
+    <opcode value='C0'>
+      <mnemonic>RNZ</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-NZ</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C1'>
+      <mnemonic>POP</mnemonic>
+      <args>
+        <arg encoding='3'>WordRegF</arg>
+      </args>
+      <official>Y</official>
+      <function>POP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='C2'>
+      <mnemonic>JNZ</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-NZ</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='C3'>
+      <mnemonic>JMP</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='C4'>
+      <mnemonic>CNZ</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-NZ</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C5'>
+      <mnemonic>PUSH</mnemonic>
+      <args>
+        <arg encoding='3'>WordRegF</arg>
+      </args>
+      <official>Y</official>
+      <function>PUSH</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C6'>
+      <mnemonic>ADI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='C7'>
+      <mnemonic>RST</mnemonic>
+      <args>
+        <arg encoding='2'>Encoded</arg>
+      </args>
+      <official>Y</official>
+      <function>RST</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C8'>
+      <mnemonic>RZ</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-Z</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='C9'>
+      <mnemonic>RET</mnemonic>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='CA'>
+      <mnemonic>JZ</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-Z</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='CB'>
+      <mnemonic>JMP</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>N</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='CC'>
+      <mnemonic>CZ</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-Z</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='CD'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='CE'>
+      <mnemonic>ACI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>ADD_C</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='D0'>
+      <mnemonic>RNC</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-NC</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='D2'>
+      <mnemonic>JNC</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-NC</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='D3'>
+      <mnemonic>OUT</mnemonic>
+      <args>
+        <arg encoding='ByteImmidate'>Byte</arg>
+        <arg assumed='true'>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>OUT</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='D4'>
+      <mnemonic>CNC</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-NC</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='D6'>
+      <mnemonic>SUI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='D8'>
+      <mnemonic>RC</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-C</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='D9'>
+      <mnemonic>RET</mnemonic>
+      <official>N</official>
+      <function>RET</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='DA'>
+      <mnemonic>JC</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-C</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='DB'>
+      <mnemonic>IN</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>IN</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='DC'>
+      <mnemonic>CC</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-C</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='DD'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>N</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='DE'>
+      <mnemonic>SBI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>SUB_C</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='E0'>
+      <mnemonic>RPO</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-PO</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='E2'>
+      <mnemonic>JPO</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-PO</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='E3'>
+      <mnemonic>XTHL</mnemonic>
+      <args>
+        <arg assumed='true'>WordRegPtr-SP</arg>
+        <arg assumed='true'>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>EX</function>
+      <cycles>18</cycles>
+    </opcode>
+    <opcode value='E4'>
+      <mnemonic>CPO</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-PO</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='E6'>
+      <mnemonic>ANI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>AND</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='E8'>
+      <mnemonic>RPE</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-PE</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='E9'>
+      <mnemonic>PCHL</mnemonic>
+      <args>
+        <arg assumed='true'>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='EA'>
+      <mnemonic>JPE</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-PE</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='EB'>
+      <mnemonic>XCHG</mnemonic>
+      <args>
+        <arg assumed='true'>WordReg-DE</arg>
+        <arg assumed='true'>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>EX</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='EC'>
+      <mnemonic>CPE</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-PE</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='ED'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>N</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='EE'>
+      <mnemonic>XRI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>XOR</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='F0'>
+      <mnemonic>RP</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-P</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='F2'>
+      <mnemonic>JP</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-P</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='F3'>
+      <mnemonic>DI</mnemonic>
+      <official>Y</official>
+      <function>DI</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='F4'>
+      <mnemonic>CP</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-P</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='F6'>
+      <mnemonic>ORI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>OR</function>
+      <cycles>7</cycles>
+    </opcode>
+    <opcode value='F8'>
+      <mnemonic>RM</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-M</arg>
+      </args>
+      <official>Y</official>
+      <function>RET</function>
+      <cycles>11</cycles>
+    </opcode>
+    <opcode value='F9'>
+      <mnemonic>SPHL</mnemonic>
+      <args>
+        <arg assumed='true'>WordReg-SP</arg>
+        <arg assumed='true'>WordReg-HL</arg>
+      </args>
+      <official>Y</official>
+      <function>LD</function>
+      <cycles>5</cycles>
+    </opcode>
+    <opcode value='FA'>
+      <mnemonic>JM</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-M</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>JMP</function>
+      <cycles>10</cycles>
+    </opcode>
+    <opcode value='FB'>
+      <mnemonic>EI</mnemonic>
+      <official>Y</official>
+      <function>EI</function>
+      <cycles>4</cycles>
+    </opcode>
+    <opcode value='FC'>
+      <mnemonic>CM</mnemonic>
+      <args>
+        <arg assumed='true'>FLAG-M</arg>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>Y</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='FD'>
+      <mnemonic>CALL</mnemonic>
+      <args>
+        <arg encoding='WordImmidate'>Address</arg>
+      </args>
+      <official>N</official>
+      <function>CALL</function>
+      <cycles>17</cycles>
+    </opcode>
+    <opcode value='FE'>
+      <mnemonic>CPI</mnemonic>
+      <args>
+        <arg assumed='true'>ByteReg-A</arg>
+        <arg encoding='ByteImmidate'>Byte</arg>
+      </args>
+      <official>Y</official>
+      <function>CMP</function>
+      <cycles>7</cycles>
+    </opcode>
+  </platform>
+</z80Opcodes>

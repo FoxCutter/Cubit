@@ -7,475 +7,306 @@ using System.IO;
 
 namespace TableBuilder
 {
-    enum ParameterType
+    public static class DistinctHelper
     {
-        Unknown,
-
-        // B, C, D, E, H, L, M, A, R, I, 
-        ByteRegister,
-
-        // BC, DE, HL, SP, AF, SP
-        WordRegister,
-        WordRegisterAF,
-
-        // IXL, IXH, IYL, IYH
-        ByteIndexRegister,
-
-        // IX, IY
-        WordIndexRegister,
-
-        // SP + *
-        ByteOffset,
-
-        // ($FF00 + c), ($FF00 + *), (C), (*) 
-        ByteOffsetPointer,
-
-        // (**)
-        AddressPointer,
-
-        // (BC), (DE), (HL), (SP), (HLI), (HLD)
-        AddressRegister,
-
-        // (IX) (IY)
-        AddressIndexRegister,
-
-        // C, NC, Z, NZ, E, O, M, P
-        Flag,
-        HalfFlag,
-
-        // Immidate, Encoded
-        Value,
-
-        Error,
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            var identifiedKeys = new HashSet<TKey>();
+            return source.Where(element => identifiedKeys.Add(keySelector(element)));
+        }
     }
 
-    enum OpcodeType
+    class OpcodeGroup
     {
-        Offical,
-        Undocumented,
-        Unoffical,
-    }
-    
-    class ParamInfo
-    {
-        public ZASM.CommandID ID = ZASM.CommandID.None;
-        public ParameterType Type = ParameterType.Unknown;
-        public int Pos = 0;
-        public bool Implicit = false;
-        public bool Pointer = false;
+        public List<OpcodeData.OpcodeEntry> OpcodeList;
+        public List<OpcodeData.OpcodeEntry> OpcodeMatrix;
 
-        public bool CanExpand()
+        public OpcodeGroup()
         {
-            if (ID == ZASM.CommandID.RegisterAny || ID == ZASM.CommandID.FlagsAny || ID == ZASM.CommandID.EncodedByte)
-                return true;
-
-            return false;
+            OpcodeList = new List<OpcodeData.OpcodeEntry>();
+            OpcodeMatrix = new List<OpcodeData.OpcodeEntry>();
         }
-
-    }
-    
-    class OpcodeData
-    {
-        public int Prefix;
-        public int Base;
-        public ZASM.CommandID ID = ZASM.CommandID.None;
-        public List<ParamInfo> Params = new List<ParamInfo>();
-        public OpcodeType Type = OpcodeType.Unoffical;
-        public string Function = "";
-        public int CycleCount = 0;
-        public int Length = 0;
-
-        public bool HasIndex()
-        {
-            foreach (ParamInfo Entry in Params)
-            {
-                if (Entry.Type == ParameterType.AddressIndexRegister || Entry.Type == ParameterType.ByteIndexRegister || Entry.Type == ParameterType.WordIndexRegister)
-                    return true;
-
-                if (Entry.ID == ZASM.CommandID.IX || Entry.ID == ZASM.CommandID.IXH || Entry.ID == ZASM.CommandID.IXL ||
-                    Entry.ID == ZASM.CommandID.IY || Entry.ID == ZASM.CommandID.IYH || Entry.ID == ZASM.CommandID.IYL)
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool HasOffset()
-        {
-            foreach (ParamInfo Entry in Params)
-            {
-                if (!Entry.Pointer || Entry.Type != ParameterType.AddressIndexRegister)
-                    continue;
-
-                if (Entry.ID == ZASM.CommandID.IX || Entry.ID == ZASM.CommandID.IY || Entry.ID == ZASM.CommandID.RegisterAny)
-                    return true;
-            }
-
-            return false;
-        }
-
-        
-        public bool HasParam(ZASM.CommandID ID)
-        {
-            foreach (ParamInfo Entry in Params)
-            {
-                if (Entry.ID == ID)
-                    return true;
-            }
-
-            return false;
-        }
-
-        public bool HasType(ParameterType Type)
-        {
-            foreach (ParamInfo Entry in Params)
-            {
-                if (Entry.Type == Type)
-                    return true;
-            }
-
-            return false;
-        }
-        
-        public bool CanExpand()
-        {
-            foreach (ParamInfo Entry in Params)
-            {
-                if (Entry.CanExpand())
-                    return true;
-            }
-
-            return false;
-        }
-
-        public byte ExpandIndex()
-        {
-            for (byte x = 0; x < Params.Count; x++)
-            {
-                if (Params[x].CanExpand())
-                    return x;
-            }
-
-            return 0xFF;
-        }
-
-        public OpcodeData CloneParams(ParamInfo NewParam, int NewPos)
-        {
-            OpcodeData Ret = (OpcodeData)this.MemberwiseClone();
-
-            Ret.Params = new List<ParamInfo>(this.Params);
-
-            Ret.Params[NewPos] = NewParam;
-
-            return Ret;
-        }
-    };
-
-    struct OpcodeGroup
-    {
-        public List<OpcodeData> OpcodeList;
-        public List<OpcodeData> OpcodeMatrix;
     };
     
     class OpcodeReader
     {
-        static ParamInfo GetParamInfo(string Value)
+        static OpcodeData.ParamEntry GetParamInfo(argType Arg)
         {
-            ParamInfo Ret = new ParamInfo();
+            OpcodeData.ParamEntry Ret = new OpcodeData.ParamEntry();
 
-            string Name = Value.ToUpper().Trim();
-            if (Name.Length > 0 && Name[0] == '!')
-            {
-                Ret.Implicit = true;
+            Ret.Implicit = Arg.assumed;
 
-                Name = Name.Substring(1);
-            }
-
-            switch (Name)
+            switch (Arg.Value.ToUpper().Trim())
             {
                 case "0":
-                    Ret.ID = ZASM.CommandID.Encoded0;
-                    Ret.Type = ParameterType.Value;
+                    Ret.Param = OpcodeData.ParameterID.Encoded0;
+                    Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
                 case "1":
-                    Ret.ID = ZASM.CommandID.Encoded1;
-                    Ret.Type = ParameterType.Value;
+                    Ret.Param = OpcodeData.ParameterID.Encoded1;
+                    Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
                 case "2":
-                    Ret.ID = ZASM.CommandID.Encoded2;
-                    Ret.Type = ParameterType.Value;
+                    Ret.Param = OpcodeData.ParameterID.Encoded2;
+                    Ret.Type = OpcodeData.ParameterType.Value;
                     break;
-
-
-                case "(BC)":
-                    Ret.ID = ZASM.CommandID.BC;
-                    Ret.Type = ParameterType.AddressRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(DE)":
-                    Ret.ID = ZASM.CommandID.DE;
-                    Ret.Type = ParameterType.AddressRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(SP)":
-                    Ret.ID = ZASM.CommandID.SP;
-                    Ret.Type = ParameterType.AddressRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(HL)":
-                    Ret.ID = ZASM.CommandID.HL;
-                    Ret.Type = ParameterType.AddressRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(HLI)":
-                case "(HL+)":
-                    Ret.ID = ZASM.CommandID.HLI;
-                    Ret.Type = ParameterType.AddressRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(HLD)":
-                case "(HL-)":
-                    Ret.ID = ZASM.CommandID.HLD;
-                    Ret.Type = ParameterType.AddressRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(C)":
-                case "(+C)":
-                    Ret.ID = ZASM.CommandID.C;
-                    Ret.Type = ParameterType.ByteOffsetPointer;
-                    Ret.Pointer = true;
-                    break;
-
-                case "(BYTE)":
-                case "(+BYTE) | BYTEIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateByte;
-                    Ret.Type = ParameterType.ByteOffsetPointer;
-                    Ret.Pointer = true;
-                    break;
-
-                case "+SP":
-                case "SP + BYTE | BYTEIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateByte;
-                    Ret.Type = ParameterType.ByteOffset;
-                    break;
-
-                case "A":
-                    Ret.ID = ZASM.CommandID.A;
-                    Ret.Type = ParameterType.ByteRegister;
-                    break;
-
-                case "C":
-                    Ret.ID = ZASM.CommandID.C;
-                    Ret.Type = ParameterType.ByteRegister;
-                    break;
-
-                case "M":
-                    Ret.ID = ZASM.CommandID.M;
-                    Ret.Type = ParameterType.ByteRegister;
-                    break;
-
-                case "I":
-                    Ret.ID = ZASM.CommandID.I;
-                    Ret.Type = ParameterType.ByteRegister;
-                    break;
-
-                case "R":
-                    Ret.ID = ZASM.CommandID.R;
-                    Ret.Type = ParameterType.ByteRegister;
-                    break;
-
-                case "PSW":
-                    Ret.ID = ZASM.CommandID.PSW;
-                    Ret.Type = ParameterType.WordRegisterAF;
-                    break;
-
-                case "AF":
-                    Ret.ID = ZASM.CommandID.AF;
-                    Ret.Type = ParameterType.WordRegister;
-                    break;
-
-                case "AF'":
-                    Ret.ID = ZASM.CommandID.AF_Alt;
-                    Ret.Type = ParameterType.WordRegister;
-                    break;
-
-                case "BC":
-                    Ret.ID = ZASM.CommandID.BC;
-                    Ret.Type = ParameterType.WordRegister;
-                    break;
-
-                case "DE":
-                    Ret.ID = ZASM.CommandID.DE;
-                    Ret.Type = ParameterType.WordRegister;
-                    break;
-
-                case "HL":
-                    Ret.ID = ZASM.CommandID.HL;
-                    Ret.Type = ParameterType.WordRegister;
-                    break;
-
-                case "SP":
-                    Ret.ID = ZASM.CommandID.SP;
-                    Ret.Type = ParameterType.WordRegister;
-                    break;
-
 
                 case "FLAG-NZ":
-                    Ret.ID = ZASM.CommandID.Flag_NZ;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_NZ;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-Z":
-                    Ret.ID = ZASM.CommandID.Flag_Z;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_Z;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-NC":
-                    Ret.ID = ZASM.CommandID.Flag_NC;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_NC;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-C":
                 case "FLAG-CY":
-                    Ret.ID = ZASM.CommandID.Flag_C;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_C;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-PO":
-                    Ret.ID = ZASM.CommandID.Flag_PO;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_PO;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-PE":
-                    Ret.ID = ZASM.CommandID.Flag_PE;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_PE;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-P":
-                    Ret.ID = ZASM.CommandID.Flag_P;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_P;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
                 case "FLAG-M":
-                    Ret.ID = ZASM.CommandID.Flag_M;
-                    Ret.Type = ParameterType.Flag;
+                    Ret.Param = OpcodeData.ParameterID.Flag_M;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "ADDRESSPTR | WORDIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateWord;
-                    Ret.Type = ParameterType.AddressPointer;
-                    Ret.Pointer = true;
+                case "ADDRESSPTR":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateWord;
+                    Ret.Type = OpcodeData.ParameterType.AddressPointer;
                     break;
 
-                case "ADDRESS | WORDIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateWord;
-                    Ret.Type = ParameterType.Value;
+                case "ADDRESS":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateWord;
+                    Ret.Type = OpcodeData.ParameterType.Address;
                     break;
 
-                case "BYTE | BYTEIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateByte;
-                    Ret.Type = ParameterType.Value;
+                case "BYTE":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateByte;
+                    Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "WORD | WORDIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateWord;
-                    Ret.Type = ParameterType.Value;
+                case "WORD":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateWord;
+                    Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "DISP | BYTEIMMIDATE":
-                    Ret.ID = ZASM.CommandID.ImmediateByte;
-                    Ret.Type = ParameterType.Value;
+                case "DISP":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateByte;
+                    Ret.Type = OpcodeData.ParameterType.Displacment;
+                    break;
+
+                case "BYTEREG":
+                    Ret.Param = OpcodeData.ParameterID.RegisterAny;
+                    Ret.Type = OpcodeData.ParameterType.ByteRegister;
+                    break;
+
+                case "WORDREG":
+                    Ret.Param = OpcodeData.ParameterID.RegisterAny;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREGF":
+                    Ret.Param = OpcodeData.ParameterID.RegisterAny;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterAF;
+                    break;
+
+                case "BYTEINDEXREG":
+                    Ret.Param = OpcodeData.ParameterID.RegisterAny;
+                    Ret.Type = OpcodeData.ParameterType.ByteIndexRegister;
+                    break;
+
+                case "WORDINDEXREG":
+                    Ret.Param = OpcodeData.ParameterID.XX;
+                    Ret.Type = OpcodeData.ParameterType.WordIndexRegister;
+                    break;
+
+                case "WORDINDEXREGPTR":
+                    Ret.Param = OpcodeData.ParameterID.XX;
+                    Ret.Type = OpcodeData.ParameterType.WordIndexRegisterPointer;
+                    break;
+
+                case "ENCODED":
+                    Ret.Param = OpcodeData.ParameterID.EncodedByte;
+                    Ret.Type = OpcodeData.ParameterType.Value;
+                    break;
+
+                case "FLAG":
+                    Ret.Param = OpcodeData.ParameterID.FlagsAny;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
+                    break;
+
+                case "HALFFLAG":
+                    Ret.Param = OpcodeData.ParameterID.FlagsAny;
+                    Ret.Type = OpcodeData.ParameterType.HalfFlag;
+                    break;
+
+                case "BYTEREG-A":
+                    Ret.Param = OpcodeData.ParameterID.A;
+                    Ret.Type = OpcodeData.ParameterType.ByteRegister;
+                    break;
+
+                case "BYTEREG-C":
+                    Ret.Param = OpcodeData.ParameterID.C;
+                    Ret.Type = OpcodeData.ParameterType.ByteRegister;
+                    break;
+
+                case "BYTEREG-I":
+                    Ret.Param = OpcodeData.ParameterID.I;
+                    Ret.Type = OpcodeData.ParameterType.ByteRegister;
+                    break;
+
+                case "BYTEREG-R":
+                    Ret.Param = OpcodeData.ParameterID.R;
+                    Ret.Type = OpcodeData.ParameterType.ByteRegister;
+                    break;
+
+                case "WORDREG-AF":
+                    Ret.Param = OpcodeData.ParameterID.AF;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREG-AFALT":
+                    Ret.Param = OpcodeData.ParameterID.AF_Alt;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREG-BC":
+                    Ret.Param = OpcodeData.ParameterID.BC;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREG-DE":
+                    Ret.Param = OpcodeData.ParameterID.DE;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREG-HL":
+                    Ret.Param = OpcodeData.ParameterID.HL;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREG-SP":
+                    Ret.Param = OpcodeData.ParameterID.SP;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case "WORDREGPTR-BC":
+                    Ret.Param = OpcodeData.ParameterID.BC;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
+                    break;
+
+                case "WORDREGPTR-DE":
+                    Ret.Param = OpcodeData.ParameterID.DE;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
+                    break;
+
+                case "WORDREGPTR-SP":
+                    Ret.Param = OpcodeData.ParameterID.SP;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
+                    break;
+
+                case "WORDREGPTR-HL":
+                    Ret.Param = OpcodeData.ParameterID.HL;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
+                    break;
+
+                case "WORDREGPTR-HLI":
+                    Ret.Param = OpcodeData.ParameterID.HLI;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
+                    break;
+
+                case "WORDREGPTR-HLD":
+                    Ret.Param = OpcodeData.ParameterID.HLD;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
 
-
-                case "BYTEREG | 1":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.ByteRegister;
-                    Ret.Pos = 1;
+                case "HIGHMEMPTR+C":
+                    Ret.Param = OpcodeData.ParameterID.C;
+                    Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
-                case "BYTEREG | 2":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.ByteRegister;
-                    Ret.Pos = 2;
+                case "HIGHMEMPTR+BYTE":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateByte;
+                    Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
-                case "WORDREG | 3":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.WordRegister;
-                    Ret.Pos = 3;
+                case "HIGHMEMPTR":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateByte;
+                    Ret.Type = OpcodeData.ParameterType.HighMemPointer;
                     break;
 
-                case "WORDREGF | 3":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.WordRegisterAF;
-                    Ret.Pos = 3;
+                case "WORDREG-SP+BYTE":
+                    Ret.Param = OpcodeData.ParameterID.ImmediateByte;
+                    Ret.Type = OpcodeData.ParameterType.SPPlusOffset;
+                    break;
+                
+                default:
+                    Console.WriteLine(Arg.Value);
+                    break;
+            }
+
+            switch (Arg.encoding)
+            {
+                case EncodingEnum.None:
+                    Ret.Encoding = OpcodeData.EncodingType.None;
                     break;
 
-                case "ENCODED | 2":
-                    Ret.ID = ZASM.CommandID.EncodedByte;
-                    Ret.Type = ParameterType.Value;
-                    Ret.Pos = 2;
+                case EncodingEnum.Item1:
+                    Ret.Encoding = OpcodeData.EncodingType.Pos1;
                     break;
 
-                case "FLAG | 2":
-                    Ret.ID = ZASM.CommandID.FlagsAny;
-                    Ret.Type = ParameterType.Flag;
-                    Ret.Pos = 2;
+                case EncodingEnum.Item2:
+                    Ret.Encoding = OpcodeData.EncodingType.Pos2;
                     break;
 
-                case "HALFFLAG | 4":
-                    Ret.ID = ZASM.CommandID.FlagsAny;
-                    Ret.Type = ParameterType.HalfFlag;
-                    Ret.Pos = 4;
+                case EncodingEnum.Item3:
+                    Ret.Encoding = OpcodeData.EncodingType.Pos3;
                     break;
 
-                case "HALFFLAG | 2":
-                    Ret.ID = ZASM.CommandID.FlagsAny;
-                    Ret.Type = ParameterType.HalfFlag;
-                    Ret.Pos = 2;
+                case EncodingEnum.Item4:
+                    Ret.Encoding = OpcodeData.EncodingType.Pos4;
                     break;
 
-                case "BYTEINDEXREG | 1":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.ByteIndexRegister;
-                    Ret.Pos = 1;
+                case EncodingEnum.ByteImmidate:
+                    Ret.Encoding = OpcodeData.EncodingType.ByteImmidate;
                     break;
 
-                case "BYTEINDEXREG | 2":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.ByteIndexRegister;
-                    Ret.Pos = 2;
+                case EncodingEnum.WordImmidate:
+                    Ret.Encoding = OpcodeData.EncodingType.WordImmidate;
                     break;
 
-                case "IX/IY":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.WordIndexRegister;
-                    break;
-
-                case "(IX/IY)":
-                    Ret.ID = ZASM.CommandID.RegisterAny;
-                    Ret.Type = ParameterType.AddressIndexRegister;
-                    Ret.Pointer = true;
-                    break;
-
-                case "":                    
+                case EncodingEnum.IndexOffset:
+                    Ret.Encoding = OpcodeData.EncodingType.IndexOffset;
                     break;
 
                 default:
-                    Ret.ID = ZASM.CommandID.None;
-                    Ret.Type = ParameterType.Unknown;                    
-                    Console.WriteLine(Name);
-                    break;
+                   Console.WriteLine(Arg.encoding);
+                   break;
             }
 
             return Ret;
@@ -483,58 +314,62 @@ namespace TableBuilder
 
         static int[] ShiftMap = new int[] { 0, 0, 3, 4, 3 };
 
-        static ZASM.CommandID[] ByteRegister = { ZASM.CommandID.B, ZASM.CommandID.C, ZASM.CommandID.D, ZASM.CommandID.E, ZASM.CommandID.H, ZASM.CommandID.L, ZASM.CommandID.None, ZASM.CommandID.A };
-        static ZASM.CommandID[] WordRegister = { ZASM.CommandID.BC, ZASM.CommandID.DE, ZASM.CommandID.HL, ZASM.CommandID.SP };
-        static ZASM.CommandID[] WordRegisterAF = { ZASM.CommandID.BC, ZASM.CommandID.DE, ZASM.CommandID.HL, ZASM.CommandID.AF };
-        
-        static ZASM.CommandID[] ByteIndexRegister = { ZASM.CommandID.IYH, ZASM.CommandID.IXH, ZASM.CommandID.IXL, ZASM.CommandID.IYL };
-        static ZASM.CommandID[] WordIndexRegister = { ZASM.CommandID.IX, ZASM.CommandID.IY };
-        static ZASM.CommandID[] AddressIndexRegister = { ZASM.CommandID.IX, ZASM.CommandID.IY };
+        static OpcodeData.ParameterID[] ByteRegister = { OpcodeData.ParameterID.B, OpcodeData.ParameterID.C, OpcodeData.ParameterID.D, OpcodeData.ParameterID.E, OpcodeData.ParameterID.H, OpcodeData.ParameterID.L, OpcodeData.ParameterID.None, OpcodeData.ParameterID.A };
+        static OpcodeData.ParameterID[] WordRegister = { OpcodeData.ParameterID.BC, OpcodeData.ParameterID.DE, OpcodeData.ParameterID.HL, OpcodeData.ParameterID.SP };
+        static OpcodeData.ParameterID[] WordRegisterAF = { OpcodeData.ParameterID.BC, OpcodeData.ParameterID.DE, OpcodeData.ParameterID.HL, OpcodeData.ParameterID.AF };
 
-        static ZASM.CommandID[] Flags = { ZASM.CommandID.Flag_NZ, ZASM.CommandID.Flag_Z, ZASM.CommandID.Flag_NC, ZASM.CommandID.Flag_C, ZASM.CommandID.Flag_PO, ZASM.CommandID.Flag_PE, ZASM.CommandID.Flag_P, ZASM.CommandID.Flag_M };
-        static ZASM.CommandID[] HalfFlags = { ZASM.CommandID.Flag_NZ, ZASM.CommandID.Flag_Z, ZASM.CommandID.Flag_NC, ZASM.CommandID.Flag_C };
-        static ZASM.CommandID[] Encoded = { ZASM.CommandID.Encoded0, ZASM.CommandID.Encoded1, ZASM.CommandID.Encoded2, ZASM.CommandID.Encoded3, ZASM.CommandID.Encoded4, ZASM.CommandID.Encoded5, ZASM.CommandID.Encoded6, ZASM.CommandID.Encoded7 };
+        //static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.IYH, OpcodeData.ParameterID.IXH, OpcodeData.ParameterID.IXL, OpcodeData.ParameterID.IYL };
+        //static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.IX, OpcodeData.ParameterID.IY };
+        //static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.IX, OpcodeData.ParameterID.IY };
 
-        static List<ParamInfo> GetExpandList(ParamInfo Param)
+        static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.XXH, OpcodeData.ParameterID.XXL, };
+        static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.XX };
+        static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.XX };
+
+        static OpcodeData.ParameterID[] Flags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_C, OpcodeData.ParameterID.Flag_PO, OpcodeData.ParameterID.Flag_PE, OpcodeData.ParameterID.Flag_P, OpcodeData.ParameterID.Flag_M };
+        static OpcodeData.ParameterID[] HalfFlags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_C };
+        static OpcodeData.ParameterID[] Encoded = { OpcodeData.ParameterID.Encoded0, OpcodeData.ParameterID.Encoded1, OpcodeData.ParameterID.Encoded2, OpcodeData.ParameterID.Encoded3, OpcodeData.ParameterID.Encoded4, OpcodeData.ParameterID.Encoded5, OpcodeData.ParameterID.Encoded6, OpcodeData.ParameterID.Encoded7 };
+
+        static List<OpcodeData.ParamEntry> GetExpandList(OpcodeData.ParamEntry Param)
         {
-            ZASM.CommandID[] ParamList = null;
+            OpcodeData.ParameterID[] ParamList = null;
 
             switch (Param.Type)
             {
-                case ParameterType.ByteRegister:
+                case OpcodeData.ParameterType.ByteRegister:
                     ParamList = ByteRegister;
                     break;
 
-                case ParameterType.ByteIndexRegister:
+                case OpcodeData.ParameterType.ByteIndexRegister:
                     ParamList = ByteIndexRegister;
                     break;
 
-                case ParameterType.WordRegister:
+                case OpcodeData.ParameterType.WordRegister:
                     ParamList = WordRegister;
                     break;
 
-                case ParameterType.WordIndexRegister:
+                case OpcodeData.ParameterType.WordIndexRegister:
                     ParamList = WordIndexRegister;
                     break;
 
-                case ParameterType.WordRegisterAF:
+                case OpcodeData.ParameterType.WordRegisterAF:
                     ParamList = WordRegisterAF;
                     break;
 
-                case ParameterType.AddressIndexRegister:
+                case OpcodeData.ParameterType.WordIndexRegisterPointer:
                     ParamList = AddressIndexRegister;
                     break;
 
-                case ParameterType.Flag:
+                case OpcodeData.ParameterType.Flag:
                     ParamList = Flags;
                     break;
 
-                case ParameterType.HalfFlag:
+                case OpcodeData.ParameterType.HalfFlag:
                     ParamList = HalfFlags;
                     break;
 
-                case ParameterType.Value:
-                    if(Param.ID == ZASM.CommandID.EncodedByte)
+                case OpcodeData.ParameterType.Value:
+                    if(Param.Param == OpcodeData.ParameterID.EncodedByte)
                         ParamList = Encoded;
                     break;
 
@@ -544,21 +379,23 @@ namespace TableBuilder
 
             }
 
-            List<ParamInfo> Ret = new List<ParamInfo>();
+            List<OpcodeData.ParamEntry> Ret = new List<OpcodeData.ParamEntry>();
 
             if (ParamList == null)
                 return Ret;
 
             for (int x = 0; x < ParamList.Length; x++)
             {
-                ParamInfo NewParam = new ParamInfo();
+                OpcodeData.ParamEntry NewParam = new OpcodeData.ParamEntry();
 
-                NewParam.ID = ParamList[x];
+                NewParam.Param = ParamList[x];
 
-                NewParam.Pos = Param.Pos;
                 NewParam.Type = Param.Type;
                 NewParam.Implicit = Param.Implicit;
-                NewParam.Pointer = Param.Pointer;
+                if (Param.Encoding >= OpcodeData.EncodingType.Pos1 && Param.Encoding <= OpcodeData.EncodingType.Pos4)
+                    NewParam.Encoding = OpcodeData.EncodingType.None;
+                else
+                    NewParam.Encoding = Param.Encoding;
 
                 Ret.Add(NewParam);
             }
@@ -567,60 +404,61 @@ namespace TableBuilder
             return Ret;
         }
 
-        static int GetValue(ZASM.CommandID Entry)
+        static int GetValue(OpcodeData.ParameterID Entry)
         {
             switch (Entry)
             {
-                case ZASM.CommandID.Encoded0:
-                case ZASM.CommandID.Flag_NZ:
-                case ZASM.CommandID.BC:
-                case ZASM.CommandID.B:
+                case OpcodeData.ParameterID.Encoded0:
+                case OpcodeData.ParameterID.Flag_NZ:
+                case OpcodeData.ParameterID.BC:
+                case OpcodeData.ParameterID.B:
                     return 0;
 
-                case ZASM.CommandID.Encoded1:
-                case ZASM.CommandID.Flag_Z:
-                case ZASM.CommandID.DE:
-                case ZASM.CommandID.C:
+                case OpcodeData.ParameterID.Encoded1:
+                case OpcodeData.ParameterID.Flag_Z:
+                case OpcodeData.ParameterID.DE:
+                case OpcodeData.ParameterID.C:
                     return 1;
 
-                case ZASM.CommandID.Encoded2:
-                case ZASM.CommandID.Flag_NC:
-                case ZASM.CommandID.HL:
-                case ZASM.CommandID.IX:
-                case ZASM.CommandID.IY:
-                case ZASM.CommandID.D:
+                case OpcodeData.ParameterID.Encoded2:
+                case OpcodeData.ParameterID.Flag_NC:
+                case OpcodeData.ParameterID.HL:
+                case OpcodeData.ParameterID.IX:
+                case OpcodeData.ParameterID.IY:
+                case OpcodeData.ParameterID.XX:
+                case OpcodeData.ParameterID.D:
                     return 2;
 
-                case ZASM.CommandID.Encoded3:
-                case ZASM.CommandID.Flag_C:
-                case ZASM.CommandID.AF:
-                case ZASM.CommandID.SP:
-                case ZASM.CommandID.PSW:
-                case ZASM.CommandID.E:
+                case OpcodeData.ParameterID.Encoded3:
+                case OpcodeData.ParameterID.Flag_C:
+                case OpcodeData.ParameterID.AF:
+                case OpcodeData.ParameterID.SP:
+                case OpcodeData.ParameterID.E:
                     return 3;
 
-                case ZASM.CommandID.Encoded4:
-                case ZASM.CommandID.Flag_PO:
-                case ZASM.CommandID.H:
-                case ZASM.CommandID.IXH:
-                case ZASM.CommandID.IYH:
+                case OpcodeData.ParameterID.Encoded4:
+                case OpcodeData.ParameterID.Flag_PO:
+                case OpcodeData.ParameterID.H:
+                case OpcodeData.ParameterID.IXH:
+                case OpcodeData.ParameterID.IYH:
+                case OpcodeData.ParameterID.XXH:
                     return 4;
 
-                case ZASM.CommandID.Encoded5:
-                case ZASM.CommandID.Flag_PE:
-                case ZASM.CommandID.L:
-                case ZASM.CommandID.IXL:
-                case ZASM.CommandID.IYL:
+                case OpcodeData.ParameterID.Encoded5:
+                case OpcodeData.ParameterID.Flag_PE:
+                case OpcodeData.ParameterID.L:
+                case OpcodeData.ParameterID.IXL:
+                case OpcodeData.ParameterID.IYL:
+                case OpcodeData.ParameterID.XXL:
                     return 5;
 
-                case ZASM.CommandID.Encoded6:
-                case ZASM.CommandID.Flag_P:
-                case ZASM.CommandID.M:
+                case OpcodeData.ParameterID.Encoded6:
+                case OpcodeData.ParameterID.Flag_P:
                     return 6;
 
-                case ZASM.CommandID.Encoded7:
-                case ZASM.CommandID.Flag_M:
-                case ZASM.CommandID.A:
+                case OpcodeData.ParameterID.Encoded7:
+                case OpcodeData.ParameterID.Flag_M:
+                case OpcodeData.ParameterID.A:
                     return 7;
 
                 default:
@@ -628,57 +466,74 @@ namespace TableBuilder
             }
         }
 
-        static List<OpcodeData> ExpandOpcodeEntry(OpcodeData Entry)
+        public static bool CanExpand(OpcodeData.ParamEntry Entry)
         {
-            List<OpcodeData> Ret = new List<OpcodeData>();
+            if (Entry.Param == OpcodeData.ParameterID.RegisterAny || Entry.Param == OpcodeData.ParameterID.FlagsAny || Entry.Param == OpcodeData.ParameterID.EncodedByte)
+                return true;
 
-            if (!Entry.CanExpand())
+            return false;
+        }
+        
+        public static bool CanExpand(OpcodeData.OpcodeEntry Opcode)
+        {
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
+            {
+                if (CanExpand(Entry))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static byte ExpandIndex(OpcodeData.OpcodeEntry Opcode)
+        {
+            for (byte x = 0; x < Opcode.Params.Length; x++)
+            {
+                if (CanExpand(Opcode.Params[x]))
+                    return x;
+            }
+
+            return 0xFF;
+        }
+
+        static OpcodeData.OpcodeEntry CloneParams(OpcodeData.OpcodeEntry Opcode, OpcodeData.ParamEntry NewParam, int NewPos)
+        {
+            OpcodeData.OpcodeEntry Ret = new OpcodeData.OpcodeEntry(Opcode);
+
+            Ret.Params[NewPos] = NewParam;
+
+            return Ret;
+        }
+
+
+        static List<OpcodeData.OpcodeEntry> ExpandOpcodeEntry(OpcodeData.OpcodeEntry Entry)
+        {
+            List<OpcodeData.OpcodeEntry> Ret = new List<OpcodeData.OpcodeEntry>();
+
+            if (!CanExpand(Entry))
             {
                 Ret.Add(Entry);
                 return Ret;
             }
 
-            int Pos = Entry.ExpandIndex();
+            int Pos = ExpandIndex(Entry);
 
-            List<ParamInfo> ExpandList = GetExpandList(Entry.Params[Pos]);
+            List<OpcodeData.ParamEntry> ExpandList = GetExpandList(Entry.Params[Pos]);
 
             // Create a new entry for each param
             for (int x = 0; x < ExpandList.Count; x++)
             {
-                if (ExpandList[x].ID == ZASM.CommandID.None)
+                if (ExpandList[x].Param == OpcodeData.ParameterID.None)
                     continue;
 
-                OpcodeData NewEntry = Entry.CloneParams(ExpandList[x], Pos);
+                OpcodeData.OpcodeEntry NewEntry = CloneParams(Entry, ExpandList[x], Pos);
 
-                if (ExpandList[x].Pos != 0)
-                    NewEntry.Base += GetValue(ExpandList[x].ID) << ShiftMap[ExpandList[x].Pos];
+                if (Entry.Params[Pos].Encoding >= OpcodeData.EncodingType.Pos1 && Entry.Params[Pos].Encoding <= OpcodeData.EncodingType.Pos4)
+                    NewEntry.Encoding += (byte)(GetValue(ExpandList[x].Param) << ShiftMap[(int)Entry.Params[Pos].Encoding]);               
 
-
-                if (ExpandList[x].ID == ZASM.CommandID.IX || ExpandList[x].ID == ZASM.CommandID.IXL || ExpandList[x].ID == ZASM.CommandID.IXH)
+                if (CanExpand(NewEntry))
                 {
-                    if (NewEntry.Prefix != 0xDD && NewEntry.Prefix != 0xFD)
-                    {
-                        if (NewEntry.Prefix != 0)
-                            NewEntry.Prefix += 0xDD00;
-                        else
-                            NewEntry.Prefix = 0xDD;
-                    }
-                }
-                else if (ExpandList[x].ID == ZASM.CommandID.IY || ExpandList[x].ID == ZASM.CommandID.IYL || ExpandList[x].ID == ZASM.CommandID.IYH)
-                {
-                    if (NewEntry.Prefix != 0xDD && NewEntry.Prefix != 0xFD)
-                    {
-                        if (NewEntry.Prefix != 0)
-                            NewEntry.Prefix += 0xFD00;
-                        else
-                            NewEntry.Prefix = 0xFD;
-                    }
-                }
-
-
-                if (NewEntry.CanExpand())
-                {
-                    Ret.AddRange(ExpandOpcodeEntry(NewEntry));                    
+                    Ret.AddRange(ExpandOpcodeEntry(NewEntry));
                 }
                 else
                 {
@@ -689,109 +544,125 @@ namespace TableBuilder
             return Ret;
         }
 
-        public static OpcodeGroup ReadOpcodeData(string FileName)
+        public static int Order(OpcodeData.OpcodeEntry Entry)
         {
-            const int Prefix = 0;
-            const int Base = 1;
-            const int Name = 2;
-            const int Opcode1 = 3;
-            const int Opcode2 = 4;
-            const int Opcode3 = 5;
-            const int Offical = 6;
-            const int Function = 7;
-            const int CycleCount = 8;
-            //const int Size = 9;
+            return (Entry.Index ? 0x10000 : 0) + (Entry.Prefix << 8) + Entry.Encoding;
+        }
 
-            OpcodeGroup Ret = new OpcodeGroup();
-            
-            string[] Data = File.ReadAllLines(FileName);
+        public static byte Length(OpcodeData.OpcodeEntry Entry)
+        {
+            // For the base
+            byte Ret = 1;
 
-            Ret.OpcodeList = new List<OpcodeData>();
+            // Prefix
+            if (Entry.Prefix != 0x00)
+                Ret++;
 
-            for (int x = 1; x < Data.Length; x++)
+            // Index Prefix
+            if (Entry.Index)
+                Ret++;
+
+            // Offset
+            if (HasType(Entry, OpcodeData.ParameterType.WordIndexRegisterPointer))
+                Ret++;
+
+            if (HasParam(Entry, OpcodeData.ParameterID.ImmediateByte))
+                Ret++;
+
+            if (HasParam(Entry, OpcodeData.ParameterID.ImmediateWord))
+                Ret += 2;
+
+            return Ret;
+        }
+        
+        public static bool HasType(OpcodeData.OpcodeEntry Opcode, OpcodeData.ParameterType Type)
+        {
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
             {
-                OpcodeData NewEntry = new OpcodeData();
-                                
-                string[] Fields = Data[x].Split(',');
-
-                Enum.TryParse<ZASM.CommandID>(Fields[Name], out NewEntry.ID);
-
-                if (Fields[Prefix].Length != 0)
-                    NewEntry.Prefix = Convert.ToUInt16(Fields[Prefix], 16);
-                else
-                    NewEntry.Prefix = 0;
-
-                if (NewEntry.Prefix == 0xFD)
-                    NewEntry.Prefix = 0;
-
-                if (NewEntry.Prefix == 0xFDCB)
-                    NewEntry.Prefix = 0xCB;
-
-                NewEntry.Base = (byte)Convert.ToUInt16(Fields[Base], 16);
-
-                if (Fields[Opcode1] != "")
-                    NewEntry.Params.Add(GetParamInfo(Fields[Opcode1]));
-
-                if (Fields[Opcode2] != "")
-                    NewEntry.Params.Add(GetParamInfo(Fields[Opcode2]));
-                
-                if (Fields[Opcode3] != "")
-                    NewEntry.Params.Add(GetParamInfo(Fields[Opcode3]));
-
-
-                if (Fields[Offical] == "Y")
-                    NewEntry.Type = OpcodeType.Offical;
-
-                else if (Fields[Offical] == "X")
-                    NewEntry.Type = OpcodeType.Undocumented;
-
-                else if (Fields[Offical] == "N")
-                    NewEntry.Type = OpcodeType.Unoffical;
-
-                NewEntry.Function = Fields[Function].ToUpper();
-                if (Fields[CycleCount].Length != 0)
-                    NewEntry.CycleCount = (byte)Convert.ToUInt16(Fields[CycleCount], 10);
-                else
-                    NewEntry.CycleCount = 0;
-
-                NewEntry.Length = 1;
-                if (NewEntry.Prefix != 0)
-                    NewEntry.Length++;
-                
-                if(NewEntry.HasParam(ZASM.CommandID.ImmediateWord))
-                    NewEntry.Length += 2;
-
-                if (NewEntry.HasParam(ZASM.CommandID.ImmediateByte))
-                    NewEntry.Length += 1;
-
-                if (NewEntry.HasIndex())
-                {
-                    NewEntry.Length++;
-
-                    if(NewEntry.HasOffset())
-                        NewEntry.Length++;
-                }
-
-                Ret.OpcodeList.Add(NewEntry);
+                if (Entry.Type == Type)
+                    return true;
             }
 
-            Ret.OpcodeMatrix = new List<OpcodeData>();
+            return false;
+        }
 
-            foreach (OpcodeData Entry in Ret.OpcodeList)
+        public static bool HasParam(OpcodeData.OpcodeEntry Opcode, OpcodeData.ParameterID ID)
+        {
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
             {
-                List<OpcodeData> Indexed = ExpandOpcodeEntry(Entry);
+                if (Entry.Param == ID)
+                    return true;
+            }
 
-                if (Entry.HasIndex())
+            return false;
+        }
+
+        public static bool HasImplicit(OpcodeData.OpcodeEntry Opcode)
+        {
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
+            {
+                if (Entry.Implicit && (Entry.Type == OpcodeData.ParameterType.ByteRegister || Entry.Type == OpcodeData.ParameterType.WordRegister))
+                    return true;
+            }
+
+            return false;
+        }
+        
+        public static OpcodeGroup ReadOpcodeData(z80OpcodesPlatform Platform)
+        {
+            OpcodeGroup Ret = new OpcodeGroup();
+
+            foreach (opcodeType Opcode in Platform.opcode)
+            {
+                OpcodeData.OpcodeEntry NewDataEntry = new OpcodeData.OpcodeEntry();
+
+                NewDataEntry.Encoding = (Opcode.value != null) ? (Opcode.value[0]) : (byte)0;
+                NewDataEntry.Prefix = (Opcode.prefix != null) ? (Opcode.prefix[0]) : (byte)0;
+                NewDataEntry.Index = Opcode.index;
+                NewDataEntry.Name = (OpcodeData.CommandID) Enum.Parse(typeof(OpcodeData.CommandID), Opcode.mnemonic);
+                NewDataEntry.Function = (OpcodeData.FunctionID)Enum.Parse(typeof(OpcodeData.FunctionID), Opcode.function);
+                NewDataEntry.Cycles = Opcode.cycles;
+
+                if (Opcode.official == "Y")
+                    NewDataEntry.Type = OpcodeData.OpcodeType.Official;
+
+                else if (Opcode.official == "X")
+                    NewDataEntry.Type = OpcodeData.OpcodeType.Undocumented;
+
+                else if (Opcode.official == "N")
+                    NewDataEntry.Type = OpcodeData.OpcodeType.Unofficial;
+
+                if (Opcode.args != null)
                 {
-                    foreach (OpcodeData NewEntry in Indexed)
-                    {
-                        // Can't have both index types in one opcode
-                        if ((NewEntry.HasParam(ZASM.CommandID.IX) || NewEntry.HasParam(ZASM.CommandID.IXH) || NewEntry.HasParam(ZASM.CommandID.IXL)) &&
-                            (NewEntry.HasParam(ZASM.CommandID.IY) || NewEntry.HasParam(ZASM.CommandID.IYH) || NewEntry.HasParam(ZASM.CommandID.IYL)))
-                            continue;
+                    List<OpcodeData.ParamEntry> ArgList = new List<OpcodeData.ParamEntry>();
 
-                        // Can't have HL and IX/IY in the same opcode
-                        if ((NewEntry.HasParam(ZASM.CommandID.HL)) && (NewEntry.HasParam(ZASM.CommandID.IX) || NewEntry.HasParam(ZASM.CommandID.IY)))
+                    foreach (argType Arg in Opcode.args)
+                    {
+                        ArgList.Add(GetParamInfo(Arg));
+                    }
+
+                    NewDataEntry.Params = ArgList.ToArray();
+                }
+                else
+                {
+                    NewDataEntry.Params = new OpcodeData.ParamEntry[0];
+                }
+
+                NewDataEntry.Length = Length(NewDataEntry);
+
+                Ret.OpcodeList.Add(NewDataEntry);
+            }
+
+            foreach (OpcodeData.OpcodeEntry Entry in Ret.OpcodeList)
+            {
+                List<OpcodeData.OpcodeEntry> Indexed = ExpandOpcodeEntry(Entry);
+
+                if (Entry.Index)
+                {
+                    foreach (OpcodeData.OpcodeEntry NewEntry in Indexed)
+                    {
+                        // Can't have HL and XX in the same opcode
+                        if(HasParam(NewEntry, OpcodeData.ParameterID.HL) & HasParam(NewEntry, OpcodeData.ParameterID.XX))
                             continue;
 
                         Ret.OpcodeMatrix.Add(NewEntry);
@@ -803,9 +674,7 @@ namespace TableBuilder
                 }
             }
 
-            Ret.OpcodeMatrix = Ret.OpcodeMatrix.OrderBy(e => (e.Prefix << 8) + e.Base).ToList();
-
-            //var dups = Ret.OpcodeMatrix.GroupBy(e => (e.Prefix << 8) + e.Base).Where(e => e.Count() > 1).ToDictionary(e=>e.Key, e2=>e2.ToList() );
+            Ret.OpcodeMatrix = Ret.OpcodeMatrix.DistinctBy(e => Order(e)).OrderBy(e => Order(e)).ToList();
 
             return Ret;
         }
