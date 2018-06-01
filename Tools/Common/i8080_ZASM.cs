@@ -1,3 +1,5 @@
+using CommandList = System.Collections.Generic.SortedList<string, OpcodeData.CommandID>;
+
 namespace OpcodeData
 {
     public static partial class ZASM
@@ -17,7 +19,7 @@ namespace OpcodeData
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xDB, Name = CommandID.IN  , Function = FunctionID.IN, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 2, }, // DBnn: IN nn
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xF2, Name = CommandID.JP  , Function = FunctionID.JMP, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateWord, ParameterType.Address, EncodingType.WordImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 3, }, // F2nnnn: JP nnnn
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x00, Name = CommandID.NOP , Function = FunctionID.NOP, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 4, Length = 1, }, // 00: NOP
-            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xD3, Name = CommandID.OUT , Function = FunctionID.OUT, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 2, }, // D3nn: OUT nn,
+            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xD3, Name = CommandID.OUT , Function = FunctionID.OUT, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 2, }, // D3nn: OUT nn
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xC1, Name = CommandID.POP , Function = FunctionID.POP, Params = new ParamEntry[] { new ParamEntry(ParameterID.RegisterAny, ParameterType.WordRegisterAF, EncodingType.Pos3, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 1, }, // C1: POP rr
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xC5, Name = CommandID.PUSH, Function = FunctionID.PUSH, Params = new ParamEntry[] { new ParamEntry(ParameterID.RegisterAny, ParameterType.WordRegisterAF, EncodingType.Pos3, false), }, Type = OpcodeType.Official, Cycles = 11, Length = 1, }, // C5: PUSH rr
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xC9, Name = CommandID.RET , Function = FunctionID.RET, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 10, Length = 1, }, // C9: RET
@@ -85,11 +87,11 @@ namespace OpcodeData
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x98, Name = CommandID.SBB , Function = FunctionID.SUB_C, Params = new ParamEntry[] { new ParamEntry(ParameterID.RegisterAny, ParameterType.ByteRegister, EncodingType.Pos1, false), }, Type = OpcodeType.Official, Cycles = 4, Length = 1, }, // 98: SBB r
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x9E, Name = CommandID.SBB , Function = FunctionID.SUB_C, Params = new ParamEntry[] { new ParamEntry(ParameterID.HL, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 6, Length = 1, }, // 9E: SBB (HL)
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xDE, Name = CommandID.SBI , Function = FunctionID.SUB_C, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 2, }, // DEnn: SBI nn
-            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x22, Name = CommandID.SHLD, Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateWord, ParameterType.AddressPointer, EncodingType.WordImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 3, }, // 22nnnn: SHLD (nnnn),
+            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x22, Name = CommandID.SHLD, Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateWord, ParameterType.AddressPointer, EncodingType.WordImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 3, }, // 22nnnn: SHLD (nnnn)
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xF9, Name = CommandID.SPHL, Function = FunctionID.LD, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 5, Length = 1, }, // F9: SPHL
-            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x32, Name = CommandID.STA , Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateWord, ParameterType.AddressPointer, EncodingType.WordImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 3, }, // 32nnnn: STA (nnnn),
-            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x02, Name = CommandID.STAX, Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.BC, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 1, }, // 02: STAX (BC),
-            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x12, Name = CommandID.STAX, Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.DE, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 1, }, // 12: STAX (DE),
+            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x32, Name = CommandID.STA , Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateWord, ParameterType.AddressPointer, EncodingType.WordImmidate, false), }, Type = OpcodeType.Official, Cycles = 10, Length = 3, }, // 32nnnn: STA (nnnn)
+            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x02, Name = CommandID.STAX, Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.BC, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 1, }, // 02: STAX (BC)
+            new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x12, Name = CommandID.STAX, Function = FunctionID.LD, Params = new ParamEntry[] { new ParamEntry(ParameterID.DE, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 1, }, // 12: STAX (DE)
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x37, Name = CommandID.STC , Function = FunctionID.CY_SET, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 4, Length = 1, }, // 37: STC
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xD6, Name = CommandID.SUI , Function = FunctionID.SUB, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 2, }, // D6nn: SUI nn
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xEB, Name = CommandID.XCHG, Function = FunctionID.EX, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 5, Length = 1, }, // EB: XCHG
@@ -97,6 +99,88 @@ namespace OpcodeData
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xAE, Name = CommandID.XRA , Function = FunctionID.XOR, Params = new ParamEntry[] { new ParamEntry(ParameterID.HL, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 6, Length = 1, }, // AE: XRA (HL)
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xEE, Name = CommandID.XRI , Function = FunctionID.XOR, Params = new ParamEntry[] { new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 2, }, // EEnn: XRI nn
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xE3, Name = CommandID.XTHL, Function = FunctionID.EX, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 18, Length = 1, }, // E3: XTHL
+        };
+
+        public static CommandList i8080Commands = new CommandList()
+        {
+           { "ADC", CommandID.ADC },
+           { "ADD", CommandID.ADD },
+           { "CALL", CommandID.CALL },
+           { "CP", CommandID.CP },
+           { "CPI", CommandID.CPI },
+           { "DAA", CommandID.DAA },
+           { "DI", CommandID.DI },
+           { "EI", CommandID.EI },
+           { "IN", CommandID.IN },
+           { "JP", CommandID.JP },
+           { "NOP", CommandID.NOP },
+           { "OUT", CommandID.OUT },
+           { "POP", CommandID.POP },
+           { "PUSH", CommandID.PUSH },
+           { "RET", CommandID.RET },
+           { "RLC", CommandID.RLC },
+           { "RRC", CommandID.RRC },
+           { "RST", CommandID.RST },
+           { "SUB", CommandID.SUB },
+           { "ACI", CommandID.ACI },
+           { "ADI", CommandID.ADI },
+           { "ANA", CommandID.ANA },
+           { "ANI", CommandID.ANI },
+           { "CC", CommandID.CC },
+           { "CM", CommandID.CM },
+           { "CMA", CommandID.CMA },
+           { "CMC", CommandID.CMC },
+           { "CMP", CommandID.CMP },
+           { "CNC", CommandID.CNC },
+           { "CNZ", CommandID.CNZ },
+           { "CPE", CommandID.CPE },
+           { "CPO", CommandID.CPO },
+           { "CZ", CommandID.CZ },
+           { "DAD", CommandID.DAD },
+           { "DCR", CommandID.DCR },
+           { "DCX", CommandID.DCX },
+           { "HLT", CommandID.HLT },
+           { "INR", CommandID.INR },
+           { "INX", CommandID.INX },
+           { "JC", CommandID.JC },
+           { "JM", CommandID.JM },
+           { "JMP", CommandID.JMP },
+           { "JNC", CommandID.JNC },
+           { "JNZ", CommandID.JNZ },
+           { "JPE", CommandID.JPE },
+           { "JPO", CommandID.JPO },
+           { "JZ", CommandID.JZ },
+           { "LDA", CommandID.LDA },
+           { "LDAX", CommandID.LDAX },
+           { "LHLD", CommandID.LHLD },
+           { "LXI", CommandID.LXI },
+           { "MOV", CommandID.MOV },
+           { "MVI", CommandID.MVI },
+           { "ORA", CommandID.ORA },
+           { "ORI", CommandID.ORI },
+           { "PCHL", CommandID.PCHL },
+           { "RAL", CommandID.RAL },
+           { "RAR", CommandID.RAR },
+           { "RC", CommandID.RC },
+           { "RM", CommandID.RM },
+           { "RNC", CommandID.RNC },
+           { "RNZ", CommandID.RNZ },
+           { "RP", CommandID.RP },
+           { "RPE", CommandID.RPE },
+           { "RPO", CommandID.RPO },
+           { "RZ", CommandID.RZ },
+           { "SBB", CommandID.SBB },
+           { "SBI", CommandID.SBI },
+           { "SHLD", CommandID.SHLD },
+           { "SPHL", CommandID.SPHL },
+           { "STA", CommandID.STA },
+           { "STAX", CommandID.STAX },
+           { "STC", CommandID.STC },
+           { "SUI", CommandID.SUI },
+           { "XCHG", CommandID.XCHG },
+           { "XRA", CommandID.XRA },
+           { "XRI", CommandID.XRI },
+           { "XTHL", CommandID.XTHL },
         };
     }
 }

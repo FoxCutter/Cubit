@@ -88,6 +88,7 @@ namespace ZASM
         Flag,
         Opcode,
         CurrentPos,
+        Address,
         //Result,
         //Displacment,
 
@@ -142,6 +143,8 @@ namespace ZASM
 
         public string StringValue;
         public int NumericValue;
+
+        public MessageInformation Message;
 
         public Token(TokenType Type = TokenType.None, InputType CharacterType = InputType.None)
         {

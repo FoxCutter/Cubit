@@ -73,11 +73,11 @@ namespace TableBuilder
             bool First = true;
             foreach (OpcodeData.ParamEntry Param in Entry.Params)
             {
-                if (!First)
-                    Output.Append(',');
-
                 if (!Param.Implicit || ForDecoding)
                 {
+                    if (!First)
+                        Output.Append(',');
+
                     Output.AppendFormat(" {0}", Param.ToString());
                     First = false;
                 }
@@ -211,6 +211,8 @@ namespace TableBuilder
                 string FileName = @".\Common\" + Prefix + "_ZASM.cs";
                 using (StreamWriter OutputFile = new StreamWriter(FileName, false))
                 {
+                    OutputFile.WriteLine("using CommandList = System.Collections.Generic.SortedList<string, OpcodeData.CommandID>;");
+                    OutputFile.WriteLine();
                     OutputFile.WriteLine("namespace OpcodeData");
                     OutputFile.WriteLine("{"); 
                     OutputFile.WriteLine("    public static partial class ZASM");
@@ -218,14 +220,28 @@ namespace TableBuilder
                     OutputFile.WriteLine("        public static OpcodeEntry[] {0}OpcodeList = new OpcodeEntry[]", Prefix);
                     OutputFile.WriteLine("        {");
 
+                        foreach (OpcodeData.OpcodeEntry Entry in GroupInfo.OpcodeList.OrderBy(e => e.Name))
+                        {
+                            if (Entry.Type == OpcodeData.OpcodeType.Unofficial)
+                                continue;
 
-                    foreach (OpcodeData.OpcodeEntry Entry in GroupInfo.OpcodeList.OrderBy(e => e.Name))
-                    {
-                        if (Entry.Type == OpcodeData.OpcodeType.Unofficial)
-                            continue;
+                            OutputFile.WriteLine(GenerateOpcode(Entry, "            ", false));
+                        }
 
-                        OutputFile.WriteLine(GenerateOpcode(Entry, "            ", false));
-                    }
+                    OutputFile.WriteLine("        };");
+
+                    OutputFile.WriteLine();
+                    
+                    OutputFile.WriteLine("        public static CommandList {0}Commands = new CommandList()", Prefix);
+                    OutputFile.WriteLine("        {");
+
+                        foreach (OpcodeData.OpcodeEntry Entry in GroupInfo.OpcodeList.DistinctBy(e => e.Name).OrderBy(e => e.Name))
+                        {
+                            if (Entry.Type == OpcodeData.OpcodeType.Unofficial)
+                                continue;
+
+                            OutputFile.WriteLine("           {{ \"{0}\", CommandID.{0} }},", Entry.Name);    
+                        }
 
                     OutputFile.WriteLine("        };");
                     OutputFile.WriteLine("    }");

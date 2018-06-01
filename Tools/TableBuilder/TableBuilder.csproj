@@ -51,10 +51,18 @@
     <Compile Include="z80-Opcodes.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\z80-Opcodes.xsd">
+      <Link>Resources\z80-Opcodes.xsd</Link>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <None Include="..\Z80-Opcodes.xml">
+      <Link>Resources\Z80-Opcodes.xml</Link>
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

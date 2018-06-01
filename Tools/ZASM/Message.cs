@@ -19,7 +19,7 @@ namespace ZASM
 
 
         Error = 0x8000,
-        InvalidNumberToken = Error,
+        InvalidNumberToken,
         UnexpectedLineBreak,
         UnexpectedSymbol,
         InvalidParamaterForOpcode,
@@ -130,52 +130,49 @@ namespace ZASM
         };
     }
 
-    class Message : IEnumerable<MessageInformation>
+    static class Message
     {
-        public static Message Log = new Message();
-        List<MessageInformation> _ErrorList;
+        //public static Message Log = new Message();
+        static List<MessageInformation> _ErrorList;
 
-        public Message()
+        public static List<MessageInformation> ErrorList { get { return _ErrorList; } }
+
+        static Message()
         {
             _ErrorList = new List<MessageInformation>();
         }
 
-        public void Add(string Source, int FileID, int Line, int Character, MessageCode Code, string Details = "")
+        public static MessageInformation Add(string Source, int FileID, int Line, int Character, MessageCode Code, string Details = "")
         {
             MessageInformation Error = new MessageInformation(FileID, Line, Character, Source, Code, Details);
 
-            Log.Add(Error);
+            if (!Settings.Messages.ContainsKey(Code) || Settings.Messages[Code] == Setting.On)
+            {
+                Add(Error);
+            }
+
+            return Error;
         }
 
-
-        public void Add(MessageInformation Error)
+        public static void Add(MessageInformation Error)
         {
-            _ErrorList.Add(Error);
+            if (!Settings.Messages.ContainsKey(Error.Code) || Settings.Messages[Error.Code] == Setting.On)
+                _ErrorList.Add(Error);
         }
 
-        public int MessageCount()
+        public static int MessageCount()
         {
             return _ErrorList.Count(e => e.Code < MessageCode.Warning);
         }
 
-        public int WarningCount()
+        public static int WarningCount()
         {
             return _ErrorList.Count(e => e.Code >= MessageCode.Warning && e.Code < MessageCode.Error);
         }
 
-        public int ErrorCount()
+        public static int ErrorCount()
         {
             return _ErrorList.Count(e => e.Code >= MessageCode.Error);
-        }
-
-        public IEnumerator<MessageInformation> GetEnumerator()
-        {
-            return _ErrorList.GetEnumerator();
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

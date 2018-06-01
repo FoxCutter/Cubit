@@ -1,14 +1,19 @@
-temp = 'BCK'
-	db	Temp
+Test1:  
+test2: 
 
-.z80
-                  
-.section "" size $4000 pos $10000 fill $42
-.org $0000 
+	jp nc, test1
 
-
-	LD 	BC, Temp
-	
-
-.end
+;temp = 'BCK'
+;	db	Temp
+;
+;.z80
+;                  
+;.section "" size $4000 pos $10000 fill $42
+;.org $0000 
+;
+;
+;	LD 	BC, Temp
+;	
+;
+;.end
 

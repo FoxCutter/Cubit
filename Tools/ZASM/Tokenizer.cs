@@ -17,6 +17,9 @@ namespace ZASM
         List<char> CurrentValue;
         string CurrentString { get { return string.Concat(CurrentValue); } }
 
+        public int CurrentLine { get { return _Line; } }
+        public int CurrentCharacter { get { return _Character; } }
+
         public Tokenizer(int FileID, Stream InputStream)
         {
             _DataStream = new StreamReader(InputStream);
@@ -104,7 +107,6 @@ namespace ZASM
             while (true)
             {
                 InputType NextType = PeekNextInputType();
-                char NextValue = PeekNextCharacter();
 
                 if (NextType == InputType.Identifier || NextType == InputType.Number ||
                      NextType == InputType.DollarSign || NextType == InputType.Period || NextType == InputType.QuestionMark ||
@@ -176,13 +178,13 @@ namespace ZASM
             }
             else if (DataTables.CharacterData[TypeChar] != InputType.Number)
             {
-                Message.Log.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
+                Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
                 return false;
             }
 
             if (TempData.Count == 0)
             {
-                Message.Log.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnknownError, "Empty Number Token");
+                Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnknownError, "Empty Number Token");
                 return false;
             }
 
@@ -203,7 +205,7 @@ namespace ZASM
             }
             catch
             {
-                Message.Log.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
+                Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
 
                 return false;
             }
@@ -224,7 +226,7 @@ namespace ZASM
                 InputType Current = PeekNextInputType();
                 if (Current == InputType.CarriageReturn || Current == InputType.LineFeed || Current == InputType.End)
                 {
-                    Message.Log.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedLineBreak);
+                    Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedLineBreak);
 
                     return false;
                 }
@@ -271,7 +273,7 @@ namespace ZASM
             switch (Ret.CharacterType)
             {
                 case InputType.Unknown:
-                    Message.Log.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
+                    Ret.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
                     break;
 
                 // LineBreak

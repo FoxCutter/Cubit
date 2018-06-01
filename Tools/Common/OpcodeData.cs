@@ -46,7 +46,7 @@ namespace OpcodeData
         D,
         E,
         H, L,
-        A,
+        A, F,
         SPH, SPL,
         PCH, PCL,
         IXH, IXL,
@@ -54,19 +54,21 @@ namespace OpcodeData
         I,
         R,
 
-        // Index High and Low, can be IX or IY depending on prefix
+        // Index High and Low, can be IXL/H or IYL/H depending on prefix
         XXH, XXL,
 
         // 16-bit Registers
         Word = 0x40,
-        AF = Word + A,
         BC = Word + B,
         DE = Word + D,
         HL = Word + H,
+        AF = Word + A,
         SP = Word + SPH,
         PC = Word + PCH,
         IX = Word + IXH,
         IY = Word + IYH,
+
+        // Index Registers, can be IX or IY depending on prefix
         XX = Word + XXH,
 
         AF_Alt,

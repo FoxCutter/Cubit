@@ -1,3 +1,5 @@
+using CommandList = System.Collections.Generic.SortedList<string, OpcodeData.CommandID>;
+
 namespace OpcodeData
 {
     public static partial class ZASM
@@ -202,6 +204,78 @@ namespace OpcodeData
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0xEE, Name = CommandID.XOR , Function = FunctionID.XOR, Params = new ParamEntry[] { new ParamEntry(ParameterID.A, ParameterType.ByteRegister, EncodingType.None, false), new ParamEntry(ParameterID.ImmediateByte, ParameterType.Value, EncodingType.ByteImmidate, false), }, Type = OpcodeType.Official, Cycles = 7, Length = 2, }, // EEnn: XOR A, nn
             new OpcodeEntry { Index =  true, Prefix = 0x00, Encoding = 0xA8, Name = CommandID.XOR , Function = FunctionID.XOR, Params = new ParamEntry[] { new ParamEntry(ParameterID.A, ParameterType.ByteRegister, EncodingType.None, false), new ParamEntry(ParameterID.RegisterAny, ParameterType.ByteIndexRegister, EncodingType.Pos1, false), }, Type = OpcodeType.Undocumented, Cycles = 0, Length = 2, }, // xxA8: XOR A, xxx
             new OpcodeEntry { Index =  true, Prefix = 0x00, Encoding = 0xAE, Name = CommandID.XOR , Function = FunctionID.XOR, Params = new ParamEntry[] { new ParamEntry(ParameterID.A, ParameterType.ByteRegister, EncodingType.None, false), new ParamEntry(ParameterID.XX, ParameterType.WordIndexRegisterPointer, EncodingType.IndexOffset, false), }, Type = OpcodeType.Official, Cycles = 19, Length = 3, }, // xxAEoo: XOR A, (XX + oo)
+        };
+
+        public static CommandList z80Commands = new CommandList()
+        {
+           { "ADC", CommandID.ADC },
+           { "ADD", CommandID.ADD },
+           { "AND", CommandID.AND },
+           { "BIT", CommandID.BIT },
+           { "CALL", CommandID.CALL },
+           { "CCF", CommandID.CCF },
+           { "CP", CommandID.CP },
+           { "CPD", CommandID.CPD },
+           { "CPDR", CommandID.CPDR },
+           { "CPI", CommandID.CPI },
+           { "CPIR", CommandID.CPIR },
+           { "CPL", CommandID.CPL },
+           { "DAA", CommandID.DAA },
+           { "DEC", CommandID.DEC },
+           { "DI", CommandID.DI },
+           { "DJNZ", CommandID.DJNZ },
+           { "EI", CommandID.EI },
+           { "EX", CommandID.EX },
+           { "EXX", CommandID.EXX },
+           { "HALT", CommandID.HALT },
+           { "IM", CommandID.IM },
+           { "IN", CommandID.IN },
+           { "INC", CommandID.INC },
+           { "IND", CommandID.IND },
+           { "INDR", CommandID.INDR },
+           { "INI", CommandID.INI },
+           { "INIR", CommandID.INIR },
+           { "JP", CommandID.JP },
+           { "JR", CommandID.JR },
+           { "LD", CommandID.LD },
+           { "LDD", CommandID.LDD },
+           { "LDDR", CommandID.LDDR },
+           { "LDI", CommandID.LDI },
+           { "LDIR", CommandID.LDIR },
+           { "NEG", CommandID.NEG },
+           { "NOP", CommandID.NOP },
+           { "OR", CommandID.OR },
+           { "OTDR", CommandID.OTDR },
+           { "OTIR", CommandID.OTIR },
+           { "OUT", CommandID.OUT },
+           { "OUTD", CommandID.OUTD },
+           { "OUTI", CommandID.OUTI },
+           { "POP", CommandID.POP },
+           { "PUSH", CommandID.PUSH },
+           { "RES", CommandID.RES },
+           { "RET", CommandID.RET },
+           { "RETI", CommandID.RETI },
+           { "RETN", CommandID.RETN },
+           { "RL", CommandID.RL },
+           { "RLA", CommandID.RLA },
+           { "RLC", CommandID.RLC },
+           { "RLCA", CommandID.RLCA },
+           { "RLD", CommandID.RLD },
+           { "RR", CommandID.RR },
+           { "RRA", CommandID.RRA },
+           { "RRC", CommandID.RRC },
+           { "RRCA", CommandID.RRCA },
+           { "RRD", CommandID.RRD },
+           { "RST", CommandID.RST },
+           { "SBC", CommandID.SBC },
+           { "SCF", CommandID.SCF },
+           { "SET", CommandID.SET },
+           { "SLA", CommandID.SLA },
+           { "SLL", CommandID.SLL },
+           { "SRA", CommandID.SRA },
+           { "SRL", CommandID.SRL },
+           { "SUB", CommandID.SUB },
+           { "XOR", CommandID.XOR },
         };
     }
 }

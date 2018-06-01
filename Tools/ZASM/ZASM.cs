@@ -13,7 +13,7 @@ using System.IO;
  * (IX) Indexs - On (def), off (i8080, GB)
  * (AF) Array Offsets - On (on), off (i8080)
  * (CY) CY as Carry - On (def), off
- * (DT) Commands Require . - On (def), off
+ * (DT) Commands Require . - On, off, Warn (def)
  * 
  * Command Line: -oXX:value 
  * Command: .Command XX, Value
@@ -72,27 +72,33 @@ namespace ZASM
         static void Main(string[] args)
         {
             //FileStream InputFile = File.OpenRead(@"..\..\..\basic8k78-3.mac");
-            FileStream InputFile = File.OpenRead(@"..\..\..\MasterV5.3.z80");
+            //FileStream InputFile = File.OpenRead(@"..\..\..\MasterV5.3.z80");
 
-            Tokenizer Token = new Tokenizer(0, InputFile);
+            //string k = Path.GetFullPath(@"..\..\..\MasterV5.3.z80");
+
+            Parser ParserData = new Parser();
+            ParserData.ParseFile(@"..\..\..\MasterV5.3-zmac.z80");
+
+            //Tokenizer Token = new Tokenizer(0, InputFile);
            
-            while (true)
-            {
-                Token Data = Token.GetNextToken();
-                if (Data.Type == TokenType.End)
-                    break;
+            //while (true)
+            //{
+            //    Token Data = Token.GetNextToken();
+            //    if (Data.Type == TokenType.End)
+            //        break;
 
-                Console.Write(Data);
+            //    Console.Write(Data);
 
-                if (Data.Type == TokenType.LineBreak)
-                    Console.WriteLine();
-            }
+            //    if (Data.Type == TokenType.LineBreak)
+            //        Console.WriteLine();
+            //}
 
-            Console.WriteLine("ZASM Results: Messages: {0}, Warnings: {1}, Errors: {2}", Message.Log.MessageCount(), Message.Log.WarningCount(), Message.Log.ErrorCount());
+            Message.Add("", 0, 0, 0, MessageCode.NoError, "");
+            Console.WriteLine("ZASM Results: Messages: {0}, Warnings: {1}, Errors: {2}", Message.MessageCount(), Message.WarningCount(), Message.ErrorCount());
 
             int Max = 0;
             
-            foreach (MessageInformation CurrentMessage in Message.Log)
+            foreach (MessageInformation CurrentMessage in Message.ErrorList)
             {
                 if (Max > 50)
                     break;

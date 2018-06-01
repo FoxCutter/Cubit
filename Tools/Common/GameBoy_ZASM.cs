@@ -1,3 +1,5 @@
+using CommandList = System.Collections.Generic.SortedList<string, OpcodeData.CommandID>;
+
 namespace OpcodeData
 {
     public static partial class ZASM
@@ -114,6 +116,57 @@ namespace OpcodeData
             new OpcodeEntry { Index = false, Prefix = 0x00, Encoding = 0x10, Name = CommandID.STOP, Function = FunctionID.STOP, Params = new ParamEntry[] { }, Type = OpcodeType.Official, Cycles = 4, Length = 1, }, // 10: STOP
             new OpcodeEntry { Index = false, Prefix = 0xCB, Encoding = 0x30, Name = CommandID.SWAP, Function = FunctionID.SWAP, Params = new ParamEntry[] { new ParamEntry(ParameterID.RegisterAny, ParameterType.ByteRegister, EncodingType.Pos1, false), }, Type = OpcodeType.Official, Cycles = 8, Length = 2, }, // CB30: SWAP r
             new OpcodeEntry { Index = false, Prefix = 0xCB, Encoding = 0x36, Name = CommandID.SWAP, Function = FunctionID.SWAP, Params = new ParamEntry[] { new ParamEntry(ParameterID.HL, ParameterType.WordRegisterPointer, EncodingType.None, false), }, Type = OpcodeType.Official, Cycles = 16, Length = 2, }, // CB36: SWAP (HL)
+        };
+
+        public static CommandList GameBoyCommands = new CommandList()
+        {
+           { "ADC", CommandID.ADC },
+           { "ADD", CommandID.ADD },
+           { "AND", CommandID.AND },
+           { "BIT", CommandID.BIT },
+           { "CALL", CommandID.CALL },
+           { "CCF", CommandID.CCF },
+           { "CP", CommandID.CP },
+           { "CPL", CommandID.CPL },
+           { "DAA", CommandID.DAA },
+           { "DEC", CommandID.DEC },
+           { "DI", CommandID.DI },
+           { "EI", CommandID.EI },
+           { "HALT", CommandID.HALT },
+           { "INC", CommandID.INC },
+           { "JP", CommandID.JP },
+           { "JR", CommandID.JR },
+           { "LD", CommandID.LD },
+           { "LDD", CommandID.LDD },
+           { "LDI", CommandID.LDI },
+           { "NOP", CommandID.NOP },
+           { "OR", CommandID.OR },
+           { "POP", CommandID.POP },
+           { "PUSH", CommandID.PUSH },
+           { "RES", CommandID.RES },
+           { "RET", CommandID.RET },
+           { "RETI", CommandID.RETI },
+           { "RL", CommandID.RL },
+           { "RLA", CommandID.RLA },
+           { "RLC", CommandID.RLC },
+           { "RLCA", CommandID.RLCA },
+           { "RR", CommandID.RR },
+           { "RRA", CommandID.RRA },
+           { "RRC", CommandID.RRC },
+           { "RRCA", CommandID.RRCA },
+           { "RST", CommandID.RST },
+           { "SBC", CommandID.SBC },
+           { "SCF", CommandID.SCF },
+           { "SET", CommandID.SET },
+           { "SLA", CommandID.SLA },
+           { "SRA", CommandID.SRA },
+           { "SRL", CommandID.SRL },
+           { "SUB", CommandID.SUB },
+           { "XOR", CommandID.XOR },
+           { "LDH", CommandID.LDH },
+           { "LDHL", CommandID.LDHL },
+           { "STOP", CommandID.STOP },
+           { "SWAP", CommandID.SWAP },
         };
     }
 }
