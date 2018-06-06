@@ -61,7 +61,6 @@ namespace ZASM
             int Value = _DataStream.Read();
 
             _Character++;
-
             return (char)Value;
         }
 
@@ -166,7 +165,7 @@ namespace ZASM
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 16;
             }
-            else if (TypeChar == 'O')       // 77o - Octal
+            else if (TypeChar == 'O' || TypeChar == 'Q')       // 77o - Octal
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 8;
@@ -175,6 +174,11 @@ namespace ZASM
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 2;
+            }
+            else if (TypeChar == 'D')       // 10d - Decimal
+            {
+                TempData.RemoveAt(TempData.Count - 1);
+                Base = 10;
             }
             else if (DataTables.CharacterData[TypeChar] != InputType.Number)
             {
@@ -213,7 +217,7 @@ namespace ZASM
             return true;
         }
 
-        bool ReadString(ref Token Data)
+        bool ReadString(ref Token Data, bool Quoted = true)
         {
             Data.Type = TokenType.String;
 
@@ -226,19 +230,38 @@ namespace ZASM
                 InputType Current = PeekNextInputType();
                 if (Current == InputType.CarriageReturn || Current == InputType.LineFeed || Current == InputType.End)
                 {
-                    Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedLineBreak);
+                    if (Quoted)
+                    {
+                        Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedLineBreak);
+                        return false;
+                    }
 
-                    return false;
+                    break;
                 }
 
                 char CurrentChar = ReadNextCharacter();
                 CurrentValue.Add(CurrentChar);
 
-                if (CurrentChar == Quote)
-                    break;
+                if (Quoted)
+                {
+                    if (CurrentChar == Quote)
+                        break;
+                }
+                else
+                {
+                    if (Current == InputType.Space || Current == InputType.Tab)
+                        break;
+                }
             }
 
-            Data.StringValue = CurrentString.Substring(1, CurrentString.Length - 2);
+            if (Quoted)
+            {
+                Data.StringValue = CurrentString.Substring(1, CurrentString.Length - 2);
+            }
+            else
+            {
+                Data.StringValue = CurrentString;
+            }
 
             if (Data.StringValue.Count() <= 2)
             {
@@ -252,7 +275,89 @@ namespace ZASM
 
             return true;
         }
-       
+
+        public void FlushLine()
+        {
+            while (true)
+            {
+                InputType Current = PeekNextInputType();
+                if (Current == InputType.End)
+                    break;
+
+                else if (Current == InputType.CarriageReturn || Current == InputType.LineFeed)
+                {
+                    // Handle CR/LF
+                    if (ReadNextCharacter() == '\r' && PeekNextCharacter() == '\n')
+                        ReadNextCharacter();
+
+                    _Line++;
+                    _Character = 1;
+                    break;
+                }
+                else
+                {
+                    ReadNextCharacter();
+                }
+            }
+
+            FlushWhitespace();
+        }
+
+        public Token GetNextTokenAsString()
+        {
+            Token Ret = new Token();
+            CurrentValue.Clear();
+
+            Ret.Character = _Character;
+
+            Ret.CharacterType = PeekNextInputType();
+            
+            if (Ret.CharacterType == InputType.End)
+            {
+                Ret.Type = TokenType.End;
+                return Ret;
+            }
+
+            bool Success = true;
+
+            switch (Ret.CharacterType)
+            {
+                case InputType.Unknown:
+                    Ret.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
+                    break;
+
+                // LineBreak
+                case InputType.CarriageReturn:
+                case InputType.LineFeed:
+                    Success = ReadNewline(ref Ret);
+                    break;
+
+                // String
+                case InputType.DoubleQuote:
+                case InputType.SingleQuote:
+                case InputType.ReverseQuote:
+                    Success = ReadString(ref Ret);
+                    break;
+
+                default:
+                    Success = ReadString(ref Ret, false);
+                    break;
+            }
+
+            Ret.TokenData = CurrentString;
+
+            if (!Success)
+            {
+                Ret.Type = TokenType.Error;
+            }
+            else
+            {
+                FlushWhitespace();
+            }
+
+            return Ret;
+        }
+        
         public Token GetNextToken()
         {
             Token Ret = new Token();
@@ -488,6 +593,8 @@ namespace ZASM
                 default:
                     break;
             }
+
+            Ret.TokenData = CurrentString;
 
             if (!Success)
             {

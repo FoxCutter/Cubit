@@ -77,7 +77,7 @@ namespace ZASM
             //string k = Path.GetFullPath(@"..\..\..\MasterV5.3.z80");
 
             Parser ParserData = new Parser();
-            ParserData.ParseFile(@"..\..\..\MasterV5.3-zmac.z80");
+            ParserData.ParseFile(@".\MasterV5.3-zmac.z80");
 
             //Tokenizer Token = new Tokenizer(0, InputFile);
            
@@ -107,13 +107,13 @@ namespace ZASM
                     Console.Write("Warning: ");
 
                 else if (CurrentMessage.Code >= MessageCode.Error)
-                    Console.Write("Error:   ");
+                    Console.Write("Error: ");
 
                 else
                     Console.Write("Message: ");
 
-                if (CurrentMessage.FileID != 0)
-                    Console.Write("{0}, ", CurrentMessage.FileID);
+                //if (CurrentMessage.FileID != 0)
+                Console.Write("{0} ", ParserData.LookupFileName(CurrentMessage.FileID));
 
                 Console.Write("({0}, {1}): ", CurrentMessage.Line, CurrentMessage.Character);
                 Console.Write("{0} {1:X4}: ", CurrentMessage.Source, (int)CurrentMessage.Code);

@@ -1,7 +1,17 @@
-Test1:  
-test2: 
+;.include "MasterV5.3-zmac.z80"
 
+.IF 0
 	jp nc, test1
+.ELSE 
+	IF 1
+		jp nc, $ffff
+
+	ELSE
+		nop
+	ENDIF
+.ENDIF
+
+	jp nc, 0
 
 ;temp = 'BCK'
 ;	db	Temp
@@ -16,4 +26,3 @@ test2:
 ;	
 ;
 ;.end
-

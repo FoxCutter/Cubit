@@ -16,6 +16,7 @@ namespace ZASM
         Warning = 0x4000,
         SyntaxWarning,
         RegisterMissingAssumingA,
+        CommandRequiresDotPrefix,
 
 
         Error = 0x8000,
@@ -29,6 +30,7 @@ namespace ZASM
         SyntaxError,
         UnknownCommand,
         ReservedWord,
+        FileNotFound,
 
 
         UndefinedSymbol,
@@ -110,6 +112,7 @@ namespace ZASM
 
             { MessageCode.SyntaxWarning, "Syntax Warning"},
             { MessageCode.RegisterMissingAssumingA, "Register Missing, using 'A'"},
+            { MessageCode.CommandRequiresDotPrefix, "Dot Prefix missing on command" },
 
             { MessageCode.SyntaxError, "Syntax Error"},           
             { MessageCode.InvalidNumberToken, "Invalid character in number" },
@@ -121,6 +124,7 @@ namespace ZASM
             { MessageCode.DataTypeMisMatch, "Datatype mismatch"},
             { MessageCode.UnknownCommand, "Unknown Command" },            
             { MessageCode.ReservedWord, "Unexpected Reserved Word" },
+            { MessageCode.FileNotFound, "File Not Found" },
 
             { MessageCode.UndefinedSymbol, "Label used but not defined" },
             { MessageCode.DivisionByZero, "Division by Zero" },

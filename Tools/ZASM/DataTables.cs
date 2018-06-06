@@ -3,15 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommandList = System.Collections.Generic.Dictionary<string, OpcodeData.CommandID>;
+using CommandList = System.Collections.Generic.SortedList<string, OpcodeData.CommandID>;
 using ParameterList = System.Collections.Generic.Dictionary<string, OpcodeData.ParameterID>;
 
 namespace ZASM
 {
+    enum FunctionID
+    {
+        // Psudo Operators
+        BYTE, WORD, DWORD, DC, RESB, RESW, RESD,
+
+        DataCommandsMax,
+
+        DEFL, EQU,
+
+        // Commands
+        EXTERN, PUBLIC, INCLUDE, Z80, i8080, GAMEBOY, ORG, END, SECTION, SIZE, FILL, POS,
+
+        CommandMax,
+
+        // Preprocessor commands
+        IF, ELSE, ENDIF,
+
+        PreprocessorMax,
+        
+        
+        None,
+    };
+
     static class DataTables
     {
-        public static int TestValue { get; set; }
-
+        public static OpcodeData.OpcodeEntry[] OpcodeTable = OpcodeData.ZASM.z80OpcodeList;
+        public static CommandList OpcodeList = OpcodeData.ZASM.z80Commands;
+        public static ParameterList ParameterList = DataTables.z80ParameterList;
 
         public static ParameterList z80ParameterList = new ParameterList()
         {
@@ -37,11 +61,27 @@ namespace ZASM
 
         public static ParameterList i8080ParameterList = new ParameterList()
         {
-            { "A",      OpcodeData.ParameterID.A       },   { "B",      OpcodeData.ParameterID.B       }, /*{ "BC",     OpcodeData.ParameterID.BC      },*/ { "C",      OpcodeData.ParameterID.C       },
-            { "CY",	    OpcodeData.ParameterID.Flag_C  },   { "D",      OpcodeData.ParameterID.D       }, /*{ "DE",     OpcodeData.ParameterID.DE      },*/ { "E",      OpcodeData.ParameterID.E       },
+            { "A",      OpcodeData.ParameterID.A       },   { "B",      OpcodeData.ParameterID.B       }, /*{ "B",     OpcodeData.ParameterID.BC       },*/ { "C",      OpcodeData.ParameterID.C       },
+            { "CY",	    OpcodeData.ParameterID.Flag_C  },   { "D",      OpcodeData.ParameterID.D       }, /*{ "D",     OpcodeData.ParameterID.DE       },*/ { "E",      OpcodeData.ParameterID.E       },
             { "H",      OpcodeData.ParameterID.H       },   { "L",      OpcodeData.ParameterID.L       },   { "M",      OpcodeData.ParameterID.HL      }, /*{ "M",	    OpcodeData.ParameterID.Flag_M  },*/
             { "NC",	    OpcodeData.ParameterID.Flag_NC },   { "NZ",	    OpcodeData.ParameterID.Flag_NZ },   { "P",	    OpcodeData.ParameterID.Flag_P  },   { "PE",	    OpcodeData.ParameterID.Flag_PE }, 
             { "PO",	    OpcodeData.ParameterID.Flag_PO },   { "PSW",    OpcodeData.ParameterID.AF      },   { "SP",     OpcodeData.ParameterID.SP      },   { "Z",	    OpcodeData.ParameterID.Flag_Z  },  
+        };
+
+        public static Dictionary<string, FunctionID> Commands = new Dictionary<string,FunctionID>()
+        {
+            { "EXTERN", FunctionID.EXTERN },        { "PUBLIC",   FunctionID.PUBLIC },          { "INCLUDE",    FunctionID.INCLUDE },        
+            { "Z80",    FunctionID.Z80 },           { "8080",     FunctionID.i8080 },           { "GAMEBOY",    FunctionID.GAMEBOY },       
+            { "ORG",    FunctionID.ORG },           { "SECTION",  FunctionID.SECTION },         { "FILL",       FunctionID.FILL },        
+            { "POS",    FunctionID.POS },           { "END",      FunctionID.END },        
+            { "IF",     FunctionID.IF },            { "ELSE",     FunctionID.ELSE },            { "ENDIF",      FunctionID.ENDIF },        
+        };
+
+        public static Dictionary<string, FunctionID> PsudoOpcodes = new Dictionary<string,FunctionID>()
+        {
+            { "DB",     FunctionID.BYTE },          { "DW",     FunctionID.WORD },              { "DD",     FunctionID.DWORD },             { "DC",     FunctionID.DC },         
+            { "DS",	    FunctionID.RESB },          { "RESB",   FunctionID.RESB },              { "RESW",   FunctionID.RESW },              { "RESD",   FunctionID.RESD }, 
+            { "EQU",    FunctionID.EQU },           { "CONST",	FunctionID.DEFL },              { "DEFL",   FunctionID.DEFL },       
         };
         
         public static InputType[] CharacterData = new InputType[]

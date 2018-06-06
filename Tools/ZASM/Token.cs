@@ -144,6 +144,8 @@ namespace ZASM
         public string StringValue;
         public int NumericValue;
 
+        public string TokenData;
+
         public MessageInformation Message;
 
         public Token(TokenType Type = TokenType.None, InputType CharacterType = InputType.None)
@@ -165,6 +167,10 @@ namespace ZASM
             {
                 Ret.AppendFormat("'{0}'", StringValue);
             }
+            else if (Type == TokenType.Label)
+            {
+                Ret.AppendFormat("{0}:", StringValue);
+            }
             else if (Type == TokenType.Symbol || Type == TokenType.Identifier)
             {
                 Ret.Append(StringValue);
@@ -174,7 +180,7 @@ namespace ZASM
                 //if (CommandID != ZASM.CommandID.None)
                 //    Ret.Append(CommandID);
                 //else
-                    Ret.AppendFormat("<{0}>", Type);
+                Ret.AppendFormat("<{0}>", Type);
             }
 
             return Ret.ToString();

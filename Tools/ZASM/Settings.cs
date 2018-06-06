@@ -12,6 +12,13 @@ namespace ZASM
         Off,
         Warning,
     }
+
+    enum OpcodeType
+    {
+        z80,
+        i8080,
+        GameBoy,
+    }
     
     static class Settings
     {
@@ -20,7 +27,9 @@ namespace ZASM
         public static Setting Indexes = Setting.On;
         public static Setting ArrayOffset = Setting.On;
         public static Setting CYAsCarry = Setting.On;
-        public static Setting CommandRequiresDot = Setting.Warning;
+        public static Setting CommandRequiresDot = Setting.Off;
+
+        public static OpcodeType OpcodeSet = OpcodeType.z80;
 
         public static List<string> InputPaths = new List<string>()
         {
