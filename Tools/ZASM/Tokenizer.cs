@@ -165,7 +165,7 @@ namespace ZASM
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 16;
             }
-            else if (TypeChar == 'O' || TypeChar == 'Q')       // 77o - Octal
+            else if (TypeChar == 'O' || TypeChar == 'Q')       // 77o/77q - Octal
             {
                 TempData.RemoveAt(TempData.Count - 1);
                 Base = 8;
@@ -337,6 +337,11 @@ namespace ZASM
                 case InputType.SingleQuote:
                 case InputType.ReverseQuote:
                     Success = ReadString(ref Ret);
+                    break;
+
+                // Comment
+                case InputType.SemiColon:
+                    Success = ReadComment(ref Ret);
                     break;
 
                 default:

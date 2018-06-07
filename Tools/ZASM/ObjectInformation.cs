@@ -10,6 +10,7 @@ namespace ZASM
     {
         None,
         Include,
+        Conditional,
     }
 
     class ObjectInformation
@@ -29,9 +30,25 @@ namespace ZASM
     class IncludeObject : ObjectInformation
     {
         public FileInformation IncludeFile;
-        public IncludeObject(FileInformation File) : base(ObjectType.Include)
+        public IncludeObject() : base(ObjectType.Include)
         {
-            IncludeFile = File;
+            IncludeFile = null;
+        }
+    }
+
+    class ConditionalObject : ObjectInformation
+    {
+        public LineInformation DefinedLine;
+        public FunctionID Command;
+        public bool ParseLines;
+        public int Level;
+        public ConditionalObject(LineInformation Line, FunctionID Command)
+            : base(ObjectType.Conditional)
+        {
+            this.Command = Command;
+            DefinedLine = Line;
+            ParseLines = true;
+            Level = 0;
         }
     }
 }

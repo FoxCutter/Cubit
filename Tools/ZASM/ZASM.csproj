@@ -57,7 +57,10 @@
     <Compile Include="Message.cs" />
     <Compile Include="ObjectInformation.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="ParserPhase1.cs" />
+    <Compile Include="ParserPhase2.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="SymbolTable.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="ZASM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
