@@ -182,13 +182,13 @@ namespace ZASM
             }
             else if (DataTables.CharacterData[TypeChar] != InputType.Number)
             {
-                Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
+                Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
                 return false;
             }
 
             if (TempData.Count == 0)
             {
-                Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnknownError, "Empty Number Token");
+                Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnknownError, "Empty Number Token");
                 return false;
             }
 
@@ -209,7 +209,7 @@ namespace ZASM
             }
             catch
             {
-                Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
+                Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.InvalidNumberToken, CurrentString);
 
                 return false;
             }
@@ -232,7 +232,7 @@ namespace ZASM
                 {
                     if (Quoted)
                     {
-                        Data.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedLineBreak);
+                        Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedLineBreak);
                         return false;
                     }
 
@@ -323,7 +323,7 @@ namespace ZASM
             switch (Ret.CharacterType)
             {
                 case InputType.Unknown:
-                    Ret.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
+                    Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
                     break;
 
                 // LineBreak
@@ -383,7 +383,7 @@ namespace ZASM
             switch (Ret.CharacterType)
             {
                 case InputType.Unknown:
-                    Ret.Message = Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
+                    Message.Add("Tokenizer", _FileID, _Line, _Character, MessageCode.UnexpectedSymbol, CurrentString);
                     break;
 
                 // LineBreak
@@ -424,6 +424,7 @@ namespace ZASM
 
                 // Number or Current Position
                 case InputType.DollarSign:
+                    CurrentValue.Add(ReadNextCharacter());
                     if (PeekNextInputType() == InputType.Number || PeekNextInputType() == InputType.Identifier)
                     {
                         Success = ReadNumber(ref Ret);
@@ -431,7 +432,6 @@ namespace ZASM
                     else 
                     {
                         Ret.Type = TokenType.CurrentPos;
-                        CurrentValue.Add(ReadNextCharacter());
                     }
                     break;
 

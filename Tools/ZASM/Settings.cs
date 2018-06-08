@@ -28,10 +28,22 @@ namespace ZASM
         public static Setting ArrayOffset = Setting.On;
         public static Setting CYAsCarry = Setting.On;
         public static Setting CommandRequiresDot = Setting.Off;
+        public static Setting LabelsRequireColon = Setting.Off;
+        public static Setting Strict = Setting.Off;
 
         public static OpcodeType OpcodeSet = OpcodeType.z80;
 
-        public static List<string> InputPaths = new List<string>()
+        public static void SetStrict()
+        {
+            Strict = Setting.On;
+
+            AssumeA = Setting.Off;
+            CommandRequiresDot = Setting.On;
+            LabelsRequireColon = Setting.On;
+            CYAsCarry = Setting.On;
+        }
+
+        public static List<string> IncludePaths = new List<string>()
         {
             ".",
         };

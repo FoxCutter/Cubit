@@ -29,10 +29,12 @@ namespace ZASM
         public int LineNumber;
         public bool ParseLine;
 
+        public ObjectInformation Label;
         public ObjectInformation Object;
 
         public LineInformation()
         {
+            Label = null;
             Object = null;
         }
     }
@@ -51,7 +53,8 @@ namespace ZASM
         Stack<FileInformation> _FileStack;
         Stack<ConditionalInformation> _ConditionalStack;
         SymbolTable _SymbolTable;
-        int _CurrentAddress;
+        short _CurrentAddress;
+        int _CycleCount;
         
         public Parser()
         {
@@ -65,7 +68,7 @@ namespace ZASM
 
         public string LookupFileName(int FileID)
         {
-            FileInformation File = _Files.Where(e => e.Value.FileID == FileID).First().Value;
+            FileInformation File = _Files.Where(e => e.Value.FileID == FileID).FirstOrDefault().Value;
 
             if (File == null)
                 return "";
@@ -73,10 +76,33 @@ namespace ZASM
                 return File.FileName;
         }
 
-        public FileInformation OpenFile(string FilePath)
+        public FileInformation OpenFile(string FilePath, bool Search = true)
         {
-            string FullPath = Path.GetFullPath(FilePath);
+            string FullPath = "";
 
+            if (Search)
+            {
+                // Search the include paths for the inculed file
+                foreach (string SearchPath in Settings.IncludePaths)
+                {
+                    string NewPath = Path.GetFullPath(Path.Combine(SearchPath, FilePath));
+                    if (File.Exists(NewPath))
+                    {
+                        FullPath = NewPath;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                FullPath = Path.GetFullPath(FilePath);
+            }
+
+            if (FullPath == "" || !File.Exists(FullPath))
+            {
+                return null;
+            }
+            
             if (_Files.ContainsKey(FullPath))
                 return _Files[FullPath];
 
@@ -94,17 +120,15 @@ namespace ZASM
             
         public bool ParseFile(string InputFile)
         {
-            FileInformation RootFile = OpenFile(InputFile);
+            FileInformation RootFile = OpenFile(InputFile, false);
 
-            try
+            if(RootFile == null)
             {
-                RootFile.Stream = File.OpenRead(RootFile.Path);
-            }
-            catch (FileNotFoundException)
-            {
-                Message.Add("Parser", RootFile.FileID, 0, 0, MessageCode.FileNotFound, RootFile.Path);
+                Message.Add("Parser", 0, 0, 0, MessageCode.FileNotFound, InputFile);
                 return false;
             }
+
+            RootFile.Stream = File.OpenRead(RootFile.Path);
 
             _FileStack.Push(RootFile);
 
@@ -121,7 +145,7 @@ namespace ZASM
 
             foreach (SymbolTableEntry Symbol in _SymbolTable.OrderBy(e => e.Name))
             {
-                ListingStream.WriteLine("{0,-15} {1}", Symbol.Name, Symbol.Value);
+                ListingStream.WriteLine("{0,-15} {1:X4}", Symbol.Name, Symbol.Value);
             }
             
             _FileStack.Pop();

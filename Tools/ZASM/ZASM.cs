@@ -76,8 +76,10 @@ namespace ZASM
 
             //string k = Path.GetFullPath(@"..\..\..\MasterV5.3.z80");
 
+            Settings.IncludePaths.Add(@"..\..\..\");
+            
             Parser ParserData = new Parser();
-            ParserData.ParseFile(@".\MasterV5.3-zmac.z80");
+            ParserData.ParseFile(@"..\..\..\MasterV5.3-zmac.z80");
 
             //Tokenizer Token = new Tokenizer(0, InputFile);
            

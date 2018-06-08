@@ -299,7 +299,7 @@ namespace OpcodeData
                     return "NZ";
 
                 case ParameterID.Flag_C:
-                    return "C";
+                    return "CY";
 
                 case ParameterID.Flag_NC:
                     return "NC";

@@ -146,14 +146,15 @@ namespace ZASM
 
         public string TokenData;
 
-        public MessageInformation Message;
+        public OpcodeData.ParameterID ParameterID;
 
         public Token(TokenType Type = TokenType.None, InputType CharacterType = InputType.None)
         {
             this.Type = Type;
             this.CharacterType = CharacterType;
 
-            Character = 0;           
+            Character = 0;
+            ParameterID = OpcodeData.ParameterID.None;
         }
 
         public override string ToString()
@@ -174,6 +175,10 @@ namespace ZASM
             else if (Type == TokenType.Symbol || Type == TokenType.Identifier)
             {
                 Ret.Append(StringValue);
+            }
+            else if (Type == TokenType.Register || Type == TokenType.Flag)
+            {
+                Ret.AppendFormat("{0}", ParameterID);
             }
             else
             {

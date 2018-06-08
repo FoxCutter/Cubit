@@ -33,10 +33,6 @@ namespace ZASM
 
     static class DataTables
     {
-        public static OpcodeData.OpcodeEntry[] OpcodeTable = OpcodeData.ZASM.z80OpcodeList;
-        public static CommandList OpcodeList = OpcodeData.ZASM.z80Commands;
-        public static ParameterList ParameterList = DataTables.z80ParameterList;
-
         public static ParameterList z80ParameterList = new ParameterList()
         {
             { "A",      OpcodeData.ParameterID.A       },   { "AF",     OpcodeData.ParameterID.AF      },   { "AF'",    OpcodeData.ParameterID.AF_Alt  },   { "B",      OpcodeData.ParameterID.B       },
@@ -134,5 +130,9 @@ namespace ZASM
             // {|}~
             InputType.CurlyBraceLeft, InputType.Pipe, InputType.CurlyBraceRight, InputType.Tilde, InputType.Unknown,
         };
+
+        public static OpcodeData.OpcodeEntry[] OpcodeTable = OpcodeData.ZASM.z80OpcodeList;
+        public static CommandList OpcodeList = OpcodeData.ZASM.z80Commands;
+        public static ParameterList ParameterList = DataTables.z80ParameterList;
     }
 }

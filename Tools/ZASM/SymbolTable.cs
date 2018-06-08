@@ -39,7 +39,7 @@ namespace ZASM
         public string Name;
         public SymbolType Type;
         public SymbolState State;
-        public int Value;
+        public short Value;
 
         public LineInformation DefiendLine;
 

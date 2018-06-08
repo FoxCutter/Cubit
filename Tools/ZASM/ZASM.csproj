@@ -56,6 +56,7 @@
     <Compile Include="DataTables.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="ObjectInformation.cs" />
+    <Compile Include="ParameterInformation.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="ParserPhase1.cs" />
     <Compile Include="ParserPhase2.cs" />

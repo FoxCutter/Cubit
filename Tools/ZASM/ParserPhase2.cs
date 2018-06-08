@@ -9,13 +9,13 @@ namespace ZASM
 {
     partial class Parser
     {
-        void OutputListingData(TextWriter OutputStream, int? Cycles = null, short? Address = null, byte[] Bytes = null)
+        void OutputListingData(TextWriter OutputStream, string Cycles = "", short? Address = null, byte[] Bytes = null)
         {
             // Cycles
-            if (Cycles.HasValue)
-                OutputStream.Write("{0,-8}  ", Cycles.Value);
+            if (Cycles != "")
+                OutputStream.Write("{0,9}  ", Cycles);
             else
-                OutputStream.Write("          ");
+                OutputStream.Write("           ");
 
             // Address
             if (Address.HasValue)
@@ -49,22 +49,45 @@ namespace ZASM
         void OutputListingLine(TextWriter OutputStream, LineInformation CurrentLine, string LineData)
         {
             // Line Number
-            OutputStream.Write("{0, 4}: ", CurrentLine.LineNumber);
+            OutputStream.Write("{0, 4}:", CurrentLine.LineNumber);
 
             if (CurrentLine.Object != null)
             {
-                if (CurrentLine.Object.Type == ObjectType.Conditional)
+                switch (CurrentLine.Object.Type)
                 {
-                    ConditionalObject Object = CurrentLine.Object as ConditionalObject;
-                    if (Object.Command == FunctionID.ENDIF)
-                        OutputListingData(OutputStream, Object.Level, null);
-                    else
-                        OutputListingData(OutputStream, Object.Level, CurrentLine.ParseLine ? (short)-1 : (short)0);
+                    case ObjectType.Conditional:
+                        {
+                            ConditionalObject Object = CurrentLine.Object as ConditionalObject;
+                            if (Object.Command == FunctionID.ENDIF)
+                                OutputListingData(OutputStream);
+                            else
+                                OutputListingData(OutputStream, Object.Level.ToString(), CurrentLine.ParseLine ? (short)-1 : (short)0);
+                        }
+                        break;
+
+                    case ObjectType.Opcode:
+                        {
+                            OpcodeObject Object = CurrentLine.Object as OpcodeObject;
+                            OutputListingData(OutputStream, string.Format("{0,5}+{1,-3}", Object.CycleCount, Object.Opcode.Cycles), Object.Address);
+                        }
+                        break;
+
+                    case ObjectType.Label:
+                        {
+                            LabelObject Object = CurrentLine.Object as LabelObject;
+                            OutputListingData(OutputStream, "-   ", Object.Symbol.Value);
+                        }
+                        break;
+
+                    default:
+                        OutputListingData(OutputStream);
+                        break;
                 }
-                else
-                {
-                    OutputListingData(OutputStream);
-                }
+
+            }
+            else if (CurrentLine.Label != null)
+            {
+                OutputListingData(OutputStream, "-   ", CurrentLine.Label.Address);
             }
             else
             {
