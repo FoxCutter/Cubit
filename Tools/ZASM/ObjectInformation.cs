@@ -15,6 +15,7 @@ namespace ZASM
         Label,
         Opcode,
         Value,
+        Data,
     }
 
     class ObjectInformation
@@ -58,6 +59,9 @@ namespace ZASM
         public FunctionID Command;
         public bool ParseLines;
         public int Level;
+        public ConditionalInformation Conditional;
+        
+        
         public ConditionalObject(LineInformation Line, FunctionID Command)
             : base(ObjectType.Conditional)
         {
@@ -65,6 +69,7 @@ namespace ZASM
             DefinedLine = Line;
             ParseLines = true;
             Level = 0;
+            Conditional = null;
         }
     }
 
@@ -88,6 +93,32 @@ namespace ZASM
         {
             ParamterList = new List<ParameterInformation>();
             Opcode = null;
+        }
+    }
+
+    class ValueObject : ObjectInformation
+    {
+        public ParameterInformation Parameter;
+        public SymbolTableEntry Symbol;
+
+        public ValueObject()
+            : base(ObjectType.Value)
+        {
+            Parameter = null;
+            Symbol = null;            
+        }
+    }
+
+    class DataObject : ObjectInformation
+    {
+        public List<ParameterInformation> ParamterList;
+        public FunctionID DataType;
+
+        public DataObject()
+            : base(ObjectType.Data)
+        {
+            ParamterList = new List<ParameterInformation>();
+            DataType = FunctionID.None;
         }
     }
 }

@@ -76,7 +76,7 @@ namespace ZASM
                 return File.FileName;
         }
 
-        public FileInformation OpenFile(string FilePath, bool Search = true)
+        public FileInformation FindFile(string FilePath, bool Search = true)
         {
             string FullPath = "";
 
@@ -120,7 +120,7 @@ namespace ZASM
             
         public bool ParseFile(string InputFile)
         {
-            FileInformation RootFile = OpenFile(InputFile, false);
+            FileInformation RootFile = FindFile(InputFile, false);
 
             if(RootFile == null)
             {
@@ -145,7 +145,14 @@ namespace ZASM
 
             foreach (SymbolTableEntry Symbol in _SymbolTable.OrderBy(e => e.Name))
             {
-                ListingStream.WriteLine("{0,-15} {1:X4}", Symbol.Name, Symbol.Value);
+                if (Symbol.Type == SymbolType.Address)
+                {
+                    ListingStream.WriteLine("{0,-15} {1:X4}", Symbol.Name, Symbol.Value);
+                }
+                else
+                {
+                    ListingStream.WriteLine("{0,-15}={1,4:X2}", Symbol.Name, Symbol.Value);
+                }
             }
             
             _FileStack.Pop();

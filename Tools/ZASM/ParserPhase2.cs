@@ -58,10 +58,14 @@ namespace ZASM
                     case ObjectType.Conditional:
                         {
                             ConditionalObject Object = CurrentLine.Object as ConditionalObject;
-                            if (Object.Command == FunctionID.ENDIF)
-                                OutputListingData(OutputStream);
-                            else
+                            if(Object == null)
+                                OutputListingData(OutputStream, Object.Level.ToString());
+
+                            else if (Object.Command == FunctionID.IF && Object.Conditional.SavedParse == true)
                                 OutputListingData(OutputStream, Object.Level.ToString(), CurrentLine.ParseLine ? (short)-1 : (short)0);
+                            
+                            else
+                                OutputListingData(OutputStream, Object.Level.ToString());
                         }
                         break;
 
@@ -75,6 +79,13 @@ namespace ZASM
                     case ObjectType.Label:
                         {
                             LabelObject Object = CurrentLine.Object as LabelObject;
+                            OutputListingData(OutputStream, "-   ");
+                        }
+                        break;
+
+                    case ObjectType.Value:
+                        {
+                            ValueObject Object = CurrentLine.Object as ValueObject;
                             OutputListingData(OutputStream, "-   ", Object.Symbol.Value);
                         }
                         break;
