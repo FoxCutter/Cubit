@@ -33,6 +33,7 @@
    GameBoy Specific:
      HighMemPtr+C ($ff00 + C) - Indirect high memory access
      HighMemPtr+Byte, HighMemPtr ($ff00 + n) (n)  - Indirect high memory access
+     HighMemBytePtr-C (c)
      WordRegPtr-HLD, WordRegPtr-HLI (HLD) (HLI) (HL+) (HL-) - Indirect memory access with increment/decrement
      WordReg-SP+Byte, SP + n - Indirect stack accress with offest
      
@@ -2723,6 +2724,16 @@
       <function>LD_HIGH</function>
       <cycles>8</cycles>
     </opcode>
+    <opcode value='E2'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>HighMemBytePtr-C</arg>
+        <arg>ByteReg-A</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>8</cycles>
+    </opcode>
     <opcode value='E6'>
       <mnemonic>AND</mnemonic>
       <args>
@@ -2797,6 +2808,16 @@
       <args>
         <arg>ByteReg-A</arg>
         <arg>HighMemPtr+C</arg>
+      </args>
+      <official>Y</official>
+      <function>LD_HIGH</function>
+      <cycles>8</cycles>
+    </opcode>
+    <opcode value='F2'>
+      <mnemonic>LD</mnemonic>
+      <args>
+        <arg>ByteReg-A</arg>
+        <arg>HighMemBytePtr-C</arg>
       </args>
       <official>Y</official>
       <function>LD_HIGH</function>

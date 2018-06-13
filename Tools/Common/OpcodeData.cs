@@ -131,14 +131,11 @@ namespace OpcodeData
         // SP + *
         SPPlusOffset,
 
-        // (*), 
+        // (c), (*), 
         HighMemPointer,
 
         // ($FF00 + c), ($FF00 + *), 
         HighMemPointerPlus,
-
-        //(C), (*) 
-        BytePointer,
 
         // (**)
         AddressPointer,

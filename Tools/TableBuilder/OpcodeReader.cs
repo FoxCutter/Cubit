@@ -234,32 +234,43 @@ namespace TableBuilder
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
+                // HLI
                 case "WORDREGPTR-HLI":
                     Ret.Param = OpcodeData.ParameterID.HLI;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
+                // HLD
                 case "WORDREGPTR-HLD":
                     Ret.Param = OpcodeData.ParameterID.HLD;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
-
+                // ($FF00 + C)
                 case "HIGHMEMPTR+C":
                     Ret.Param = OpcodeData.ParameterID.C;
                     Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
+                // ($FF00 + n)
                 case "HIGHMEMPTR+BYTE":
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
+                // (n)
                 case "HIGHMEMPTR":
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.HighMemPointer;
                     break;
 
+                // (C)
+                case "HIGHMEMBYTEPTR-C":
+                    Ret.Param = OpcodeData.ParameterID.C;
+                    Ret.Type = OpcodeData.ParameterType.HighMemPointer;
+                    break;
+                
+                
                 case "WORDREG-SP+BYTE":
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.SPPlusOffset;
