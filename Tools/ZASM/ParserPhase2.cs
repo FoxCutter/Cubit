@@ -126,7 +126,7 @@ namespace ZASM
             bool Success = true;
             if (File.Stream == null)
             {
-                Message.Add("Pass 2", File.FileID, 0, 0, MessageCode.InternalError, "File Stream Missing");
+                Message.Add("Parser", File.FileID, 0, 0, MessageCode.InternalError, "File Stream Missing");
                 return false;
             }
             
@@ -144,7 +144,7 @@ namespace ZASM
 
                 if (CurrentLine.LineNumber != OutputLine)
                 {
-                    Message.Add("Pass 2", File.FileID, CurrentLine.LineNumber, 0, MessageCode.InternalError, "File Input Dysync");
+                    Message.Add("Parser", File.FileID, CurrentLine.LineNumber, 0, MessageCode.InternalError, "File Input Dysync");
                 }
 
                 OutputListingLine(OutputStream, CurrentLine, Line);

@@ -76,6 +76,12 @@ namespace ZASM
 
             //string k = Path.GetFullPath(@"..\..\..\MasterV5.3.z80");
 
+            Settings.CommandRequiresDot = Setting.Off;
+            Settings.AtAddressing = Setting.Off;
+            Settings.ArrayOffset = Setting.Off;
+            Settings.LabelsRequireColon = Setting.Off;
+            Settings.AssumeA = Setting.Off;
+
             Settings.IncludePaths.Add(@"..\..\..\");
             
             Parser ParserData = new Parser();

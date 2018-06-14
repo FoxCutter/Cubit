@@ -27,8 +27,8 @@ namespace ZASM
         public static Setting Indexes = Setting.On;
         public static Setting ArrayOffset = Setting.On;
         public static Setting CYAsCarry = Setting.On;
-        public static Setting CommandRequiresDot = Setting.Off;
-        public static Setting LabelsRequireColon = Setting.Off;
+        public static Setting CommandRequiresDot = Setting.Warning;
+        public static Setting LabelsRequireColon = Setting.Warning;
         public static Setting Strict = Setting.Off;
 
         public static OpcodeType OpcodeSet = OpcodeType.z80;
