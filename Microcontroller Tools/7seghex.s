@@ -63,8 +63,8 @@
 ; e        c
 ;  dddddddd
 
-.def ZH = r30
-.def ZL = r31
+.def ZL = r30
+.def ZH = r31
 
 ; Execute if Bit in Register is Set
 .macro ebrs
@@ -79,7 +79,7 @@
 
 .equ DataPort             = PORTB
 .equ DataPortDirection    = DDRB
-;.equ DataPortPins         = PINB
+.equ DataPortPins         = PINB
 
 .equ OutputPort           = PORTC
 .equ OutputPortDirection  = DDRC
@@ -91,7 +91,7 @@
 
 .equ AOut 		= PORTD0	; Out
 .equ BOut 		= PORTD1	; Out
-;.equ Latch 		= PORTD2	; In
+.equ Latch 		= PORTD2	; In
 .equ HighLow 		= PORTD3	; In
 ;.equ HighByte 		= PORTD4	; In
 ;.equ COut 		= PORTD5	; In
@@ -126,10 +126,10 @@
   reti;              ; TIMER1_CAPT
   reti;              ; TIMER1_COMPA
   reti;              ; TIMER1_COMPB
-  rjmp Tick 	     ; TIMER1_OVF
+  reti; 	     ; TIMER1_OVF
   reti;              ; TIMER0_COMPA
   reti;              ; TIMER0_COMPA
-  reti;              ; TIMER0_OVF
+  rjmp Tick 	     ; TIMER0_OVF
   reti;              ; SPI_STC
   reti;              ; ADC
   reti;              ; EE_RDY
@@ -179,20 +179,22 @@ Reset:
 
 
   ; Set the timer to 'Clear Timer on Compare Match' mode and to the default clock source
-  lds Scratch, (1 << CTC0) | (0 << CS02)| (0 << CS01) | (1 << CS00)
+  ldi Scratch, (0 << CTC0) | (0 << CS02)| (0 << CS01) | (1 << CS00)
   out TCCR0A, Scratch
 
   ; Set the interval
-  lds Scratch, 0x7F
+  ldi Scratch, 0x7F
   out OCR0A, Scratch
 
   ; And enable it to trigger when it overflows
-  lds Scratch, (1 << TOIE0)
+  ldi Scratch, (1 << TOIE0)
   sts TIMSK0, Scratch
 
   ; Turn on Interupts
   sei
 
+  ldi NibbleB, 0x9
+  ldi NibbleA, 0xA
 
 Loop:
   ; and do nothing...
@@ -206,8 +208,8 @@ Loop:
 ; Turns off output on Ports C and D
 DisableOutput:
   ; If output is already disabled just return
-  ebrc Control, OutputEnabled
-    ret
+ ; ebrc Control, OutputEnabled
+  ;  ret
 
   ; Go back to Tri-state (setting everything to input no pullups)
   out ControlPortDirection, ZeroReg
@@ -216,7 +218,7 @@ DisableOutput:
   out OutputPortDirection, ZeroReg
   out OutputPort, ZeroReg
 
-  cbr Control, OutputEnabled
+  cbr Control, (1 << OutputEnabled)
 
   ret
 
@@ -225,8 +227,8 @@ DisableOutput:
 EnableOutput:
 
   ; If output is already enabled just return
-  ebrs Control, OutputEnabled
-    ret
+  ;ebrs Control, OutputEnabled
+  ;  ret
 
   ; Set the output fileds to be output, and the data to zero/no pullups for the rest
   ldi Scratch, ControlOutputMask
@@ -240,7 +242,7 @@ EnableOutput:
   out OutputPort, ZeroReg
 
   ; Set that output in enabled
-  sbr Control, OutputEnabled
+  sbr Control, (1 << OutputEnabled) 
 
   ret
 
@@ -267,34 +269,43 @@ SetOutput:
 
 ; -----------------------------------------------------------------------------------
 
-LatchInt:
-  in r10, ControlPort
-  in r11, DataPort
+LatchData:
+  in r10, ControlPortPins
+  in r11, DataPortPins
+
+  ebrs r10, Latch
+    ret
 
   ; Lov Nibble
   mov Scratch, r11
   andi Scratch, 0x0F
   mov NibbleA, Scratch
+  andi NibbleA, 0x0F
 
   ; High nibble
   swap r11
   mov Scratch, r11
   andi Scratch, 0x0F
   mov NibbleB, Scratch
+  andi NibbleB, 0x0F
+  ret
 
-  reti
+
+; -----------------------------------------------------------------------------------
+
+LatchInt:
+   rcall LatchData
+   reti
 
 ; -----------------------------------------------------------------------------------
 
 Tick:
   ; Check the state of /OE
-  in Scratch, ControlPortPins
-
-  ebrc Scratch, OutputEnabled
-    rcall EnableOutput
-
-  ebrs Scratch, OutputEnabled
+  sbic ControlPortPins, OutputEnabled
     rcall DisableOutput
+
+  sbis ControlPortPins, OutputEnabled
+    rcall EnableOutput
 
   clr Param0
   clr Param1
@@ -304,32 +315,37 @@ Tick:
 
   ; Decide on the nibble based on the low bit
   ebrs Count, 0
-    breq OutB
+    rjmp OutB
 
   ; Populate the data from NibbleA
   mov Param0, NibbleA
-  sbr Param1, AOut
+  ldi Param1, (1 << AOut)
   rjmp SegementLookup
 
 OutB:
   ; Populate the data from NibbleB
   mov Param0, NibbleB
-  sbr Param1, BOut
+  ldi Param1, (1 << BOut)
   rjmp SegementLookup
 
 
 SegementLookup:
   ; Setup the Segement table pointer
-  ldi Scratch, HIGH(SegmentTable)
-  out ZH, Scratch
-  ldi Scratch, LOW(SegmentTable)
-  out ZL, Scratch
+  ldi Scratch, HIGH(SegmentTable << 1)
+  mov ZH, Scratch
+  ldi Scratch, LOW(SegmentTable << 1)
+  mov ZL, Scratch
 
   ; Add the offset to it
   add ZL, Param0
+  adc ZH, ZeroReg
+  add ZL, Param0
+  adc ZH, ZeroReg
 
   ; Load the value from program memory
+  ;mov Param0, ZL
   LPM Param0, Z
+  ;ldi Param0, 0b00111111
 
   ; Right now all bits are set if they are active, so we need to flip something
 
@@ -343,7 +359,7 @@ SegementLookup:
 
   ; If the DP bit is set, set it in Param1
   ebrs Param0, DP
-    sbr Param1, DP
+    sbr Param1, (1 << DP)
 
   ; Output the value
   rcall SetOutput
