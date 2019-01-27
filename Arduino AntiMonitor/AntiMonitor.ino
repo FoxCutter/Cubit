@@ -8,9 +8,6 @@ bool CPU_IOReq = false;
 bool CPU_Read = false;
 bool CPU_Write = false;
 bool CPU_M1 = false;
-bool CPU_Halt = false;
-bool CPU_INT = false;
-bool CPU_NMI = false;
 bool CPU_IntAck = false;
 
 unsigned short CPU_Address = 0;
@@ -33,9 +30,10 @@ void setup()
 
 	Running = true;
 
-	StopCPU(nullptr):
+	StopCPU(nullptr);
 }
-
+
+
 void loop()
 {
 	char Buffer[128];
@@ -73,21 +71,18 @@ void loop()
 		// [0000] >>>
 
 		PrintStringNewLine("Stopped");
-		PrintString(CPU_M1 		? "[M1] " : "[  ] ");
-		PrintString(CPU_Halt 	? "[HT] " : "[  ] ");
-		PrintString(CPU_MemReq 	? "[ME] " : "[  ] ");
-		PrintString(CPU_IOReq 	? "[IO] " : "[  ] ");
-		PrintString(CPU_Read 	? "[RD] " : "[  ] ");
-		PrintString(CPU_Write 	? "[WD] " : "[  ] ");
-		PrintString(CPU_INT 	? "[IT] " : "[  ] ");
-		PrintString(CPU_NMI 	? "[NI] " : "[  ] ");
-		PrintString(CPU_IntAck 	? "[IA] " : "[  ] ");
+		PrintString(CPU_M1 		  ? " [M1]" : " [  ]");
+		PrintString(CPU_MemReq 	? " [ME]" : " [  ]");
+		PrintString(CPU_IOReq 	? " [IO]" : " [  ]");
+		PrintString(CPU_Read 	  ? " [RD]" : " [  ]");
+		PrintString(CPU_Write 	? " [WD]" : " [  ]");
+		PrintString(CPU_IntAck 	? " [IA]" : " [  ]");
 
 		PrintStringNewLine();
 		PrintString("Address: ");
-		PrintValue(CPUAddress);
+		PrintValue(CPU_Address);
 		PrintString(", Data: ");
-		PrintValue(CPUData);
+		PrintValue(CPU_Data);
 
 		PrintStringNewLine();
 
@@ -290,16 +285,6 @@ void CycleCPU()
 	CPU_Address = GetAddress();
 	CPU_Data = GetData();
 
-	//unsigned char Status = GetStatus();
-	//CPU_M1 = Status & StatusM1;
-	//CPU_MemReq = Status & StatusMEMRQ;
-	//CPU_IOReq = Status & IQRQ;
-	//CPU_Read = Status & StatusRD;
-	//CPU_Write = Status & StatusWD;
-	//CPU_Halt = Status & StatusHalt;
-	//CPU_INT = Status & StatusINT;
-	//CPU_NMI = Status & StatusNMI;
-
 	CPU_M1 = !digitalRead(M1Input);
 	CPU_MemReq = !digitalRead(MemoryRequest);
 	CPU_IOReq = !digitalRead(IORequest);
@@ -356,9 +341,9 @@ void CycleWait()
 	// Digital 13 (BusWait) == PORTB5
 
 
-	//PORTB |= _BV(PORTB5); // HIGH
-	//__builtin_avr_nop();
-	//PORTB &= ~(_BV(PORTB5)); // LOW
+	PORTB |= _BV(PORTB5); // HIGH
+	__builtin_avr_nop();
+	PORTB &= ~(_BV(PORTB5)); // LOW
 
 	//bitSet(PORTB, PORTB5); // HIGH
 	//__builtin_avr_nop();
@@ -514,7 +499,8 @@ bool ProcessHexString(char *HexBuffer)
 
 	return true;
 }
-
+
+
 void ShowHelp(char *BufferData)
 {
 	PrintStringNewLine(F(" Command List"));
@@ -902,9 +888,9 @@ void FlashBus(char *BufferData)
 	SetData(TempData);
 
 	PrintString(F("  Flashing Address: "));
-	PrintValue(Address);
+	PrintValue(TempAddress);
 	PrintString(F(" Data: "));
-	PrintValue(Data);
+	PrintValue(TempData);
 	PrintStringNewLine();
 	PrintStringNewLine("  Enter to stop");
 

@@ -1,6 +1,6 @@
 #include "Common.h"
 
-int BusRef = 0;
+unsigned int BusRef = 0;
 
 void PinSetup()
 {
@@ -59,15 +59,18 @@ void PinSetup()
 
 bool TakeBus()
 {
+  // We already have it, so don't need to do a thing
+  if(BusRef != 0)
+  {
+    BusRef++;
+    return true;
+  }
+    
 	// Check if someone else owns the bus
-	if(digitalRead(BusReq) == 1 && digitalRead(BusAck) == 0)
+	if(digitalRead(BusReq) == 0 && digitalRead(BusAck) == 0)
 	{
 		return false;
 	}
-
-	// We already have it, so don't need to do a thing
-	if(BusRef != 0)
-		return true;
 
 	// Turn on the bus
 	digitalWrite(BusReq, LOW);
@@ -93,15 +96,15 @@ bool TakeBus()
 
 bool ReleaseBus()
 {
+  // Can't release what we don't own.
+  if(BusRef == 0)
+    return false;
+
 	// Check if someone else owns the bus
 	if(digitalRead(BusReq) == 1 && digitalRead(BusAck) == 0)
 	{
 		return false;
 	}
-
-	// Can't release what we don't own.
-	if(BusRef == 0)
-		return false;
 
 	BusRef--;
 
@@ -152,10 +155,11 @@ unsigned int GetAddress()
 
   // Save the first bit, then get the rest of the high byte
   unsigned int Data = digitalRead(AddressOutput) << 15;
-  Data |= shiftIn(DataOutput, DataClock, MSBFIRST) << 7;
+
+  Data |= shiftIn(AddressOutput, AddressClock, MSBFIRST) << 7;
 
   // And the low byte
-  Data |= shiftIn(DataOutput, DataClock, MSBFIRST) >> 1;
+  Data |= shiftIn(AddressOutput, AddressClock, MSBFIRST) >> 1;
 
   return Data;
 }
@@ -186,6 +190,7 @@ byte GetData()
   return Data;
 }
 
+/*
 void SetStatus(byte Data)
 {
    shiftOut(StatusInput, StatusClock, MSBFIRST, ~Data);
@@ -211,6 +216,7 @@ byte GetStatus()
 
   return ~Data;
 }
+*/
 
 
 byte ReadData(unsigned int Address)
