@@ -11,7 +11,7 @@ namespace OpcodeData
         // Opcodes z80
         ADC, ADD, AND, BIT, CALL, CCF, CP, CPD, CPDR, CPI, CPIR, CPL, DAA, DEC, DI, DJNZ, EI, EX, EXX, HALT, IM, IN, INC,
         IND, INDR, INI, INIR, JP, JR, LD, LDD, LDDR, LDI, LDIR, NEG, NOP, OR, OTDR, OTIR, OUT, OUTD, OUTI, POP, PUSH,
-        RES, RET, RETI, RETN, RL, RLA, RLC, RLCA, RLD, RR, RRA, RRC, RRCA, RRD, RST, SBC, SCF, SET, SLA, SLL, SRA, SRL,
+        RES, RET, RETI, RETN, RL, RLA, RLC, RLCA, RLD, RR, RRA, RRC, RRCA, RRD, RST, SBC, SCF, SET, SLA, SL1, SLL, SRA, SRL,
         SUB, XOR,
 
         // Opcodes GB
@@ -131,14 +131,14 @@ namespace OpcodeData
         // SP + *
         SPPlusOffset,
 
-        // (c), (*), 
-        HighMemPointer,
-
         // ($FF00 + c), ($FF00 + *), 
         HighMemPointerPlus,
 
         // (**)
         AddressPointer,
+
+        // (c), (*), 
+        BytePointer,
 
         // **
         Address,
@@ -277,7 +277,7 @@ namespace OpcodeData
                         else if (Type == ParameterType.HighMemPointerPlus)
                             return "($ff00 + nn)";
 
-                        else if (Type == ParameterType.HighMemPointer)
+                        else if (Type == ParameterType.BytePointer)
                             return "(nn)";
 
                         else if (Type == ParameterType.SPPlusOffset)
@@ -316,6 +316,8 @@ namespace OpcodeData
                 case ParameterID.C:
                     if (Type == ParameterType.HighMemPointerPlus)
                         return ("($ff00 + C)");
+                    else if (Type == ParameterType.BytePointer)
+                        return ("(C)");
                     break;
 
                 case ParameterID.XX:

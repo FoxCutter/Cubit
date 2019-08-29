@@ -42,7 +42,7 @@ namespace TableBuilder
             }
         }
 
-        static string GenerateOpcodeExample(OpcodeData.OpcodeEntry Entry, bool ForDecoding)
+        static string GenerateOpcodeExample(LocalOpcodeEntry Entry, bool ForDecoding)
         {
             StringBuilder Output = new StringBuilder();
 
@@ -87,7 +87,7 @@ namespace TableBuilder
             return Output.ToString();
         }
         
-        static string GenerateOpcode(OpcodeData.OpcodeEntry Entry, string Padding, bool ForDecoding)
+        static string GenerateOpcode(LocalOpcodeEntry Entry, string Padding, bool ForDecoding)
         {
             StringBuilder Output = new StringBuilder();
 
@@ -118,6 +118,7 @@ namespace TableBuilder
                 if (!Param.Implicit || ForDecoding)
                 {
                     Output.AppendFormat("new ParamEntry(ParameterID.{0}, ParameterType.{1}", Param.Param, Param.Type);
+
                     Output.AppendFormat(", EncodingType.{0}, {1}", Param.Encoding, Param.Implicit.ToString().ToLower());
 
                     Output.Append("), ");
@@ -151,10 +152,10 @@ namespace TableBuilder
             return Output.ToString();
         }
 
-        static void WriteDecodingRange(StreamWriter OutputFile, IEnumerable<OpcodeData.OpcodeEntry> Range)
+        static void WriteDecodingRange(StreamWriter OutputFile, IEnumerable<LocalOpcodeEntry> Range)
         {
             int Count = 0;
-            OpcodeData.OpcodeEntry Dummy = new OpcodeData.OpcodeEntry();
+            LocalOpcodeEntry Dummy = new LocalOpcodeEntry();
             Dummy.Function = OpcodeData.FunctionID.None;
             Dummy.Name = OpcodeData.CommandID.None;
             Dummy.Params = new OpcodeData.ParamEntry[0];
@@ -180,8 +181,11 @@ namespace TableBuilder
             
             //if (Range.Count() != 0)
             {
-                foreach (OpcodeData.OpcodeEntry Entry in Range)
+                foreach (LocalOpcodeEntry Entry in Range)
                 {
+                    if (Entry.Prefered == false)
+                        continue;
+
                     while (Count < Entry.Encoding)
                     {
                         Dummy.Encoding = (byte) Count;
@@ -220,7 +224,7 @@ namespace TableBuilder
                     OutputFile.WriteLine("        public static OpcodeEntry[] {0}OpcodeList = new OpcodeEntry[]", Prefix);
                     OutputFile.WriteLine("        {");
 
-                        foreach (OpcodeData.OpcodeEntry Entry in GroupInfo.OpcodeList.OrderBy(e => e.Name))
+                        foreach (LocalOpcodeEntry Entry in GroupInfo.OpcodeList.OrderBy(e => e.Name))
                         {
                             if (Entry.Type == OpcodeData.OpcodeType.Unofficial)
                                 continue;
@@ -235,7 +239,7 @@ namespace TableBuilder
                     OutputFile.WriteLine("        public static CommandList {0}Commands = new CommandList()", Prefix);
                     OutputFile.WriteLine("        {");
 
-                        foreach (OpcodeData.OpcodeEntry Entry in GroupInfo.OpcodeList.DistinctBy(e => e.Name).OrderBy(e => e.Name))
+                        foreach (LocalOpcodeEntry Entry in GroupInfo.OpcodeList.DistinctBy(e => e.Name).OrderBy(e => e.Name))
                         {
                             if (Entry.Type == OpcodeData.OpcodeType.Unofficial)
                                 continue;

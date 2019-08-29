@@ -16,15 +16,30 @@ namespace TableBuilder
         }
     }
 
+    class LocalOpcodeEntry : OpcodeData.OpcodeEntry
+    {
+        public bool Prefered;
+
+        public LocalOpcodeEntry() : base()
+        {
+            Prefered = true;
+        }
+
+        public LocalOpcodeEntry(LocalOpcodeEntry Clone) : base(Clone)
+        {
+            Prefered = Clone.Prefered;
+        }
+    }
+
     class OpcodeGroup
     {
-        public List<OpcodeData.OpcodeEntry> OpcodeList;
-        public List<OpcodeData.OpcodeEntry> OpcodeMatrix;
+        public List<LocalOpcodeEntry> OpcodeList;
+        public List<LocalOpcodeEntry> OpcodeMatrix;
 
         public OpcodeGroup()
         {
-            OpcodeList = new List<OpcodeData.OpcodeEntry>();
-            OpcodeMatrix = new List<OpcodeData.OpcodeEntry>();
+            OpcodeList = new List<LocalOpcodeEntry>();
+            OpcodeMatrix = new List<LocalOpcodeEntry>();
         }
     };
     
@@ -34,21 +49,21 @@ namespace TableBuilder
         {
             OpcodeData.ParamEntry Ret = new OpcodeData.ParamEntry();
 
-            Ret.Implicit = Arg.assumed;
+            Ret.Implicit = Arg.hidden;
 
             switch (Arg.Value.ToUpper().Trim())
             {
-                case "0":
+                case "ENCODED-0":
                     Ret.Param = OpcodeData.ParameterID.Encoded0;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "1":
+                case "ENCODED-1":
                     Ret.Param = OpcodeData.ParameterID.Encoded1;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "2":
+                case "ENCODED-2":
                     Ret.Param = OpcodeData.ParameterID.Encoded2;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
@@ -259,15 +274,15 @@ namespace TableBuilder
                     break;
 
                 // (n)
-                case "HIGHMEMPTR":
+                case "BYTEPTR":
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
-                    Ret.Type = OpcodeData.ParameterType.HighMemPointer;
+                    Ret.Type = OpcodeData.ParameterType.BytePointer;
                     break;
 
                 // (C)
-                case "HIGHMEMBYTEPTR-C":
+                case "BYTEREGPTR-C":
                     Ret.Param = OpcodeData.ParameterID.C;
-                    Ret.Type = OpcodeData.ParameterType.HighMemPointer;
+                    Ret.Type = OpcodeData.ParameterType.BytePointer;
                     break;
                 
                 
@@ -283,23 +298,25 @@ namespace TableBuilder
 
             switch (Arg.encoding)
             {
+                case EncodingEnum.Direct:
                 case EncodingEnum.None:
                     Ret.Encoding = OpcodeData.EncodingType.None;
                     break;
 
-                case EncodingEnum.Item1:
+                case EncodingEnum.Reg2:
                     Ret.Encoding = OpcodeData.EncodingType.Pos1;
                     break;
 
-                case EncodingEnum.Item2:
+                case EncodingEnum.Flag:
+                case EncodingEnum.Reg1:
                     Ret.Encoding = OpcodeData.EncodingType.Pos2;
                     break;
 
-                case EncodingEnum.Item3:
+                case EncodingEnum.WordReg:
                     Ret.Encoding = OpcodeData.EncodingType.Pos3;
                     break;
 
-                case EncodingEnum.Item4:
+                case EncodingEnum.HalfFlag:
                     Ret.Encoding = OpcodeData.EncodingType.Pos4;
                     break;
 
@@ -485,7 +502,7 @@ namespace TableBuilder
             return false;
         }
         
-        public static bool CanExpand(OpcodeData.OpcodeEntry Opcode)
+        public static bool CanExpand(LocalOpcodeEntry Opcode)
         {
             foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
             {
@@ -496,7 +513,7 @@ namespace TableBuilder
             return false;
         }
 
-        public static byte ExpandIndex(OpcodeData.OpcodeEntry Opcode)
+        public static byte ExpandIndex(LocalOpcodeEntry Opcode)
         {
             for (byte x = 0; x < Opcode.Params.Length; x++)
             {
@@ -507,9 +524,9 @@ namespace TableBuilder
             return 0xFF;
         }
 
-        static OpcodeData.OpcodeEntry CloneParams(OpcodeData.OpcodeEntry Opcode, OpcodeData.ParamEntry NewParam, int NewPos)
+        static LocalOpcodeEntry CloneParams(LocalOpcodeEntry Opcode, OpcodeData.ParamEntry NewParam, int NewPos)
         {
-            OpcodeData.OpcodeEntry Ret = new OpcodeData.OpcodeEntry(Opcode);
+            LocalOpcodeEntry Ret = new LocalOpcodeEntry(Opcode);
 
             Ret.Params[NewPos] = NewParam;
 
@@ -517,9 +534,9 @@ namespace TableBuilder
         }
 
 
-        static List<OpcodeData.OpcodeEntry> ExpandOpcodeEntry(OpcodeData.OpcodeEntry Entry)
+        static List<LocalOpcodeEntry> ExpandOpcodeEntry(LocalOpcodeEntry Entry)
         {
-            List<OpcodeData.OpcodeEntry> Ret = new List<OpcodeData.OpcodeEntry>();
+            List<LocalOpcodeEntry> Ret = new List<LocalOpcodeEntry>();
 
             if (!CanExpand(Entry))
             {
@@ -537,7 +554,7 @@ namespace TableBuilder
                 if (ExpandList[x].Param == OpcodeData.ParameterID.None)
                     continue;
 
-                OpcodeData.OpcodeEntry NewEntry = CloneParams(Entry, ExpandList[x], Pos);
+                LocalOpcodeEntry NewEntry = CloneParams(Entry, ExpandList[x], Pos);
 
                 if (Entry.Params[Pos].Encoding >= OpcodeData.EncodingType.Pos1 && Entry.Params[Pos].Encoding <= OpcodeData.EncodingType.Pos4)
                     NewEntry.Encoding += (byte)(GetValue(ExpandList[x].Param) << ShiftMap[(int)Entry.Params[Pos].Encoding]);               
@@ -555,12 +572,12 @@ namespace TableBuilder
             return Ret;
         }
 
-        public static int Order(OpcodeData.OpcodeEntry Entry)
+        public static int Order(LocalOpcodeEntry Entry)
         {
-            return (Entry.Index ? 0x10000 : 0) + (Entry.Prefix << 8) + Entry.Encoding;
+            return (!Entry.Prefered ? 0x100000 : 0) + (Entry.Index ? 0x10000 : 0) + (Entry.Prefix << 8) + Entry.Encoding;
         }
 
-        public static byte Length(OpcodeData.OpcodeEntry Entry)
+        public static byte Length(LocalOpcodeEntry Entry)
         {
             // For the base
             byte Ret = 1;
@@ -586,7 +603,7 @@ namespace TableBuilder
             return Ret;
         }
         
-        public static bool HasType(OpcodeData.OpcodeEntry Opcode, OpcodeData.ParameterType Type)
+        public static bool HasType(LocalOpcodeEntry Opcode, OpcodeData.ParameterType Type)
         {
             foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
             {
@@ -597,7 +614,7 @@ namespace TableBuilder
             return false;
         }
 
-        public static bool HasParam(OpcodeData.OpcodeEntry Opcode, OpcodeData.ParameterID ID)
+        public static bool HasParam(LocalOpcodeEntry Opcode, OpcodeData.ParameterID ID)
         {
             foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
             {
@@ -608,7 +625,7 @@ namespace TableBuilder
             return false;
         }
 
-        public static bool HasImplicit(OpcodeData.OpcodeEntry Opcode)
+        public static bool HasImplicit(LocalOpcodeEntry Opcode)
         {
             foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
             {
@@ -625,14 +642,15 @@ namespace TableBuilder
 
             foreach (opcodeType Opcode in Platform.opcode)
             {
-                OpcodeData.OpcodeEntry NewDataEntry = new OpcodeData.OpcodeEntry();
+                LocalOpcodeEntry NewDataEntry = new LocalOpcodeEntry();
 
                 NewDataEntry.Encoding = (Opcode.value != null) ? (Opcode.value[0]) : (byte)0;
                 NewDataEntry.Prefix = (Opcode.prefix != null) ? (Opcode.prefix[0]) : (byte)0;
                 NewDataEntry.Index = Opcode.index;
                 NewDataEntry.Name = (OpcodeData.CommandID) Enum.Parse(typeof(OpcodeData.CommandID), Opcode.mnemonic);
-                NewDataEntry.Function = (OpcodeData.FunctionID)Enum.Parse(typeof(OpcodeData.FunctionID), Opcode.function);
+                NewDataEntry.Function = (OpcodeData.FunctionID)Enum.Parse(typeof(OpcodeData.FunctionID), Opcode.function.Replace('-', '_').ToUpper());
                 NewDataEntry.Cycles = Opcode.cycles;
+                NewDataEntry.Prefered = Opcode.prefered;
 
                 if (Opcode.official == "Y")
                     NewDataEntry.Type = OpcodeData.OpcodeType.Official;
@@ -664,13 +682,13 @@ namespace TableBuilder
                 Ret.OpcodeList.Add(NewDataEntry);
             }
 
-            foreach (OpcodeData.OpcodeEntry Entry in Ret.OpcodeList)
+            foreach (LocalOpcodeEntry Entry in Ret.OpcodeList)
             {
-                List<OpcodeData.OpcodeEntry> Indexed = ExpandOpcodeEntry(Entry);
+                List<LocalOpcodeEntry> Indexed = ExpandOpcodeEntry(Entry);
 
                 if (Entry.Index)
                 {
-                    foreach (OpcodeData.OpcodeEntry NewEntry in Indexed)
+                    foreach (LocalOpcodeEntry NewEntry in Indexed)
                     {
                         // Can't have HL and XX in the same opcode
                         if(HasParam(NewEntry, OpcodeData.ParameterID.HL) & HasParam(NewEntry, OpcodeData.ParameterID.XX))

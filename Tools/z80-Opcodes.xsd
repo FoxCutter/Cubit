@@ -21,29 +21,52 @@
 
   <xs:complexType name="opcodeType">
     <xs:sequence>
+      <!--Mnemonic for this opcode-->
       <xs:element name="mnemonic" type="xs:string"/>
+      <!--Arguments-->
       <xs:element name="args" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
+            <!--The name of the argument that is being encoded-->
             <xs:element name="arg" type="argType" minOccurs="0" maxOccurs="3"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <!--Y: Officaly Documented
+          N: undocumented, but can execute (but not be assambled)
+          X: Undocumented, and can be assambled-->
       <xs:element name="official" type="xs:string" minOccurs="0" />
+      <!--The function this opcode provides-->
       <xs:element name="function" type="xs:string"/>
+      <!--Cycle count for execution-->
       <xs:element name="cycles" type="xs:short" minOccurs="0" default="0" />
+      <!--How the flags are effected:
+        S: Z: H: P/V: N: C:
+        Missing or '.': no effect
+        #: based on the result of the operation
+        1 or 0: Direct value 
+      -->
+      <xs:element name="flags" type="xs:string" minOccurs="0"/>
+      <!--Description of this opcode-->
+      <xs:element name="description" type="xs:string" minOccurs="0"/>
     </xs:sequence>
+    <!--If there are more then one version of a given opcode, this is the one to use for dissasambly/execution-->
+    <xs:attribute name="prefered" type="xs:boolean" use="optional" default="true"/>
+    <!--If this opcode is used for indexes-->
     <xs:attribute name="index" type="xs:boolean" use="optional" default="false"/>
+    <!--Prefix for the opcode value-->
     <xs:attribute name="prefix" type="xs:hexBinary" use="optional"/>
+    <!--The base value for the opcode-->
     <xs:attribute name="value" type="xs:hexBinary" use="required"/>
   </xs:complexType>
 
   <xs:complexType name="argType" >
     <xs:simpleContent>
       <xs:extension base="xs:string">
-        <!--<xs:attribute name="pos" type="xs:integer" use="required"/>-->
-        <xs:attribute name="encoding" type="EncodingEnum" use="optional" default="None"/>
-        <xs:attribute name="assumed" type="xs:boolean" use="optional" default="false"/>
+        <!--How this argument is encoded int othe opcode-->
+        <xs:attribute name="encoding" type="EncodingEnum" use="required"/>
+        <!--If true, the value is part of the encoded data, but not provided durring assambly-->
+        <xs:attribute name="hidden" type="xs:boolean" use="optional" default="false"/>
       </xs:extension>
     </xs:simpleContent>
   </xs:complexType>
@@ -52,18 +75,29 @@
   <xs:simpleType name="EncodingEnum">
     <xs:restriction base="xs:string">
       <xs:enumeration value="None"/>
-      <!--0b00000111 0x07-->
-      <xs:enumeration value="1"/>
-      <!--0b00111000 0x38-->
-      <xs:enumeration value="2"/>
-      <!--0b00110000 0x30-->
-      <xs:enumeration value="3"/>
-      <!--0b00011000 0x18-->
-      <xs:enumeration value="4"/>
 
+      <!--0b00000111 0x07-->
+      <xs:enumeration value="Reg2"/>
+
+      <!--0b00111000 0x38-->
+      <xs:enumeration value="Reg1"/>
+      <xs:enumeration value="Flag"/>
+
+      <!--0b00110000 0x30-->
+      <xs:enumeration value="WordReg"/>
+
+      <!--0b00011000 0x18-->
+      <xs:enumeration value="HalfFlag"/>
+
+      <!--Immidate data-->
       <xs:enumeration value="ByteImmidate"/>
       <xs:enumeration value="WordImmidate"/>
+      
+      <!--And index register (encoded via Direct) with an offset after the index prefix-->
       <xs:enumeration value="IndexOffset"/>
+
+      <!--The argument is already endcoded into the value-->
+      <xs:enumeration value="Direct"/>
     </xs:restriction>
   </xs:simpleType>
 
