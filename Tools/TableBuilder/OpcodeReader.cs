@@ -19,15 +19,18 @@ namespace TableBuilder
     class LocalOpcodeEntry : OpcodeData.OpcodeEntry
     {
         public bool Prefered;
+        public bool i8080;
 
         public LocalOpcodeEntry() : base()
         {
             Prefered = true;
+            i8080 = false;
         }
 
         public LocalOpcodeEntry(LocalOpcodeEntry Clone) : base(Clone)
         {
             Prefered = Clone.Prefered;
+            i8080 = Clone.i8080;
         }
     }
 
@@ -53,18 +56,28 @@ namespace TableBuilder
 
             switch (Arg.Value.ToUpper().Trim())
             {
-                case "ENCODED-0":
-                    Ret.Param = OpcodeData.ParameterID.Encoded0;
+                case "RSTVALUE":
+                    Ret.Param = OpcodeData.ParameterID.EncodedValue;
+                    Ret.Type = OpcodeData.ParameterType.RstValue;
+                    break;
+
+                case "VALUE":
+                    Ret.Param = OpcodeData.ParameterID.EncodedValue;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "ENCODED-1":
-                    Ret.Param = OpcodeData.ParameterID.Encoded1;
+                case "VALUE-0":
+                    Ret.Param = OpcodeData.ParameterID.Value0;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "ENCODED-2":
-                    Ret.Param = OpcodeData.ParameterID.Encoded2;
+                case "VALUE-1":
+                    Ret.Param = OpcodeData.ParameterID.Value1;
+                    Ret.Type = OpcodeData.ParameterType.Value;
+                    break;
+
+                case "VALUE-2":
+                    Ret.Param = OpcodeData.ParameterID.Value2;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
@@ -162,11 +175,6 @@ namespace TableBuilder
                 case "WORDINDEXREGPTR":
                     Ret.Param = OpcodeData.ParameterID.XX;
                     Ret.Type = OpcodeData.ParameterType.WordIndexRegisterPointer;
-                    break;
-
-                case "ENCODED":
-                    Ret.Param = OpcodeData.ParameterID.EncodedByte;
-                    Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
                 case "FLAG":
@@ -356,7 +364,7 @@ namespace TableBuilder
 
         static OpcodeData.ParameterID[] Flags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_C, OpcodeData.ParameterID.Flag_PO, OpcodeData.ParameterID.Flag_PE, OpcodeData.ParameterID.Flag_P, OpcodeData.ParameterID.Flag_M };
         static OpcodeData.ParameterID[] HalfFlags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_C };
-        static OpcodeData.ParameterID[] Encoded = { OpcodeData.ParameterID.Encoded0, OpcodeData.ParameterID.Encoded1, OpcodeData.ParameterID.Encoded2, OpcodeData.ParameterID.Encoded3, OpcodeData.ParameterID.Encoded4, OpcodeData.ParameterID.Encoded5, OpcodeData.ParameterID.Encoded6, OpcodeData.ParameterID.Encoded7 };
+        static OpcodeData.ParameterID[] Encoded = { OpcodeData.ParameterID.Value0, OpcodeData.ParameterID.Value1, OpcodeData.ParameterID.Value2, OpcodeData.ParameterID.Value3, OpcodeData.ParameterID.Value4, OpcodeData.ParameterID.Value5, OpcodeData.ParameterID.Value6, OpcodeData.ParameterID.Value7 };
 
         static List<OpcodeData.ParamEntry> GetExpandList(OpcodeData.ParamEntry Param)
         {
@@ -397,7 +405,8 @@ namespace TableBuilder
                     break;
 
                 case OpcodeData.ParameterType.Value:
-                    if(Param.Param == OpcodeData.ParameterID.EncodedByte)
+                case OpcodeData.ParameterType.RstValue:
+                    if(Param.Param == OpcodeData.ParameterID.EncodedValue)
                         ParamList = Encoded;
                     break;
 
@@ -436,19 +445,19 @@ namespace TableBuilder
         {
             switch (Entry)
             {
-                case OpcodeData.ParameterID.Encoded0:
+                case OpcodeData.ParameterID.Value0:
                 case OpcodeData.ParameterID.Flag_NZ:
                 case OpcodeData.ParameterID.BC:
                 case OpcodeData.ParameterID.B:
                     return 0;
 
-                case OpcodeData.ParameterID.Encoded1:
+                case OpcodeData.ParameterID.Value1:
                 case OpcodeData.ParameterID.Flag_Z:
                 case OpcodeData.ParameterID.DE:
                 case OpcodeData.ParameterID.C:
                     return 1;
 
-                case OpcodeData.ParameterID.Encoded2:
+                case OpcodeData.ParameterID.Value2:
                 case OpcodeData.ParameterID.Flag_NC:
                 case OpcodeData.ParameterID.HL:
                 case OpcodeData.ParameterID.IX:
@@ -457,14 +466,14 @@ namespace TableBuilder
                 case OpcodeData.ParameterID.D:
                     return 2;
 
-                case OpcodeData.ParameterID.Encoded3:
+                case OpcodeData.ParameterID.Value3:
                 case OpcodeData.ParameterID.Flag_C:
                 case OpcodeData.ParameterID.AF:
                 case OpcodeData.ParameterID.SP:
                 case OpcodeData.ParameterID.E:
                     return 3;
 
-                case OpcodeData.ParameterID.Encoded4:
+                case OpcodeData.ParameterID.Value4:
                 case OpcodeData.ParameterID.Flag_PO:
                 case OpcodeData.ParameterID.H:
                 case OpcodeData.ParameterID.IXH:
@@ -472,7 +481,7 @@ namespace TableBuilder
                 case OpcodeData.ParameterID.XXH:
                     return 4;
 
-                case OpcodeData.ParameterID.Encoded5:
+                case OpcodeData.ParameterID.Value5:
                 case OpcodeData.ParameterID.Flag_PE:
                 case OpcodeData.ParameterID.L:
                 case OpcodeData.ParameterID.IXL:
@@ -480,11 +489,11 @@ namespace TableBuilder
                 case OpcodeData.ParameterID.XXL:
                     return 5;
 
-                case OpcodeData.ParameterID.Encoded6:
+                case OpcodeData.ParameterID.Value6:
                 case OpcodeData.ParameterID.Flag_P:
                     return 6;
 
-                case OpcodeData.ParameterID.Encoded7:
+                case OpcodeData.ParameterID.Value7:
                 case OpcodeData.ParameterID.Flag_M:
                 case OpcodeData.ParameterID.A:
                     return 7;
@@ -496,7 +505,7 @@ namespace TableBuilder
 
         public static bool CanExpand(OpcodeData.ParamEntry Entry)
         {
-            if (Entry.Param == OpcodeData.ParameterID.RegisterAny || Entry.Param == OpcodeData.ParameterID.FlagsAny || Entry.Param == OpcodeData.ParameterID.EncodedByte)
+            if (Entry.Param == OpcodeData.ParameterID.RegisterAny || Entry.Param == OpcodeData.ParameterID.FlagsAny || Entry.Param == OpcodeData.ParameterID.EncodedValue)
                 return true;
 
             return false;
@@ -639,6 +648,11 @@ namespace TableBuilder
         public static OpcodeGroup ReadOpcodeData(z80OpcodesPlatform Platform)
         {
             OpcodeGroup Ret = new OpcodeGroup();
+            bool i8080 = false;
+
+            if (Platform.name == "i8080")
+                i8080 = true;
+
 
             foreach (opcodeType Opcode in Platform.opcode)
             {
@@ -651,6 +665,7 @@ namespace TableBuilder
                 NewDataEntry.Function = (OpcodeData.FunctionID)Enum.Parse(typeof(OpcodeData.FunctionID), Opcode.function.Replace('-', '_').ToUpper());
                 NewDataEntry.Cycles = Opcode.cycles;
                 NewDataEntry.Prefered = Opcode.prefered;
+                NewDataEntry.i8080 = i8080;
 
                 if (Opcode.official == "Y")
                     NewDataEntry.Type = OpcodeData.OpcodeType.Official;

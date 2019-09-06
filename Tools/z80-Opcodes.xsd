@@ -41,10 +41,14 @@
       <!--Cycle count for execution-->
       <xs:element name="cycles" type="xs:short" minOccurs="0" default="0" />
       <!--How the flags are effected:
-        S: Z: H: P/V: N: C:
-        Missing or '.': no effect
+        S-Sign, Z-Zero, H-Half Carry, A-Auxiliary Carry, P-Parity, P/V-Parity/Overflow, N-Add/Subtract, C-Carry
+        S: Z: H: P/V: N: C: - Z80
+        S: Z: A: P: N: C: - 8080
+        Z: N: H: C: - Gameboy
+        -: no effect
         #: based on the result of the operation
         1 or 0: Direct value 
+        ?: Unknown
       -->
       <xs:element name="flags" type="xs:string" minOccurs="0"/>
       <!--Description of this opcode-->

@@ -350,8 +350,7 @@ namespace ZASM
                 CommandID == OpcodeData.CommandID.SUB || CommandID == OpcodeData.CommandID.SBC ||
                 CommandID == OpcodeData.CommandID.OR || CommandID == OpcodeData.CommandID.XOR ||
                 CommandID == OpcodeData.CommandID.AND || CommandID == OpcodeData.CommandID.CP ||
-                CommandID == OpcodeData.CommandID.IN || CommandID == OpcodeData.CommandID.OUT ||
-                CommandID == OpcodeData.CommandID.CPL)
+                CommandID == OpcodeData.CommandID.CPL || CommandID == OpcodeData.CommandID.NEG)
                 return true;
 
             return false;
@@ -593,11 +592,7 @@ namespace ZASM
 
                 NewParam.Tokens.Add(NewToken);
 
-                // for out A is the second paramater, for everything else it's the first.
-                if (Opcode == OpcodeData.CommandID.OUT)
-                    NewObject.ParamterList.Add(NewParam);
-                else
-                    NewObject.ParamterList.Insert(0, NewParam);
+                NewObject.ParamterList.Insert(0, NewParam);
 
                 if(Settings.AssumeA == Setting.Warning)
                     Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.RegisterMissingAssumingA);

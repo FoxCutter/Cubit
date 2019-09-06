@@ -78,7 +78,10 @@ namespace TableBuilder
                     if (!First)
                         Output.Append(',');
 
-                    Output.AppendFormat(" {0}", Param.ToString());
+                    if (Param.Implicit)
+                        Output.AppendFormat(" !{0}", Param.ParamString(Entry.i8080));
+                    else
+                        Output.AppendFormat(" {0}", Param.ParamString(Entry.i8080));
                     First = false;
                 }
             }

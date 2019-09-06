@@ -58,10 +58,11 @@ namespace ZASM
         public static ParameterList i8080ParameterList = new ParameterList()
         {
             { "A",      OpcodeData.ParameterID.A       },   { "B",      OpcodeData.ParameterID.B       }, /*{ "B",     OpcodeData.ParameterID.BC       },*/ { "C",      OpcodeData.ParameterID.C       },
-            { "CY",	    OpcodeData.ParameterID.Flag_C  },   { "D",      OpcodeData.ParameterID.D       }, /*{ "D",     OpcodeData.ParameterID.DE       },*/ { "E",      OpcodeData.ParameterID.E       },
-            { "H",      OpcodeData.ParameterID.H       },   { "L",      OpcodeData.ParameterID.L       },   { "M",      OpcodeData.ParameterID.HL      }, /*{ "M",	    OpcodeData.ParameterID.Flag_M  },*/
-            { "NC",	    OpcodeData.ParameterID.Flag_NC },   { "NZ",	    OpcodeData.ParameterID.Flag_NZ },   { "P",	    OpcodeData.ParameterID.Flag_P  },   { "PE",	    OpcodeData.ParameterID.Flag_PE }, 
-            { "PO",	    OpcodeData.ParameterID.Flag_PO },   { "PSW",    OpcodeData.ParameterID.AF      },   { "SP",     OpcodeData.ParameterID.SP      },   { "Z",	    OpcodeData.ParameterID.Flag_Z  },  
+            { "CY",    OpcodeData.ParameterID.Flag_C   },   { "D",      OpcodeData.ParameterID.D       }, /*{ "D",     OpcodeData.ParameterID.DE       },*/ { "E",      OpcodeData.ParameterID.E       },
+            { "H",      OpcodeData.ParameterID.H       }, /*{ "H",      OpcodeData.ParameterID.HL      },*/ { "L",      OpcodeData.ParameterID.L       },   { "M",      OpcodeData.ParameterID.HL      }, 
+            /*{ "M",    OpcodeData.ParameterID.Flag_M  },*/ { "NC",	    OpcodeData.ParameterID.Flag_NC },   { "NZ",	    OpcodeData.ParameterID.Flag_NZ },   { "P",	    OpcodeData.ParameterID.Flag_P  },
+            { "PE",	    OpcodeData.ParameterID.Flag_PE },   { "PO",	    OpcodeData.ParameterID.Flag_PO },   { "PSW",    OpcodeData.ParameterID.AF      },   { "SP",     OpcodeData.ParameterID.SP      },
+            { "Z",	    OpcodeData.ParameterID.Flag_Z  },  
         };
 
         public static Dictionary<string, FunctionID> Commands = new Dictionary<string,FunctionID>()

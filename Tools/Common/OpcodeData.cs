@@ -83,7 +83,7 @@ namespace OpcodeData
         // Immediate data
         ImmediateByte,
         ImmediateWord,
-        EncodedByte,
+        EncodedValue,
 
         // Flags
         Flag_NZ,
@@ -99,14 +99,14 @@ namespace OpcodeData
         
         FlagsMax,
 
-        Encoded0,
-        Encoded1,
-        Encoded2,
-        Encoded3,
-        Encoded4,
-        Encoded5,
-        Encoded6,
-        Encoded7,
+        Value0,
+        Value1,
+        Value2,
+        Value3,
+        Value4,
+        Value5,
+        Value6,
+        Value7,
 
         EncodedMax,
     }
@@ -158,6 +158,7 @@ namespace OpcodeData
 
         // Immidate, Encoded
         Value,
+        RstValue,
 
         Error,
     }
@@ -229,7 +230,7 @@ namespace OpcodeData
             this.Implicit = Implicit;
         }
 
-        string ParamString()
+        public string ParamString(bool i8080 = false)
         {
             switch (Param)
             {
@@ -263,7 +264,7 @@ namespace OpcodeData
 
                 case ParameterID.ImmediateWord:
                     {
-                        if (Type == ParameterType.AddressPointer)
+                        if (Type == ParameterType.AddressPointer && !i8080)
                             return "(nnnn)";
 
                         return "nnnn";
@@ -286,7 +287,7 @@ namespace OpcodeData
                         return "nn";
                     }
 
-                case ParameterID.EncodedByte:
+                case ParameterID.EncodedValue:
                     return "e";
 
                 case ParameterID.Flag_Z:
@@ -316,6 +317,7 @@ namespace OpcodeData
                 case ParameterID.C:
                     if (Type == ParameterType.HighMemPointerPlus)
                         return ("($ff00 + C)");
+
                     else if (Type == ParameterType.BytePointer)
                         return ("(C)");
                     break;
@@ -326,21 +328,38 @@ namespace OpcodeData
                     break;
 
                 case ParameterID.BC:
+                    if (i8080)
+                        return "B";
+
                     if (Type == ParameterType.WordRegisterPointer)
                         return ("(BC)");
                     break;
 
                 case ParameterID.DE:
+                    if (i8080)
+                        return "D";
+
                     if (Type == ParameterType.WordRegisterPointer)
                         return ("(DE)");
                     break;
 
                 case ParameterID.HL:
+                    if (i8080)
+                    {
+                        if (Type == ParameterType.WordRegisterPointer)
+                            return ("M");
+                        else
+                            return "H";
+                    }
+
                     if (Type == ParameterType.WordRegisterPointer)
                         return ("(HL)");
                     break;
 
                 case ParameterID.SP:
+                    if (i8080)
+                        return "SP";
+
                     if (Type == ParameterType.WordRegisterPointer)
                         return ("(SP)");
                     break;
@@ -352,10 +371,12 @@ namespace OpcodeData
                     return ("(HLD)");
             }
 
-            if (Type == ParameterType.Value && Param >= ParameterID.Encoded0 && Param <= ParameterID.Encoded7)
-                return (Param - ParameterID.Encoded0).ToString();
+            if (Type == ParameterType.Value && Param >= ParameterID.Value0 && Param <= ParameterID.Value7)
+                return (Param - ParameterID.Value0).ToString();
 
-
+            if (Type == ParameterType.RstValue && Param >= ParameterID.Value0 && Param <= ParameterID.Value7)
+                return String.Format("{0:X2}h", (Param - ParameterID.Value0) * 8);
+            
             return Param.ToString();
         }
 
