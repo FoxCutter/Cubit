@@ -237,3 +237,11 @@ _Pvt_Extensions
 
 *.exe
 /z80 Monitor/zout
+/Local Tools
+*.*-bak
+fp-info-cache
+*.net
+*.dsn
+*.ses
+*.rules
+*.pdf
