@@ -106,22 +106,68 @@
       IndexOffset   = 1-byte offset as part of the opcode
 
 ="<opcode" &
- IF(NOT(ISBLANK($D2)), " prefered='" & $D2 & "'", "") &
- IF(NOT(ISBLANK($A2)), " index='" & $A2 & "'", "") &
- IF(NOT(ISBLANK($B2)), " prefix='" & IF(LEN($B2) < 2, "0", "") & $B2 & "'", "") &
- " value='" & IF(LEN($C2) < 2, "0", "") & $C2 & "'>" &
- "<mnemonic>" & $F2 & "</mnemonic>" &
- IF(NOT(ISBLANK($G2)), "<args>" &
-  IF(NOT(ISBLANK($G2)), "<arg encoding='" & $H2 & "'" & IF(NOT(ISBLANK($I2)), " hidden='" & $I2 & "'", "") & ">" & $G2 &"</arg>","") &
-  IF(NOT(ISBLANK($J2)), "<arg encoding='" & $K2 & "'" & IF(NOT(ISBLANK($L2)), " hidden='" & $L2 & "'", "") & ">" & $J2 &"</arg>","") &
-  IF(NOT(ISBLANK($M2)), "<arg encoding='" & $N2 & "'" & IF(NOT(ISBLANK($O2)), " hidden='" & $O2 & "'", "") & ">" & $M2 &"</arg>","") &
+ " platform='" & $A2 & "'" &
+ IF(NOT(ISBLANK($E2)), " prefered='" & $E2 & "'", "") &
+ IF(NOT(ISBLANK($B2)), " index='" & $B2 & "'", "") &
+ IF(NOT(ISBLANK($C2)), " prefix='" & IF(LEN($C2) < 2, "0", "") & $C2 & "'", "") &
+ " value='" & IF(LEN($D2) < 2, "0", "") & $D2 & "'>" &
+ "<mnemonic>" & $G2 & "</mnemonic>" &
+ IF(NOT(ISBLANK($H2)), "<args>" &
+  IF(NOT(ISBLANK($H2)), "<arg encoding='" & $I2 & "'" & IF(NOT(ISBLANK($I2)), " hidden='" & $J2 & "'", "") & ">" & $H2 &"</arg>","") &
+  IF(NOT(ISBLANK($K2)), "<arg encoding='" & $L2 & "'" & IF(NOT(ISBLANK($L2)), " hidden='" & $M2 & "'", "") & ">" & $K2 &"</arg>","") &
+  IF(NOT(ISBLANK($N2)), "<arg encoding='" & $O2 & "'" & IF(NOT(ISBLANK($O2)), " hidden='" & $P2 & "'", "") & ">" & $N2 &"</arg>","") &
  "</args>", "") &
- "<official>" & $P2 & "</official>" &
- "<function>" & $Q2 & "</function>" &
- IF(NOT(ISBLANK($R2)), "<cycles>" & $R2 & "</cycles>", "") &
- IF(NOT(ISBLANK($S2)), "<flags>" & $S2 & "</flags>", "") &
- IF(NOT(ISBLANK($T2)), "<description>" & $T2 & "</description>", "") &
+ "<official>" & $Q2 & "</official>" &
+ "<function>" & $R2 & "</function>" &
+ IF(NOT(ISBLANK($S2)), "<cycles>" & $S2 & "</cycles>", "") &
+ IF(NOT(ISBLANK($T2)), "<flags>" & $T2 & "</flags>", "") &
+ IF(NOT(ISBLANK($U2)), "<description>" & $U2 & "</description>", "") &
  "</opcode>"
+
+="<opcode" &
+ " function='" & $R2 & "'" &
+ IF(NOT(ISBLANK($C2)), " prefix='0" & $C2 & "'", "") &
+ IF(NOT(ISBLANK($B2)), " index='" & $B2 & "'", "") &
+ " base='0" & $D2 & "'>" &
+ "<encoding" & 
+ " platform='" & $A2 & "'" & ">" &
+ IF(NOT(ISBLANK($E2)), " prefered='" & $E2 & "'", "") &
+ "<mnemonic>" & $G2 & "</mnemonic>" &
+ IF(NOT(ISBLANK($H2)), "<args>" &
+  IF(NOT(ISBLANK($H2)), "<arg encoding='" & $I2 & "'" & IF(NOT(ISBLANK($I2)), " hidden='" & $J2 & "'", "") & ">" & $H2 &"</arg>","") &
+  IF(NOT(ISBLANK($K2)), "<arg encoding='" & $L2 & "'" & IF(NOT(ISBLANK($L2)), " hidden='" & $M2 & "'", "") & ">" & $K2 &"</arg>","") &
+  IF(NOT(ISBLANK($N2)), "<arg encoding='" & $O2 & "'" & IF(NOT(ISBLANK($O2)), " hidden='" & $P2 & "'", "") & ">" & $N2 &"</arg>","") &
+ "</args>", "") &
+ "<official>" & $Q2 & "</official>" &
+ IF(NOT(ISBLANK($S2)), "<cycles>" & $S2 & "</cycles>", "") &
+ IF(NOT(ISBLANK($T2)), "<flags>" & $T2 & "</flags>", "") &
+ IF(NOT(ISBLANK($U2)), "<description>" & $U2 & "</description>", "") &
+ "</encoding>" & 
+ "</opcode>"
+
+
+
+ IF(NOT(ISBLANK($C2)), " prefix='" & IF(LEN($C2) < 2, "0", "") & $C2 & "'", "") &
+ " value='" & IF(LEN($D2) < 2, "0", "") & $D2 & "'>" &
+ "<action" &
+ " platform='" & $A2 & "'" &
+ IF(NOT(ISBLANK($E2)), " prefered='" & $E2 & "'", "") &
+ IF(NOT(ISBLANK($B2)), " index='" & $B2 & "'", "") &
+"'>" &
+ "<mnemonic>" & $G2 & "</mnemonic>" &
+ IF(NOT(ISBLANK($H2)), "<args>" &
+  IF(NOT(ISBLANK($H2)), "<arg encoding='" & $I2 & "'" & IF(NOT(ISBLANK($I2)), " hidden='" & $J2 & "'", "") & ">" & $H2 &"</arg>","") &
+  IF(NOT(ISBLANK($K2)), "<arg encoding='" & $L2 & "'" & IF(NOT(ISBLANK($L2)), " hidden='" & $M2 & "'", "") & ">" & $K2 &"</arg>","") &
+  IF(NOT(ISBLANK($N2)), "<arg encoding='" & $O2 & "'" & IF(NOT(ISBLANK($O2)), " hidden='" & $P2 & "'", "") & ">" & $N2 &"</arg>","") &
+ "</args>", "") &
+ "<official>" & $Q2 & "</official>" &
+ "<function>" & $R2 & "</function>" &
+ IF(NOT(ISBLANK($S2)), "<cycles>" & $S2 & "</cycles>", "") &
+ IF(NOT(ISBLANK($T2)), "<flags>" & $T2 & "</flags>", "") &
+ IF(NOT(ISBLANK($U2)), "<description>" & $U2 & "</description>", "") &
+ "</action"> & 
+
+
 -->
 
 <z80Opcodes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./z80-Opcodes.xsd">
