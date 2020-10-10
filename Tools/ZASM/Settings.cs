@@ -22,7 +22,7 @@ namespace ZASM
     
     static class Settings
     {
-        public static Setting AssumeA = Setting.Warning;
+        public static Setting ImplicitA = Setting.Warning;
         public static Setting AtAddressing = Setting.On;
         public static Setting Indexes = Setting.On;
         public static Setting ArrayOffset = Setting.On;
@@ -37,7 +37,7 @@ namespace ZASM
         {
             Strict = Setting.On;
 
-            AssumeA = Setting.Off;
+            ImplicitA = Setting.Off;
             CommandRequiresDot = Setting.On;
             LabelsRequireColon = Setting.On;
             CYAsCarry = Setting.On;
@@ -50,7 +50,7 @@ namespace ZASM
 
         public static Dictionary<MessageCode, Setting> Messages = new Dictionary<MessageCode, Setting>() 
         { 
-            { MessageCode.SyntaxWarning, Setting.On }, { MessageCode.RegisterMissingAssumingA, Setting.On },
+            { MessageCode.SyntaxWarning, Setting.On }, { MessageCode.ImplicitA, Setting.On },
             { MessageCode.NoError, Setting.Off },
         };
 

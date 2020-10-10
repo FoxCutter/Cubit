@@ -98,7 +98,7 @@ namespace TableBuilder
 
                 case "FLAG-C":
                 case "FLAG-CY":
-                    Ret.Param = OpcodeData.ParameterID.Flag_C;
+                    Ret.Param = OpcodeData.ParameterID.Flag_CY;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
@@ -168,12 +168,12 @@ namespace TableBuilder
                     break;
 
                 case "WORDINDEXREG":
-                    Ret.Param = OpcodeData.ParameterID.XX;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_XX;
                     Ret.Type = OpcodeData.ParameterType.WordIndexRegister;
                     break;
 
                 case "WORDINDEXREGPTR":
-                    Ret.Param = OpcodeData.ParameterID.XX;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_XX;
                     Ret.Type = OpcodeData.ParameterType.WordIndexRegisterPointer;
                     break;
 
@@ -188,90 +188,90 @@ namespace TableBuilder
                     break;
 
                 case "BYTEREG-A":
-                    Ret.Param = OpcodeData.ParameterID.A;
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_A;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
                 case "BYTEREG-C":
-                    Ret.Param = OpcodeData.ParameterID.C;
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_C;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
                 case "BYTEREG-I":
-                    Ret.Param = OpcodeData.ParameterID.I;
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_I;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
                 case "BYTEREG-R":
-                    Ret.Param = OpcodeData.ParameterID.R;
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_R;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
                 case "WORDREG-AF":
-                    Ret.Param = OpcodeData.ParameterID.AF;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_AF;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
                 case "WORDREG-AFALT":
-                    Ret.Param = OpcodeData.ParameterID.AF_Alt;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_AF_Alt;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
                 case "WORDREG-BC":
-                    Ret.Param = OpcodeData.ParameterID.BC;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_BC;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
                 case "WORDREG-DE":
-                    Ret.Param = OpcodeData.ParameterID.DE;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_DE;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
                 case "WORDREG-HL":
-                    Ret.Param = OpcodeData.ParameterID.HL;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_HL;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
                 case "WORDREG-SP":
-                    Ret.Param = OpcodeData.ParameterID.SP;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_SP;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
                 case "WORDREGPTR-BC":
-                    Ret.Param = OpcodeData.ParameterID.BC;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_BC;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 case "WORDREGPTR-DE":
-                    Ret.Param = OpcodeData.ParameterID.DE;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_DE;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 case "WORDREGPTR-SP":
-                    Ret.Param = OpcodeData.ParameterID.SP;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_SP;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 case "WORDREGPTR-HL":
-                    Ret.Param = OpcodeData.ParameterID.HL;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_HL;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 // HLI
                 case "WORDREGPTR-HLI":
-                    Ret.Param = OpcodeData.ParameterID.HLI;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_HLI;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 // HLD
                 case "WORDREGPTR-HLD":
-                    Ret.Param = OpcodeData.ParameterID.HLD;
+                    Ret.Param = OpcodeData.ParameterID.WordReg_HLD;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 // ($FF00 + C)
                 case "HIGHMEMPTR+C":
-                    Ret.Param = OpcodeData.ParameterID.C;
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_C;
                     Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
@@ -289,7 +289,7 @@ namespace TableBuilder
 
                 // (C)
                 case "BYTEREGPTR-C":
-                    Ret.Param = OpcodeData.ParameterID.C;
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_C;
                     Ret.Type = OpcodeData.ParameterType.BytePointer;
                     break;
                 
@@ -350,20 +350,20 @@ namespace TableBuilder
 
         static int[] ShiftMap = new int[] { 0, 0, 3, 4, 3 };
 
-        static OpcodeData.ParameterID[] ByteRegister = { OpcodeData.ParameterID.B, OpcodeData.ParameterID.C, OpcodeData.ParameterID.D, OpcodeData.ParameterID.E, OpcodeData.ParameterID.H, OpcodeData.ParameterID.L, OpcodeData.ParameterID.None, OpcodeData.ParameterID.A };
-        static OpcodeData.ParameterID[] WordRegister = { OpcodeData.ParameterID.BC, OpcodeData.ParameterID.DE, OpcodeData.ParameterID.HL, OpcodeData.ParameterID.SP };
-        static OpcodeData.ParameterID[] WordRegisterAF = { OpcodeData.ParameterID.BC, OpcodeData.ParameterID.DE, OpcodeData.ParameterID.HL, OpcodeData.ParameterID.AF };
+        static OpcodeData.ParameterID[] ByteRegister = { OpcodeData.ParameterID.ByteReg_B, OpcodeData.ParameterID.ByteReg_C, OpcodeData.ParameterID.ByteReg_D, OpcodeData.ParameterID.ByteReg_E, OpcodeData.ParameterID.ByteReg_H, OpcodeData.ParameterID.ByteReg_L, OpcodeData.ParameterID.None, OpcodeData.ParameterID.ByteReg_A };
+        static OpcodeData.ParameterID[] WordRegister = { OpcodeData.ParameterID.WordReg_BC, OpcodeData.ParameterID.WordReg_DE, OpcodeData.ParameterID.WordReg_HL, OpcodeData.ParameterID.WordReg_SP };
+        static OpcodeData.ParameterID[] WordRegisterAF = { OpcodeData.ParameterID.WordReg_BC, OpcodeData.ParameterID.WordReg_DE, OpcodeData.ParameterID.WordReg_HL, OpcodeData.ParameterID.WordReg_AF };
 
         //static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.IYH, OpcodeData.ParameterID.IXH, OpcodeData.ParameterID.IXL, OpcodeData.ParameterID.IYL };
         //static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.IX, OpcodeData.ParameterID.IY };
         //static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.IX, OpcodeData.ParameterID.IY };
 
-        static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.XXH, OpcodeData.ParameterID.XXL, };
-        static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.XX };
-        static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.XX };
+        static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.ByteReg_XXH, OpcodeData.ParameterID.ByteReg_XXL, };
+        static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.WordReg_XX };
+        static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.WordReg_XX };
 
-        static OpcodeData.ParameterID[] Flags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_C, OpcodeData.ParameterID.Flag_PO, OpcodeData.ParameterID.Flag_PE, OpcodeData.ParameterID.Flag_P, OpcodeData.ParameterID.Flag_M };
-        static OpcodeData.ParameterID[] HalfFlags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_C };
+        static OpcodeData.ParameterID[] Flags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_CY, OpcodeData.ParameterID.Flag_PO, OpcodeData.ParameterID.Flag_PE, OpcodeData.ParameterID.Flag_P, OpcodeData.ParameterID.Flag_M };
+        static OpcodeData.ParameterID[] HalfFlags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_CY };
         static OpcodeData.ParameterID[] Encoded = { OpcodeData.ParameterID.Value0, OpcodeData.ParameterID.Value1, OpcodeData.ParameterID.Value2, OpcodeData.ParameterID.Value3, OpcodeData.ParameterID.Value4, OpcodeData.ParameterID.Value5, OpcodeData.ParameterID.Value6, OpcodeData.ParameterID.Value7 };
 
         static List<OpcodeData.ParamEntry> GetExpandList(OpcodeData.ParamEntry Param)
@@ -447,46 +447,46 @@ namespace TableBuilder
             {
                 case OpcodeData.ParameterID.Value0:
                 case OpcodeData.ParameterID.Flag_NZ:
-                case OpcodeData.ParameterID.BC:
-                case OpcodeData.ParameterID.B:
+                case OpcodeData.ParameterID.WordReg_BC:
+                case OpcodeData.ParameterID.ByteReg_B:
                     return 0;
 
                 case OpcodeData.ParameterID.Value1:
                 case OpcodeData.ParameterID.Flag_Z:
-                case OpcodeData.ParameterID.DE:
-                case OpcodeData.ParameterID.C:
+                case OpcodeData.ParameterID.WordReg_DE:
+                case OpcodeData.ParameterID.ByteReg_C:
                     return 1;
 
                 case OpcodeData.ParameterID.Value2:
                 case OpcodeData.ParameterID.Flag_NC:
-                case OpcodeData.ParameterID.HL:
-                case OpcodeData.ParameterID.IX:
-                case OpcodeData.ParameterID.IY:
-                case OpcodeData.ParameterID.XX:
-                case OpcodeData.ParameterID.D:
+                case OpcodeData.ParameterID.WordReg_HL:
+                case OpcodeData.ParameterID.WordReg_IX:
+                case OpcodeData.ParameterID.WordReg_IY:
+                case OpcodeData.ParameterID.WordReg_XX:
+                case OpcodeData.ParameterID.ByteReg_D:
                     return 2;
 
                 case OpcodeData.ParameterID.Value3:
-                case OpcodeData.ParameterID.Flag_C:
-                case OpcodeData.ParameterID.AF:
-                case OpcodeData.ParameterID.SP:
-                case OpcodeData.ParameterID.E:
+                case OpcodeData.ParameterID.Flag_CY:
+                case OpcodeData.ParameterID.WordReg_AF:
+                case OpcodeData.ParameterID.WordReg_SP:
+                case OpcodeData.ParameterID.ByteReg_E:
                     return 3;
 
                 case OpcodeData.ParameterID.Value4:
                 case OpcodeData.ParameterID.Flag_PO:
-                case OpcodeData.ParameterID.H:
-                case OpcodeData.ParameterID.IXH:
-                case OpcodeData.ParameterID.IYH:
-                case OpcodeData.ParameterID.XXH:
+                case OpcodeData.ParameterID.ByteReg_H:
+                case OpcodeData.ParameterID.ByteReg_IXH:
+                case OpcodeData.ParameterID.ByteReg_IYH:
+                case OpcodeData.ParameterID.ByteReg_XXH:
                     return 4;
 
                 case OpcodeData.ParameterID.Value5:
                 case OpcodeData.ParameterID.Flag_PE:
-                case OpcodeData.ParameterID.L:
-                case OpcodeData.ParameterID.IXL:
-                case OpcodeData.ParameterID.IYL:
-                case OpcodeData.ParameterID.XXL:
+                case OpcodeData.ParameterID.ByteReg_L:
+                case OpcodeData.ParameterID.ByteReg_IXL:
+                case OpcodeData.ParameterID.ByteReg_IYL:
+                case OpcodeData.ParameterID.ByteReg_XXL:
                     return 5;
 
                 case OpcodeData.ParameterID.Value6:
@@ -495,7 +495,7 @@ namespace TableBuilder
 
                 case OpcodeData.ParameterID.Value7:
                 case OpcodeData.ParameterID.Flag_M:
-                case OpcodeData.ParameterID.A:
+                case OpcodeData.ParameterID.ByteReg_A:
                     return 7;
 
                 default:
@@ -706,7 +706,7 @@ namespace TableBuilder
                     foreach (LocalOpcodeEntry NewEntry in Indexed)
                     {
                         // Can't have HL and XX in the same opcode
-                        if(HasParam(NewEntry, OpcodeData.ParameterID.HL) & HasParam(NewEntry, OpcodeData.ParameterID.XX))
+                        if(HasParam(NewEntry, OpcodeData.ParameterID.WordReg_HL) & HasParam(NewEntry, OpcodeData.ParameterID.WordReg_XX))
                             continue;
 
                         Ret.OpcodeMatrix.Add(NewEntry);

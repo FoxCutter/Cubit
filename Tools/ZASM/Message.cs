@@ -15,7 +15,7 @@ namespace ZASM
 
         Warning = 0x4000,
         SyntaxWarning,
-        RegisterMissingAssumingA,
+        ImplicitA,
         CommandRequiresDotPrefix,
 
 
@@ -111,7 +111,7 @@ namespace ZASM
             { MessageCode.NoError, "" },
 
             { MessageCode.SyntaxWarning, "Syntax Warning"},
-            { MessageCode.RegisterMissingAssumingA, "Register Missing, using 'A'"},
+            { MessageCode.ImplicitA, "Implicit A"},
             { MessageCode.CommandRequiresDotPrefix, "Dot Prefix missing on command" },
 
             { MessageCode.SyntaxError, "Syntax Error"},           
@@ -146,16 +146,14 @@ namespace ZASM
             _ErrorList = new List<MessageInformation>();
         }
 
-        public static MessageInformation Add(string Source, int FileID, int Line, int Character, MessageCode Code, string Details = "")
+        public static void Add(string Source, int FileID, int Line, int Character, MessageCode Code, string Details = "")
         {
-            MessageInformation Error = new MessageInformation(FileID, Line, Character, Source, Code, Details);
-
             if (!Settings.Messages.ContainsKey(Code) || Settings.Messages[Code] == Setting.On)
             {
+                MessageInformation Error = new MessageInformation(FileID, Line, Character, Source, Code, Details);
+
                 Add(Error);
             }
-
-            return Error;
         }
 
         public static void Add(MessageInformation Error)

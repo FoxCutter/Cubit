@@ -8,12 +8,12 @@ using System.IO;
 /*
  * 
  * Options:
- * (AA) Assume A - On, Off (i8080), Warn
- * (AT) @ Addressing - On, Off (i8080)
- * (IX) Indexs - On (def), off (i8080, GB)
- * (AF) Array Offsets - On (on), off (i8080)
+ * (IA) Implicit A - On (i808x), Off, Warn
+ * (AT) @ Addressing - On, Off (i808x)
+ * (IX) Indexs - On (def), off (i808x, GB)
+ * (AF) Array Offsets - On (on), off (i808x, GB)
  * (CY) CY as Carry - On (def), off
- * (DT) Commands Require . - On, off, Warn (def)
+ * (DT) Commands Require Dot - On, off, Warn (def)
  * 
  * Command Line: -oXX:value 
  * Command: .Command XX, Value
@@ -79,16 +79,17 @@ namespace ZASM
             Settings.CommandRequiresDot = Setting.Off;
             Settings.AtAddressing = Setting.Off;
             Settings.ArrayOffset = Setting.Off;
-            Settings.LabelsRequireColon = Setting.Off;
-            Settings.AssumeA = Setting.Off;
+            Settings.LabelsRequireColon = Setting.Warning;
+            Settings.ImplicitA = Setting.Warning;
 
             Settings.IncludePaths.Add(@"..\..\..\");
             
             Parser ParserData = new Parser();
-            ParserData.ParseFile(@"..\..\..\MasterV5.3-zmac.z80");
+            ParserData.ParseFile(@"..\..\..\Master.z80");
+            //ParserData.ParseFile(@"..\..\..\Test.asm");
 
             //Tokenizer Token = new Tokenizer(0, InputFile);
-           
+
             //while (true)
             //{
             //    Token Data = Token.GetNextToken();

@@ -41,42 +41,47 @@ namespace OpcodeData
         None,
 
         // 8-bit Registers and Indexs into the register array
-        B,
-        C,
-        D,
-        E,
-        H, L,
-        A, F,
-        SPH, SPL,
-        PCH, PCL,
-        IXH, IXL,
-        IYH, IYL,
-        I,
-        R,
+        ByteReg_B, ByteReg_C,
+        ByteReg_D, ByteReg_E,
+        ByteReg_H, ByteReg_L,
+        ByteReg_A, ByteReg_F,
+        ByteReg_SPH, ByteReg_SPL,
+        ByteReg_PCH, ByteReg_PCL,
+        ByteReg_IXH, ByteReg_IXL,
+        ByteReg_IYH, ByteReg_IYL,
+        ByteReg_I,
+        ByteReg_R,
 
         // Index High and Low, can be IXL/H or IYL/H depending on prefix
-        XXH, XXL,
+        ByteReg_XXH, ByteReg_XXL,
 
         // 16-bit Registers
         Word = 0x40,
-        BC = Word + B,
-        DE = Word + D,
-        HL = Word + H,
-        AF = Word + A,
-        SP = Word + SPH,
-        PC = Word + PCH,
-        IX = Word + IXH,
-        IY = Word + IYH,
+        WordReg_BC = Word + ByteReg_B,
+        WordReg_DE = Word + ByteReg_D,
+        WordReg_HL = Word + ByteReg_H,
+        WordReg_AF = Word + ByteReg_A,
+        WordReg_SP = Word + ByteReg_SPH,
+        WordReg_PC = Word + ByteReg_PCH,
+        WordReg_IX = Word + ByteReg_IXH,
+        WordReg_IY = Word + ByteReg_IYH,
 
         // Index Registers, can be IX or IY depending on prefix
-        XX = Word + XXH,
+        WordReg_XX = Word + ByteReg_XXH,
 
-        AF_Alt,
+        WordReg_AF_Alt,
 
-        HLI,    // HL Increment
-        HLD,    // HL Decrement
+        WordReg_HLI,    // HL Increment
+        WordReg_HLD,    // HL Decrement
 
         RegisterAny,
+
+        // These registers have more context based meanings
+        Reg_B,  // ByteReg_B or WordReg_BC on 808x
+        Reg_C,  // ByteReg_C or Flag_CY
+        Reg_D,  // ByteReg_D or WordReg_DE on 808x
+        Reg_H,  // ByteReg_H or WordReg_HL on 808x
+        Reg_M,  // Flag_M or WordReg_HL on 808x
 
         RegisterMax = 0x80,
 
@@ -89,7 +94,7 @@ namespace OpcodeData
         Flag_NZ,
         Flag_Z,
         Flag_NC,
-        Flag_C,
+        Flag_CY,
         Flag_PO,
         Flag_PE,
         Flag_P,
@@ -256,7 +261,7 @@ namespace OpcodeData
                     }
                     break;
 
-                case ParameterID.AF_Alt:
+                case ParameterID.WordReg_AF_Alt:
                     return "AF'";
 
                 case ParameterID.FlagsAny:
@@ -296,7 +301,7 @@ namespace OpcodeData
                 case ParameterID.Flag_NZ:
                     return "NZ";
 
-                case ParameterID.Flag_C:
+                case ParameterID.Flag_CY:
                     return "CY";
 
                 case ParameterID.Flag_NC:
@@ -314,7 +319,7 @@ namespace OpcodeData
                 case ParameterID.Flag_PE:
                     return "PE";
 
-                case ParameterID.C:
+                case ParameterID.ByteReg_C:
                     if (Type == ParameterType.HighMemPointerPlus)
                         return ("($ff00 + C)");
 
@@ -322,12 +327,12 @@ namespace OpcodeData
                         return ("(C)");
                     break;
 
-                case ParameterID.XX:
+                case ParameterID.WordReg_XX:
                     if (Type == ParameterType.WordIndexRegisterPointer)
                         return ("(XX + oo)");
                     break;
 
-                case ParameterID.BC:
+                case ParameterID.WordReg_BC:
                     if (i8080)
                         return "B";
 
@@ -335,7 +340,7 @@ namespace OpcodeData
                         return ("(BC)");
                     break;
 
-                case ParameterID.DE:
+                case ParameterID.WordReg_DE:
                     if (i8080)
                         return "D";
 
@@ -343,7 +348,7 @@ namespace OpcodeData
                         return ("(DE)");
                     break;
 
-                case ParameterID.HL:
+                case ParameterID.WordReg_HL:
                     if (i8080)
                     {
                         if (Type == ParameterType.WordRegisterPointer)
@@ -356,7 +361,7 @@ namespace OpcodeData
                         return ("(HL)");
                     break;
 
-                case ParameterID.SP:
+                case ParameterID.WordReg_SP:
                     if (i8080)
                         return "SP";
 
@@ -364,10 +369,10 @@ namespace OpcodeData
                         return ("(SP)");
                     break;
 
-                case ParameterID.HLI:
+                case ParameterID.WordReg_HLI:
                     return ("(HLI)");
 
-                case ParameterID.HLD:
+                case ParameterID.WordReg_HLD:
                     return ("(HLD)");
             }
 

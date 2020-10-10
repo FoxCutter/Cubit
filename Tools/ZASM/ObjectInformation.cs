@@ -57,7 +57,7 @@ namespace ZASM
     {
         public LineInformation DefinedLine;
         public FunctionID Command;
-        public bool ParseLines;
+        public bool ParseEnabled;
         public int Level;
         public ConditionalInformation Conditional;
         
@@ -67,7 +67,7 @@ namespace ZASM
         {
             this.Command = Command;
             DefinedLine = Line;
-            ParseLines = true;
+            ParseEnabled = true;
             Level = 0;
             Conditional = null;
         }

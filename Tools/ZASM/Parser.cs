@@ -27,7 +27,8 @@ namespace ZASM
     {
         public int FileID;
         public int LineNumber;
-        public bool ParseLine;
+        public bool ParseEnabled;
+        public bool Success;
 
         public ObjectInformation Label;
         public ObjectInformation Object;
@@ -49,8 +50,8 @@ namespace ZASM
     partial class Parser
     {
         Dictionary<string, FileInformation> _Files;
-        List<LineInformation> _ParseData;
-        Stack<FileInformation> _FileStack;
+        List<LineInformation> ParseData;
+        Stack<FileInformation> FileStack;
         Stack<ConditionalInformation> _ConditionalStack;
         SymbolTable _SymbolTable;
         short _CurrentAddress;
@@ -59,8 +60,8 @@ namespace ZASM
         public Parser()
         {
             _Files = new Dictionary<string, FileInformation>(StringComparer.OrdinalIgnoreCase);
-            _ParseData = new List<LineInformation>();
-            _FileStack = new Stack<FileInformation>();
+            ParseData = new List<LineInformation>();
+            FileStack = new Stack<FileInformation>();
             _ConditionalStack = new Stack<ConditionalInformation>();
             _SymbolTable = new SymbolTable();
             _CurrentAddress = 0;
@@ -130,34 +131,36 @@ namespace ZASM
 
             RootFile.Stream = File.OpenRead(RootFile.Path);
 
-            _FileStack.Push(RootFile);
+            FileStack.Push(RootFile);
 
             bool Success = true;
+            Debug.WriteLine("Phase 1");
             Success = Phase1(RootFile);
 
             // Open the listing file
-            string ListingFile = System.IO.Path.ChangeExtension(RootFile.Path, "lst");
-            TextWriter ListingStream = new StreamWriter(File.Open(ListingFile, FileMode.Create), Encoding.ASCII);
+            //string ListingFile = System.IO.Path.ChangeExtension(RootFile.Path, "lst");
+            //TextWriter ListingStream = new StreamWriter(File.Open(ListingFile, FileMode.Create), Encoding.ASCII);
 
-            Success = Phase2(RootFile, !Success, ListingStream, _ParseData.GetEnumerator());
+            //Debug.WriteLine("Phase 2");
+            //Success = Phase2(RootFile, !Success, ListingStream, _ParseData.GetEnumerator());
 
-            ListingStream.WriteLine();
+            //ListingStream.WriteLine();
 
-            foreach (SymbolTableEntry Symbol in _SymbolTable.OrderBy(e => e.Name))
-            {
-                if (Symbol.Type == SymbolType.Address)
-                {
-                    ListingStream.WriteLine("{0,-15} {1:X4}", Symbol.Name, Symbol.Value);
-                }
-                else
-                {
-                    ListingStream.WriteLine("{0,-15}={1,4:X2}", Symbol.Name, Symbol.Value);
-                }
-            }
+            //foreach (SymbolTableEntry Symbol in _SymbolTable.OrderBy(e => e.Name))
+            //{
+            //    if (Symbol.Type == SymbolType.Address)
+            //    {
+            //        ListingStream.WriteLine("{0,-15} {1:X4}", Symbol.Name, Symbol.Value);
+            //    }
+            //    else
+            //    {
+            //        ListingStream.WriteLine("{0,-15}={1,4:X2}", Symbol.Name, Symbol.Value);
+            //    }
+            //}
             
-            _FileStack.Pop();
+            FileStack.Pop();
 
-            ListingStream.Close();
+            //ListingStream.Close();
 
             return Success;
         }

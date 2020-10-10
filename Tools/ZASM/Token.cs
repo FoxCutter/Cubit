@@ -81,7 +81,7 @@ namespace ZASM
         Identifier,
         Symbol,
         Command,
-        Data,
+        PsudoOpcode,
         Preprocessor,
         Label,
         Register,

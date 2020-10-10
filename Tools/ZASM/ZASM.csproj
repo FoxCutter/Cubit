@@ -54,6 +54,7 @@
       <Link>z80_ZASM.cs</Link>
     </Compile>
     <Compile Include="DataTables.cs" />
+    <Compile Include="Debug.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="ObjectInformation.cs" />
     <Compile Include="ParameterInformation.cs" />

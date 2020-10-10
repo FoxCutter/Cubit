@@ -62,7 +62,7 @@ namespace ZASM
                                 OutputListingData(OutputStream, Object.Level.ToString());
 
                             else if (Object.Command == FunctionID.IF && Object.Conditional.SavedParse == true)
-                                OutputListingData(OutputStream, Object.Level.ToString(), CurrentLine.ParseLine ? (short)-1 : (short)0);
+                                OutputListingData(OutputStream, Object.Level.ToString(), CurrentLine.ParseEnabled ? (short)-1 : (short)0);
                             
                             else
                                 OutputListingData(OutputStream, Object.Level.ToString());
@@ -129,7 +129,9 @@ namespace ZASM
                 Message.Add("Parser", File.FileID, 0, 0, MessageCode.InternalError, "File Stream Missing");
                 return false;
             }
-            
+
+            Console.WriteLine($" Parsing File {File.FileName} as ID {File.FileID} L: {ListingOnly}");
+
             File.Stream.Position = 0;
             StreamReader DataStream = new StreamReader(File.Stream);
 

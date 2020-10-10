@@ -20,6 +20,8 @@ namespace ZASM
         public int CurrentLine { get { return _Line; } }
         public int CurrentCharacter { get { return _Character; } }
 
+        Stack<Token> SavedTokens;
+
         public Tokenizer(int FileID, Stream InputStream)
         {
             _DataStream = new StreamReader(InputStream);
@@ -28,12 +30,18 @@ namespace ZASM
             _Character = 1;
 
             CurrentValue = new List<char>();
+            SavedTokens = new Stack<Token>();
 
             FlushWhitespace();
         }
 
         public InputType PeekNextInputType()
         {
+            if (SavedTokens.Count != 0)
+            {
+                return SavedTokens.Peek().CharacterType;
+            }
+
             int Current = _DataStream.Peek();
 
             if (Current == -1)
@@ -300,6 +308,7 @@ namespace ZASM
                 }
             }
 
+            SavedTokens.Clear();
             FlushWhitespace();
         }
 
@@ -307,6 +316,16 @@ namespace ZASM
         {
             Token Ret = new Token();
             CurrentValue.Clear();
+
+            if (SavedTokens.Count != 0)
+            {
+                Ret = SavedTokens.Pop();
+
+                if (Ret.Type != TokenType.LineBreak && Ret.Type != TokenType.Comment && Ret.Type != TokenType.String)
+                    Ret.Type = TokenType.String;
+
+                return Ret;
+            }
 
             Ret.Character = _Character;
 
@@ -363,8 +382,16 @@ namespace ZASM
             return Ret;
         }
         
+        public void UnGetNextToken(Token NextToken)
+        {
+            SavedTokens.Push(NextToken);
+        }
+
         public Token GetNextToken()
         {
+            if (SavedTokens.Count != 0)
+                return SavedTokens.Pop();
+
             Token Ret = new Token();
             CurrentValue.Clear();
 

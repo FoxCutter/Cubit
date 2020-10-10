@@ -33,6 +33,13 @@ namespace ZASM
         // We have a value for the symbol
         Set,
     }
+
+    enum SymbolVisability
+    {
+        Local,
+        Extern,
+        Public,
+    }
     
     class SymbolTableEntry
     {
@@ -40,6 +47,7 @@ namespace ZASM
         public SymbolType Type;
         public SymbolState State;
         public short Value;
+        public SymbolVisability Visability;
 
         public LineInformation DefiendLine;
 
@@ -52,6 +60,7 @@ namespace ZASM
             Name = SymbolName;
             Type = SymbolType.None;
             DefiendLine = null;
+            Visability = SymbolVisability.Local;
 
             State = SymbolState.Undefined;
             Object = null;
