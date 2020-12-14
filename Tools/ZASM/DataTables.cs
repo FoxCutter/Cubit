@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommandList = System.Collections.Generic.SortedList<string, OpcodeData.CommandID>;
-using ParameterList = System.Collections.Generic.Dictionary<string, OpcodeData.ParameterID>;
 
 namespace ZASM
 {
@@ -33,37 +31,6 @@ namespace ZASM
 
     static class DataTables
     {
-        public static ParameterList z80ParameterList = new ParameterList()
-        {
-            { "A",      OpcodeData.ParameterID.ByteReg_A  },   { "AF",     OpcodeData.ParameterID.WordReg_AF },   { "AF'",    OpcodeData.ParameterID.WordReg_AF_Alt  },   { "B",      OpcodeData.ParameterID.ByteReg_B       },
-            { "BC",     OpcodeData.ParameterID.WordReg_BC },   { "C",      OpcodeData.ParameterID.Reg_C      },   { "CY",	  OpcodeData.ParameterID.Flag_CY         },   { "D",      OpcodeData.ParameterID.ByteReg_D       },
-            { "DE",     OpcodeData.ParameterID.WordReg_DE },   { "E",      OpcodeData.ParameterID.ByteReg_E  },   { "H",      OpcodeData.ParameterID.ByteReg_H       },   { "HL",     OpcodeData.ParameterID.WordReg_HL      },
-            { "I",      OpcodeData.ParameterID.ByteReg_I  },   { "IX",     OpcodeData.ParameterID.WordReg_IX },   { "IXH",    OpcodeData.ParameterID.ByteReg_IXH     },   { "IXL",    OpcodeData.ParameterID.ByteReg_IXL     },
-            { "IY",     OpcodeData.ParameterID.WordReg_IY },   { "IYH",    OpcodeData.ParameterID.ByteReg_IYH},   { "IYL",    OpcodeData.ParameterID.ByteReg_IYL     },   { "L",      OpcodeData.ParameterID.ByteReg_L       },
-            { "M",	    OpcodeData.ParameterID.Flag_M     },   { "NC",	    OpcodeData.ParameterID.Flag_NC   },   { "NV",      OpcodeData.ParameterID.Flag_PO        },   { "NZ",	    OpcodeData.ParameterID.Flag_NZ       },
-            { "P",	    OpcodeData.ParameterID.Flag_P     },   { "PE",	    OpcodeData.ParameterID.Flag_PE   },   { "PO",	    OpcodeData.ParameterID.Flag_PO       },   { "R",      OpcodeData.ParameterID.ByteReg_R       },   { "SP",     OpcodeData.ParameterID.WordReg_SP      },
-            { "V",      OpcodeData.ParameterID.Flag_PE    },   { "Z",	    OpcodeData.ParameterID.Flag_Z  },  
-        };
-
-        public static ParameterList GameBoyParameterList = new ParameterList()
-        {
-            { "A",      OpcodeData.ParameterID.ByteReg_A   },   { "AF",     OpcodeData.ParameterID.WordReg_AF  },   { "AF'",    OpcodeData.ParameterID.WordReg_AF_Alt  },   { "B",      OpcodeData.ParameterID.ByteReg_B       },
-            { "BC",     OpcodeData.ParameterID.WordReg_BC  },   { "C",      OpcodeData.ParameterID.Reg_C       },   { "CY",	    OpcodeData.ParameterID.Flag_CY         },   { "D",      OpcodeData.ParameterID.ByteReg_D       },
-            { "DE",     OpcodeData.ParameterID.WordReg_DE  },   { "E",      OpcodeData.ParameterID.ByteReg_E   },   { "H",      OpcodeData.ParameterID.ByteReg_H       },   { "HL",     OpcodeData.ParameterID.WordReg_HL      },
-            { "HLD",    OpcodeData.ParameterID.WordReg_HLD },   { "HLI",    OpcodeData.ParameterID.WordReg_HLI },   { "L",      OpcodeData.ParameterID.ByteReg_L       },   { "M",	    OpcodeData.ParameterID.Flag_M  },
-            { "NC",	    OpcodeData.ParameterID.Flag_NC     },   { "NZ",	    OpcodeData.ParameterID.Flag_NZ     },   { "Z",	    OpcodeData.ParameterID.Flag_Z          },  
-        };
-
-        public static ParameterList i8080ParameterList = new ParameterList()
-        {
-            { "A",      OpcodeData.ParameterID.ByteReg_A   },   { "B",      OpcodeData.ParameterID.Reg_B       },  { "C",      OpcodeData.ParameterID.ByteReg_C  },
-            { "CY",    OpcodeData.ParameterID.Flag_CY       },   { "D",      OpcodeData.ParameterID.Reg_D       },  { "E",      OpcodeData.ParameterID.ByteReg_E  },
-            { "H",      OpcodeData.ParameterID.Reg_H       },   { "L",      OpcodeData.ParameterID.ByteReg_L   },  { "M",      OpcodeData.ParameterID.Reg_M      }, 
-            { "NC",	    OpcodeData.ParameterID.Flag_NC     },   { "NZ",	    OpcodeData.ParameterID.Flag_NZ     },  { "P",	    OpcodeData.ParameterID.Flag_P  },
-            { "PE",	    OpcodeData.ParameterID.Flag_PE     },   { "PO",	    OpcodeData.ParameterID.Flag_PO     },  { "PSW",    OpcodeData.ParameterID.WordReg_AF      },
-            { "SP",     OpcodeData.ParameterID.WordReg_SP  },   { "Z",	    OpcodeData.ParameterID.Flag_Z      },  
-        };
-
         public static Dictionary<string, FunctionID> Commands = new Dictionary<string,FunctionID>()
         {
             { "EXTERN", FunctionID.EXTERN },        { "PUBLIC",   FunctionID.PUBLIC },          { "INCLUDE",    FunctionID.INCLUDE },        
@@ -131,8 +98,8 @@ namespace ZASM
             InputType.CurlyBraceLeft, InputType.Pipe, InputType.CurlyBraceRight, InputType.Tilde, InputType.Unknown,
         };
 
-        public static OpcodeData.OpcodeEntry[] OpcodeTable = OpcodeData.ZASM.z80OpcodeList;
-        public static CommandList OpcodeList = OpcodeData.ZASM.z80Commands;
-        public static ParameterList ParameterList = DataTables.z80ParameterList;
+        public static SortedList<OpcodeData.CommandID, OpcodeData.OpcodeEntry[]> OpcodeTable = OpcodeData.z80Data.Encoding;
+        public static SortedList<string, OpcodeData.CommandID> OpcodeList = OpcodeData.z80Data.Commands;
+        public static System.Collections.Generic.Dictionary<string, OpcodeData.ParameterID> ParameterList = OpcodeData.z80Data.ParameterList;
     }
 }

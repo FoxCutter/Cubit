@@ -233,23 +233,23 @@ namespace ZASM
 
                 case FunctionID.Z80:
                     Settings.OpcodeSet = OpcodeType.z80;
-                    DataTables.OpcodeTable = OpcodeData.ZASM.z80OpcodeList;
-                    DataTables.OpcodeList = OpcodeData.ZASM.z80Commands;
-                    DataTables.ParameterList = DataTables.z80ParameterList;
+                    DataTables.OpcodeTable = OpcodeData.z80Data.Encoding;
+                    DataTables.OpcodeList = OpcodeData.z80Data.Commands;
+                    DataTables.ParameterList = OpcodeData.z80Data.ParameterList;
                     break;
 
                 case FunctionID.i8080:
                     Settings.OpcodeSet = OpcodeType.i8080;
-                    DataTables.OpcodeTable = OpcodeData.ZASM.i8080OpcodeList;
-                    DataTables.OpcodeList = OpcodeData.ZASM.i8080Commands;
-                    DataTables.ParameterList = DataTables.i8080ParameterList;
+                    DataTables.OpcodeTable = OpcodeData.z80Data.Encoding;
+                    DataTables.OpcodeList = OpcodeData.i8080Data.Commands;
+                    DataTables.ParameterList = OpcodeData.z80Data.ParameterList;
                     break;
 
                 case FunctionID.GAMEBOY:
                     Settings.OpcodeSet = OpcodeType.GameBoy;
-                    DataTables.OpcodeTable = OpcodeData.ZASM.GameBoyOpcodeList;
-                    DataTables.OpcodeList = OpcodeData.ZASM.GameBoyCommands;
-                    DataTables.ParameterList = DataTables.GameBoyParameterList;
+                    DataTables.OpcodeTable = OpcodeData.z80Data.Encoding;
+                    DataTables.OpcodeList = OpcodeData.GameBoyData.Commands;
+                    DataTables.ParameterList = OpcodeData.z80Data.ParameterList;
                     break;
 
                 case FunctionID.EXTERN:
@@ -585,9 +585,9 @@ namespace ZASM
         {
             Debug.Write($" {Opcode}");
 
-            var OpcodeList = DataTables.OpcodeTable.Where(e => e.Name == Opcode).ToList();
+            var OpcodeList = DataTables.OpcodeTable.Where(e => e.Key == Opcode).FirstOrDefault();
 
-            if (OpcodeList.Count() == 0)
+            if (OpcodeList.Value == null || OpcodeList.Value.Length == 0)
             {
                 Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, InputTokenizer.CurrentCharacter, MessageCode.InternalError, "Opcode Table Entry Missing");
                 FlushLine(CurrentToken, InputTokenizer);
@@ -629,10 +629,10 @@ namespace ZASM
             }
 
 
-            NewObject.Opcode = OpcodeList[0];
+            NewObject.Opcode = OpcodeList.Value[0];
 
-            _CurrentAddress += OpcodeList[0].Length;
-            _CycleCount += NewObject.Opcode.Cycles;
+            _CurrentAddress += OpcodeList.Value[0].Length;
+            _CycleCount += NewObject.Opcode.TStates;
 
             FlushLine(CurrentToken, InputTokenizer);
         }

@@ -433,20 +433,8 @@ namespace ZASM
                 case InputType.Period:
                 case InputType.Identifier:
                 case InputType.Underscore:
-                    Success = ReadIdentifier(ref Ret);
-                    break;
-
                 case InputType.AtSign:
-                    if (Settings.OpcodeSet == OpcodeType.i8080 || Settings.AtAddressing == Setting.Off)
-                    {
-                        Success = ReadIdentifier(ref Ret);
-                    }
-                    else
-                    {
-                        CurrentValue.Add(ReadNextCharacter());
-                        Ret.Type = TokenType.Address;
-                    }
-                        
+                    Success = ReadIdentifier(ref Ret);
                     break;
 
                 // String

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="OpcodeData">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Opcode" type="opcodeType" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>     
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:complexType name="opcodeType">
+    <xs:sequence>
+      <xs:element name="Encoding" type="opcodeEncoding" minOccurs="1" maxOccurs="unbounded" />
+    </xs:sequence>
+
+    <!--Uses an index prefix-->
+    <xs:attribute name="Index" type="xs:boolean" use="optional" default="false" />
+
+    <!--Prefix for the opcode value-->
+    <xs:attribute name="Prefix" type="xs:hexBinary" use="optional" default="00" />
+
+    <!--The base value for the opcode-->
+    <xs:attribute name="Value" type="xs:hexBinary" use="required" />
+    
+    <!--The function this opcode provides-->
+    <xs:attribute name="Function" type="xs:string" use="required"/>
+  
+    <!--The function group this opcode is in-->
+    <xs:attribute name="Group" type="xs:string" use="required"/>
+
+    <!--The length of this opcode when encoded-->
+    <xs:attribute name="Length" type="xs:short" use="required"/>
+  </xs:complexType>
+
+
+  <xs:complexType name="opcodeEncoding">
+    <xs:sequence>
+      <!--Mnemonic for this opcode-->
+      <xs:element name="Mnemonic" type="xs:string" minOccurs="1"/>
+      <!--Arguments-->
+      <xs:element name="Arguments" minOccurs="0" maxOccurs="1">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="Arg" type="argType" minOccurs="0" maxOccurs="3" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <!--If this is an officaly documented opcode-->
+      <xs:element name="Status" type="statusEnum" minOccurs="0" maxOccurs="1" default="Documented" />
+      <!--Cycles(T states) count for execution (based on the longest execution)-->
+      <xs:element name="Cycles" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <!--Effected Flags-->
+      <xs:element name="Flags" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <!--Description of this opcode-->
+      <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+
+    <!--This is the preferred encoding for this opcode-->
+    <xs:attribute name="Preferred" type="xs:boolean" use="optional" default="true"/>
+
+    <!--The platform this encoding is for-->
+    <xs:attribute name="Platform" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="argType">
+    <xs:simpleContent>
+      <!--The type of the argument-->
+      <xs:extension base="argTypeEnum">
+        <!--How this argument is encoded into the opcode-->
+        <xs:attribute name="encoding" type="encodingEnum" use="optional" default="Direct"/>
+        <!--If true, the value is part of the encoded data, but not provided durring assambly-->
+        <xs:attribute name="hidden" type="xs:boolean" use="optional" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:simpleType name="statusEnum">
+    <xs:restriction base="xs:string">
+      <!--An offical and documented opcode-->
+      <xs:enumeration value="Documented"/>
+      <!--An undocumented opcode, and can be assambled-->
+      <xs:enumeration value="Undocumented"/>
+      <!--An undocumented opcode, but can only be executed-->
+      <xs:enumeration value="ExecuteOnly"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="encodingEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None"/>
+
+      <!--Source Operand 0b00000111 0x07-->
+      <xs:enumeration value="Source"/>
+
+      <!--Destination Operand and Flag encodding 0b00111000 0x38-->
+      <xs:enumeration value="Dest"/>
+      <xs:enumeration value="Flag"/>
+
+      <!--Word register 0b00110000 0x30-->
+      <xs:enumeration value="WordReg"/>
+
+      <!--Flag encoding, using only the top four flags 0b00011000 0x18-->
+      <xs:enumeration value="HalfFlag"/>
+
+      <!--Immidate data-->
+      <xs:enumeration value="ByteImmidate"/>
+      <xs:enumeration value="WordImmidate"/>
+
+      <!--An index register (encoded via Direct) with an offset encoding after the first byte of the opcode-->
+      <xs:enumeration value="IndexOffset"/>
+
+      <!--The argument is already endcoded into the value-->
+      <xs:enumeration value="Direct"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:simpleType name="argTypeEnum">
+    <xs:restriction base="xs:string">
+
+      <!--Any Byte Resiter (Not inculding M, I or R)-->
+      <xs:enumeration value="ByteReg"/>
+      
+      <!--Specific Byte Registers-->
+      <xs:enumeration value="ByteReg-B"/>
+      <xs:enumeration value="ByteReg-C"/>
+      <xs:enumeration value="ByteReg-D"/>
+      <xs:enumeration value="ByteReg-E"/>
+      <xs:enumeration value="ByteReg-H"/>
+      <xs:enumeration value="ByteReg-L"/>
+      <xs:enumeration value="ByteReg-M"/>
+      <xs:enumeration value="ByteReg-A"/>
+
+      <xs:enumeration value="ByteReg-I"/>
+      <xs:enumeration value="ByteReg-R"/>
+
+      <!--Byte Register used for addressing (C)-->
+      <xs:enumeration value="ByteRegPtr-C"/>
+
+      <!--Any word Register (BC, DE, HL or SP)-->
+      <xs:enumeration value="WordReg"/>
+
+      <!--Specific Word Registers-->
+      <xs:enumeration value="WordReg-BC"/>
+      <xs:enumeration value="WordReg-DE"/>
+      <xs:enumeration value="WordReg-HL"/>
+      <xs:enumeration value="WordReg-SP"/>
+      <xs:enumeration value="WordReg-PSW"/>
+      <xs:enumeration value="WordReg-AF"/>
+
+      <!--AF'-->
+      <xs:enumeration value="WordReg-AFAlt"/>
+
+      <!--Word Registers BD or DE-->
+      <xs:enumeration value="WordReg-BD"/>
+
+      <!--SP+n-->
+      <xs:enumeration value="WordReg-SP+Byte"/>
+
+      <!--Word register used for addressing (rr)-->
+      <xs:enumeration value="WordRegPtr-BC"/>
+      <xs:enumeration value="WordRegPtr-DE"/>
+      <xs:enumeration value="WordRegPtr-HL"/>
+      <xs:enumeration value="WordRegPtr-SP"/>
+
+      <!--Word Registers (BD) or (DE)-->
+      <xs:enumeration value="WordRegPtr-BD"/>
+
+      <!--(HLI) (HL+)-->
+      <xs:enumeration value="WordRegPtr-HLI"/>
+      <!--(HLD) (HL-)-->
+      <xs:enumeration value="WordRegPtr-HLD"/>
+
+      <!--IXL IHX IYL IYH -->
+      <xs:enumeration value="ByteReg-Izb"/>
+      
+      <!--IX/IY-->
+      <xs:enumeration value="WordReg-Iz"/>
+      <!--(IX+n)/(IY+n)-->
+      <xs:enumeration value="WordRegPtr-Iz"/>
+
+      <!--00h 08h 10h 18h 20h 28h 30h 38h-->
+      <xs:enumeration value="RstValue"/>
+      <!--0 though 7-->
+      <xs:enumeration value="Value"/>
+      <!--Specific values-->
+      <xs:enumeration value="Value-0"/>
+      <xs:enumeration value="Value-1"/>
+      <xs:enumeration value="Value-2"/>
+      <xs:enumeration value="Value-8"/>
+
+      <!--Immidate Data types-->
+      <xs:enumeration value="Byte"/>
+      <xs:enumeration value="Word"/>
+      <xs:enumeration value="Address"/>
+      <xs:enumeration value="Displacment"/>
+
+      <!--Offset used for used for addressing (n)-->
+      <xs:enumeration value="BytePtr"/>
+
+      <!--Address (nn)-->
+      <xs:enumeration value="AddressPtr"/>
+
+      <!--($ff00 + n)-->
+      <xs:enumeration value="HighMemPtr+Byte"/>
+      <!--($ff00 + C)-->
+      <xs:enumeration value="HighMemPtr+C"/>
+
+      <!--Any flag-->
+      <xs:enumeration value="Flag"/>
+      <xs:enumeration value="HalfFlag"/>
+
+      <!--Specific Flag-->
+      <xs:enumeration value="Flag-NZ"/>
+      <xs:enumeration value="Flag-Z"/>
+      <xs:enumeration value="Flag-NC"/>
+      <xs:enumeration value="Flag-CY"/>
+      <xs:enumeration value="Flag-PO"/>
+      <xs:enumeration value="Flag-PE"/>
+      <xs:enumeration value="Flag-P"/>
+      <xs:enumeration value="Flag-M"/>
+
+      <xs:enumeration value="Flag-NK"/>
+      <xs:enumeration value="Flag-K"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+  
+  
+  
+

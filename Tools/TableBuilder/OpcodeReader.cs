@@ -16,289 +16,404 @@ namespace TableBuilder
         }
     }
 
-    class LocalOpcodeEntry : OpcodeData.OpcodeEntry
+    public class LocalOpcodeEntry
     {
+        public bool Index;
+        public byte Prefix;
+        public byte Encoding;
+        public OpcodeData.ParamEntry[] Arguments;
+        public Opcodes.statusEnum Status;
+
+        public int Cycles;
+        public short TStates;
+        public byte Length;
+
         public bool Prefered;
+        public string Platform;
+
+        public string Menmontic;
+        public string FunctionName;
+
         public bool i8080;
 
         public LocalOpcodeEntry() : base()
         {
             Prefered = true;
+            Platform = "";
+            Menmontic = "";
+            FunctionName = "";
+            Cycles = 0;
             i8080 = false;
         }
 
-        public LocalOpcodeEntry(LocalOpcodeEntry Clone) : base(Clone)
+        public LocalOpcodeEntry(LocalOpcodeEntry Clone)
         {
+            Index = Clone.Index;
+            Prefix = Clone.Prefix;
+            Encoding = Clone.Encoding;
+            Arguments = (OpcodeData.ParamEntry[])Clone.Arguments.Clone();
+            Status = Clone.Status;
+            TStates = Clone.TStates;
+            Length = Clone.Length;
+
             Prefered = Clone.Prefered;
+            Platform = Clone.Platform;
+            Menmontic = Clone.Menmontic;
+            FunctionName = Clone.FunctionName;
+            Cycles = Clone.Cycles;
+
             i8080 = Clone.i8080;
+        }
+
+        public int Opcode
+        {
+            get
+            {
+                int Ret = this.Encoding << 4;
+                Ret += this.Prefix << 12;
+                if (Index)
+                    Ret += 0x100000;
+
+                if (!Prefered)
+                    Ret += 0x1;
+
+                return Ret;
+            }
         }
     }
 
-    class OpcodeGroup
-    {
-        public List<LocalOpcodeEntry> OpcodeList;
-        public List<LocalOpcodeEntry> OpcodeMatrix;
-
-        public OpcodeGroup()
-        {
-            OpcodeList = new List<LocalOpcodeEntry>();
-            OpcodeMatrix = new List<LocalOpcodeEntry>();
-        }
-    };
-    
     class OpcodeReader
     {
-        static OpcodeData.ParamEntry GetParamInfo(argType Arg)
+        static System.Text.RegularExpressions.Regex ParceCycles = new System.Text.RegularExpressions.Regex(@"(\d+)\((\d*)\)");
+
+        public static LocalOpcodeEntry ReadOpcode(Opcodes.opcodeType Opcode, Opcodes.opcodeEncoding Encoding)
+        {
+            LocalOpcodeEntry Entry = new LocalOpcodeEntry();
+
+            if (Encoding.Platform.Contains("i80"))
+                Entry.i8080 = true;
+
+            Entry.Index = Opcode.Index;
+            Entry.Encoding = Opcode.Value[0];
+            if (Opcode.Prefix != null)
+                Entry.Prefix = Opcode.Prefix[0];
+
+            Entry.Length = (byte)Opcode.Length;
+            Entry.FunctionName = Opcode.Function.Replace('-', '_').ToUpper();
+
+            Entry.Prefered = Encoding.Preferred;
+            Entry.Platform = Encoding.Platform;
+
+            if (Encoding.Mnemonic.Equals("[None]", StringComparison.CurrentCultureIgnoreCase))
+                Entry.Menmontic = "";
+            else
+                Entry.Menmontic = Encoding.Mnemonic.ToUpper();
+
+            if (string.IsNullOrEmpty(Encoding.Cycles) || Encoding.Cycles == "0")
+            {
+                Entry.Cycles = 0;
+                Entry.TStates = 0;
+            }
+            else
+            {
+                var Cycles = ParceCycles.Match(Encoding.Cycles);
+                Entry.Cycles = short.Parse(Cycles.Groups[1].Value);
+                Entry.TStates = short.Parse(Cycles.Groups[2].Value);
+            }
+
+            Entry.Status = Encoding.Status;
+
+            List<OpcodeData.ParamEntry> ArgList = new List<OpcodeData.ParamEntry>();
+
+            if (Encoding.Arguments != null)
+            {
+                foreach (Opcodes.argType Arg in Encoding.Arguments)
+                {
+                    ArgList.Add(GetParamInfo(Arg));
+                }
+            }
+
+            Entry.Arguments = ArgList.ToArray();
+
+            return Entry;
+        }
+
+
+        static OpcodeData.ParamEntry GetParamInfo(Opcodes.argType Arg)
         {
             OpcodeData.ParamEntry Ret = new OpcodeData.ParamEntry();
 
             Ret.Implicit = Arg.hidden;
 
-            switch (Arg.Value.ToUpper().Trim())
+            switch (Arg.Value)
             {
-                case "RSTVALUE":
+                case Opcodes.argTypeEnum.RstValue:
                     Ret.Param = OpcodeData.ParameterID.EncodedValue;
                     Ret.Type = OpcodeData.ParameterType.RstValue;
                     break;
 
-                case "VALUE":
+                case Opcodes.argTypeEnum.Value:
                     Ret.Param = OpcodeData.ParameterID.EncodedValue;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "VALUE-0":
+                case Opcodes.argTypeEnum.Value0:
                     Ret.Param = OpcodeData.ParameterID.Value0;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "VALUE-1":
+                case Opcodes.argTypeEnum.Value1:
                     Ret.Param = OpcodeData.ParameterID.Value1;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "VALUE-2":
+                case Opcodes.argTypeEnum.Value2:
                     Ret.Param = OpcodeData.ParameterID.Value2;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "FLAG-NZ":
+                case Opcodes.argTypeEnum.Value8:
+                    Ret.Param = OpcodeData.ParameterID.Value8;
+                    Ret.Type = OpcodeData.ParameterType.Value;
+                    break;
+
+                case Opcodes.argTypeEnum.FlagNZ:
                     Ret.Param = OpcodeData.ParameterID.Flag_NZ;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-Z":
+                case Opcodes.argTypeEnum.FlagZ:
                     Ret.Param = OpcodeData.ParameterID.Flag_Z;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-NC":
+                case Opcodes.argTypeEnum.FlagNC:
                     Ret.Param = OpcodeData.ParameterID.Flag_NC;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-C":
-                case "FLAG-CY":
+                case Opcodes.argTypeEnum.FlagCY:
                     Ret.Param = OpcodeData.ParameterID.Flag_CY;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-PO":
+                case Opcodes.argTypeEnum.FlagPO:
                     Ret.Param = OpcodeData.ParameterID.Flag_PO;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-PE":
+                case Opcodes.argTypeEnum.FlagPE:
                     Ret.Param = OpcodeData.ParameterID.Flag_PE;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-P":
+                case Opcodes.argTypeEnum.FlagP:
                     Ret.Param = OpcodeData.ParameterID.Flag_P;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "FLAG-M":
+                case Opcodes.argTypeEnum.FlagM:
                     Ret.Param = OpcodeData.ParameterID.Flag_M;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "ADDRESSPTR":
+                case Opcodes.argTypeEnum.FlagNK:
+                    Ret.Param = OpcodeData.ParameterID.Flag_NK;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
+                    break;
+
+                case Opcodes.argTypeEnum.FlagK:
+                    Ret.Param = OpcodeData.ParameterID.Flag_K;
+                    Ret.Type = OpcodeData.ParameterType.Flag;
+                    break;
+
+                case Opcodes.argTypeEnum.AddressPtr:
                     Ret.Param = OpcodeData.ParameterID.ImmediateWord;
                     Ret.Type = OpcodeData.ParameterType.AddressPointer;
                     break;
 
-                case "ADDRESS":
+                case Opcodes.argTypeEnum.Address:
                     Ret.Param = OpcodeData.ParameterID.ImmediateWord;
                     Ret.Type = OpcodeData.ParameterType.Address;
                     break;
 
-                case "BYTE":
+                case Opcodes.argTypeEnum.Byte:
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "WORD":
+                case Opcodes.argTypeEnum.Word:
                     Ret.Param = OpcodeData.ParameterID.ImmediateWord;
                     Ret.Type = OpcodeData.ParameterType.Value;
                     break;
 
-                case "DISP":
+                case Opcodes.argTypeEnum.Displacment:
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.Displacment;
                     break;
 
-                case "BYTEREG":
+                case Opcodes.argTypeEnum.ByteReg:
                     Ret.Param = OpcodeData.ParameterID.RegisterAny;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
-                case "WORDREG":
+                case Opcodes.argTypeEnum.WordReg:
                     Ret.Param = OpcodeData.ParameterID.RegisterAny;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREGF":
-                    Ret.Param = OpcodeData.ParameterID.RegisterAny;
-                    Ret.Type = OpcodeData.ParameterType.WordRegisterAF;
-                    break;
-
-                case "BYTEINDEXREG":
-                    Ret.Param = OpcodeData.ParameterID.RegisterAny;
+                case Opcodes.argTypeEnum.ByteRegIzb:
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_Izb;
                     Ret.Type = OpcodeData.ParameterType.ByteIndexRegister;
                     break;
 
-                case "WORDINDEXREG":
-                    Ret.Param = OpcodeData.ParameterID.WordReg_XX;
+                case Opcodes.argTypeEnum.WordRegIz:
+                    Ret.Param = OpcodeData.ParameterID.WordReg_Iz;
                     Ret.Type = OpcodeData.ParameterType.WordIndexRegister;
                     break;
 
-                case "WORDINDEXREGPTR":
-                    Ret.Param = OpcodeData.ParameterID.WordReg_XX;
+                case Opcodes.argTypeEnum.WordRegPtrIz:
+                    Ret.Param = OpcodeData.ParameterID.WordReg_Iz;
                     Ret.Type = OpcodeData.ParameterType.WordIndexRegisterPointer;
                     break;
 
-                case "FLAG":
+                case Opcodes.argTypeEnum.Flag:
                     Ret.Param = OpcodeData.ParameterID.FlagsAny;
                     Ret.Type = OpcodeData.ParameterType.Flag;
                     break;
 
-                case "HALFFLAG":
+                case Opcodes.argTypeEnum.HalfFlag:
                     Ret.Param = OpcodeData.ParameterID.FlagsAny;
                     Ret.Type = OpcodeData.ParameterType.HalfFlag;
                     break;
 
-                case "BYTEREG-A":
+                case Opcodes.argTypeEnum.ByteRegA:
                     Ret.Param = OpcodeData.ParameterID.ByteReg_A;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
-                case "BYTEREG-C":
+                case Opcodes.argTypeEnum.ByteRegC:
                     Ret.Param = OpcodeData.ParameterID.ByteReg_C;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
-                case "BYTEREG-I":
+                case Opcodes.argTypeEnum.ByteRegM:
+                    Ret.Param = OpcodeData.ParameterID.ByteReg_M;
+                    Ret.Type = OpcodeData.ParameterType.ByteRegister;
+                    break;
+
+                case Opcodes.argTypeEnum.ByteRegI:
                     Ret.Param = OpcodeData.ParameterID.ByteReg_I;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
-                case "BYTEREG-R":
+                case Opcodes.argTypeEnum.ByteRegR:
                     Ret.Param = OpcodeData.ParameterID.ByteReg_R;
                     Ret.Type = OpcodeData.ParameterType.ByteRegister;
                     break;
 
-                case "WORDREG-AF":
+                case Opcodes.argTypeEnum.WordRegAF:
                     Ret.Param = OpcodeData.ParameterID.WordReg_AF;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREG-AFALT":
+                case Opcodes.argTypeEnum.WordRegPSW:
+                    Ret.Param = OpcodeData.ParameterID.WordReg_PSW;
+                    Ret.Type = OpcodeData.ParameterType.WordRegister;
+                    break;
+
+                case Opcodes.argTypeEnum.WordRegAFAlt:
                     Ret.Param = OpcodeData.ParameterID.WordReg_AF_Alt;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREG-BC":
+                case Opcodes.argTypeEnum.WordRegBC:
                     Ret.Param = OpcodeData.ParameterID.WordReg_BC;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREG-DE":
+                case Opcodes.argTypeEnum.WordRegDE:
                     Ret.Param = OpcodeData.ParameterID.WordReg_DE;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREG-HL":
+                case Opcodes.argTypeEnum.WordRegHL:
                     Ret.Param = OpcodeData.ParameterID.WordReg_HL;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREG-SP":
+                case Opcodes.argTypeEnum.WordRegSP:
                     Ret.Param = OpcodeData.ParameterID.WordReg_SP;
                     Ret.Type = OpcodeData.ParameterType.WordRegister;
                     break;
 
-                case "WORDREGPTR-BC":
+                case Opcodes.argTypeEnum.WordRegPtrBC:
                     Ret.Param = OpcodeData.ParameterID.WordReg_BC;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
-                case "WORDREGPTR-DE":
+                case Opcodes.argTypeEnum.WordRegPtrDE:
                     Ret.Param = OpcodeData.ParameterID.WordReg_DE;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
-                case "WORDREGPTR-SP":
+                case Opcodes.argTypeEnum.WordRegPtrBD:
+                    Ret.Param = OpcodeData.ParameterID.WordReg_BD;
+                    Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
+                    break;
+
+                case Opcodes.argTypeEnum.WordRegPtrSP:
                     Ret.Param = OpcodeData.ParameterID.WordReg_SP;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
-                case "WORDREGPTR-HL":
+                case Opcodes.argTypeEnum.WordRegPtrHL:
                     Ret.Param = OpcodeData.ParameterID.WordReg_HL;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 // HLI
-                case "WORDREGPTR-HLI":
+                case Opcodes.argTypeEnum.WordRegPtrHLI:
                     Ret.Param = OpcodeData.ParameterID.WordReg_HLI;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 // HLD
-                case "WORDREGPTR-HLD":
+                case Opcodes.argTypeEnum.WordRegPtrHLD:
                     Ret.Param = OpcodeData.ParameterID.WordReg_HLD;
                     Ret.Type = OpcodeData.ParameterType.WordRegisterPointer;
                     break;
 
                 // ($FF00 + C)
-                case "HIGHMEMPTR+C":
+                case Opcodes.argTypeEnum.HighMemPtrC:
                     Ret.Param = OpcodeData.ParameterID.ByteReg_C;
                     Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
                 // ($FF00 + n)
-                case "HIGHMEMPTR+BYTE":
+                case Opcodes.argTypeEnum.HighMemPtrByte:
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.HighMemPointerPlus;
                     break;
 
                 // (n)
-                case "BYTEPTR":
+                case Opcodes.argTypeEnum.BytePtr:
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.BytePointer;
                     break;
 
                 // (C)
-                case "BYTEREGPTR-C":
+                case Opcodes.argTypeEnum.ByteRegPtrC:
                     Ret.Param = OpcodeData.ParameterID.ByteReg_C;
                     Ret.Type = OpcodeData.ParameterType.BytePointer;
                     break;
-                
-                
-                case "WORDREG-SP+BYTE":
+
+
+                case Opcodes.argTypeEnum.WordRegSPByte:
                     Ret.Param = OpcodeData.ParameterID.ImmediateByte;
                     Ret.Type = OpcodeData.ParameterType.SPPlusOffset;
                     break;
-                
+
                 default:
                     Console.WriteLine(Arg.Value);
                     break;
@@ -306,61 +421,61 @@ namespace TableBuilder
 
             switch (Arg.encoding)
             {
-                case EncodingEnum.Direct:
-                case EncodingEnum.None:
+                case Opcodes.encodingEnum.Direct:
+                case Opcodes.encodingEnum.None:
                     Ret.Encoding = OpcodeData.EncodingType.None;
                     break;
 
-                case EncodingEnum.Reg2:
-                    Ret.Encoding = OpcodeData.EncodingType.Pos1;
+                case Opcodes.encodingEnum.Source:
+                    Ret.Encoding = OpcodeData.EncodingType.Source;
                     break;
 
-                case EncodingEnum.Flag:
-                case EncodingEnum.Reg1:
-                    Ret.Encoding = OpcodeData.EncodingType.Pos2;
+                case Opcodes.encodingEnum.Flag:
+                case Opcodes.encodingEnum.Dest:
+                    Ret.Encoding = OpcodeData.EncodingType.Dest;
                     break;
 
-                case EncodingEnum.WordReg:
-                    Ret.Encoding = OpcodeData.EncodingType.Pos3;
+                case Opcodes.encodingEnum.WordReg:
+                    Ret.Encoding = OpcodeData.EncodingType.WordReg;
                     break;
 
-                case EncodingEnum.HalfFlag:
-                    Ret.Encoding = OpcodeData.EncodingType.Pos4;
+                case Opcodes.encodingEnum.HalfFlag:
+                    Ret.Encoding = OpcodeData.EncodingType.HalfFlag;
                     break;
 
-                case EncodingEnum.ByteImmidate:
+                case Opcodes.encodingEnum.ByteImmidate:
                     Ret.Encoding = OpcodeData.EncodingType.ByteImmidate;
                     break;
 
-                case EncodingEnum.WordImmidate:
+                case Opcodes.encodingEnum.WordImmidate:
                     Ret.Encoding = OpcodeData.EncodingType.WordImmidate;
                     break;
 
-                case EncodingEnum.IndexOffset:
+                case Opcodes.encodingEnum.IndexOffset:
                     Ret.Encoding = OpcodeData.EncodingType.IndexOffset;
                     break;
 
                 default:
-                   Console.WriteLine(Arg.encoding);
-                   break;
+                    Console.WriteLine(Arg.encoding);
+                    break;
             }
 
             return Ret;
         }
 
-        static int[] ShiftMap = new int[] { 0, 0, 3, 4, 3 };
+        static int[] ShiftMap = new int[] { 0, 0, 3, 3, 4, 3 };
 
         static OpcodeData.ParameterID[] ByteRegister = { OpcodeData.ParameterID.ByteReg_B, OpcodeData.ParameterID.ByteReg_C, OpcodeData.ParameterID.ByteReg_D, OpcodeData.ParameterID.ByteReg_E, OpcodeData.ParameterID.ByteReg_H, OpcodeData.ParameterID.ByteReg_L, OpcodeData.ParameterID.None, OpcodeData.ParameterID.ByteReg_A };
         static OpcodeData.ParameterID[] WordRegister = { OpcodeData.ParameterID.WordReg_BC, OpcodeData.ParameterID.WordReg_DE, OpcodeData.ParameterID.WordReg_HL, OpcodeData.ParameterID.WordReg_SP };
-        static OpcodeData.ParameterID[] WordRegisterAF = { OpcodeData.ParameterID.WordReg_BC, OpcodeData.ParameterID.WordReg_DE, OpcodeData.ParameterID.WordReg_HL, OpcodeData.ParameterID.WordReg_AF };
+        static OpcodeData.ParameterID[] WordRegisterBD = { OpcodeData.ParameterID.WordReg_BC, OpcodeData.ParameterID.WordReg_DE };
 
-        //static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.IYH, OpcodeData.ParameterID.IXH, OpcodeData.ParameterID.IXL, OpcodeData.ParameterID.IYL };
-        //static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.IX, OpcodeData.ParameterID.IY };
-        //static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.IX, OpcodeData.ParameterID.IY };
+        //static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.ByteReg_IYH, OpcodeData.ParameterID.ByteReg_IXH, OpcodeData.ParameterID.ByteReg_IXL, OpcodeData.ParameterID.ByteReg_IYL };
+        //static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.WordReg_IX, OpcodeData.ParameterID.WordReg_IY };
+        //static OpcodeData.ParameterID[] WordIndexRegisterPointer = { OpcodeData.ParameterID.WordReg_IX, OpcodeData.ParameterID.WordReg_IY };
 
-        static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.ByteReg_XXH, OpcodeData.ParameterID.ByteReg_XXL, };
-        static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.WordReg_XX };
-        static OpcodeData.ParameterID[] AddressIndexRegister = { OpcodeData.ParameterID.WordReg_XX };
+        static OpcodeData.ParameterID[] ByteIndexRegister = { OpcodeData.ParameterID.ByteReg_IzH, OpcodeData.ParameterID.ByteReg_IzL };
+        static OpcodeData.ParameterID[] WordIndexRegister = { OpcodeData.ParameterID.WordReg_Iz };
+        static OpcodeData.ParameterID[] WordIndexRegisterPointer = { OpcodeData.ParameterID.WordReg_Iz };
 
         static OpcodeData.ParameterID[] Flags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_CY, OpcodeData.ParameterID.Flag_PO, OpcodeData.ParameterID.Flag_PE, OpcodeData.ParameterID.Flag_P, OpcodeData.ParameterID.Flag_M };
         static OpcodeData.ParameterID[] HalfFlags = { OpcodeData.ParameterID.Flag_NZ, OpcodeData.ParameterID.Flag_Z, OpcodeData.ParameterID.Flag_NC, OpcodeData.ParameterID.Flag_CY };
@@ -380,20 +495,26 @@ namespace TableBuilder
                     ParamList = ByteIndexRegister;
                     break;
 
+                case OpcodeData.ParameterType.WordRegisterPointer:
+                    if (Param.Param == OpcodeData.ParameterID.WordReg_BD)
+                        ParamList = WordRegisterBD;
+                    else
+                        ParamList = WordRegister;
+                    break;
+
                 case OpcodeData.ParameterType.WordRegister:
-                    ParamList = WordRegister;
+                    if (Param.Param == OpcodeData.ParameterID.WordReg_BD)
+                        ParamList = WordRegisterBD;
+                    else
+                        ParamList = WordRegister;
                     break;
 
                 case OpcodeData.ParameterType.WordIndexRegister:
                     ParamList = WordIndexRegister;
                     break;
 
-                case OpcodeData.ParameterType.WordRegisterAF:
-                    ParamList = WordRegisterAF;
-                    break;
-
                 case OpcodeData.ParameterType.WordIndexRegisterPointer:
-                    ParamList = AddressIndexRegister;
+                    ParamList = WordIndexRegisterPointer;
                     break;
 
                 case OpcodeData.ParameterType.Flag:
@@ -406,7 +527,7 @@ namespace TableBuilder
 
                 case OpcodeData.ParameterType.Value:
                 case OpcodeData.ParameterType.RstValue:
-                    if(Param.Param == OpcodeData.ParameterID.EncodedValue)
+                    if (Param.Param == OpcodeData.ParameterID.EncodedValue)
                         ParamList = Encoded;
                     break;
 
@@ -429,7 +550,7 @@ namespace TableBuilder
 
                 NewParam.Type = Param.Type;
                 NewParam.Implicit = Param.Implicit;
-                if (Param.Encoding >= OpcodeData.EncodingType.Pos1 && Param.Encoding <= OpcodeData.EncodingType.Pos4)
+                if (Param.Encoding >= OpcodeData.EncodingType.Source && Param.Encoding <= OpcodeData.EncodingType.HalfFlag)
                     NewParam.Encoding = OpcodeData.EncodingType.None;
                 else
                     NewParam.Encoding = Param.Encoding;
@@ -462,7 +583,7 @@ namespace TableBuilder
                 case OpcodeData.ParameterID.WordReg_HL:
                 case OpcodeData.ParameterID.WordReg_IX:
                 case OpcodeData.ParameterID.WordReg_IY:
-                case OpcodeData.ParameterID.WordReg_XX:
+                case OpcodeData.ParameterID.WordReg_Iz:
                 case OpcodeData.ParameterID.ByteReg_D:
                     return 2;
 
@@ -478,7 +599,7 @@ namespace TableBuilder
                 case OpcodeData.ParameterID.ByteReg_H:
                 case OpcodeData.ParameterID.ByteReg_IXH:
                 case OpcodeData.ParameterID.ByteReg_IYH:
-                case OpcodeData.ParameterID.ByteReg_XXH:
+                case OpcodeData.ParameterID.ByteReg_IzH:
                     return 4;
 
                 case OpcodeData.ParameterID.Value5:
@@ -486,11 +607,12 @@ namespace TableBuilder
                 case OpcodeData.ParameterID.ByteReg_L:
                 case OpcodeData.ParameterID.ByteReg_IXL:
                 case OpcodeData.ParameterID.ByteReg_IYL:
-                case OpcodeData.ParameterID.ByteReg_XXL:
+                case OpcodeData.ParameterID.ByteReg_IzL:
                     return 5;
 
                 case OpcodeData.ParameterID.Value6:
                 case OpcodeData.ParameterID.Flag_P:
+                case OpcodeData.ParameterID.ByteReg_M:
                     return 6;
 
                 case OpcodeData.ParameterID.Value7:
@@ -505,15 +627,14 @@ namespace TableBuilder
 
         public static bool CanExpand(OpcodeData.ParamEntry Entry)
         {
-            if (Entry.Param == OpcodeData.ParameterID.RegisterAny || Entry.Param == OpcodeData.ParameterID.FlagsAny || Entry.Param == OpcodeData.ParameterID.EncodedValue)
+            if (Entry.Param == OpcodeData.ParameterID.WordReg_BD || Entry.Param == OpcodeData.ParameterID.RegisterAny || Entry.Param == OpcodeData.ParameterID.FlagsAny || Entry.Param == OpcodeData.ParameterID.EncodedValue || Entry.Param == OpcodeData.ParameterID.ByteReg_Izb)
                 return true;
-
             return false;
         }
-        
+
         public static bool CanExpand(LocalOpcodeEntry Opcode)
         {
-            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Arguments)
             {
                 if (CanExpand(Entry))
                     return true;
@@ -524,9 +645,9 @@ namespace TableBuilder
 
         public static byte ExpandIndex(LocalOpcodeEntry Opcode)
         {
-            for (byte x = 0; x < Opcode.Params.Length; x++)
+            for (byte x = 0; x < Opcode.Arguments.Length; x++)
             {
-                if (CanExpand(Opcode.Params[x]))
+                if (CanExpand(Opcode.Arguments[x]))
                     return x;
             }
 
@@ -537,13 +658,13 @@ namespace TableBuilder
         {
             LocalOpcodeEntry Ret = new LocalOpcodeEntry(Opcode);
 
-            Ret.Params[NewPos] = NewParam;
+            Ret.Arguments[NewPos] = NewParam;
 
             return Ret;
         }
 
 
-        static List<LocalOpcodeEntry> ExpandOpcodeEntry(LocalOpcodeEntry Entry)
+        public static List<LocalOpcodeEntry> ExpandOpcodeEntry(LocalOpcodeEntry Entry)
         {
             List<LocalOpcodeEntry> Ret = new List<LocalOpcodeEntry>();
 
@@ -555,18 +676,21 @@ namespace TableBuilder
 
             int Pos = ExpandIndex(Entry);
 
-            List<OpcodeData.ParamEntry> ExpandList = GetExpandList(Entry.Params[Pos]);
+            List<OpcodeData.ParamEntry> ExpandList = GetExpandList(Entry.Arguments[Pos]);
 
             // Create a new entry for each param
             for (int x = 0; x < ExpandList.Count; x++)
             {
+                if (x == 3 && (Entry.Menmontic == "PUSH"|| Entry.Menmontic == "POP"))
+                    break;
+
                 if (ExpandList[x].Param == OpcodeData.ParameterID.None)
                     continue;
 
                 LocalOpcodeEntry NewEntry = CloneParams(Entry, ExpandList[x], Pos);
 
-                if (Entry.Params[Pos].Encoding >= OpcodeData.EncodingType.Pos1 && Entry.Params[Pos].Encoding <= OpcodeData.EncodingType.Pos4)
-                    NewEntry.Encoding += (byte)(GetValue(ExpandList[x].Param) << ShiftMap[(int)Entry.Params[Pos].Encoding]);               
+                if (Entry.Arguments[Pos].Encoding >= OpcodeData.EncodingType.Source && Entry.Arguments[Pos].Encoding <= OpcodeData.EncodingType.HalfFlag)
+                    NewEntry.Encoding += (byte)(GetValue(ExpandList[x].Param) << ShiftMap[(int)Entry.Arguments[Pos].Encoding]);
 
                 if (CanExpand(NewEntry))
                 {
@@ -583,38 +707,22 @@ namespace TableBuilder
 
         public static int Order(LocalOpcodeEntry Entry)
         {
-            return (!Entry.Prefered ? 0x100000 : 0) + (Entry.Index ? 0x10000 : 0) + (Entry.Prefix << 8) + Entry.Encoding;
-        }
+            int Ret = 0;
 
-        public static byte Length(LocalOpcodeEntry Entry)
-        {
-            // For the base
-            byte Ret = 1;
-
-            // Prefix
-            if (Entry.Prefix != 0x00)
-                Ret++;
-
-            // Index Prefix
             if (Entry.Index)
-                Ret++;
+                Ret += 0x100000;
 
-            // Offset
-            if (HasType(Entry, OpcodeData.ParameterType.WordIndexRegisterPointer))
-                Ret++;
+            Ret += Entry.Prefix << 12;
+            Ret += Entry.Encoding << 4;
 
-            if (HasParam(Entry, OpcodeData.ParameterID.ImmediateByte))
-                Ret++;
-
-            if (HasParam(Entry, OpcodeData.ParameterID.ImmediateWord))
-                Ret += 2;
+            if (!Entry.Prefered)
+                Ret += 1;
 
             return Ret;
         }
-        
         public static bool HasType(LocalOpcodeEntry Opcode, OpcodeData.ParameterType Type)
         {
-            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Arguments)
             {
                 if (Entry.Type == Type)
                     return true;
@@ -625,102 +733,13 @@ namespace TableBuilder
 
         public static bool HasParam(LocalOpcodeEntry Opcode, OpcodeData.ParameterID ID)
         {
-            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
+            foreach (OpcodeData.ParamEntry Entry in Opcode.Arguments)
             {
                 if (Entry.Param == ID)
                     return true;
             }
 
             return false;
-        }
-
-        public static bool HasImplicit(LocalOpcodeEntry Opcode)
-        {
-            foreach (OpcodeData.ParamEntry Entry in Opcode.Params)
-            {
-                if (Entry.Implicit && (Entry.Type == OpcodeData.ParameterType.ByteRegister || Entry.Type == OpcodeData.ParameterType.WordRegister))
-                    return true;
-            }
-
-            return false;
-        }
-        
-        public static OpcodeGroup ReadOpcodeData(z80OpcodesPlatform Platform)
-        {
-            OpcodeGroup Ret = new OpcodeGroup();
-            bool i8080 = false;
-
-            if (Platform.name == "i8080")
-                i8080 = true;
-
-
-            foreach (opcodeType Opcode in Platform.opcode)
-            {
-                LocalOpcodeEntry NewDataEntry = new LocalOpcodeEntry();
-
-                NewDataEntry.Encoding = (Opcode.value != null) ? (Opcode.value[0]) : (byte)0;
-                NewDataEntry.Prefix = (Opcode.prefix != null) ? (Opcode.prefix[0]) : (byte)0;
-                NewDataEntry.Index = Opcode.index;
-                NewDataEntry.Name = (OpcodeData.CommandID) Enum.Parse(typeof(OpcodeData.CommandID), Opcode.mnemonic);
-                NewDataEntry.Function = (OpcodeData.FunctionID)Enum.Parse(typeof(OpcodeData.FunctionID), Opcode.function.Replace('-', '_').ToUpper());
-                NewDataEntry.Cycles = Opcode.cycles;
-                NewDataEntry.Prefered = Opcode.prefered;
-                NewDataEntry.i8080 = i8080;
-
-                if (Opcode.official == "Y")
-                    NewDataEntry.Type = OpcodeData.OpcodeType.Official;
-
-                else if (Opcode.official == "X")
-                    NewDataEntry.Type = OpcodeData.OpcodeType.Undocumented;
-
-                else if (Opcode.official == "N")
-                    NewDataEntry.Type = OpcodeData.OpcodeType.Unofficial;
-
-                if (Opcode.args != null)
-                {
-                    List<OpcodeData.ParamEntry> ArgList = new List<OpcodeData.ParamEntry>();
-
-                    foreach (argType Arg in Opcode.args)
-                    {
-                        ArgList.Add(GetParamInfo(Arg));
-                    }
-
-                    NewDataEntry.Params = ArgList.ToArray();
-                }
-                else
-                {
-                    NewDataEntry.Params = new OpcodeData.ParamEntry[0];
-                }
-
-                NewDataEntry.Length = Length(NewDataEntry);
-
-                Ret.OpcodeList.Add(NewDataEntry);
-            }
-
-            foreach (LocalOpcodeEntry Entry in Ret.OpcodeList)
-            {
-                List<LocalOpcodeEntry> Indexed = ExpandOpcodeEntry(Entry);
-
-                if (Entry.Index)
-                {
-                    foreach (LocalOpcodeEntry NewEntry in Indexed)
-                    {
-                        // Can't have HL and XX in the same opcode
-                        if(HasParam(NewEntry, OpcodeData.ParameterID.WordReg_HL) & HasParam(NewEntry, OpcodeData.ParameterID.WordReg_XX))
-                            continue;
-
-                        Ret.OpcodeMatrix.Add(NewEntry);
-                    }
-                }
-                else
-                {
-                    Ret.OpcodeMatrix.AddRange(Indexed);
-                }
-            }
-
-            Ret.OpcodeMatrix = Ret.OpcodeMatrix.DistinctBy(e => Order(e)).OrderBy(e => Order(e)).ToList();
-
-            return Ret;
         }
     }
 }

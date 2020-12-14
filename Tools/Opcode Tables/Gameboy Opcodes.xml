@@ -1,0 +1,1432 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+-->
+
+<OpcodeData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./Opcodes.xsd">
+  <Opcode Value='00' Function='NOP' Group='General' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>NOP</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>The CPU performs no operation during this machine cycle</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='01' Function='LOAD' Group='16-Bit Load' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordReg'>WordReg</Arg>
+        <Arg encoding='WordImmidate'>Word</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(10)</Cycles>
+      <Flags>----</Flags>
+      <Description>The 2-byte integer nn is loaded to the dd register pair</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='02' Function='LOAD' Group='8-Bit Load' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of the Accumulator are loaded to the memory location specified by the contents of the register pair.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='03' Function='INC' Group='16-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>INC</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordReg'>WordReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(6)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are incremented.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='04' Function='INC' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>INC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z0H-</Flags>
+      <Description>Register r is incremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='05' Function='DEC' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>DEC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z1H-</Flags>
+      <Description>The byte specified by the m operand is decremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='06' Function='LOAD' Group='8-Bit Load' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>----</Flags>
+      <Description>The 8-bit integer n is loaded to any register r.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='07' Function='RL' Group='Logical' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>RLCA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated left 1-bit position. The sign bit (bit 7) is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>RLC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated left 1-bit position. The sign bit (bit 7) is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='08' Function='LOAD' Group='16-Bit Load' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordImmidate'>AddressPtr</Arg>
+        <Arg encoding='Direct'>WordReg-SP</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>5(20)</Cycles>
+      <Flags>----</Flags>
+      <Description>Save SP a the provided address</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='09' Function='ADD' Group='16-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='WordReg'>WordReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>-0HC</Flags>
+      <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are added to the contents of register pair HL and the result is stored in HL</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='0A' Function='LOAD' Group='8-Bit Load' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of the memory location specified by the contents of the rr register pair are loaded to the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='0B' Function='DEC' Group='16-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>DEC</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordReg'>WordReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(6)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of register pair ss (any of the register pairs BC, DE, HL, or SP) are decremented.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='0F' Function='RR' Group='Logical' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>RRCA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated right 1-bit position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='0F' Function='RR-CY' Group='Logical' Length='1'>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>RRC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated right 1-bit position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='10' Function='STOP' Group='General' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>STOP</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>Stop the CPU</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='17' Function='RL-CY' Group='Logical' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>RLA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated left 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 0. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>RL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated left 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 0. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='18' Function='JMPR' Group='Branch' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>JR</Mnemonic>
+      <Arguments>
+        <Arg encoding='ByteImmidate'>Displacment</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>This instruction provides for unconditional branching to other segments of a program. The value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. This jump is measured from the address of the instruction Op Code and has a range of-126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='1F' Function='RR-CY' Group='Logical' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>RRA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated right 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='1F' Function='RR' Group='Logical' Length='1'>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>RR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>000C</Flags>
+      <Description>The contents of the Accumulator (register A) are rotated right 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='20' Function='JMPR' Group='Branch' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>JR</Mnemonic>
+      <Arguments>
+        <Arg encoding='HalfFlag'>HalfFlag</Arg>
+        <Arg encoding='ByteImmidate'>Displacment</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>This instruction provides for conditional branching to other segments of a program depending on the results of a test on the Carry Flag. If the flag is equal to a 1, the value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='22' Function='LOAD-INC' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HLI</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Writes the contents of A to the address pointed to by HL, then HL in incremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='22' Function='LOAD-I' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDI</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Writes the contents of A to the address pointed to by HL, then HL in incremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='27' Function='BCD_ADJUST' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>DAA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z-0C</Flags>
+      <Description>This instruction conditionally adjusts the Accumulator for BCD addition and subtraction operations</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='2A' Function='LOAD-INC' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HLI</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Reads the address pointed to by HL, and stores it in A, then HL in incremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='2A' Function='LOAD-I' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDI</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Reads the address pointed to by HL, and stores it in A, then HL in incremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='2F' Function='NOT' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CPL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>-11-</Flags>
+      <Description>The contents of the Accumulator (register A) are inverted (one’s complement).</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='32' Function='LOAD-DEC' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HLD</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Writes the contents of A to the address pointed to by HL, then HL in decremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='32' Function='LOAD-D' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Writes the contents of A to the address pointed to by HL, then HL in decremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='34' Function='INC' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>INC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>Z0H-</Flags>
+      <Description>The byte contained in the address specified by the contents of the HL register pair is incremented.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='35' Function='DEC' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>DEC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>Z1H-</Flags>
+      <Description>The byte specified by the m operand is decremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='36' Function='LOAD' Group='8-Bit Load' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(10)</Cycles>
+      <Flags>----</Flags>
+      <Description>Integer n is loaded to the memory address specified by the contents of the HL register pair.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='37' Function='CY_SET' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SCF</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>-001</Flags>
+      <Description>The Carry flag in the F register is set.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='3A' Function='LOAD-DEC' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HLD</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>Reads the address pointed to by HL, and stores it in A, then HL in decremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='3A' Function='LOAD-D' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>Reads the address pointed to by HL, and stores it in A, then HL in decremented</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='3F' Function='CY_INVERT' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CCF</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>-00C</Flags>
+      <Description>The Carry flag in the F register is inverted.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='40' Function='LOAD' Group='8-Bit Load' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of any register r' are loaded to any other register r.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='46' Function='LOAD' Group='8-Bit Load' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>----</Flags>
+      <Description>The 8-bit contents of memory location (HL) are loaded to register r</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='70' Function='LOAD' Group='8-Bit Load' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of register r are loaded to the memory location specified by the contents of the HL register pair.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='76' Function='HALT' Group='General' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>HALT</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>The HALT instruction suspends CPU operation until a subsequent interruptor reset is received. While in the HALT state, the processor executes NOPs to maintain memory refresh logic</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='80' Function='ADD' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>The contents of register r are added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='86' Function='ADD' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>The byte at the memory address specified by the contents of the HL register pair is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='88' Function='ADD-CY' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='8E' Function='ADD-CY' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='90' Function='SUB' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SUB</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z1HC</Flags>
+      <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='96' Function='SUB' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SUB</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z1HC</Flags>
+      <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='98' Function='SUB-CY' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SBC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z1HC</Flags>
+      <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='9E' Function='SUB-CY' Group='8-Bit Arithmetic' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SBC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z1HC</Flags>
+      <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='A0' Function='AND' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>AND</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z010</Flags>
+      <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='A6' Function='AND' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>AND</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z010</Flags>
+      <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='A8' Function='XOR' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>XOR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='AE' Function='XOR' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>XOR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='B0' Function='OR' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>OR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='B6' Function='OR' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>OR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='B8' Function='CMP' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>Z1H-</Flags>
+      <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='BE' Function='CMP' Group='Logical' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z1H-</Flags>
+      <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C0' Function='RET' Group='Branch' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RET</Mnemonic>
+      <Arguments>
+        <Arg encoding='HalfFlag'>HalfFlag</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>----</Flags>
+      <Description>If condition cc is true, the byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is incremented and the byte at the memory location specified by the new contents of the SP are moved to the high order eight bits of the PC. The SP is incremented again. The next Op Code following this instruction is fetched from the memory location specified by the PC</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C1' Function='POP' Group='Stack' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>POP</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordReg'>WordReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(10)</Cycles>
+      <Flags>----</Flags>
+      <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to register pair qq.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C2' Function='JMP' Group='Branch' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>JP</Mnemonic>
+      <Arguments>
+        <Arg encoding='HalfFlag'>HalfFlag</Arg>
+        <Arg encoding='WordImmidate'>Address</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(10)</Cycles>
+      <Flags>----</Flags>
+      <Description>If condition cc is true, the instruction loads operand nn to register pair PC (Program Counter), and the program continues with the instruction beginning at address nn. If condition cc is false, the Program Counter is incremented as usual, and the program continues with the next sequential instruction.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C3' Function='JMP' Group='Branch' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>JP</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordImmidate'>Address</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(10)</Cycles>
+      <Flags>----</Flags>
+      <Description>Operand nn is loaded to register pair PC (Program Counter). The next instruction is fetched from the location designated by the new contents of the PC.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C4' Function='CALL' Group='Branch' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CALL</Mnemonic>
+      <Arguments>
+        <Arg encoding='HalfFlag'>HalfFlag</Arg>
+        <Arg encoding='WordImmidate'>Address</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>5(17)</Cycles>
+      <Flags>----</Flags>
+      <Description>If condition cc is true, this instruction pushes the current contents of the Program Counter (PC) onto the top of the external memory stack, then loads the operands nn to PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C5' Function='PUSH' Group='Stack' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>PUSH</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordReg'>WordReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of the register pair qq are pushed to the external memory LIFO (last-in, first-out) Stack. The Stack Pointer (SP) register pair holds the 16-bit address of the current top of the Stack.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C6' Function='ADD' Group='8-Bit Arithmetic' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>The integer n is added to the contents of the Accumulator, and the results are stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C7' Function='RST' Group='Branch' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RST</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>RstValue</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>----</Flags>
+      <Description>The current Program Counter (PC) contents are pushed onto the external memory stack, and the page zero memory location given by operand p is loaded to the PC. Program execution then begins with the Op Code in the address now pointed to by PC. The push is performed by first decrementing the contents of the Stack Pointer (SP), loading the high-order byte of PC to the memory address now pointed to by SP, decrementing SP again, and loading the low order byte of PC to the address now pointed to by SP. TheRestart instruction allows for a jump to one of eight addresses indicated in the table below.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='C9' Function='RET' Group='Branch' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RET</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>3(10)</Cycles>
+      <Flags>----</Flags>
+      <Description>The byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is now incremented and the byte at the memory location specified by the new contents of this instruction is fetched from the memory location specified by the PC.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='CB' Function='PREFIX' Group='Prefix' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>[None]</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>0</Cycles>
+      <Flags>----</Flags>
+      <Description>Bit Instruction Prefix</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='CD' Function='CALL' Group='Branch' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CALL</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordImmidate'>Address</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>5(17)</Cycles>
+      <Flags>----</Flags>
+      <Description>The current contents of the Program Counter (PC) are pushed onto the top of the external memory stack. The operands nn are then loaded to the PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='CE' Function='ADD-CY' Group='8-Bit Arithmetic' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='D6' Function='SUB' Group='8-Bit Arithmetic' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SUB</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z1HC</Flags>
+      <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='D9' Function='RETI' Group='Interrupt' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RETI</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>4(16)</Cycles>
+      <Flags>----</Flags>
+      <Description>Return from Interupt</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='DE' Function='SUB-CY' Group='8-Bit Arithmetic' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SBC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z1HC</Flags>
+      <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='E0' Function='LOAD-HIGH' Group='8-Bit Load' Length='2'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='ByteImmidate'>HighMemPtr+Byte</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in A is writen to ($FF00+n)</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDH</Mnemonic>
+      <Arguments>
+        <Arg encoding='ByteImmidate'>BytePtr</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in A is writen to ($FF00+n)</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='E2' Function='LOAD-HIGH' Group='8-Bit Load' Length='1'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>HighMemPtr+C</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in A is writen to ($FF00+C)</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in A is writen to ($FF00+C)</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='E6' Function='AND' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>AND</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z010</Flags>
+      <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='E8' Function='ADD' Group='8-Bit Arithmetic' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>ADD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-SP</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(16)</Cycles>
+      <Flags>Z0HC</Flags>
+      <Description>Add signed offset to SP</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='E9' Function='JMP' Group='Branch' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>JP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>The Program Counter (register pair PC) is loaded with the contents of the HL register pair. The next instruction is fetched from the location designated by the new contents of the PC</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='EA' Function='LOAD' Group='8-Bit Load' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='WordImmidate'>AddressPtr</Arg>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(16)</Cycles>
+      <Flags>----</Flags>
+      <Description>Save A at given address</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='EE' Function='XOR' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>XOR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F0' Function='LOAD-HIGH' Group='8-Bit Load' Length='2'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>HighMemPtr+Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in ($FF00+n) is stored in A</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDH</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>BytePtr</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in ($FF00+n) is stored in A</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F1' Function='POP' Group='Stack' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>POP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-AF</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(10)</Cycles>
+      <Flags>ZNHC</Flags>
+      <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to register pair qq.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F2' Function='LOAD-HIGH' Group='8-Bit Load' Length='2'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>HighMemPtr+C</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in ($FF00+C) is stored in A</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>The value in ($FF00+C) is stored in A</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F3' Function='DI' Group='Interrupt' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>DI</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>DI disables the maskable interrupt by resetting the interrupt enable flip- flops (IFF1 and IFF2). Note that this instruction disables the maskable interrupt during its execution</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F5' Function='PUSH' Group='Stack' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>PUSH</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-AF</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(11)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of the register pair qq are pushed to the external memory LIFO (last-in, first-out) Stack. The Stack Pointer (SP) register pair holds the 16-bit address of the current top of the Stack.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F6' Function='OR' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>OR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F8' Function='LOAD-SP' Group='8-Bit Load' Length='2'>
+    <Encoding Preferred='true' Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='ByteImmidate'>WordReg-SP+Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Store the value of SP+n in HL</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='GameBoy'>
+      <Mnemonic>LDHL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-SP</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>----</Flags>
+      <Description>Store the value of SP+n in HL</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='F9' Function='LOAD' Group='16-Bit Load' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordReg-SP</Arg>
+        <Arg encoding='Direct'>WordReg-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>1(6)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of the register pair HL are loaded to the Stack Pointer (SP).</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='FA' Function='LOAD' Group='8-Bit Load' Length='3'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='WordImmidate'>AddressPtr</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(16)</Cycles>
+      <Flags>----</Flags>
+      <Description>Load A from given address</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='FB' Function='EI' Group='Interrupt' Length='1'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>EI</Mnemonic>
+      <Status>Documented</Status>
+      <Cycles>1(4)</Cycles>
+      <Flags>----</Flags>
+      <Description>The enable interrupt instruction sets both interrupt enable flip flops (IFFI and IFF2) to a logic 1, allowing recognition of any maskable interrupt. Note that during the execution of this instruction and the following instruction, maskable interrupts are disabled.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Value='FE' Function='CMP' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>CP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(7)</Cycles>
+      <Flags>Z1H-</Flags>
+      <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='00' Function='RL' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RLC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of register r are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='06' Function='RL' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RLC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of the memory address specified by the contents of register pair HL are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='08' Function='RR' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RRC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='0E' Function='RR' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RRC</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='10' Function='RL-CY' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>8(4)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='16' Function='RL-CY' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>6(23)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='18' Function='RR-CY' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>8(4)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='1E' Function='RR-CY' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RR</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='20' Function='SL-Signed' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SLA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='26' Function='SL-Signed' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SLA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='28' Function='SR-Signed' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SRA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(4)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='2E' Function='SR-Signed' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SRA</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>Z00C</Flags>
+      <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='30' Function='SWAP' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SWAP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Undocumented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>Swap High and Low Nibble of r</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='36' Function='SWAP' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SWAP</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Undocumented</Status>
+      <Cycles>3(16)</Cycles>
+      <Flags>Z000</Flags>
+      <Description>Swap High and Low Nibble of the byte pointed to by HL</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='38' Function='SR-L' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SRL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='3E' Function='SR-L' Group='Logical' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SRL</Mnemonic>
+      <Arguments>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>----</Flags>
+      <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='40' Function='BIT' Group='Bit' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>BIT</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>Value</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z01-</Flags>
+      <Description>This instruction tests bit b in register r and sets the Z flag accordingly</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='46' Function='BIT' Group='Bit' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>BIT</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>Value</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>3(12)</Cycles>
+      <Flags>Z01-</Flags>
+      <Description>This instruction tests bit b in the memory location specified by the contents of the HL register pair and sets the Z flag accordingly.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='80' Function='RES' Group='Bit' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RES</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>Value</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>Bit b in operand m is reset</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='86' Function='RES' Group='Bit' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>RES</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>Value</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>----</Flags>
+      <Description>Bit b in operand m is reset</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='C0' Function='SET' Group='Bit' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SET</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>Value</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>----</Flags>
+      <Description>Bit b in register r (any of registers B, C, D, E, H, L, or A) is set.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Prefix='CB' Value='C6' Function='SET' Group='Bit' Length='2'>
+    <Encoding Platform='GameBoy'>
+      <Mnemonic>SET</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>Value</Arg>
+        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+      </Arguments>
+      <Status>Documented</Status>
+      <Cycles>4(15)</Cycles>
+      <Flags>----</Flags>
+      <Description>Bit b in the memory location addressed by the contents of register pair HL is set.</Description>
+    </Encoding>
+  </Opcode>
+</OpcodeData>

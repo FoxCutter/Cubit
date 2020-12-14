@@ -72,7 +72,7 @@ namespace ZASM
                     case ObjectType.Opcode:
                         {
                             OpcodeObject Object = CurrentLine.Object as OpcodeObject;
-                            OutputListingData(OutputStream, string.Format("{0,5}+{1,-3}", Object.CycleCount, Object.Opcode.Cycles), Object.Address);
+                            OutputListingData(OutputStream, string.Format("{0,5}+{1,-3}", Object.CycleCount, Object.Opcode.TStates), Object.Address);
                         }
                         break;
 

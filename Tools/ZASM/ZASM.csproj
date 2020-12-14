@@ -42,19 +42,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Common\GameBoy_ZASM.cs">
-      <Link>GameBoy_ZASM.cs</Link>
+      <Link>EncodingData\GameBoy_ZASM.cs</Link>
     </Compile>
     <Compile Include="..\Common\i8080_ZASM.cs">
-      <Link>i8080_ZASM.cs</Link>
+      <Link>EncodingData\i8080_ZASM.cs</Link>
     </Compile>
     <Compile Include="..\Common\OpcodeData.cs">
-      <Link>OpcodeData.cs</Link>
+      <Link>EncodingData\OpcodeData.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\OpcodeEnums.cs">
+      <Link>EncodingData\OpcodeEnums.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Parameters_ZASM.cs">
+      <Link>EncodingData\Parameters_ZASM.cs</Link>
     </Compile>
     <Compile Include="..\Common\z80_ZASM.cs">
-      <Link>z80_ZASM.cs</Link>
+      <Link>EncodingData\z80_ZASM.cs</Link>
     </Compile>
     <Compile Include="DataTables.cs" />
     <Compile Include="Debug.cs" />
+    <Compile Include="OpcodeData\OpcodeEntry.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="ObjectInformation.cs" />
     <Compile Include="ParameterInformation.cs" />
@@ -71,6 +78,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

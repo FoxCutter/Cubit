@@ -9,10 +9,9 @@ using System.IO;
  * 
  * Options:
  * (IA) Implicit A - On (i808x), Off, Warn
- * (AT) @ Addressing - On, Off (i808x)
- * (IX) Indexs - On (def), off (i808x, GB)
- * (AF) Array Offsets - On (on), off (i808x, GB)
- * (CY) CY as Carry - On (def), off
+ * (IX) Indexs - On (Z80), off (i808x, GB)
+ * (AF) Array Offsets - On, off (i808x, GB, Z80)
+ * (CY) CY as Carry - On (Z80, GB), off (i808x)
  * (DT) Commands Require Dot - On, off, Warn (def)
  * 
  * Command Line: -oXX:value 
@@ -77,8 +76,7 @@ namespace ZASM
             //string k = Path.GetFullPath(@"..\..\..\MasterV5.3.z80");
 
             Settings.CommandRequiresDot = Setting.Off;
-            Settings.AtAddressing = Setting.Off;
-            Settings.ArrayOffset = Setting.Off;
+            Settings.ArrayOffset = Setting.On;
             Settings.LabelsRequireColon = Setting.Warning;
             Settings.ImplicitA = Setting.Warning;
 

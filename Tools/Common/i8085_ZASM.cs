@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace OpcodeData
 {
-    public static partial class i8080Data
+    public static partial class i8085Data
     {
         public static SortedList<CommandID, OpcodeEntry[]> Encoding = new SortedList<CommandID, OpcodeEntry[]>
         {
@@ -29,6 +29,8 @@ namespace OpcodeData
             {
                CommandID.ADI, new OpcodeEntry[]
                {
+                  new OpcodeEntry { Encoding = 0x28, Name = CommandID.ADI, Status = OpcodeStatus.Undocumented, Length = 2, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // 28nn: *ADI H, nn
+                  new OpcodeEntry { Encoding = 0x38, Name = CommandID.ADI, Status = OpcodeStatus.Undocumented, Length = 2, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister}, new ParamEntry { Param = ParameterID.WordReg_SP, Type = ParameterType.WordRegister}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // 38nn: *ADI D, SP, nn
                   new OpcodeEntry { Encoding = 0xC6, Name = CommandID.ADI, Length = 2, Cycles = 2, TStates = 7, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // C6nn: ADI nn
                }
             },
@@ -43,6 +45,12 @@ namespace OpcodeData
                CommandID.ANI, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0xE6, Name = CommandID.ANI, Length = 2, Cycles = 2, TStates = 7, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // E6nn: ANI nn
+               }
+            },
+            {
+               CommandID.ARHL, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x10, Name = CommandID.ARHL, Status = OpcodeStatus.Undocumented, Length = 1, Cycles = 2, TStates = 7, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, }, }, // 10: *ARHL
                }
             },
             {
@@ -156,6 +164,12 @@ namespace OpcodeData
                }
             },
             {
+               CommandID.DSUB, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x08, Name = CommandID.DSUB, Status = OpcodeStatus.Undocumented, Length = 1, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_BC, Type = ParameterType.WordRegister, Implicit = true}, }, }, // 08: *DSUB
+               }
+            },
+            {
                CommandID.EI, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0xFB, Name = CommandID.EI, Length = 1, Cycles = 1, TStates = 4, Arguments = new ParamEntry[] {}, }, // FB: EI
@@ -193,6 +207,12 @@ namespace OpcodeData
                }
             },
             {
+               CommandID.JK, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xFD, Name = CommandID.JK, Status = OpcodeStatus.Undocumented, Length = 3, Cycles = 5, TStates = 17, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.Flag_K, Type = ParameterType.Flag, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.Address, Encoding = EncodingType.WordImmidate}, }, }, // FDnnnn: *JK nnnn
+               }
+            },
+            {
                CommandID.JM, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0xFA, Name = CommandID.JM, Length = 3, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.Flag_M, Type = ParameterType.Flag, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.Address, Encoding = EncodingType.WordImmidate}, }, }, // FAnnnn: JM nnnn
@@ -208,6 +228,12 @@ namespace OpcodeData
                CommandID.JNC, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0xD2, Name = CommandID.JNC, Length = 3, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.Flag_NC, Type = ParameterType.Flag, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.Address, Encoding = EncodingType.WordImmidate}, }, }, // D2nnnn: JNC nnnn
+               }
+            },
+            {
+               CommandID.JNK, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xDD, Name = CommandID.JNK, Status = OpcodeStatus.Undocumented, Length = 3, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.Flag_NK, Type = ParameterType.Flag, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.Address, Encoding = EncodingType.WordImmidate}, }, }, // DDnnnn: *JNK nnnn
                }
             },
             {
@@ -253,9 +279,33 @@ namespace OpcodeData
                }
             },
             {
+               CommandID.LDHI, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x28, Name = CommandID.LDHI, Status = OpcodeStatus.Undocumented, Length = 2, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // 28nn: *LDHI nn
+               }
+            },
+            {
+               CommandID.LDSI, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x38, Name = CommandID.LDSI, Status = OpcodeStatus.Undocumented, Length = 2, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_SP, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // 38nn: *LDSI nn
+               }
+            },
+            {
                CommandID.LHLD, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0x2A, Name = CommandID.LHLD, Length = 3, Cycles = 5, TStates = 16, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.AddressPointer, Encoding = EncodingType.WordImmidate}, }, }, // 2Annnn: LHLD nnnn
+               }
+            },
+            {
+               CommandID.LHLDE, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xED, Name = CommandID.LHLDE, Status = OpcodeStatus.Undocumented, Length = 3, Cycles = 5, TStates = 17, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, }, }, // ED: *LHLDE
+               }
+            },
+            {
+               CommandID.LHLX, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xED, Name = CommandID.LHLX, Status = OpcodeStatus.Undocumented, Length = 3, Cycles = 5, TStates = 17, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, }, }, // ED: *LHLX
                }
             },
             {
@@ -343,9 +393,21 @@ namespace OpcodeData
                }
             },
             {
+               CommandID.RDLE, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x18, Name = CommandID.RDLE, Status = OpcodeStatus.Undocumented, Length = 1, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, }, }, // 18: *RDLE
+               }
+            },
+            {
                CommandID.RET, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0xC9, Name = CommandID.RET, Length = 1, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {}, }, // C9: RET
+               }
+            },
+            {
+               CommandID.RIM, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x20, Name = CommandID.RIM, Length = 1, Cycles = 1, TStates = 4, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister, Implicit = true}, }, }, // 20: RIM
                }
             },
             {
@@ -403,6 +465,12 @@ namespace OpcodeData
                }
             },
             {
+               CommandID.RSTV, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xCB, Name = CommandID.RSTV, Status = OpcodeStatus.Undocumented, Length = 1, Cycles = 4, TStates = 12, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.Value8, Type = ParameterType.Value, Implicit = true}, }, }, // CB: *RSTV
+               }
+            },
+            {
                CommandID.RZ, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0xC8, Name = CommandID.RZ, Length = 1, Cycles = 3, TStates = 11, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.Flag_Z, Type = ParameterType.Flag, Implicit = true}, }, }, // C8: RZ
@@ -425,6 +493,24 @@ namespace OpcodeData
                CommandID.SHLD, new OpcodeEntry[]
                {
                   new OpcodeEntry { Encoding = 0x22, Name = CommandID.SHLD, Length = 3, Cycles = 5, TStates = 16, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.AddressPointer, Encoding = EncodingType.WordImmidate}, new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, }, }, // 22nnnn: SHLD nnnn
+               }
+            },
+            {
+               CommandID.SHLDE, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xD9, Name = CommandID.SHLDE, Status = OpcodeStatus.Undocumented, Length = 1, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, }, }, // D9: *SHLDE
+               }
+            },
+            {
+               CommandID.SHLX, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0xD9, Name = CommandID.SHLX, Status = OpcodeStatus.Undocumented, Length = 1, Cycles = 3, TStates = 10, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_DE, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, }, }, // D9: *SHLX
+               }
+            },
+            {
+               CommandID.SIM, new OpcodeEntry[]
+               {
+                  new OpcodeEntry { Encoding = 0x30, Name = CommandID.SIM, Length = 1, Cycles = 1, TStates = 4, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister, Implicit = true}, }, }, // 30: SIM
                }
             },
             {
@@ -499,6 +585,7 @@ namespace OpcodeData
            { "ADI", CommandID.ADI },
            { "ANA", CommandID.ANA },
            { "ANI", CommandID.ANI },
+           { "ARHL", CommandID.ARHL },
            { "CALL", CommandID.CALL },
            { "CC", CommandID.CC },
            { "CM", CommandID.CM },
@@ -517,15 +604,18 @@ namespace OpcodeData
            { "DCR", CommandID.DCR },
            { "DCX", CommandID.DCX },
            { "DI", CommandID.DI },
+           { "DSUB", CommandID.DSUB },
            { "EI", CommandID.EI },
            { "HLT", CommandID.HLT },
            { "IN", CommandID.IN },
            { "INR", CommandID.INR },
            { "INX", CommandID.INX },
            { "JC", CommandID.JC },
+           { "JK", CommandID.JK },
            { "JM", CommandID.JM },
            { "JMP", CommandID.JMP },
            { "JNC", CommandID.JNC },
+           { "JNK", CommandID.JNK },
            { "JNZ", CommandID.JNZ },
            { "JP", CommandID.JP },
            { "JPE", CommandID.JPE },
@@ -533,7 +623,11 @@ namespace OpcodeData
            { "JZ", CommandID.JZ },
            { "LDA", CommandID.LDA },
            { "LDAX", CommandID.LDAX },
+           { "LDHI", CommandID.LDHI },
+           { "LDSI", CommandID.LDSI },
            { "LHLD", CommandID.LHLD },
+           { "LHLDE", CommandID.LHLDE },
+           { "LHLX", CommandID.LHLX },
            { "LXI", CommandID.LXI },
            { "MOV", CommandID.MOV },
            { "MVI", CommandID.MVI },
@@ -547,7 +641,9 @@ namespace OpcodeData
            { "RAL", CommandID.RAL },
            { "RAR", CommandID.RAR },
            { "RC", CommandID.RC },
+           { "RDLE", CommandID.RDLE },
            { "RET", CommandID.RET },
+           { "RIM", CommandID.RIM },
            { "RLC", CommandID.RLC },
            { "RM", CommandID.RM },
            { "RNC", CommandID.RNC },
@@ -557,10 +653,14 @@ namespace OpcodeData
            { "RPO", CommandID.RPO },
            { "RRC", CommandID.RRC },
            { "RST", CommandID.RST },
+           { "RSTV", CommandID.RSTV },
            { "RZ", CommandID.RZ },
            { "SBB", CommandID.SBB },
            { "SBI", CommandID.SBI },
            { "SHLD", CommandID.SHLD },
+           { "SHLDE", CommandID.SHLDE },
+           { "SHLX", CommandID.SHLX },
+           { "SIM", CommandID.SIM },
            { "SPHL", CommandID.SPHL },
            { "STA", CommandID.STA },
            { "STAX", CommandID.STAX },

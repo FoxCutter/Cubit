@@ -23,7 +23,6 @@ namespace ZASM
     static class Settings
     {
         public static Setting ImplicitA = Setting.Warning;
-        public static Setting AtAddressing = Setting.On;
         public static Setting Indexes = Setting.On;
         public static Setting ArrayOffset = Setting.On;
         public static Setting CYAsCarry = Setting.On;
