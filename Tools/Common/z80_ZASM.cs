@@ -91,7 +91,7 @@ namespace OpcodeData
             {
                CommandID.CPDR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB9, Name = CommandID.CPDR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDB9: CPDR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB9, Name = CommandID.CPDR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDB9: CPDR
                }
             },
             {
@@ -103,7 +103,7 @@ namespace OpcodeData
             {
                CommandID.CPIR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB1, Name = CommandID.CPIR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDB1: CPIR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB1, Name = CommandID.CPIR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDB1: CPIR
                }
             },
             {
@@ -208,7 +208,7 @@ namespace OpcodeData
             {
                CommandID.INDR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xBA, Name = CommandID.INDR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDBA: INDR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xBA, Name = CommandID.INDR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDBA: INDR
                }
             },
             {
@@ -220,7 +220,7 @@ namespace OpcodeData
             {
                CommandID.INIR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB2, Name = CommandID.INIR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDB2: INIR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB2, Name = CommandID.INIR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDB2: INIR
                }
             },
             {
@@ -282,7 +282,7 @@ namespace OpcodeData
             {
                CommandID.LDDR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB8, Name = CommandID.LDDR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDB8: LDDR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB8, Name = CommandID.LDDR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDB8: LDDR
                }
             },
             {
@@ -294,7 +294,7 @@ namespace OpcodeData
             {
                CommandID.LDIR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB0, Name = CommandID.LDIR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDB0: LDIR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB0, Name = CommandID.LDIR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDB0: LDIR
                }
             },
             {
@@ -328,13 +328,13 @@ namespace OpcodeData
             {
                CommandID.OTDR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xBB, Name = CommandID.OTDR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDBB: OTDR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xBB, Name = CommandID.OTDR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDBB: OTDR
                }
             },
             {
                CommandID.OTIR, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB3, Name = CommandID.OTIR, Length = 2, Cycles = 5, TStates = 12, Arguments = new ParamEntry[] {}, }, // EDB3: OTIR
+                  new OpcodeEntry { Prefix = 0xED, Encoding = 0xB3, Name = CommandID.OTIR, Length = 2, Cycles = 5, TStates = 21, Arguments = new ParamEntry[] {}, }, // EDB3: OTIR
                }
             },
             {

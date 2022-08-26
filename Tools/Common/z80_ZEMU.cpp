@@ -438,18 +438,18 @@ namespace z80
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDAD: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDAE: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDAF: ???
-		{ L"LDIR", Function::LOAD_IR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDB0: LDIR
-		{ L"CPIR", Function::CMP_IR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDB1: CPIR
-		{ L"INIR", Function::IN_IR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDB2: INIR
-		{ L"OTIR", Function::OUT_IR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDB3: OTIR
+		{ L"LDIR", Function::LOAD_IR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDB0: LDIR
+		{ L"CPIR", Function::CMP_IR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDB1: CPIR
+		{ L"INIR", Function::IN_IR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDB2: INIR
+		{ L"OTIR", Function::OUT_IR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDB3: OTIR
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDB4: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDB5: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDB6: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDB7: ???
-		{ L"LDDR", Function::LOAD_DR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDB8: LDDR
-		{ L"CPDR", Function::CMP_DR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDB9: CPDR
-		{ L"INDR", Function::IN_DR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDBA: INDR
-		{ L"OTDR", Function::OUT_DR, Addressing::None, Addressing::None, 16, 12, 0, }, // EDBB: OTDR
+		{ L"LDDR", Function::LOAD_DR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDB8: LDDR
+		{ L"CPDR", Function::CMP_DR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDB9: CPDR
+		{ L"INDR", Function::IN_DR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDBA: INDR
+		{ L"OTDR", Function::OUT_DR, Addressing::None, Addressing::None, 16, 21, 0, }, // EDBB: OTDR
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDBC: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDBD: ???
 		{ L"???", Function::NOP, Addressing::None, Addressing::None, 4, 0, 0}, // EDBE: ???
@@ -570,14 +570,14 @@ namespace z80
 		{ L"SRA", Function::SR_SIGNED, Addressing::ByteReg_L, Addressing::None, 8, 0, 23, }, // CB2D: SRA L
 		{ L"SRA", Function::SR_SIGNED, Addressing::WordReg_HLRef, Addressing::None, 15, 0, 23, }, // CB2E: SRA (HL)
 		{ L"SRA", Function::SR_SIGNED, Addressing::ByteReg_A, Addressing::None, 8, 0, 23, }, // CB2F: SRA A
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_B, Addressing::None, 8, 0, 23, }, // CB30: *SL1 B
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_C, Addressing::None, 8, 0, 23, }, // CB31: *SL1 C
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_D, Addressing::None, 8, 0, 23, }, // CB32: *SL1 D
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_E, Addressing::None, 8, 0, 23, }, // CB33: *SL1 E
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_H, Addressing::None, 8, 0, 23, }, // CB34: *SL1 H
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_L, Addressing::None, 8, 0, 23, }, // CB35: *SL1 L
-		{ L"SL1", Function::SL_L, Addressing::WordReg_HLRef, Addressing::None, 15, 0, 23, }, // CB36: *SL1 (HL)
-		{ L"SL1", Function::SL_L, Addressing::ByteReg_A, Addressing::None, 8, 0, 23, }, // CB37: *SL1 A
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_B, Addressing::None, 8, 0, 23, }, // CB30: *SLL B
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_C, Addressing::None, 8, 0, 23, }, // CB31: *SLL C
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_D, Addressing::None, 8, 0, 23, }, // CB32: *SLL D
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_E, Addressing::None, 8, 0, 23, }, // CB33: *SLL E
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_H, Addressing::None, 8, 0, 23, }, // CB34: *SLL H
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_L, Addressing::None, 8, 0, 23, }, // CB35: *SLL L
+		{ L"SLL", Function::SL_L, Addressing::WordReg_HLRef, Addressing::None, 15, 0, 23, }, // CB36: *SLL (HL)
+		{ L"SLL", Function::SL_L, Addressing::ByteReg_A, Addressing::None, 8, 0, 23, }, // CB37: *SLL A
 		{ L"SRL", Function::SR_L, Addressing::ByteReg_B, Addressing::None, 8, 0, 23, }, // CB38: SRL B
 		{ L"SRL", Function::SR_L, Addressing::ByteReg_C, Addressing::None, 8, 0, 23, }, // CB39: SRL C
 		{ L"SRL", Function::SR_L, Addressing::ByteReg_D, Addressing::None, 8, 0, 23, }, // CB3A: SRL D

@@ -1339,7 +1339,7 @@
   </Opcode>
   <Opcode Prefix='CB' Value='30' Function='SL-L' Group='Logical' Length='2'>
     <Encoding Preferred='true' Platform='z80'>
-      <Mnemonic>SL1</Mnemonic>
+      <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
@@ -1349,7 +1349,7 @@
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
-      <Mnemonic>SLL</Mnemonic>
+      <Mnemonic>SL1</Mnemonic>
       <Arguments>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
@@ -1361,7 +1361,7 @@
   </Opcode>
   <Opcode Prefix='CB' Value='36' Function='SL-L' Group='Logical' Length='2'>
     <Encoding Preferred='true' Platform='z80'>
-      <Mnemonic>SL1</Mnemonic>
+      <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
@@ -1371,7 +1371,7 @@
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
-      <Mnemonic>SLL</Mnemonic>
+      <Mnemonic>SL1</Mnemonic>
       <Arguments>
         <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
@@ -2079,7 +2079,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>LDIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>HC=0 P=0 N=0</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the DE register pair. Both these register pairs are incremented and the BC (Byte Counter) register pair is decremented. If decrementing causes the BC to go to zero, the instruction is terminated. If BC is not zero, the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer. When BC is set to zero prior to instruction execution, the instruction loops through 64 Kbytes</Description>
     </Encoding>
@@ -2088,7 +2088,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>CPIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. HL is incremented and the Byte Counter (register pair BC) is decremented. If decrementing causes BC to go to zero or if A = (HL), the instruction is terminated. If BC is not zero and A ≠ (HL), the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer. If BC is set to zero before instruction execution, the instruction loops through 64 Kbytes if no match is found.</Description>
     </Encoding>
@@ -2097,7 +2097,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>INIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B is used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Then register pair HL is incremented, the byte counter is decremented. If decrementing causes B to go to zero, the instruction is terminated. If B is not zero, the PC is decremented by two and the instruction repeated. Interrupts are recognized and two refresh cycles execute after each data transfer.</Description>
     </Encoding>
@@ -2106,7 +2106,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>OTIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is tempo- rarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Then register pair HL is incremented. If the decremented B register is not zero, the Program Counter (PC) is decremented by two and the instruction is repeated. If B has gone to zero, the instruction is terminated. Interrupts are recognized and two refresh cycles are executed after each data transfer.</Description>
     </Encoding>
@@ -2115,7 +2115,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>LDDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>HC=0 P=0 N=0</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the contents of the DE register pair. Then both of these registers, as well as the BC (Byte Counter), are decremented. If decrementing causes BC to go to zero, the instruction is terminated. If BC is not zero, the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles execute after each data transfer. When BC is set to zero, prior to instruction execution, the instruction loops through 64 Kbytes.</Description>
     </Encoding>
@@ -2124,7 +2124,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>CPDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>S=* Z=* HC=* P=* N=1 </Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. The HL and BC (Byte Counter) register pairs are decremented. If decrementing causes the BC to go to zero or if A = (HL), the instruction is terminated. If BC is not zero and A = (HL), the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles execute after each data transfer. When BC is set to zero, prior to instruction execution, the instruction loops through 64 Kbytes if no match is found.</Description>
     </Encoding>
@@ -2133,7 +2133,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>INDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B is used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Then HL and the byte counter are decremented. If decrementing causes B to go to zero, the instruction is terminated. If B is not zero, the PC is decremented by two and the instruction repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer</Description>
     </Encoding>
@@ -2142,7 +2142,7 @@
     <Encoding Platform='z80'>
       <Mnemonic>OTDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>4(16), 5(12)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is tempo- rarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Regis- ter B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Then, register pair HL is decremented and if the decremented B register is not zero, the Program Counter (PC) is decremented by two and the instruction is repeated. If B has gone to zero, the instruction is termi- nated. Interrupts are recognized and two refresh cycles are executed after each data transfer.</Description>
     </Encoding>
