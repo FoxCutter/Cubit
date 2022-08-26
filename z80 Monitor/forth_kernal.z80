@@ -1,0 +1,3180 @@
+.z80
+.mlist
+;.slist
+
+; =============================================================================
+;  Z80 Utitity macros
+; =============================================================================
+
+; Some macros to make signed jumps easier as the flags can be a bit complicated
+; (Logic was cribbed from the X86 architectural manual) 
+
+; JG/JNLE Greater/not less or equal
+JG  .macro @Dest
+    ; ((S xor P/V) or Z) = 0
+    jp      z,  .exit           ; Z   = 0
+
+    jp      pe, .overflow       ; P/V = 0  
+    jp      p, @Dest            ; S   = 0
+    jp      .exit
+
+.overflow:                      ; P/V = 1
+    jp      m, @Dest            ; S   = 1
+
+.exit:
+    .endm
+
+; JGE/JNL Greater or equal/not less
+JGE .macro @Dest
+    ; (SF xor OF) = 0
+    jp      pe, .overflow       ; P/V = 0  
+    jp      p, @Dest            ; S   = 0  
+    jp      .exit
+
+.overflow:                      ; P/V = 1
+    jp      m, @Dest            ; S   = 1
+
+.exit:
+    .endm
+
+;JL/JNGE Less/not greater or equal
+JL  .macro @Dest
+    ; (S xor P/V) = 1
+    jp      pe, .overflow       ; P/V = 0  
+    jp      m, @Dest            ; S   = 1
+    jp      .exit
+
+.overflow:                      ; P/V = 1
+    jp      p, @Dest            ; S   = 0
+
+.exit:
+    .endm
+
+; JLE/JNG Less or equal/not greater
+JLE  .macro @Dest
+    ; ((S xor P/Z) or Z) =  1
+    jp      z,  @Dest           ; Z   = 0
+
+    jp      pe, .overflow       ; P/V = 0  
+    jp      m, @Dest            ; S   = 1
+    jp      .exit
+
+.overflow:                      ; P/V = 1
+    jp      p, @Dest            ; S   = 0
+
+.exit:
+    .endm
+    
+; =============================================================================
+; FORTH Word layout
+;             
+;               
+;    +---|---|---|---|---|---|---|---|---|---|---|---|
+;    | LINK  | 4 | N   A   M   E | Codefield |
+;    +---|---|---|---|---|---|---|---|---|---|---|---|
+;              ^                   ^ 
+;              +-Length & Flags    |
+;              +-Link Destitation  +-XT Destination
+;
+;       CODEFIELD is either CALL LABEL (0xCD, 0x00, 0x00) or ASM
+;       Execute a word by jumping to the XT 
+;       
+;       BC & HL are scratch registers 
+;       DE = Instruction Pointer
+;       SP = Stack Pointer
+;       IX = Return Stack Pointer
+;       IY = User Data Pointer 
+;
+;       Alternate registers are reserved for system code
+;       Interrupts must be disabled when they alternats are in use
+;
+;       Memory Map (System)
+;       0x0000 - 0x00FF: Vectors and System Variables 
+;       0x8000 - 0xBB00: Forth Data
+;       0xBF00 - 0xBFFF: IVT
+;       0xC000 - 0xFFFF: ROM
+;       
+;       Forth
+;       0xBD00 - 0xBEFF: Stack          - 512 Bytes
+;       0xBC00 - 0xBDFF: Return Stack   - 512 Bytes
+;       0xBB00 - 0xBBFF: User Space & Leave stack - 256 Bytes
+; =============================================================================
+
+    DefDP               equ 0x8000
+    DefStackBase        equ 0xBF00        
+    DefRetunStackBase   equ DefStackBase - 0x200        
+    DefLeaveStackBase   equ DefRetunStackBase - 0x200   ; Leave stack starts at the top of the user space
+    DefUserAddress      equ DefRetunStackBase - 0x100
+
+; Register aliases
+IP equ DE
+IPL equ E
+IPH equ D
+RSP equ IX
+USERADDR equ IY
+
+; The Link poninter for the last dictionary entry made durring assambly 
+LINK = 0;
+
+; =============================================================================
+;   NEXT macro used for adjusting the IP and jumping to the next codeword
+; =============================================================================
+
+; NEXT_RAW assumes that the IP is currently in HL
+NEXT_RAW .macro 
+    ; Copy the xt into DE, while advancing the IP
+    ld      e, (HL)
+    inc     HL
+    ld      d, (HL)
+    inc     HL
+
+    ; Swap the IP back into DE, while moving the new xt into HL    
+    ex      IP, HL
+
+    ; Execute the next XT
+    jp      (HL) 
+.endm ; NEXT_RAW
+
+; NEXT assumes the IP is in DE
+NEXT .macro 
+    ; Move the IP into HL
+    ex      IP, HL   
+    NEXT_RAW
+
+.endm ; NEXT
+
+; =============================================================================
+;   Macros for building dictionary Entries 
+; =============================================================================
+
+; Creates a new code entry in the dictionary. Useing the name of the word as the label unless told otherwise
+codeEntry .macro @name, @nameLength, @label
+    dw      LINK
+    LINK = $
+    db      @nameLength, '@name'
+
+    if nul @label
+        @name:
+    else
+        @label:
+    endif
+.endm
+
+; Creates a new word in the dictionary, with optional codeword
+wordEntry .macro @name,  @nameLength, @label, @codeword
+    codeEntry   '@name', @nameLength, @label
+    if nul @codeword
+    call    DO_COL
+    else
+    call    @codeword
+    endif
+.endm
+
+; Creates a new immidate word in the dictionary, with optional codeword
+immWordEntry .macro @name, @nameLength, @label, @codeword
+    codeEntry      '@name', <0x80 | @nameLength>, @label
+    if nul @codeword
+    call    DO_COL
+    else
+    call    @codeword
+    endif
+.endm
+
+; Creates a variable in the dictionary, with optional codeword
+varEntry .macro @name, @nameLength, @label, @codeword
+    codeEntry   '@name', @nameLength, @label
+    if nul @codeword
+    call    DO_NEXT
+    else
+    call    @codeword
+    endif
+.endm
+
+; Creates a constant in the dictionary, with optional codeword
+constEntry .macro @name, @nameLength, @label, @codeword
+    codeEntry     '@name', @nameLength, @label
+    if nul @codeword
+    call    FETCH
+    else
+    call    @codeword
+    endif
+.endm
+
+; Creates a user variable
+userEntry .macro @name, @nameLength, @label
+    codeEntry     '@name', @nameLength, @label
+    call DO_USER
+.endm
+
+
+
+; =============================================================================
+;   Setup Code
+; =============================================================================
+
+    .org 0
+
+    jp ColdStart
+
+    .org    100h
+ColdStart:
+    ld      HL, DefStackBase
+    ld      SP, HL
+    ld      (DefUserAddress), HL
+
+    ld      RSP, DefRetunStackBase
+    ld      (DefUserAddress + 2), RSP
+
+    ld      HL, DefLeaveStackBase
+    ld      (DefUserAddress + 4), HL
+
+    ld      USERADDR, DefUserAddress
+
+;    ld      A, 10
+;    ld      B, 080h
+;    cp      b
+
+;    ld      A, 10
+;    ld      B, 10
+;    cp      b
+
+
+;    or      A
+;    ld      A, 10
+;    ld      B, 080h
+;    sub     b
+;    sbc     B
+
+;    or      A
+;    ld      A, 080h
+;    ld      B, 080h
+;    add     b
+;    adc     b
+
+;    or      A
+;    ld      HL, 08000h
+;    ld      bc, 08000h
+;    adc     HL, BC
+
+;    or      A
+;    ld      HL, 07fffh
+;    ld      bc, 08000h
+;    sbc     hl, bc
+;    halt
+    
+    ld      IP, StartWords
+    NEXT
+
+
+StartWords:
+    DW IMP_S_QUOTE
+    DB 13, "START OF CODE"
+    DW TYPE, CR
+    ;DW BTICK_USERDATA, USERBASE, BTICK_USERDATA_LEN, MOVE
+    ;DW INITIAL_DP, DP, STORE
+    ;DW IMP_LOGO, IMP_OK
+
+    ;DW PAD, HLD, STORE
+    
+    ;DW PAD, HLD, FETCH
+    ;DW LIT, 0Fh
+    ;DW LIT, 0
+    ;DW LESSTHAN_NUMBER, NUMBER;, NUMBER_GREATERTHAN
+    ;dw TWO_DROP, HLD, FETCH, PAD, DP, OVER, MINUS
+    ;dw TWO_DROP, HLD, FETCH, PAD, OVER
+    ;dw TWO_DROP, HLD, FETCH, PAD
+
+    ;DW BASE, FETCH, SWAP, HEX, LIT, 0
+    ;DW LESSTHAN_NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER_GREATERTHAN, TYPE, SPACE
+    ;DW BASE, STORE, EXIT
+    ;DW EXIT
+
+    ;DW DOT
+    ;DW SP0, LIT, 1    
+    ;DW NOP_WORD
+    ;DB 5, '23456'
+    ;DW DOT_S
+
+    ;dw LIT, 0
+    ;dw IMP_ABORT_STRING
+    ;db 4, 'test'
+
+    ;dw PAD, LIT, 84, ACCEPT
+    ;dw LIT, 0dh, EMIT, PAD, SWAP, TYPE
+    ;DW LIT, 2, SPACES
+    ;dw HEX, LIT, 0xFFFF, DOT
+    ;DW SAVE_INPUT, RESTORE_INPUT
+    ;DW LIT, 1, LIT, 2, DOT_S
+    ;DW IMP_S_QUOTE
+    ;DB 3, ' ok'     
+    ;DW TYPE, HEX, ABORT
+    ;;DW WORDS
+
+    DW IMP_STARTUP
+
+    dw HALT_WORD
+
+; WORDS ( -- ) - TOOLS
+; List the definition names in the first word list of the search order. The format of the display is implementation-dependent. 
+wordEntry "WORDS", 5
+    ; CR LATEST @
+    ; BEGIN
+    ;   DUP COUNT 0x3F AND ( Get the address and length, and mask off any flags)
+    ;   TYPE 13 EMIT ( Print the word )
+    ;   NAME>LINK @                            ( Get the link )
+    ;   0 <>
+    ; UNTIL
+    ; DROP
+    DW CR, LATEST, FETCH    
+.begin:
+    DW DUP, COUNT, LIT, 0x3F, AND_WORD, TYPE, SPACE;, LIT, 0dh, EMIT
+    DW NAME_TO_LINK, FETCH
+    DW DUP, LIT, 0, EQUAL
+    DW IMP_QBRANCH, .begin - $
+    DW DROP
+    DW EXIT
+
+; =============================================================================
+;   Internal words and variables
+; =============================================================================
+
+codeEntry "HALT", 0xC4, HALT_WORD
+.loop:
+    nop
+    halt
+    jp .loop
+   
+codeEntry "NOP", 0xC3, NOP_WORD
+    nop
+    NEXT  
+
+constEntry "INITIAL-DP", 10, INITIAL_DP
+    DW DefDP
+
+wordentry "(LOGO)", 6, IMP_LOGO
+    ; ." Z80 Forth & System Monitor" CR
+    ; ." (C) Fox Cutter 2022" CR
+    DW IMP_S_QUOTE
+    DB 32, "Z80 Forth & Cubit System Monitor" 
+    DW TYPE, CR, IMP_S_QUOTE
+    DB 19, "(C) Fox Cutter 2022" 
+    DW TYPE, CR
+    DW EXIT
+
+wordEntry "(OK)", 4, IMP_OK
+    ; ." ok"
+    DW IMP_S_QUOTE
+    DB 4, "  ok"
+    DW TYPE
+    DW EXIT
+
+wordEntry "(STARTUP)", 9, IMP_STARTUP
+    ; `USERDATA USERBASE `USERDATA# MOVE
+    ; INITIAL-DP DP !
+    ; (LOGO) (OK)
+    ; ABORT
+
+    DW BTICK_USERDATA, USERBASE, BTICK_USERDATA_LEN, MOVE
+    DW INITIAL_DP, DP, STORE
+    DW IMP_LOGO, IMP_OK
+    DW ABORT
+
+    DW EXIT
+    
+varEntry "`USERDATA", 9, BTICK_USERDATA
+    DW DefStackBase, DefRetunStackBase, DefLeaveStackBase
+    DW 0                ; LSP
+    DW EndPointer, LinkPointer
+
+constEntry "`USERDATA#", 10, BTICK_USERDATA_LEN
+    DW 12
+
+CodeEntry "USERBASE", 8
+    PUSH USERADDR
+    NEXT
+
+userEntry "`SP0", 4, BTICK_SP0
+    DW 0
+
+userEntry "`RP0", 4, BTICK_RP0
+    DW 2
+
+userEntry "`LP0", 4, BTICK_LP0
+    DW 4
+
+; LSP ( -- addr-c )
+; Holds the current leave stack pointer
+userEntry "LSP", 3
+    DW 6
+
+; DP ( -- n )
+; Returns the addres of the cell holding the address where new dictonary data will be added
+userEntry "DP", 2
+    DW 8
+
+; LATEST ( -- n )
+; Returs the address of the cell holding the link address of the last created dictonary entry 
+userEntry "LATEST", 6
+    DW 10
+
+; SP0 ( -- n )
+; returns the base address of stack
+wordEntry "SP0", 3
+    ; `SP0 @ 
+    DW BTICK_SP0, FETCH, EXIT
+
+; RP0 ( -- n )
+; returns the base address of the return stack
+wordEntry "RP0", 3
+    ; `RP0 @ 
+    DW BTICK_RP0, FETCH, EXIT
+
+; LP0 ( -- n )
+; returns the base address of the Leave stack
+wordEntry "LP0", 3
+    ; `LP0 @ 
+    DW BTICK_LP0, FETCH, EXIT
+
+; SP! ( n -- )
+; Set the stack pointer to n 
+codeEntry "SP!", 3, SP_STORE
+    pop     HL
+    ld      SP, HL
+    NEXT
+
+; SP@ ( -- n )
+; Returs the value of the stack pointer before n was put on the stack
+codeEntry "SP@", 3, SP_FETCH
+    ld      HL, 0
+    add     HL, SP
+    push    HL
+    NEXT
+
+; RSP! ( n -- )
+; Set the stack pointer to n 
+codeEntry "RSP!", 3, RSP_STORE
+    pop     RSP
+    NEXT
+
+; RSP@ ( -- n )
+; Returs the value of the stack pointer before n was put on the stack
+codeEntry "RSP@", 3, RSP_FETCH
+    push    RSP
+    NEXT
+
+; =============================================================================
+;   Standard Constants
+; =============================================================================
+
+; TRUE ( -- true )  - CORE
+; Return a true flag, a single-cell value with all bits set. 
+constEntry "TRUE", 4, CONSTANT_TRUE
+   dw 0xFFFF
+
+; FALSE ( -- false )  - CORE
+; Return a false flag, a single-cell value with all bits clear. 
+constEntry "FALSE", 5, CONSTANT_FALSE
+    dw 0
+
+; BL ( -- char ) - CORE
+; char is the character value for a space. 
+constEntry "BL", 2
+    dw ' '
+
+
+; =============================================================================
+;  Call and Return 
+; =============================================================================
+
+; EXECUTE ( i * x xt -- j * x ) - CORE
+; Remove xt from the stack and perform the semantics identified by it
+codeEntry "EXECUTE", 7
+    pop     HL
+    jmp     (HL)
+
+; EXIT ( -- ) ( R: nest-sys -- ) - CORE
+; Return control to the calling definition specified by nest-sys
+codeEntry "EXIT", 4
+    ; pop the old IP from the return stack    
+    ld      IPL, (RSP)
+    inc     RSP
+    ld      IPH, (RSP)
+    inc     RSP    
+    NEXT
+
+; RECURSE ( -- )
+; Append the execution semantics of the current definition to the current definition.
+immWordEntry "RECURSE", 7
+    ; LATEST @ NAME>XT COMPILE,
+    DW LATEST, FETCH, NAME_TO_XT, COMPILE_COMMA
+    DW EXIT
+
+
+; =============================================================================
+; Stack Words
+; =============================================================================
+
+; (LIT) ( -- x )
+; Pushes the value at the IP onto the stack
+codeEntry "(LIT)", 5, LIT
+    ; read the next word at IP
+    ld      A, (DE)
+    ld      L, A
+    inc     DE
+
+    ld      A, (DE)
+    ld      H, A
+    inc     DE
+    
+    ; Push the value onto the stack
+    push    HL
+    NEXT
+
+; (2LIT) ( -- x )
+; Pushes the value at the IP onto the stack
+codeEntry "(2LIT)", 6, TWO_LIT
+    ; read the next word at IP
+    ld      A, (DE)
+    ld      L, A
+    inc     DE
+
+    ld      A, (DE)
+    ld      H, A
+    inc     DE
+    
+    ; Push the value onto the stack
+    push    HL
+    
+    ; read the next word at IP
+    ld      A, (DE)
+    ld      L, A
+    inc     DE
+
+    ld      A, (DE)
+    ld      H, A
+    inc     DE
+    
+    ; Push the value onto the stack
+    push    HL
+    
+    NEXT
+
+; DROP ( x -- ) - CORE
+; Remove x from the stack.
+codeEntry "DROP", 4
+    pop     HL  ;x
+    NEXT
+
+; DUP ( x -- x x ) - CORE
+; Duplicate x.
+codeEntry "DUP", 3
+    pop     HL  ;x
+    push    HL  ;x
+    push    HL  ;x
+    NEXT
+
+; ?DUP ( x -- 0 | x x ) - CORE
+; Duplicate x if it is non-zero. 
+codeEntry "?DUP", 4, Q_DUP
+    pop     HL  ;x
+    push    HL  ;x
+
+    or      a
+    LD      BC, 0
+    sbc     HL, BC
+    jp      Z, .end    
+    push    HL  ;x
+.end:
+    NEXT
+
+; OVER ( x1 x2 -- x1 x2 x1 ) - CORE
+; Place a copy of x1 on top of the stack. 
+codeEntry "OVER", 4
+    pop     HL  ;x2
+    pop     BC  ;x1
+    push    BC  ;x1
+    push    HL  ;x2
+    push    BC  ;x1
+    NEXT
+
+; SWAP ( x1 x2 -- x2 x1 ) - CORE
+; Exchange the top two stack items. 
+codeEntry "SWAP", 4
+    pop     HL      ;x2
+    pop     BC      ;x1
+    push    HL      ;x2
+    push    BC      ;x1
+    NEXT
+
+; ROT ( x1 x2 x3 -- x2 x3 x1 ) - CORE
+; Rotate the top three stack entries. 
+codeEntry "ROT", 3
+    pop     BC      ;x3
+    pop     HL      ;x2
+
+    ex      (SP), HL ;x1 - Swap HL with the value on the top of the stack
+
+    push    BC      ;x3
+    push    HL      ;x1
+    NEXT
+
+; NIP ( x1 x2 -- x2 ) - CORE
+; Drop the first item below the top of stack
+wordEntry "NIP", 3
+    ; SWAP DROP ;
+    DW SWAP, DROP, EXIT
+
+; TUCK ( x1 x2 -- x2 x1 x2 ) - CORE-EXT
+; Copy the first (top) stack item below the second stack item. 
+wordEntry "TUCK", 3
+    ; SWAP OVER ;
+    DW SWAP, OVER, EXIT
+
+; PICK ( xu...x1 x0 u -- xu...x1 x0 xu ) - CORE-EXT
+; Remove u. Copy the xu to the top of the stack. 
+; TODO codeEntry, "PICK", 4
+
+
+; 2DROP ( x1 x2 -- ) - CORE
+; Drop cell pair x1 x2 from the stack.
+codeEntry "2DROP", 5, TWO_DROP
+    pop     HL  ;x2
+    pop     HL  ;x1
+    NEXT
+
+; 2DUP ( x1 x2 -- x1 x2 x1 x2 ) - CORE
+; Duplicate cell pair x1 x2.
+codeEntry "2DUP", 4, TWO_DUP
+    pop     HL  ;x2
+    pop     BC  ;x1
+
+    push    BC  ;x1
+    push    HL  ;x2
+
+    push    BC  ;x1
+    push    HL  ;x2
+    NEXT
+
+; 2OVER ( x1 x2 x3 x4 -- x1 x2 x3 x4 x1 x2 ) - CORE
+; Copy cell pair x1 x2 to the top of the stack. 
+wordEntry "2OVER", 5, TWO_OVER
+    ; 2>R 2DUP 2R> 2SWAP
+    DW TO_R, TO_R, TWO_DUP, R_FROM, R_FROM, TWO_SWAP 
+    DW EXIT
+
+; 2SWAP ( x1 x2 x3 x4 -- x3 x4 x1 x2 ) - CORE
+; Exchange the top two cell pairs. 
+wordEntry "2SWAP", 5, TWO_SWAP
+    ; ROT >R ROT R> ;
+    DW ROT, TO_R, ROT, R_FROM, EXIT
+
+; >R ( x -- ) ( R: -- x ) - CORE
+; Move x to the return stack.
+codeEntry ">R", 2, TO_R
+    pop     HL      ;x
+
+    dec     RSP
+    ld      (RSP), H
+    dec     RSP
+    ld      (RSP), L
+
+    NEXT
+
+; R> ( -- x ) ( R: x -- ) - CORE
+; Move x from the return stack to the data stack.
+codeEntry "R>", 2, R_FROM
+    ld      L, (RSP)
+    inc     RSP
+    ld      H, (RSP)
+    inc     RSP
+    
+    push    HL ; x
+    NEXT
+
+; R@ ( -- x ) ( R: x -- x ) - CORE
+; Copy x from the return stack to the data stack. 
+codeEntry "R@", 2, R_FETCH
+    ld      L, (RSP)
+    ld      H, (RSP + 1)
+    
+    push    HL ; x
+    NEXT
+
+; I ( -- n | u ) ( R: loop-sys -- loop-sys ) - CORE
+; n | u is a copy of the current (innermost) loop index.
+codeEntry "I", 1, I_VALUE
+    ld      L, (RSP)
+    ld      H, (RSP + 1)
+    
+    push    HL ; n | u
+    NEXT
+
+; J ( -- n | u ) ( R: loop-sys1 loop-sys2 -- loop-sys1 loop-sys2 ) - CORE
+; n | u is a copy of the next-outer loop index. 
+codeEntry "J", 1, J_VALUE
+    ld      L, (RSP + 4)    ; (0,1) inner Loop Index (2,3) inner loop max
+    ld      H, (RSP + 5)    ; (4,5) outer loop index
+    
+    push    HL ; x
+    NEXT
+
+
+; =============================================================================
+; Memory and I/O Words
+; =============================================================================
+
+; ! (x a-addr -- ) - CORE
+; Store x at a-addr. 
+codeEntry "!", 1, STORE
+    pop     HL          ; a-addr
+    pop     BC          ; x
+    ld      (HL), C     ; Low byte
+    inc     HL
+    ld      (HL), B     ; high byte
+    NEXT
+
+; @ (a-addr -- x ) - CORE
+; x is the value stored at a-addr. 
+codeEntry "@", 1, FETCH
+    pop     HL          ;a-addr
+    ld      C, (HL)     ; Low byte
+    inc     HL
+    ld      B, (HL)     ; high byte
+    push    BC          ; x
+    NEXT
+
+; C! ( char c-addr -- ) - CORE
+; Store char at c-addr
+codeEntry "C!", 2, C_STORE
+    pop     HL          ; a-addr
+    pop     BC          ; char
+    ld      (HL), C     ; Low byte
+    NEXT
+
+; C@ ( c-addr -- char ) - CORE
+; x is the value stored at a-addr. 
+codeEntry "C@", 2, C_FETCH
+    pop     HL          ;a-addr
+    ld      C, (HL)     ; Low byte
+    ld      B, 0        ; high byte
+    push    BC          ; char
+    NEXT
+
+; 2! ( x1 x2 a-addr -- ) - CORE
+; Store the cell pair x1 x2 at a-addr, with x2 at a-addr and x1 at the next consecutive cell.
+wordEntry "2!", 2, TWO_STORE
+    ; SWAP OVER ! CELL+ !
+    dw  SWAP, OVER, STORE, CELL_PLUS, STORE, EXIT
+
+; 2@ ( a-addr -- x1 x2 ) - CORE
+; Fetch the cell pair x1 x2 stored at a-addr. x2 is stored at a-addr and x1 at the next consecutive cell. 
+wordEntry "2@", 2, TWO_FETCH
+    ; DUP CELL+ @ SWAP @
+    dw  DUP, CELL_PLUS, FETCH, SWAP, FETCH, EXIT
+
+; PORT! ( c port -- ) - CUSTOM
+; Writes the byte value of x out to port
+codeEntry "PORT!", 5, PORT_STORE
+    pop     BC      ; n
+    pop     HL      ; c
+    out     (C), L
+    NEXT
+    
+; PORT@ ( port -- c ) - CUSTOM
+; Reads the byte value from port
+codeEntry "PORT@", 5, PORT_FETCH
+    pop     BC      ; n
+    in      L, (C)   
+    ld      H, 0
+    push    HL      ; c
+    NEXT
+
+; ---------------------------------------------------------------------------------------
+; Math and Bitwise Words
+; ---------------------------------------------------------------------------------------
+
+; S>D ( n -- d ) - CORE
+; Convert the number n to the double-cell number d with the same numerical value.
+wordEntry "S>D", 3, S_TO_D
+    ; DUP <0 ; ( easy sign extension as true is 0xFFFF)
+    DW  DUP, ZERO_LESSTHAN, EXIT
+
+; + ( n1 | u1 n2 | u2 -- n3 | u3 ) - CORE
+; Add n2 | u2 to n1 | u1, giving the sum n3 | u3. 
+codeEntry "+", 1, PLUS
+    pop     BC  ; n2 | u2
+    pop     HL  ; n1 | u1
+    
+    add     HL, BC
+
+    push    HL ; n3 | u3
+
+    NEXT
+
+; - ( n1 | u1 n2 | u2 -- n3 | u3 ) - CORE
+; Subtract n2 | u2 from n1 | u1, giving the difference n3 | u3. 
+codeEntry "-", 1, MINUS
+    pop     BC  ; n2 | u2
+    pop     HL  ; n1 | u1
+    
+    or      a
+    sbc     HL, BC
+
+    push    HL ; n3 | u3
+
+    NEXT
+
+; UM* ( u1 u2 -- ud ) - CORE 
+; Multiply u1 by u2, giving the unsigned double-cell product ud. All values and arithmetic are unsigned. 
+codeEntry "UM*", 3, UM_STAR
+    DI
+    exx
+
+    pop     DE ; u2
+    pop     BC ; u1
+
+; From https://wikiti.brandonw.net/index.php?title=Z80_Routines:Math:Multiplication
+; The following routine multiplies bc by de and places the result in dehl. 
+    ld	    hl, 0
+
+    sla	    E   	; optimised 1st iteration
+    rl	    D
+    jr	    nc, $+4
+    ld	    H, B
+    ld	    L, C
+
+    ld	    A, 15
+
+.loop:
+    add     HL, HL
+    rl	    E
+    rl	    D
+    jr	    nc, .skip
+    add	    HL, BC
+    jr	    nc, .skip
+    inc	    DE
+.skip   
+    dec	    A
+    jr	    nz, .loop
+   
+    PUSH    HL      ; ud - Low
+    PUSH    DE      ; ud - High
+
+    exx
+    EI
+    NEXT
+
+; UD/MOD ( u1d u1 -- u2 ud2 ) - CUSTOM
+; Divide ud1 by u1, giving the quotient u2 and the remainder ud2. All values and arithmetic are unsigned. 
+codeEntry "UD/MOD", 6, UD_DIV_MOD
+    DI
+    exx
+    POP     DE      ; u1
+
+    POP     HL      ; ud1-H
+    ld      C, L    ; AC - ud1-H
+    ld      A, H    ;
+
+    ex      (SP), IY ; swap the old IY to the top of the stack, IY - ud1-L
+
+; from https://wikiti.brandonw.net/index.php?title=Z80_Routines:Math:Division
+Div32By16:
+; IN:	ACIY=dividend, DE=divisor
+; OUT:	ACIY=quotient, DE=divisor, HL=remainder, B=0
+	ld	    hl, 0
+	ld	    b, 32
+.Div32By16_Loop:
+	add	    IY, IY
+	rl	    c
+	rla
+
+	adc	    hl, hl
+	jr	    c, .Div32By16_Overflow
+	sbc	    hl, de
+	jr	    nc, .Div32By16_SetBit
+	add	    hl, de
+    djnz	.Div32By16_Loop
+    jp      .end
+.Div32By16_Overflow:
+	or	    a
+	sbc	    hl, de
+.Div32By16_SetBit:
+    inc     iyl
+	djnz	.Div32By16_Loop
+
+.end:
+    pop     DE  ; old IY
+    push    HL  ; u2
+    push    IY  ; ud2 - Low
+
+    ld      L, C    ; 
+    ld      H, A    ;
+    push    HL  ; ud2 - High
+
+    push    DE  ; restore IY
+    pop     IY
+
+    exx
+    EI
+
+    NEXT
+
+; UM/MOD ( ud u1 -- u2 u3 ) - CORE
+; Divide ud by u1, giving the quotient u3 and the remainder u2. All values and arithmetic are unsigned. 
+wordEntry "UM/MOD", 6, UM_DIV_MOD   
+    DW UD_DIV_MOD, DROP, EXIT
+
+; M+ ( d1 | ud1 n -- d2 | ud2 ) 
+; Add n to d1 | ud1, giving the sum d2 | ud2. 
+codeEntry "M+", 2, M_PLUS
+    DI
+    exx
+
+    pop     BC  ; n
+    pop     DE  ; d1 - High
+    pop     HL  ; d1 - Low
+    
+    add     HL, BC
+    
+    jp      nc, .skip
+    inc     DE
+.skip    
+
+    push    HL  ; D2 - low
+    push    DE  ; d2 - High
+
+    exx
+    EI
+
+    NEXT
+
+; M* ( n1 n2 -- d ) - CORE
+; d is the signed product of n1 times n2. 
+wordEntry "M*", 2, M_STAR
+    ;   2DUP XOR >R        
+    ;   SWAP ABS SWAP ABS UM*
+    ;   R> 0< IF NEGNATE THEN
+    DW TWO_DUP, XOR_WORD, TO_R
+    DW SWAP, ABS, SWAP, ABS, UM_STAR
+    DW R_FROM, ZERO_LESSTHAN, IMP_QBRANCH, .then - $, NEGATE
+.then:    
+    DW EXIT
+
+; SM/REM ( d1 n1 -- n2 n3 ) - CORE
+; Divide d1 by n1, giving the symmetric quotient n3 and the remainder n2. Input and output stack arguments are signed.
+wordEntry "SM/REM", 6, SM_DIV_REM
+    ;   2DUP XOR >R              sign of quotient is the sign of n1 xored d1, 
+    ;   OVER >R                  sign of remainder is the sign of d1
+    ;   ABS >R DABS R> UM/MOD
+    ;   SWAP R> 0< IF NEGNATE THEN
+    ;   SWAP R> 0< IF NEGNATE THEN 
+    DW TWO_DUP, XOR_WORD, TO_R
+    DW OVER, TO_R
+    DW ABS, TO_R, DABS, R_FROM
+    DW UM_DIV_MOD
+    DW SWAP, R_FROM, ZERO_LESSTHAN, IMP_QBRANCH, .then1 - $, NEGATE
+.then1
+    DW SWAP, R_FROM, ZERO_LESSTHAN, IMP_QBRANCH, .then2 - $, NEGATE
+.then2
+    DW EXIT
+
+; FM/MOD ( d1 n1 -- n2 n3 ) - CORE
+; Divide d1 by n1, giving the floored quotient n3 and the remainder n2. Input and output stack arguments are signed
+wordEntry "FM/MOD", 6, FM_DIV_MOD
+    ; DUP >R
+    ; SM/REM
+    ; ( if the remainder is not zero and has a different sign than the divisor )
+    ; OVER DUP 0<> SWAP 0< R@ 0< XOR AND IF
+    ;    1- SWAP R> + SWAP
+    ;ELSE
+    ;    RDROP
+    ;THEN ;
+    DW DUP, TO_R
+    DW SM_DIV_REM
+    DW OVER, DUP, LIT, 0, NOT_EQUAL, SWAP, ZERO_LESSTHAN, R_FETCH, ZERO_LESSTHAN, XOR_WORD, AND_WORD, IMP_QBRANCH, .else - $
+    DW LIT, 1, MINUS, SWAP, R_FROM, PLUS, SWAP, IMP_BRANCH, .then - $
+.else:
+    DW R_FROM, DROP
+.then:
+    DW EXIT
+
+; /MOD ( n1 n2 -- n3 n4 ) - CORE
+; Divide n1 by n2, giving the single-cell remainder n3 and the single-cell quotient n4.
+wordEntry "/MOD", 4, DIV_MOD
+    ;  >R S>D R> FM/MOD
+    DW TO_R, S_TO_D, R_FROM, FM_DIV_MOD, EXIT
+
+; / ( n1 n2 -- n3 ) - CORE
+; Divide n1 by n2, giving the single-cell quotient n3. 
+wordEntry "/", 1, DIV
+    ; /MOD SWAP DROP ;
+    DW DIV_MOD, SWAP, DROP, EXIT
+    
+; * ( n1 | u1 n2 | u2 -- n3 | u3 ) - CORE
+; Multiply n1 | u1 by n2 | u2 giving the product n3 | u3. 
+wordEntry "*", 1, STAR
+    ; M* DROP 
+    DW M_STAR, DROP, EXIT
+
+
+; MOD ( n1 n2 -- n3 ) - CORE
+; Divide n1 by n2, giving the single-cell remainder n3. 
+wordEntry "MOD", 1, MOD_WORD
+    ; /MOD DROP ;
+    DW DIV_MOD, DROP, EXIT
+    
+
+; */MOD ( n1 n2 n3 -- n4 n5 ) - CORE
+; Multiply n1 by n2 producing the intermediate double-cell result d. Divide d by n3 producing the 
+; single-cell remainder n4 and the single-cell quotient n5. 
+wordEntry "*/MOD", 5, STAR_DIV_MOD
+    ; >R M* R> FM/MOD;
+    DW TO_R, M_STAR, R_FROM, FM_DIV_MOD, EXIT
+
+
+; */ ( n1 n2 n3 -- n4 ) - CORE
+; Multiply n1 by n2 producing the intermediate double-cell result d. Divide d by n3 giving the single-cell quotient n4.
+wordEntry "*/", 2, STAR_DIV
+    ; */_MOD SWAP DROP ;
+    DW STAR_DIV_MOD, SWAP, DROP, EXIT
+
+; +! ( n | u a-addr -- ) - CORE
+; Add n | u to the single-cell number at a-addr.
+codeEntry "+!", 2, PLUS_STORE
+    pop     HL  ; a-addr
+    pop     BC  ; n | u
+
+    ld      A, C
+    add     A, (HL)
+    ld      (HL), A
+    inc     HL
+
+    ld      A, B
+    adc     A, (HL)
+    ld      (HL), A
+    
+    NEXT
+
+; 1+ ( n1 | u1 -- n2 | u2 ) - CORE
+; Add one (1) to n1 | u1 giving the sum n2 | u2. 
+codeEntry "1+", 2, ONE_PLUS
+    pop     HL  ; n1 | u1
+    inc     HL
+    push    HL  ; n2 | u2
+
+    NEXT
+
+; 1- ( n1 | u1 -- n2 | u2 ) - CORE
+; Subtract one (1) from n1 | u1 giving the sum n2 | u2. 
+codeEntry "1-", 2, ONE_MINUS
+    pop     HL  ; n1 | u1
+    dec     HL
+    push    HL  ; n2 | u2
+
+    NEXT
+
+
+; 2* ( x1 -- x2 ) - CORE
+; x2 is the result of shifting x1 one bit toward the most-significant bit, filling the 
+; vacated least-significant bit with zero. 
+codeEntry "2*", 2, TWO_STAR
+    pop     HL  ; x1
+    sla     L
+    rl      H
+
+    push    HL  ; x2
+    NEXT
+
+; 2/ ( x1 -- x2 ) - CORE
+; x2 is the result of shifting x1 one bit toward the least-significant bit, leaving the 
+; most-significant bit unchanged. 
+codeEntry "2/", 2, TWO_SLASH
+    pop     HL  ; x1
+    sra     H
+    rr      L
+
+    push    HL  ; x2
+    NEXT
+
+; LSHIFT ( x1 u -- x2 ) - CORE
+; Perform a logical left shift of u bit-places on x1, giving x2. Put zeroes into the least 
+; significant bits vacated by the shift.
+codeEntry "LSHIFT", 6
+    pop     BC  ; u
+    pop     HL  ; x1
+
+    ld      B, C
+    ld      A, B
+    cp      0
+    jp      Z, .end     ; JP EQ
+.loop:
+    sla     L
+    rl      H
+    DJNZ    .loop       ; DEC B, JP NZ
+
+.end:
+    push    HL   ;x2
+
+    NEXT
+
+; RSHIFT ( x1 u -- x2 ) - CORE
+; Perform a logical right shift of u bit-places on x1, giving x2. Put zeroes into the most significant 
+; bits vacated by the shift.
+codeEntry "RSHIFT", 6
+    pop     BC  ; u
+    pop     HL  ; x1
+
+    ld      B, C
+    ld      A, B
+    cp      0
+    jp      Z, .end        ; JP EQ
+.loop:
+    srl     H
+    rr      L
+    DJNZ    .loop           ; DEC B, JP NZ
+
+.end:
+    push    HL   ;x2
+
+    NEXT
+
+; AND ( x1 x2 -- x3 ) - CORE
+; x3 is the bit-by-bit logical "and" of x1 with x2. 
+codeEntry "AND", 3, AND_WORD
+    pop     BC  ; x2
+    pop     HL  ; x1
+    
+    ld      A, B
+    and     A, H
+    ld      B, A
+
+    ld      A, C
+    and     A, L
+    ld      C, A
+
+    push    BC ; x3
+
+    NEXT
+
+; OR ( x1 x2 -- x3 ) - CORE
+; x3 is the bit-by-bit inclusive-or of x1 with x2. 
+codeEntry "OR", 2, OR_WORD
+    pop     BC  ; x2
+    pop     HL  ; x1
+    
+    ld      A, B
+    or      A, H
+    ld      B, A
+
+    ld      A, C
+    or      A, L
+    ld      C, A
+
+    push    BC ; x3
+
+    NEXT
+
+
+; XOR ( x1 x2 -- x3 ) - CORE
+; x3 is the bit-by-bit exclusive-or of x1 with x2.
+codeEntry "XOR", 3, XOR_WORD
+    pop     BC  ; x2
+    pop     HL  ; x1
+    
+    ld      A, B
+    xor     A, H
+    ld      B, A
+
+    ld      A, C
+    xor     A, L
+    ld      C, A
+
+    push    BC ; x3
+
+    NEXT
+
+; INVERT ( x1 -- x2 ) - CORE
+; Invert all bits of x1, giving its logical inverse x2.
+codeEntry "INVERT", 6
+    pop     BC  ; x1
+    
+    ld      A, B
+    cpl
+    ld      B, A
+
+    ld      A, C
+    cpl
+    ld      C, A
+
+    push    BC ; x2
+
+    NEXT
+
+; NEGATE ( x1 -- x2 ) - CORE
+; Negate n1, giving its arithmetic inverse n2. 
+codeEntry "NEGATE", 6
+    pop     BC  ; x1
+    
+    ld      A, B
+    cpl
+    ld      B, A
+
+    ld      A, C
+    cpl
+    ld      C, A
+
+    inc     BC
+
+    push    BC ; x2
+
+    NEXT
+
+; ---------------------------------------------------------------------------------------
+; Comparison Words
+; ---------------------------------------------------------------------------------------
+
+TRUE_NEXT:
+    LD      HL, 0xFFFF
+    push    HL
+    NEXT
+
+FALSE_NEXT:
+    LD      HL, 0
+    push    HL
+    NEXT
+
+; = ( x1 x2 -- flag ) - CORE
+; flag is true if and only if x1 is bit-for-bit the same as x2
+codeEntry "=", 1, EQUAL
+    pop     BC  ; x2
+    pop     HL  ; x1
+
+    or      a
+    sbc     HL, BC
+    
+    jp      nz,   FALSE_NEXT    ; JP NE
+    jp      TRUE_NEXT
+
+; <> ( x1 x2 -- flag ) - CORE-EXT
+; flag is true if and only if x1 is bit-for-bit the same as x2
+codeEntry "<>", 2, NOT_EQUAL
+    pop     BC  ; x2
+    pop     HL  ; x1
+
+    or      a
+    sbc     HL, BC
+    
+    jp      z,   FALSE_NEXT     ; JP EQ
+    jp      TRUE_NEXT
+
+; < ( n1 n2 -- flag ) - CORE
+; flag is true if and only if n1 is less than n2. 
+codeEntry "<", 1, LESSTHAN
+    pop     BC  ; n2
+    pop     HL  ; n1
+
+    or      a
+    sbc     HL, BC
+    
+    JL      TRUE_NEXT
+    jp      FALSE_NEXT
+
+; > ( n1 n2 -- flag ) - CORE
+; flag is true if and only if n1 is greater than n2. 
+codeEntry ">", 1, GREATERTHAN
+    pop     BC  ; n2
+    pop     HL  ; n1
+
+    or      a
+    sbc     HL, BC
+    
+    JG      TRUE_NEXT
+    jp      FALSE_NEXT
+
+; 0= ( x -- flag ) - CORE
+; flag is true if and only if x is equal to zero. 
+codeEntry "0=", 2, ZERO_EQUAL
+    pop     BC      ; x
+    ld      HL, 0
+
+    or      a
+    sbc     HL, BC
+    
+    jp      z,  TRUE_NEXT    ; JP E
+    jp      FALSE_NEXT
+
+; 0<> ( x -- flag ) - CORE-EXT
+; flag is true if and only if x is not equal to zero. 
+codeEntry "0<>", 3, ZERO_NOTEQUAL
+    pop     BC      ; x
+    ld      HL, 0
+
+    or      a
+    sbc     HL, BC
+    
+    jp      nz, TRUE_NEXT    ; JP NE
+    jp      FALSE_NEXT
+
+; 0< ( n -- flag ) - CORE
+; flag is true if and only if n is less than zero. 
+codeEntry "0<", 2, ZERO_LESSTHAN
+    pop     BC  ; x
+    sla     B
+    jp      C, TRUE_NEXT        ; JP CY
+    jp      FALSE_NEXT
+
+    NEXT
+
+; 0> ( n -- flag ) - CORE-EXT
+; flag is true if and only if n is greater than zero. 
+codeEntry "0>", 2, ZERO_GREATERTHAN
+    pop     HL  ; x
+    ld      BC, 0
+
+    or      a
+    sbc     HL, BC
+
+    JG      TRUE_NEXT
+    jp      FALSE_NEXT
+    NEXT
+
+; U< ( u1 u2 -- flag ) - CORE
+; flag is true if and only if u1 is less than u2. 
+codeEntry "U<", 2, U_LESSTHAN
+    pop     BC  ; u2
+    pop     HL  ; u1
+
+    or      a
+    sbc     HL, BC
+    jp      C, TRUE_NEXT        ; JP CY
+    jp      FALSE_NEXT
+
+    NEXT
+
+; U> ( u1 u2 -- flag ) - CORE-EXT
+; flag is true if and only if u1 is greater than u2. 
+codeEntry "U>", 2, U_GREATERTHAN
+    pop     BC  ; u2
+    pop     HL  ; u1
+
+    or      a
+    sbc     HL, BC
+    jp      NC, TRUE_NEXT       ; JP NC
+    jp      FALSE_NEXT
+
+    NEXT
+
+; MIN ( n1 n2 -- n3 ) - CORE 
+; n3 is the lesser of n1 and n2. 
+wordEntry "MIN", 3
+    ; 2DUP > IF SWAP THEN DROP ;
+    DW TWO_DUP, GREATERTHAN, IMP_QBRANCH, .then - $, SWAP
+.then:    
+    DW DROP
+    DW EXIT
+
+; MAX ( n1 n2 -- n3 ) - CORE 
+; n3 is the greater of n1 and n2. 
+wordEntry "MAX", 3
+    ; 2DUP < IF SWAP THEN DROP ;
+    DW TWO_DUP, LESSTHAN, IMP_QBRANCH, .then - $, SWAP
+.then:    
+    DW DROP
+    DW EXIT
+
+; UMIN ( u1 u2 -- u3 ) - CUSTOM 
+; u3 is the lesser of u1 and u2. 
+wordEntry "UMIN", 4
+    ; 2DUP u> IF SWAP THEN DROP ;
+    DW TWO_DUP, U_GREATERTHAN, IMP_QBRANCH, .then - $, SWAP
+.then:    
+    DW DROP
+    DW EXIT
+
+; UMAX ( u1 u2 -- u3 ) - CUSTOM
+; u3 is the greater of u1 and u2. 
+wordEntry "UMAX", 4
+    ; 2DUP u< IF SWAP THEN DROP ;
+    DW TWO_DUP, U_LESSTHAN, IMP_QBRANCH, .then - $, SWAP
+.then:    
+    DW DROP
+    DW EXIT
+
+; =============================================================================
+; Flow Control Primitives
+; =============================================================================
+
+; (BRANCH) ( -- ) - INTERNAL
+; Adjusted the IP by the next value in the word list
+codeEntry "(BRANCH)", 8, IMP_BRANCH
+    ; read the next word at IP
+    push    IP
+
+    ld      A, (IP)
+    ld      L, A
+    inc     IP
+
+    ld      A, (IP)
+    ld      H, A
+
+    pop     IP
+    add     HL, IP
+
+    NEXT_RAW
+
+; (?BRANCH) ( x -- ) - INTERNAL
+; If all bits of x are zero, continue execution at the location specified by the resolution of orig. 
+codeEntry "(?BRANCH)", 9, IMP_QBRANCH
+    pop     BC
+    ld      A,C
+    or      A   
+
+    jp      Z, IMP_BRANCH   ; JP Z
+
+    ; If we're not branching, skip over the displacment
+    inc     IP
+    inc     IP
+
+    NEXT
+
+; IF ( C: -- orig ) - CORE
+; Put the location of a new unresolved forward reference orig onto the control flow stack. Append the run-time semantics 
+; given below to the current definition. The semantics are incomplete until orig is resolved, e.g., by THEN or ELSE. 
+; Run-time is provided by (?BRANCH)
+immWordEntry "IF", 2
+    ; POSTPONE (?BRANCH) HERE 0 ,   ( Write the ?branch, save the location and write out the dummy offset)
+    DW LIT, IMP_QBRANCH, COMPILE_COMMA, HERE, LIT, 0, COMMA
+    DW EXIT
+
+; ELSE ( C: orig1 -- orig2 ) - CORE
+; Put the location of a new unresolved forward reference orig2 onto the control flow stack. Append the run-time semantics 
+; given below to the current definition. The semantics will be incomplete until orig2 is resolved (e.g., by THEN). Resolve 
+; the forward reference orig1 using the location following the appended run-time semantics. 
+; Run-time is provided by (BRANCH)
+immWordEntry "ELSE", 4
+    ; POSTPONE (BRANCH) HERE 0 ,    ( Write out the branch, save the location, and write out the dummy offset) ( org here )
+    ; SWAP POSTPONE THEN            ( pass it to THEN to path the call ) ( here org  )
+    DW LIT, IMP_BRANCH, COMPILE_COMMA, HERE, LIT, 0, COMMA
+    DW SWAP, THEN
+    DW EXIT
+
+; THEN ( C: orig -- ) 
+; Append the run-time semantics given below to the current definition. Resolve the forward reference orig using the location of the 
+; appended run-time semantics. 
+; Run-time: ( -- ) Continue execution. 
+immWordEntry "THEN", 4
+    ; HERE OVER - SWAP !            ( Calcuate the different and store it) ( org here)
+    DW HERE, OVER, MINUS, SWAP, STORE
+    DW EXIT
+
+; (DO) ( n1 | u1 n2 | u2 -- ) ( R: -- loop-sys )  - INTERNAL
+; Set up loop control parameters with index n2 | u2 and limit n1 | u1. An ambiguous condition exists if n1 | u1 and n2 | u2 are not 
+; both the same type. Anything already on the return stack becomes unavailable until the loop-control parameters are discarded. 
+codeEntry "(DO)", 4, IMP_DO
+    POP     BC  ; n2 FIRST
+    POP     HL  ; n1 LIMIT
+
+    dec     RSP
+    ld      (RSP), H
+    dec     RSP
+    ld      (RSP), L ; n1 LIMIT
+
+    dec     RSP
+    ld      (RSP), B
+    dec     RSP
+    ld      (RSP), C  ; n2 FIRST
+
+    NEXT
+
+; DO ( C: -- do-sys ) - CORE
+; Place do-sys onto the control-flow stack. Append the run-time semantics given below to the current definition. The semantics are 
+; incomplete until resolved by a consumer of do-sys such as LOOP. 
+; Run-Time is provided by (DO)
+immWordEntry "DO", 2
+    ; POSTPONE (DO) HERE 
+    DW LIT, IMP_DO, COMPILE_COMMA, HERE 
+    DW LIT, 0xFFFF, TO_L
+    DW EXIT
+
+; (LOOP) ( -- ) ( R: loop-sys1 -- | loop-sys2 )  - INTERNAL
+; Add one to the loop index. If the loop index is then equal to the loop limit, discard the loop parameters 
+; and continue execution immediately following the loop. Otherwise continue execution at the beginning of the loop. 
+codeEntry "(LOOP)", 6, IMP_LOOP 
+    ld      C, (RSP)
+    ld      B, (RSP + 1)    ; INDEX
+
+    ld      L, (RSP + 2)
+    ld      H, (RSP + 3)    ; LIMIT
+
+    inc     BC              ; Increase the index
+
+    or      a
+    sbc     HL, BC
+    JLE     .exitLoop
+.loop:
+    ld      (RSP), C
+    ld      (RSP + 1), B    ; Update the index
+    jp      IMP_BRANCH    
+
+.exitLoop:
+    ld      BC, 4           ; Remove the loop data from the return stack
+    add     RSP, BC
+
+    inc     DE
+    inc     DE              ; Move past the branch value in the word list
+    NEXT
+
+; +LOOP ( n -- ) ( R: loop-sys1 -- | loop-sys2 )  - INTERNAL
+; Add n to the loop index. If the loop index did not cross the boundary between the loop limit minus one and the 
+; loop limit, continue execution at the beginning of the loop. Otherwise, discard the current loop control parameters 
+; and continue execution immediately following the loop. 
+codeEntry "(+LOOP)", 7, IMP_PLUS_LOOP
+    pop     HL
+
+    ld      C, (RSP)
+    ld      B, (RSP + 1)    ; INDEX
+
+    add     HL, BC
+
+    push    HL
+    pop     BC
+
+    ld      L, (RSP + 2)
+    ld      H, (RSP + 3)    ; LIMIT
+
+    or      a
+    sbc     HL, BC
+    JLE    .exitLoop
+
+.loop:
+    ld      (RSP), C
+    ld      (RSP + 1), B    ; Update the index
+    jp      IMP_BRANCH    
+
+.exitLoop:
+    ld      BC, 4           ; Remove the loop data from the return stack
+    add     RSP, BC
+
+    inc     DE
+    inc     DE              ; Move past the branch value in the word list
+    NEXT
+
+; >L (S: n -- L: -- n)
+; Pops the value on top of the stack and pushes it into the leave stack
+wordEntry ">L", 2, TO_L
+    ; -1 CELLS LSP +!         ( Calcuate the new address )
+    ; LSP @ !                 ( and store the value there )
+    DW LIT, -1, CELLS, LSP, PLUS_STORE
+    DW LSP, FETCH, STORE    
+    DW EXIT
+
+; L> (S: -- n L: n --)
+; Pops the top vlaue from the leave stack, and pushes it onto the stack
+wordEntry "L>", 2, L_FROM
+    ; LSP @ @                 ( fetch the data from the top of the stack)
+    ; 1 CELLS LSP +!          ( and readjust the pointer)
+    DW LSP, FETCH, FETCH
+    DW LIT, 1, CELLS, LSP, PLUS_STORE
+    DW EXIT
+
+; LEAVE ( -- ) ( R: loop-sys -- )
+; Discard the current loop control parameters. An ambiguous condition exists if they are unavailable. Continue execution immediately following the 
+; innermost syntactically enclosing DO...LOOP or DO...+LOOP. 
+immWordEntry "LEAVE", 5
+    ; POSTPONE UNLOOP 
+    ; POSTPONE (BRANCH) 
+    ; HERE >L 0 , 
+    DW LIT, UNLOOP, COMPILE_COMMA
+    DW LIT, IMP_BRANCH, COMPILE_COMMA
+    DW HERE, TO_L, LIT, 0, COMMA
+    DW EXIT
+
+; RESOLVELOOP ( S: dest --  L: FFFF nx -- )
+; Resolves a loop, writing out the offset for dest, the 
+; Patching all leaves to jump to 'here'
+wordEntry "RESOLVELOOP", 8
+    ; HERE - ,              ( and calcuate the jmp)
+    ; BEGIN
+    ;   L> DUP 0xFFFF <> WHILE ( Check for the guard word) 
+    ;   HERE OVER - SWAP !     ( Calulate and write the offset) 
+    ; REPEAT
+    ; DROP
+    DW HERE, MINUS, COMMA
+.begin:
+    DW L_FROM, DUP, LIT, 0xFFFF, NOT_EQUAL, IMP_QBRANCH, .repeat - $ 
+    DW HERE, OVER, MINUS, SWAP, STORE, IMP_BRANCH, .begin - $
+.repeat:
+    DW DROP
+    DW EXIT
+
+; LOOP ( C: do-sys -- )
+; Append the run-time semantics given below to the current definition. Resolve the destination of all unresolved 
+; occurrences of LEAVE between the location given by do-sys and the next location for a transfer of control, to 
+; execute the words following the LOOP. 
+; Run-time provided by (LOOP)
+immWordEntry "LOOP", 4
+    ; POSTPONE (LOOP)       ( output the loop)
+    ; RESOLVELOOP           ( resolve the jump and leaves)
+    DW LIT, IMP_LOOP, COMPILE_COMMA
+    DW RESOLVELOOP
+    DW EXIT
+
+; +LOOP ( C: do-sys -- )
+; Append the run-time semantics given below to the current definition. Resolve the destination of all unresolved 
+; occurrences of LEAVE between the location given by do-sys and the next location for a transfer of control, to 
+; execute the words following +LOOP.; Run-time provided by (+LOOP)
+; Run-time provided by (+LOOP)
+immWordEntry "+LOOP", 5, PLUS_LOOP
+    ; POSTPONE (+LOOP)       ( output the loop)
+    ; RESOLVELOOP            ( resolve the jump and leaves)
+    DW LIT, IMP_PLUS_LOOP, COMPILE_COMMA
+    DW RESOLVELOOP
+    DW EXIT
+
+; UNLOOP ( -- ) ( R: loop-sys -- ) - CORE 
+; Discard the loop-control parameters for the current nesting level
+codeEntry "UNLOOP", 6
+    ld      BC, 4
+    add     RSP, BC
+    NEXT
+
+; BEGIN ( C: -- dest ) - CORE
+; Put the next location for a transfer of control, dest, onto the control flow stack. Append the run-time semantics 
+; given below to the current definition. 
+; Run-Time: ( -- ) Continue execution. 
+immWordEntry "BEGIN", 5
+    ; HERE
+    DW HERE
+    DW EXIT
+
+; AGAIN ( C: dest -- ) - CORE-EXT
+; Append the run-time semantics given below to the current definition, resolving the backward reference dest. 
+; Run-Time provided by (BRANCH)
+immWordEntry "AGAIN", 5
+    ; POSTPONE (BRANCH) 
+    ; HERE - , 
+    DW LIT, IMP_BRANCH, COMPILE_COMMA
+    DW HERE, MINUS, COMMA
+    DW EXIT
+
+; UNTIL ( C: dest -- ) - CORE
+; Append the run-time semantics given below to the current definition, resolving the backward reference dest. 
+; Run-Time provided by (?BRANCH)
+immWordEntry "UNTIL", 5
+    ; POSTPONE (?BRANCH) 
+    ; HERE - , 
+    DW LIT, IMP_QBRANCH, COMPILE_COMMA
+    DW HERE, MINUS, COMMA
+    DW EXIT
+
+; WHILE ( C: dest -- orig dest ) 
+; Put the location of a new unresolved forward reference orig onto the control flow stack, under the existing dest. 
+; Append the run-time semantics given below to the current definition. The semantics are incomplete until orig and 
+; dest are resolved (e.g., by REPEAT). 
+; Run-Time provided by IF/(?BRANCH)
+immWordEntry "WHILE", 5
+    ; POSTPONE IF SWAP
+    DW IF, SWAP
+    DW EXIT
+
+; REPEAT ( C: orig dest -- )
+; Append the run-time semantics given below to the current definition, resolving the backward reference dest. Resolve the 
+; forward reference orig using the location following the appended run-time semantics. 
+; Run-Time provided by AGAIN/(BRANCH) THEN
+immWordEntry "REPEAT", 6
+    ; POSTPONE AGAIN
+    ; POSTPONE THEN
+    DW AGAIN, THEN
+    DW EXIT
+
+
+; =============================================================================
+; Data words
+; =============================================================================
+
+
+; ALIGN ( -- ) - CORE
+; If the data-space pointer is not aligned, reserve enough space to align it. 
+; Which does nothing as there is no alignment
+codeEntry "ALIGN", 5
+    NEXT
+
+; ALIGNED ( addr -- a-addr ) - CORE
+; a-addr is the first aligned address greater than or equal to addr.  
+; Which also does nothing 
+codeEntry "ALIGNED", 7
+    NEXT
+
+; CELL+ ( a-addr1 -- a-addr2 ) - CORE
+; Add the size in address units of a cell to a-addr1, giving a-addr2. 
+codeEntry "CELL+", 5, CELL_PLUS
+    pop     BC
+    inc     BC
+    inc     BC
+    push    BC
+
+    NEXT
+
+; CELLS ( n1 -- n2 ) - CORE
+; n2 is the size in address units of n1 cells
+codeEntry "CELLS", 5
+    JP      TWO_STAR
+
+; CHAR+ ( a-addr1 -- a-addr2 ) - CORE 
+; Add the size in address units of a cell to a-addr1, giving a-addr2. 
+codeEntry "CHAR+", 5, CHAR_PLUS
+    JP      ONE_PLUS
+
+; CHARS ( n1 -- n2 ) - CORE
+; n2 is the size in address units of n1 characters.
+codeEntry "CHARS", 5
+    NEXT
+
+; =============================================================================
+; FORTH words
+; =============================================================================
+
+; DEPTH ( -- +n ) - CORE
+; +n is the number of single-cell values contained in the data stack before +n was placed on the stack. 
+wordEntry "DEPTH", 5
+    ;SP@ SP0 SWAP - 2/ EXIT 
+    DW SP_FETCH, SP0, SWAP, MINUS, TWO_SLASH
+    DW EXIT
+
+; COMPILE, ( xt -- ) - CORE-EXT
+; Append the execution semantics of the definition represented by xt to the execution semantics of the current definition. 
+wordEntry "COMPILE,", 8, COMPILE_COMMA
+    ; ,             ( Nothing special here, just write out the XT)
+    DW COMMA
+    DW EXIT
+
+; LITERAL ( x -- ) - CORE
+; Append the run-time semantics given below to the current definition. 
+; ( -- x ) Place x on the stack. 
+ImmWordEntry "LITERAL", 7
+    ; STATE @ IF                ( If we're not in compile mode, just leave it in the stack, not standard but every forth I've found does it)
+    ;   ['] LIT COMPILE, ,      ( Compile ' LIT NUMBER ' into memory)
+    ; THEN 
+    DW STATE, FETCH, IMP_QBRANCH, .then - $
+    DW LIT, LIT, COMPILE_COMMA, COMMA
+.then:    
+    DW EXIT
+
+; 2LITERAL ( x1 x2 -- ) - DOUBLE
+; Append the run-time semantics given below to the current definition. 
+; ( -- x1 x2 ) Place cell pair x1 x2 on the stack
+ImmWordEntry "2LITERAL", 8, TWO_LITERAL
+    ; STATE @ IF                ( If we're not in compile mode, just leave it in the stack, not standard but every forth I've found does it)
+    ;   ['] TWO_LIT COMPILE,    ( Compile ' 2LIT ' into memory)
+    ;   SWAP , ,                ( Then the number low word first)
+    ; THEN 
+    DW STATE, FETCH, IMP_QBRANCH, .then - $
+    DW SWAP, LIT, LIT, COMPILE_COMMA, COMMA
+    DW LIT, LIT, COMPILE_COMMA, COMMA
+.then:    
+    DW EXIT
+
+; =============================================================================
+; Picture numeric output
+; =============================================================================
+
+; PAD ( -- c-addr ) - CORE-EXT
+; c-addr is the address of a transient region that can be used to hold data for intermediate processing. 
+wordEntry "PAD", 3
+    ; HERE 84 + ;
+    DW HERE, LIT, 84, PLUS, EXIT
+
+; BASE ( -- a-addr ) - CORE
+; a-addr is the address of a cell containing the current number-conversion radix {{2...36}}. 
+varEntry "BASE", 4
+    dw 10
+
+; DECIMAL ( -- ) - CORE
+; Set the numeric conversion radix to ten (decimal). 
+wordEntry "DECIMAL", 7
+    DW LIT, 10, BASE, STORE, EXIT
+
+; HEX ( -- ) - CORE-EXT
+; Set contents of BASE to sixteen. 
+wordEntry "HEX", 3
+    DW LIT, 16, BASE, STORE, EXIT
+
+; HLD ( -- c-addr) - INTERNAL
+; The address of the start of the generated string.
+varEntry "HLD", 3
+    dw 0000h
+
+; <# ( -- ) - CORE
+; Initialize the pictured numeric output conversion process. 
+wordEntry "<#", 2, LESSTHAN_NUMBER
+    ; PAD HLD ! ;
+    dw PAD, HLD, STORE, EXIT
+
+; HOLD ( char -- ) - CORE
+; Add char to the beginning of the pictured numeric output string.
+wordEntry "HOLD", 4
+    ; -1 HLD +! HLD @ C! ;
+    DW LIT, -1, HLD, PLUS_STORE, HLD, FETCH, C_STORE, EXIT  
+
+; >DIGIT ( u -- char ) - CUSTOM
+; Converts the number on the stack to a printable digit 
+wordEntry ">DIGIT", 6, TO_DIGIT
+    ; DUP 9 > IF
+    ;   7 +
+    ; THEN
+    ; 48 +  ;
+    DW DUP, LIT, 9, GREATERTHAN, IMP_QBRANCH, .then - $
+    DW LIT, 7, PLUS
+.then:    
+    DW LIT, 48, PLUS
+
+    DW EXIT
+
+; # ( ud1 -- ud2 ) - CORE
+; Divide ud1 by the number in BASE giving the quotient ud2 and the remainder n. (n is the least 
+; significant digit of ud1.) Convert n to external form and add the resulting character to the 
+; beginning of the pictured numeric output string. 
+wordEntry "#", 1, NUMBER
+    ; BASE @ UD/MOD ROT >DIGIT HOLD;
+    DW BASE, FETCH, UD_DIV_MOD, ROT, TO_DIGIT, HOLD
+    DW EXIT
+
+; SIGN ( n -- ) - CORE
+; If n is negative, add a minus sign to the beginning of the pictured numeric output string.
+wordEntry "SIGN", 4
+    ; 0< IF [CHAR] - HOLD THEN
+    DW ZERO_LESSTHAN, IMP_QBRANCH, .then - $, LIT, '-', HOLD
+.then:    
+    DW EXIT
+
+; #S ( ud1 -- ud2 ) - CORE
+; Convert one digit of ud1 according to the rule for #. Continue conversion until the quotient is zero. ud2 is zero
+wordEntry "#S", 2, NUMBER_S
+    ; BEGIN # 2DUP OR 0= UNTIL EXIT 
+.loop:
+    dw NUMBER, TWO_DUP, OR_WORD, ZERO_EQUAL, IMP_QBRANCH, .loop - $, EXIT
+   
+; #> ( xd -- c-addr u ) - CORE
+; Drop xd. Make the pictured numeric output string available as a character string. 
+; c-addr and u specify the resulting character string.
+wordEntry "#>", 2, NUMBER_GREATERTHAN
+    ; 2DROP HLD @ PAD OVER - ;
+    dw TWO_DROP, HLD, FETCH, PAD, OVER, MINUS, EXIT
+
+; CR ( -- ) - CORE
+; Cause subsequent output to appear at the beginning of the next line. 
+wordEntry "CR", 2
+    ; 13 10 EMIT EMIT
+    DW LIT, 13, LIT, 10, EMIT, EMIT, EXIT
+
+; SPACE ( -- ) - CORE
+; Display one space.
+wordEntry "SPACE", 5
+    ; BL EMIT
+    DW BL, EMIT, EXIT
+
+; SPACES ( n -- ) - CORE
+; If n is greater than zero, display n spaces. 
+wordEntry "SPACES", 6
+    ; 0 MAX ?DUP IF
+    ;   0 DO BL EMIT LOOP 
+    ; THEN
+    DW LIT, 0, MAX, Q_DUP, IMP_QBRANCH, .then - $
+    DW LIT, 0
+    DW IMP_DO
+.doLoop:
+    DW BL, EMIT, IMP_LOOP, .doLoop - $
+.then:    
+    DW EXIT
+
+; . ( n -- ) - CORE 
+; Display n in free field format. 
+wordEntry ".", 1, DOT    
+    ; BASE @ 10 > IF
+    ;   U.          ( If above base 10, print the value unsigned)
+    ; ELSE
+    ;   S>D D.
+    ; THEN
+    dw BASE, FETCH, LIT, 10, GREATERTHAN, IMP_QBRANCH, .else - $
+    dw U_DOT, IMP_BRANCH, .then - $
+.else:
+    DW S_TO_D, D_DOT
+.then:      
+    DW EXIT
+
+; .R ( n1 n2 -- ) - CORE
+; Display n1 right aligned in a field n2 characters wide. If the number of characters required to display u is greater 
+; than n, all digits are displayed with no leading spaces in a field as wide as necessary. 
+wordEntry ".R", 2, DOT_R
+    ; >R S>D R> D.R
+    DW TO_R, S_TO_D, R_FROM, D_DOT_R, EXIT
+
+; U. ( u -- ) - CORE
+; Display u in free field format. 
+wordEntry "U.", 2, U_DOT
+    ; S>D <# # #S #> TYPE 
+    ;dw LIT, 0, LESSTHAN_NUMBER, NUMBER_S, NUMBER_GREATERTHAN, TYPE, SPACE, EXIT
+    ; 0 D.
+    DW LIT, 0, D_DOT, EXIT
+
+; U.R ( u n -- ) - CORE-EXT
+; Display u right aligned in a field n characters wide. If the number of characters required to display u is greater 
+; than n, all digits are displayed with no leading spaces in a field as wide as necessary. 
+wordEntry "U.R", 3, U_DOT_R
+    ; 0 SWAP D.R 
+    DW LIT, 0, SWAP, D_DOT_R, EXIT
+
+; D. ( d -- ) - DOUBLE
+; Display d in free field format.
+wordEntry "D.", 2, D_DOT
+    ; 0 D.R SPACE
+    DW LIT, 0, D_DOT_R, SPACE
+    DW EXIT
+
+; D.R ( d n -- ) - DOUBLE-EXT
+; Display d right aligned in a field n characters wide. If the number of characters required to display d is greater 
+; than n, all digits are displayed with no leading spaces in a field as wide as necessary. 
+wordEntry "D.R", 3, D_DOT_R
+    ; >R SWAP OVER 2DUP DABS  <# #S ROT SIGN #>  (dl dh dl)
+    ; R> OVER - SPACES TYPE 
+    DW TO_R, SWAP, OVER, DABS, LESSTHAN_NUMBER, NUMBER_S, ROT, SIGN, NUMBER_GREATERTHAN
+    DW R_FROM, OVER, MINUS, SPACES, TYPE
+    DW EXIT
+
+; H. ( n -- ) - CUSTOM
+; Display n as a four digit hex number
+wordEntry "H.", 2, H_DOT
+    ; BASE @ SWAP HEX 0
+    ; <# # # # # #> TYPE SPACE
+    ; BASE !
+    DW BASE, FETCH, SWAP, HEX, LIT, 0
+    DW LESSTHAN_NUMBER, NUMBER, NUMBER, NUMBER, NUMBER, NUMBER_GREATERTHAN, TYPE, SPACE
+    DW BASE, STORE, EXIT
+    DW EXIT
+
+; .S ( -- ) - TOOLS
+; Copy and display the values currently on the data stack. The format of the display is implementation-dependent. 
+wordEntry ".S", 2, DOT_S
+    ; CR SP0 1 CELLS - 
+    ; BEGIN 
+    ;   DUP SP@ CELLS+ <> WHILE
+    ;   DUP @ . 1 CELLs - 
+    ; REPEAT
+    ; DROP
+    DW CR, SP0, LIT, 1, CELLS, MINUS
+.loop:
+    DW DUP, SP_FETCH, CELL_PLUS, NOT_EQUAL, IMP_QBRANCH, .exit - $
+    DW DUP, FETCH, DOT, LIT, 1, CELLS, MINUS, IMP_BRANCH, .loop - $
+.exit:    
+    DW DROP
+    DW EXIT
+
+; KEY? ( -- flag ) - FACILITY
+; If a character is available, return true. Otherwise, return false. 
+wordEntry "KEY?", 4, KEYQ
+    ; 0x15 PORT@ ( read the status port )
+    ; 0x01 AND   ( mask there is data to read )
+    ; IF TRUE ELSE FALSE THEN
+    dw LIT, 0x15, PORT_FETCH, LIT, 0x01, AND_WORD
+    dw IMP_QBRANCH, .else - $, CONSTANT_TRUE, IMP_BRANCH, .then - $
+.else:
+    dw CONSTANT_FALSE
+.then:    
+    dw EXIT
+
+; KEY ( -- char ) - CORE
+; Receive one character char, a member of the implementation-defined character set. 
+wordEntry "KEY", 3
+    ; BEGIN
+    ;   KEY?       
+    ; UNTIL        ( Loop until we have a key )
+    ; 0x10 PORT@ ;    
+.loop:
+    dw KEYQ, IMP_QBRANCH, .loop - $
+    dw LIT, 0x10, PORT_FETCH, EXIT
+
+; ACCEPT ( c-addr +n1 -- +n2 ) - CORE
+; Receive a string of at most +n1 characters. Display graphic characters as they are received
+; When input terminates, nothing is appended to the string
+; +n2 is the length of the string stored at c-addr. 
+wordEntry "ACCEPT", 6
+    ; OVER + 1- OVER ( MinPos, MaxPos, CurPos) 
+    ; BEGIN
+    ;   KEY DUP 13 <> WHILE ( Check for CR)
+    ;   DUP EMIT            ( Display it)
+    ;   DUP 8 = IF          ( check for backspace)
+    ;       DROP 1- >R OVER R< UMAX (Drop the input, move back, and make sure we're not under the min)
+    ;   ELSE   
+    ;       OVER SWAP C! 1+ OVER UMIN  (Store the input, move forward, and make sure we're not over the max)
+    ;   THEN
+    ; REPEAT 
+    ; DROP  ( drop the CR )
+    ; NIP SWAP -  ( Return the length of the string )
+    DW OVER, PLUS, ONE_MINUS, OVER
+.begin
+    DW KEY, DUP, LIT, 0Dh, NOT_EQUAL, IMP_QBRANCH, .repeat - $
+    DW DUP, EMIT, DUP, LIT, 8, EQUAL, IMP_QBRANCH, .else - $
+    DW DROP, ONE_MINUS, TO_R, OVER, R_FROM, UMAX
+    DW IMP_BRANCH, .then - $
+.else:    
+    DW OVER, C_STORE, ONE_PLUS, OVER, UMIN
+.then:       
+    DW IMP_BRANCH, .begin - $
+.repeat    
+    DW DROP, NIP, SWAP, MINUS
+    DW EXIT
+
+; EMIT ( x -- ) - CORE
+; If x is a graphic character in the implementation-defined character set, display x.
+wordEntry "EMIT", 4
+    ; BEGIN
+    ;   0x15 PORT@ ( read the status port )
+    ;   0x40 AND   ( mask the read bit)
+    ; UNTIL        ( Loop until the bit is set)
+    ; 0x10 PORT! ;    
+.loop:
+    dw LIT, 0x15, PORT_FETCH, LIT, 0x40, AND_WORD, IMP_QBRANCH
+    dw .loop - $
+    dw LIT, 0x10, PORT_STORE, EXIT
+
+; TYPE ( c-addr u -- ) - TYPE
+; If u is greater than zero, display the character string specified by c-addr and u. 
+wordEntry "TYPE", 4
+;    ?DUP IF
+;       OVER + ( Calculate the end address )
+;       SWAP   ( Swap so it's END START)
+;       DO
+;           I C@ EMIT   ( read the value at the loop index, and print it)
+;       LOOP        
+;    ELSE
+;       DROP   ( Drop C-addr )
+;    THEN 
+    DW Q_DUP, IMP_QBRANCH, .else - $
+    DW OVER, PLUS, SWAP
+    DW IMP_DO
+.doloop:
+    DW I_VALUE, C_FETCH, EMIT
+    DW IMP_LOOP, .doloop - $
+
+    DW IMP_BRANCH, .then - $
+.else:
+    DW DROP
+.then:
+    DW EXIT
+
+; HERE ( -- addr ) - CORE
+; addr is the data-space pointer. 
+wordEntry "HERE", 4
+;   DP @ ;
+    dw DP, FETCH, EXIT
+
+; ALLOT ( n -- ) - CORE
+; If n is greater than zero, reserve n address units of data space. If n is less than zero, 
+; release | n | address units of data space. If n is zero, leave the data-space pointer unchanged.
+wordEntry "ALLOT", 5
+;   DP +! ;    
+    dw DP, PLUS_STORE, EXIT
+
+; , ( x -- ) - CORE
+; Reserve one cell of data space and store x in the cell.
+wordEntry <,>, 1, COMMA
+    ; HERE ! 1 CELLS ALLOT ?SP;
+    dw HERE, STORE, LIT, 1, CELLS, ALLOT, Q_SP, EXIT
+    
+; C, ( char -- ) - CORE
+; Reserve space for one character in the data space and store char in the space. 
+wordEntry <C,>, 2, C_COMMA
+;   HERE C! 1 CHARS ALLOT ;
+    dw HERE, C_STORE, LIT, 1, CHARS, ALLOT, Q_SP, EXIT
+
+; COUNT ( c-addr1 -- c-addr2 u ) - CORE
+; Return the character string specification for the counted string stored at c-addr1.
+wordEntry "COUNT", 5
+;   DUP CHAR+ SWAP C@
+    dw DUP, CHAR_PLUS, SWAP, C_FETCH, EXIT
+
+; ABS ( n -- +n ) - CORE
+; Returns the Absolute Value of n
+wordEntry "ABS", 3
+    ; DUP 0< IF NEGATE THEN ;
+    dw DUP, ZERO_LESSTHAN, IMP_QBRANCH, .then - $, NEGATE
+.then
+    dw EXIT
+
+; DNEGATE ( d1 -- d2 ) - DOUBLE
+; d2 is the negation of d1. 
+wordEntry "DNEGATE", 7
+    ; SWAP INVERT SWAP INVERT 1 M+ ;
+    dw SWAP, INVERT, SWAP, INVERT, LIT, 1, M_PLUS
+.then
+    dw EXIT
+
+; DABS ( n -- +n ) - DOUBLE
+; Returns the Absolute Value of n
+wordEntry "DABS", 4
+    ; DUP 0< IF NEGATE THEN ;
+    dw DUP, ZERO_LESSTHAN, IMP_QBRANCH, .then - $, DNEGATE
+.then
+    dw EXIT
+
+; NAME>LINK ( c-adder -- c-adder) - CUSTOM
+; converts the passed in address from a name pointer to a link pointer
+wordEntry "NAME>LINK", 9, NAME_TO_LINK
+    ; 2 - ;
+    DW LIT, 2, MINUS
+    DW EXIT
+
+; NAME>XT ( c-adder -- xt ) - CUSTOM
+; converts the passed in address from a name pointer to the word's XT
+wordEntry "NAME>XT", 7, NAME_TO_XT
+    ; COUNT 0x3F AND +
+    DW COUNT, LIT, 0x3F, AND_WORD, PLUS
+    DW EXIT
+
+; >BODY ( xt -- a-addr ) - CORE
+; a-addr is the data-field address corresponding to xt.
+wordEntry ">BODY", 5, TO_BODY
+    ; DUP C@ CD = IF        ( check  for the call opcode)
+    ;   3 +                 ( If we have the call, advaced it by 3 byte)
+    ; THEN                  ( Otherwise we're already at the body)
+    DW DUP, C_FETCH, LIT, 0CDh, EQUAL, IMP_QBRANCH, .then - $
+    DW LIT, 3, PLUS
+.then:    
+    DW EXIT
+
+; IMMEDIATE? ( c-adder -- flag) - CUSTOM
+; returs the statue of the immidate flag for the passed in word pointer
+wordEntry "IMMEDIATE?", 9, IMMEDIATEQ
+    ; C@ 0x80 AND IF 
+    ;   TRUE 
+    ; ELSE 
+    ;   FALSE 
+    ; THEN
+    DW C_FETCH, LIT, 0x80, AND_WORD, IMP_QBRANCH, .else - $
+    DW CONSTANT_TRUE, IMP_BRANCH, .then - $
+.else:
+    DW CONSTANT_FALSE
+.then:    
+    DW EXIT
+
+; SMUDGE? ( c-adder -- flag) - CUSTOM
+; returs the statue of the SMUDGE flag for the passed in word pointer
+wordEntry "SMUDGE?", 7, SMUDGEQ
+    ; C@ 0x40 AND IF
+    ;   TRUE 
+    ; ELSE 
+    ;   FALSE 
+    ; THEN
+    DW C_FETCH, LIT, 0x40, AND_WORD, IMP_QBRANCH, .else - $
+    DW CONSTANT_TRUE, IMP_BRANCH, .then - $
+.else:
+    DW CONSTANT_FALSE
+.then:    
+    DW EXIT
+
+; =============================================================================
+; Parser
+; =============================================================================
+
+
+; >UPPERCASE (c-addr u -- ) - CUSTOM
+; Convers a string to uppercase
+codeEntry ">UPPERCASE", 10, TO_UPPERCASE
+    pop     BC  ; u
+    pop     HL  ; c-addr
+
+    ld      B, C ; Move the count to be
+
+    ; bail early if the length is zero
+    ld      A, C
+    cp      A, 0
+    JP      z, .exit
+
+.loop:
+    ld      A, (HL)
+    cp      A, 'a'
+    JP      C, .skip
+    cp      A, 'z'
+    jp      Z, .skip
+    jp      NC, .skip
+    and     A, 0DFh
+
+    ld      (HL), A
+
+.skip:    
+    inc     HL
+    DJNZ    .loop
+
+.exit:
+    NEXT
+
+; TIB ( -- c-addr ) - CUSTOM
+; returns the address of the terminal input buffer
+varEntry "TIB", 3
+    DEFS 128
+
+; #TIB ( -- n ) - CUSTOM
+; returns the length of the input buffer
+constEntry "#TIB", 4, TIBLEN
+    dw 128
+
+; >IN ( -- a-addr ) - CORE
+; a-addr is the address of a cell containing the offset in characters from the start of the input buffer to the start of the parse area. 
+varEntry ">IN", 3, TO_IN
+    dw 0
+
+; >POS ( -- a-addr ) - CORE
+; a-addr is the address of a cell containing the offset in characters from the start of the input buffer where the current parse started. 
+varEntry ">POS", 4, TO_POS
+    dw 0
+
+; `SOURCE ( -- addr) - INTERNAL
+; Address of the sounce variable
+varEntry "`SOURCE", 7, BTICK_SOURCE 
+    dw 0, 0
+
+; SOURCE ( -- c-addr u ) - CORE
+; c-addr is the address of, and u is the number of characters in, the input buffer. 
+wordEntry "SOURCE", 6
+    ; `SOURCE 2@
+    DW BTICK_SOURCE, TWO_FETCH, EXIT
+
+; SOURCE-ID ( -- 0 | -1 ) - CORE-EXT
+; Identifies the input source
+varEntry "SOURCE-ID", 9, SOURCE_ID
+    dw 0
+
+; STATE ( -- a-addr ) - CORE
+; a-addr is the address of a cell containing the compilation-state flag. STATE is true when in compilation state, 
+; false otherwise. The true value in STATE is non-zero, but is otherwise implementation-defined. 
+varEntry "STATE", 5, STATE
+    dw 0
+
+; SAVE-INPUT ( -- xn ... x1 n ) - CORE-EXT
+; x1 through xn describe the current state of the input source specification for later use by RESTORE-INPUT
+; Soure-Adder, Source-Len, >IN, 3
+wordEntry "SAVE-INPUT", 10, SAVE_INPUT
+    ; `SOURCE` 2@
+    ; >IN @
+    ; 3
+    DW BTICK_SOURCE, TWO_FETCH
+    DW TO_IN, FETCH
+    DW LIT, 3
+    DW EXIT
+
+; RESTORE-INPUT ( xn ... x1 n -- flag ) - CORE-EXT
+; Attempt to restore the input source specification to the state described by x1 through xn. flag is true 
+; if the input source specification cannot be so restored. 
+wordEntry "RESTORE-INPUT", 13, RESTORE_INPUT
+    ; DUP 3 - IF
+    ;   TRUE
+    ; ELSE
+    ;   SOURCE-ID !
+    ;   >IN !
+    ;   `SOURCE 2!
+    ; THEN
+    DW DUP, LIT, 3, MINUS, IMP_QBRANCH, .else - $
+    DW CONSTANT_TRUE
+.else:
+    DW TO_IN, STORE
+    DW BTICK_SOURCE, TWO_STORE        
+.then:
+    DW EXIT
+
+; QUIT ( -- ) ( R: i * x -- ) - CORE
+; Empty the return stack, store zero in SOURCE-ID if it is present, make the user 
+; input device the input source, and enter interpretation state. Do not display a message.
+wordEntry "QUIT", 4    
+    ; RP0 RP!               ( Empty the return stack)
+    ; LP0 LSP !             ( Empty the leave stack)
+    ; 0 SOURCE-ID !         ( store zero in SOURCE-ID)
+    ; POSTPONE [            ( Enter inerpretation state )
+    ; BEGIN                 ( enter interpretation state)
+    ;   CR TIB DUP #TIB ACCEPT SPACE ( Accept a line from the input source )
+    ;   INTERPRET           ( interpret )
+    ;   STATE @ 0= IF
+    ;        (OK)           ( Display the implementation-defined system prompt if in interpretation state)
+    ;   THEN
+    ; AGAIN
+    
+    ; Accept a line from the input source into the input buffer, set >IN to zero, and interpret.
+    ; Display the implementation-defined system prompt if in interpretation state, all processing has
+    ; been completed, and no ambiguous condition exists. 
+    DW RP0, RSP_STORE
+    DW LP0, LSP, STORE
+    DW LIT, 0, SOURCE_ID, STORE
+    DW LEFT_BRACKET
+.begin:
+    DW CR, TIB, DUP, TIBLEN, ACCEPT, SPACE
+    DW INTERPRET
+    DW STATE, FETCH, ZERO_EQUAL, IMP_QBRANCH, .then - $
+    DW IMP_OK
+.then:
+    DW IMP_BRANCH, .begin - $
+    DW HALT_WORD
+
+wordEntry "BYE", 3
+    ; HALT ABORT
+    DW HALT_WORD, ABORT
+    DW EXIT
+
+; ABORT ( i * x -- ) ( R: j * x -- ) - CORE
+; Empty the data stack and perform the function of QUIT, which includes emptying the return stack, without displaying a message. 
+wordEntry "ABORT", 5
+    ; SP0 SP! QUIT
+    DW SP0, SP_STORE, QUIT
+    DW EXIT
+
+; (ABORT") ( i * x x1 -- | i * x ) ( R: j * x -- | j * x ) - INTERNAL
+; Remove x1 from the stack. If any bit of x1 is not zero, display ccc and perform an 
+; implementation-defined abort sequence that includes the function of ABORT. 
+wordEntry <(ABORT")>, 8, IMP_ABORT_STRING ; "
+    ; IF
+    ;   R@ COUNT        
+    ;   CR TYPE ABORT
+    ; else
+    ;   R> COUNT + <R ( Skip over the string)
+    ; THEN
+    DW IMP_QBRANCH, .else - $
+    DW WHERE, R_FETCH, COUNT, CR, TYPE, ABORT, IMP_BRANCH, .then - $
+.else:    
+    DW R_FROM, COUNT, PLUS, TO_R 
+.then:    
+    DW EXIT
+
+; ABORT" ( "ccc<quote>" -- ) 
+; Parse ccc delimited by a " (double-quote). Append the run-time semantics given below to the current definition. 
+immWordEntry <ABORT">, 6, ABORT_STRING ; "
+    ; POSTPONE (ABORT")          ( Write out the Implimentation word)
+    ; [CHAR] " WORD              ( Read the string (which also puts it right where it should be, yay!)
+    ; C@ 1+                      ( Read the length, and add the count to it the length)
+    ; ALLOT                      ( And move everything forward)
+    DW LIT, IMP_ABORT_STRING, COMPILE_COMMA
+    DW LIT, 34, WORD
+    DW C_FETCH, ONE_PLUS
+    DW ALLOT    
+    DW EXIT
+
+; WHERE ( -- ) - CUSTOM
+; Markes the current word that is being parsed
+wordEntry "WHERE", 5
+    ; >POS @ CR SPACES          ( Get the current position and print out the padding)        
+    ; HERE C@                   ( Get the length of the input word)
+    ; 0 DO [CHAR] ^ EMIT LOOP   ( Print out the location)
+    DW TO_POS, FETCH, CR, SPACES
+    DW HERE, C_FETCH
+    DW LIT, 0, IMP_DO
+.doloop:
+    DW LIT, 94, EMIT, IMP_LOOP, .doloop - $ 
+    DW EXIT
+
+; ?SP ( -- ) - CUSTOM
+; Checks if there is a stack underflow, and aborts when that happens
+wordEntry "?SP", 3, Q_SP
+    ; SP@ SP0 SWAP U< ABORT" Stack Underflow!"
+    DW SP_FETCH, SP0, SWAP, U_LESSTHAN, IMP_ABORT_STRING
+    DB 16, "Stack Underflow!"
+    DW EXIT
+
+; EVALUATE ( i * x c-addr u -- j * x ) - CORE
+; Save the current input source specification. Store minus-one (-1) in SOURCE-ID if it is present. When the parse 
+; area is empty, restore the prior input source specification. Other stack effects are due to the words EVALUATEd. 
+wordEntry "EVALUATE", 8, EVALUATE
+    ; SAVE-INPUT SOURCE-ID @         ( Save the input state and source )
+    ; >R >R >R >R >R                 ( Move it to the return stack )
+    ; -1 SOURCE-ID !                 ( Store minus-one (-1) in SOURCE-ID )
+    ; INTERPRET                      ( Interpret the buffer )
+    ; <R <R <R <R <R                 ( Restore data from return stack)
+    ; SOURCE-ID ! RESTORE-INPUT      ( restore the prior input source specification. )
+    DW SAVE_INPUT, SOURCE_ID, FETCH
+    DW TO_R, TO_R, TO_R, TO_R, TO_R
+    DW LIT, -1, SOURCE_ID, STORE
+    DW INTERPRET
+    DW R_FROM, R_FROM, R_FROM, R_FROM, R_FROM
+    DW SOURCE_ID, STORE, RESTORE_INPUT
+    DW EXIT
+
+; STRING= ( c-addr1 u1 c-addr2 u2 -- flag ) - CUSTOM
+; Compares the string c-adder1 to cadder2, and returns TRUE if they are equal
+codeEntry "STRING=", 7, STRING_EQUAL
+    di     
+    exx
+
+    POP     HL
+    ld      A, L        ; a = u2
+    POP     HL          ; hl = C-addr2
+    POP     BC          
+    ld      B, c        ; b = u1
+    POP     DE          ; DE = addr1
+
+    ; If the lengths don't match, they can't be equal
+    cp      A, B
+    jp      nz, .retFalse
+    
+.loop:
+    ld      A, (DE)
+    inc     DE
+
+    cp      a, (HL)
+    jp      nz, .retFalse
+    inc     HL
+
+    djnz .loop    
+
+.retTrue;
+    LD      HL, -1
+    push    HL 
+    jp      .exit
+
+.retFalse;
+    LD      HL, 0
+    push    HL 
+
+.exit:   
+    exx
+    ei
+
+    NEXT
+
+; FIND ( c-addr -- c-addr 0 | xt 1 | xt -1 ) - CORE
+; Find the definition named in the counted string at c-addr. If the definition is not found, return c-addr and zero. 
+; If the definition is found, return its execution token xt. If the definition is immediate, also return one (1), 
+; otherwise also return minus-one (-1).
+wordEntry "FIND", 4
+    ; DUP COUNT >UPPERCASE             ( Stick the input string on the stack) ( c-adder )
+    ; LATEST @                         ( Get the latest entry)                ( c-adder latest ) 
+    ; BEGIN
+    ;   DUP SMUDGE? 0= IF              ( Skip anything that is smudged)       
+    ;     2DUP COUNT 0x3F AND          ( Get the address and length, and mask off any flags)   ( c-adder latest c-adder latest n )
+    ;     ROT COUNT                    ( c-adder latest latest n c-adder n)
+    ;     STRING= IF                  
+    ;        NIP DUP ?IMMIDATE         
+    ;        IF 1 ELSE -1 THEN         ( Immidate Flag)                                        ( latest imm )
+    ;        SWAP NAME>XT SWAP         ( Get the XT and put it in the right order)             ( xt imm )
+    ;        EXIT                      ( Clean up and early return)
+    ;     THEN
+    ;   THEN                           ( c-adder latest )
+    ;   NAME>LINK @                    ( Get the link )  ( c-adder latest )
+    ;   DUP 0 <>
+    ; UNTIL
+    ; DROP 0                           ( Drop latest return a not found) ( c-addr 0)
+    DW DUP, COUNT, TO_UPPERCASE
+    DW LATEST, FETCH
+.begin:    
+    DW DUP, SMUDGEQ, ZERO_EQUAL, IMP_QBRANCH, .then - $
+    DW TWO_DUP, COUNT, LIT, 0x3F, AND_WORD
+    DW ROT, COUNT
+    DW STRING_EQUAL, IMP_QBRANCH, .then2 - $
+    DW NIP, DUP, IMMEDIATEQ
+    DW IMP_QBRANCH, .else3 - $, LIT, 1, IMP_BRANCH, .then3 - $
+.else3
+    DW LIT, -1
+.then3:    
+    DW SWAP, NAME_TO_XT, SWAP
+    DW EXIT
+
+.then2:    
+.then:
+    DW NAME_TO_LINK, FETCH
+    DW DUP, LIT, 0, EQUAL
+    DW IMP_QBRANCH, .begin - $
+
+    DW DROP, LIT, 0
+    DW EXIT
+
+; INTERPRET ( i * x c-addr u -- j * x ) - INTERNAL
+; Make the string described by c-addr and u both the input source and input buffer, set >IN to zero, and interpret.
+wordEntry "INTERPRET", 9
+    ; 'SOURCE 2! 0 >IN !       ( set >IN to zero )
+    ; BEGIN    
+    ;   BL WORD DUP COUNT NIP           ( Loop until we get back an empty string)
+    ;   0<> WHILE                       ( c-adder )
+    ;   FIND ?DUP IF                    ( c-adde|xt 0|1|-1)
+    ;       STATE @ + 2 <               ( c-addr -1|1 0|2)
+    ;       IF EXECUTE ?SP ELSE COMPILE, THEN
+    ;   ELSE                            ( c-adder)
+    ;       NUMBER? DUP 0= ABORT" Unkown word"
+    ;       1 = IF
+    ;           POSTPONE LITERAL    
+    ;       ELSE
+    ;           POSTPONE 2LITERAL
+    ;       THEN 
+    ;   THEN
+    ; REPEAT
+    ; DROP
+    DW BTICK_SOURCE, TWO_STORE, LIT, 0, TO_IN, STORE
+.begin:
+    DW BL, WORD, DUP, COUNT, NIP
+    DW ZERO_NOTEQUAL, IMP_QBRANCH, .repeat - $
+    DW FIND, Q_DUP, IMP_QBRANCH, .else - $
+    DW STATE, FETCH, PLUS, LIT, 0, NOT_EQUAL, IMP_QBRANCH, .__else - $    
+    DW EXECUTE, Q_SP, IMP_BRANCH, .__then - $
+.__else:
+    DW COMPILE_COMMA
+.__then:    
+    DW IMP_BRANCH, .then - $
+.else:
+    DW NUMBERQ, DUP, ZERO_EQUAL, IMP_ABORT_STRING
+    DB 11, 'Unkown word'
+    DW LIT, 1, EQUAL, IMP_QBRANCH, ._else - $
+    DW LITERAL, IMP_BRANCH, ._then - $
+._else:
+    DW TWO_LITERAL
+._then:
+.then:    
+    DW IMP_BRANCH, .begin - $
+.repeat:    
+    DW DROP
+    DW EXIT
+
+; SIGNED? ( c-addr n -- c-addr n FLAG) - INTERNAL
+; If the number is signed, move the string passed the sign and return -1 if negative, and 0 otherwise
+codeEntry "SIGNED?", 7, SIGNEDQ
+    pop     BC ; n
+    pop     HL ; c-addr
+
+    ld      A, (HL)
+    cp      A, '-'
+    jp      Z, .signed
+    cp      A, '+'
+    jp      Z, .signed
+
+    ld      A, 0
+
+    push    HL      ; c-addr
+    push    BC      ; n
+    LD      BC, 0   ; FLAG
+
+    jp      .end
+
+.signed:
+    inc     HL
+    dec     BC
+
+    push    HL      ; c-addr
+    push    BC      ; n
+    LD      BC, 0   ; FLAG
+
+    sub     A, '+' ; +=0 -=2
+    jp      z, .end
+    ld      BC, 0xFFFF
+
+.end:  
+    push    BC      ; Flag
+
+    NEXT
+
+; NUMBER? ( c-adder -- c-adder 0 | n 1 | d 2) - INTERNAL
+; Converts the counted string in c-adder to a number, returning the value and the length in words or the address 
+; of the first invalid character and false
+wordEntry "NUMBER?", 7, NUMBERQ
+    ; 0 0 ROT                                               ( 0 0 c-addr )
+    ; COUNT SIGNED? >R          ( Save the sign)            ( 0 0 c-addr n ) 
+    ; >NUMBER                   ( convert the number)       ( n n c-addr n ) 
+    ; DUP 0= IF                 ( Check if we have finished)
+    ;   2DROP DROP              ( Drop the string Info, and the high word of the result ) ( n )
+    ;   R> IF NEGATE THEN 1     ( If the flag is set, negate the response)
+    ; ELSE
+    ;   OVER C@ [CHAR] '.' =    ( Check for a double)       ( n n c-addr n )
+    ;   IF 
+    ;       1- SWAP 1+ SWAP     ( Move the string past the . )
+    ;       >NUMBER             ( Load the rest of the number) ( n n c-addr n )
+    ;   THEN         
+    ;   0= IF                   ( Check we have finished)
+    ;     DROP                  ( Drop the string info)         ( n n )
+    ;     R> IF DNEGATE THEN 2  ( If the flag is set, negate the response)
+    ;   ELSE
+    ;     NIP NIP               ; Drop the bad number            ( n n c-addr )
+    ;     R> DROP 0             ; Drop the saved sign and set the return
+    ;   THEN
+    ; THEN
+    DW LIT, 0, LIT, 0, ROT
+    DW COUNT, SIGNEDQ, TO_R
+    DW TO_NUMBER
+    DW DUP, ZERO_EQUAL, IMP_QBRANCH, .else1 - $  
+    DW TWO_DROP, DROP
+    DW R_FROM, IMP_QBRANCH, ._then - $, NEGATE
+._then:    
+    DW LIT, 1, IMP_BRANCH, .then1 - $
+.else1:
+    DW OVER, C_FETCH, LIT, '.', EQUAL, IMP_QBRANCH, .then2 - $
+    DW ONE_MINUS, SWAP, ONE_PLUS, SWAP
+    DW TO_NUMBER
+.then2:
+    DW ZERO_EQUAL, IMP_QBRANCH, .else3 - $  
+    DW DROP
+    DW R_FROM, IMP_QBRANCH, .__then - $, DNEGATE
+.__then:    
+    DW LIT, 2, IMP_BRANCH, .then3 - $
+.else3:
+    DW NIP, NIP
+    DW R_FROM, DROP, LIT, 0
+.then3:
+.then1:
+    DW EXIT
+
+; DIGIT? ( base c -- n -1 | c 0 ) - INTERNAL
+; Converts the charcater into a valid digit
+codeEntry "DIGIT?", 6, DIGITQ
+    pop     HL  ; c
+    pop     BC  ; base
+
+    ld      A, L
+    sub     A, '0'        
+    jp      C,  .error ; Anything below 0 is an error
+    cp      A, 9       ; If we're <= 9, we don't need any extra steps
+    jp      Z,  .converted
+    jp      C,  .converted
+    sub     A, 7       ; Subtract 7 to adjust the A-Z range
+    cp      A, 10      ; If we're less then 10, it was a charcater was between '9' and 'A' 
+    jp      C,  .error
+    cp      A, C       ; Check the limit of the base
+    jp      NC, .error ; If we're not under the base, bail out
+
+.converted:
+    ld      l, a
+    ld      h, 0   
+    push    HL          ; n
+    jp      TRUE_NEXT   ; -1
+
+.error:
+    push    HL          ; c
+    jp      FALSE_NEXT  ; 0
+
+; DM* (ud1 u2 - ud3) - INTERNAL
+; returns ud1 * u2
+wordEntry "DM*", 3, DM_STAR                   
+    ; DUP >R            ( Save the mulitplier)   ( ud1L ud1H u2)   (5678 1234 5)
+    ; UM* DROP          ( Multiply the High word, keeping only the low part)  ( ud1L u3) (5678 5B04)
+    ; SWAP R>           ( restore the muliplier) (u3 ud1L u2) ( 5B04 5678 5)
+    ; UM*               ( Muliply the low word)  (u3 ud4H ud4L) ( 5B04 B058 1)
+    ; ROT +             ( Add the part we saved to the high result)  (B058 5B05)
+    DW DUP, TO_R
+    DW UM_STAR, DROP
+    DW SWAP, R_FROM
+    DW UM_STAR
+    DW ROT, PLUS
+    DW EXIT
+
+; >NUMBER ( ud1 c-addr1 u1 -- ud2 c-addr2 u2 ) - CORE
+; ud2 is the unsigned result of converting the characters within the string specified by c-addr1 u1 into 
+; digits, using the number in BASE, and adding each into ud1 after multiplying ud1 by the number in BASE. 
+; Conversion continues left-to-right until a character that is not convertible, including any "+" or "-", 
+; is encountered or the string is entirely converted. c-addr2 is the location of the first unconverted 
+; character or the first character past the end of the string if the string was entirely converted. u2 is 
+; the number of unconverted characters in the string.
+wordEntry ">NUMBER", 7, TO_NUMBER
+    ; BEGIN 
+    ;   DUP WHILE                   ( Check if we have anything left)
+    ;   OVER C@ BASE @ SWAP DIGIT?  ( convert the current character)
+    ;   0= IF DROP EXIT THEN        ( if it didn't convert, bail )  (ud1 c-addr1 u1 n )
+    ;   >R 2SWAP BASE @ DM*         ( Multi ud1 by base)
+    ;   R> M+ 2SWAP                 ( add the new value)
+    ;   1- SWAP 1+ SWAP             ( Update the count, and the address)
+    ; REPEAT    
+.begin:    
+    DW DUP, IMP_QBRANCH, .repeat - $
+    DW OVER, C_FETCH, BASE, FETCH, SWAP, DIGITQ
+    DW ZERO_EQUAL, IMP_QBRANCH, .then - $, DROP, EXIT
+.then:
+    DW TO_R, TWO_SWAP, BASE, FETCH, DM_STAR
+    DW R_FROM, M_PLUS, TWO_SWAP
+    DW ONE_MINUS, SWAP, ONE_PLUS, SWAP
+    DW IMP_BRANCH, .begin - $
+.repeat:
+    DW EXIT
+
+; >INPTRS ( -- c-addr1 c-addr2 ) - CUSTOM
+; c-addr2 is the address of end of the input string, c-addr2 is the addresso of the current charater in the string
+wordEntry ">INPTRS", 7, TO_INPTRS
+    ; SOURCE +            ( End address of the sounce buffer)
+    ; SOURCE DROP >IN @ + ( Address of >In )
+    DW SOURCE, PLUS
+    DW SOURCE, DROP, TO_IN, FETCH, PLUS
+    DW EXIT
+
+; PARSE ( char "ccc<char>" -- c-addr u ) - CORE-EXT
+; Parse ccc delimited by the delimiter char. 
+; c-addr is the address (within the input buffer) and u is the length of the parsed 
+; string. If the parse area was empty, the resulting string has a zero length.
+wordEntry "PARSE", 5
+    ; >R >IN @                  ( Save the delimtere on the return stack and get the start value of >IN)
+    ; >INPTRS, SWAP, OVER       ( Get the addresses for the current input)  ( >IN c->IN c-END c->POS )
+    ; >IN @ >POS !              ( Store the current start pos)
+    ; BEGIN
+    ;   2DUP > WHILE            ( Check if we're at the end of the string)
+    ;   DUP C@ R@ <> WHILE      ( Check if the current character is the delmiter)
+    ;   1 >IN +!                ( Update >IN)
+    ;   CHAR+                   ( Advance to the next charater )
+    ; REPEAT THEN               ( Need the THEN for the second WHILE)
+    ; R< DROP                   ( Remove the delimiter from the return stack) ( >IN c->IN c-END c->POS )
+    ; >IN @                     ( Get the current >in ) ( >IN c->IN c-END c->POS >in )
+    ; ROT ROT <> IF             ( If we're not at the end of the buffer)  ( >IN c->IN >in)
+    ;   1 >IN +!                ( Update >IN)
+    ; THEN
+    ; ROT -                     ( Calculate charater count ) ( c->IN len )
+
+    DW TO_R, TO_IN, FETCH, TO_INPTRS, SWAP, OVER
+    DW TO_IN, FETCH, TO_POS, STORE
+.begin:
+    DW TWO_DUP, GREATERTHAN, IMP_QBRANCH, .repeat - $
+    DW DUP, C_FETCH, R_FETCH, NOT_EQUAL, IMP_QBRANCH, .repeat - $
+    DW LIT, 1, TO_IN, PLUS_STORE
+    DW CHAR_PLUS
+    DW IMP_BRANCH, .begin - $
+.repeat:
+    DW R_FROM, DROP
+    DW TO_IN, FETCH
+    DW ROT, ROT ;, DROP, DROP
+    DW NOT_EQUAL, IMP_QBRANCH, .then - $
+    DW LIT, 1, TO_IN, PLUS_STORE
+.then:    
+    DW ROT, MINUS
+    DW EXIT
+
+; MOVE ( addr1 addr2 u -- ) - CORE
+; If u is greater than zero, copy the contents of u consecutive address units at addr1 to the u 
+; consecutive address units at addr2.
+wordEntry "MOVE", 4
+    ; DUP 0<> IF
+    ;   0 DO  ( addr1 addr2 )
+    ;     2DUP SWAP c@ SWAP c!
+    ;     1+ SWAP 1+ SWAP 
+    ;   LOOP
+    ; ELSE
+    ;   DROP 
+    ; THEN 
+    ; DROP DROP
+    DW DUP, ZERO_NOTEQUAL, IMP_QBRANCH, .else - $
+    DW LIT, 0, IMP_DO
+.do:
+    DW TWO_DUP, SWAP, C_FETCH, SWAP, C_STORE
+    DW ONE_PLUS, SWAP, ONE_PLUS, SWAP    
+    DW IMP_LOOP, .do - $
+    DW IMP_BRANCH, .then - $
+.else:
+    DW DROP
+.then:
+    DW DROP, DROP
+    DW EXIT
+
+; FILL ( c-addr u char -- ) - CORE
+; f u is greater than zero, store char in each of u consecutive characters of memory beginning at c-addr.
+wordEntry "FILL", 4
+    ; ROT ROT                   ( char c-addr u )
+    ; DUP 0<> IF
+    ;   0 DO  ( c-addr )
+    ;     2DUP !                ( write the fill charcater)
+    ;     1+                    ( update the address)
+    ;   LOOP
+    ; ELSE
+    ;   DROP                    ( drop the count)
+    ; THEN 
+    ; DROP DROP                 ( the rest)
+    DW ROT, ROT
+    DW DUP, ZERO_NOTEQUAL, IMP_QBRANCH, .else - $
+    DW LIT, 0, IMP_DO
+.do:
+    DW TWO_DUP, STORE
+    DW ONE_PLUS
+    DW IMP_LOOP, .do - $
+    DW IMP_BRANCH, .then - $
+.else:
+    DW DROP
+.then:
+    DW DROP, DROP
+    DW EXIT
+
+; EMPTY ( addr u -- ) -- CORE-EXT
+; If u is greater than zero, clear all bits in each of u consecutive address units of memory beginning at addr. 
+wordEntry "EMPTY", 5
+    ; 0 FILL
+    DW LIT, 0, FILL
+    DW EXIT
+
+; S! (c-addr1 u c-adder2) - CUSTOM
+; At c-adder2, store string described by c-addre1 and u as a counted string
+wordEntry "S!", 2, S_STORE
+    ; 2DUP C!           ; ( Write out the length ) ( c-addr1 u c-adder2)
+    ; CHAR+ SWAP        ; ( Set up for MOVE) (c-addr1 c-adder2 u)
+    ; MOVE
+    DW TWO_DUP, C_STORE
+    DW CHAR_PLUS, SWAP
+    DW MOVE
+    DW EXIT
+
+; WORD ( char "<chars>ccc<char>" -- c-addr ) - CORE
+; Skip leading delimiters. Parse characters ccc delimited by char.
+; c-addr is the address of a transient region containing the parsed word as a counted string
+wordEntry "WORD", 4
+    ; >R >INPTRS                 ( c-END c->POS )
+    ; BEGIN                             
+    ;   2DUP > WHILE             ( check End of bufffer)
+    ;   DUP C@ R@ = WHILE        ( check for a delimited)
+    ;   1 >IN +! CHAR+           ( Advanced the pointers)
+    ; REPEAT
+    ; 2DROP
+    ; R< PARSE                   ( Pass it to PARSE now that leading delmiters are gone)
+    ; HERE S! HERE               ( Save the word at the end of memory )
+
+    DW TO_R, TO_INPTRS
+.begin:
+    DW TWO_DUP, GREATERTHAN, IMP_QBRANCH, .repeat - $
+    DW DUP, C_FETCH, R_FETCH, EQUAL, IMP_QBRANCH, .repeat - $
+    DW LIT, 1, TO_IN, PLUS_STORE, CHAR_PLUS
+    DW IMP_BRANCH, .begin - $
+.repeat:
+    DW TWO_DROP
+    DW R_FROM, PARSE
+    DW HERE, S_STORE, HERE
+
+    DW EXIT
+
+
+; =============================================================================
+; Tick words as they need to be made manual and not with the macros
+; =============================================================================
+
+; ' ( "<spaces>name" -- xt ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Find name and return xt, the execution token for name.
+; HAve to build this one directly as using ' in the name breaks the macros I use
+    dw      LINK
+    LINK = $
+    db      1, "'"
+TICK:
+    call    DO_COL
+    ; ?FIND DROP
+
+    DW Q_FIND, DROP
+    DW EXIT
+
+; ['] ( "<spaces>name" -- xt ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Find name. Append the run-time semantics given 
+; below to the current definition
+; ( -- xt ) Place name's execution token xt on the stack. 
+    dw      LINK
+    LINK = $
+    db      (0x80 | 3), "[']"
+BRACKETED_TICK:
+    call    DO_COL
+    ; '             ( look up the word)
+    ; ['] LIT       ( Get the xt for lit)
+    ; COMPILE, ,    ( write the lit and xt into the output)
+    DW TICK
+    DW LIT, LIT, COMPILE_COMMA, COMMA
+    DW EXIT
+
+; =============================================================================
+; Misc words
+; =============================================================================
+
+; ( ( "ccc<paren>" -- ) - CORE
+; Perform the execution semantics given below. 
+; ( "ccc<paren>" -- ) Parse ccc delimited by ) (right parenthesis). ( is an immediate word.
+; The number of characters in ccc may be zero to the number of characters in the parse area. 
+immWordEntry "(", 1, LEFT_PARAM
+    ; [CHAR] ) WORD DROP
+    DW LIT, ')', WORD, DROP
+    DW EXIT
+
+; \ ( "ccc<paren>" -- ) - CORE
+; Perform the execution semantics given below. 
+; ( "ccc<eol>" -- ) Parse and discard the remainder of the parse area. \ is an immediate word. 
+immWordEntry "\", 1, BACKSLASH
+    ; SOURCE >IN ! DROP
+    DW SOURCE, TO_IN, STORE, DROP
+    DW EXIT
+
+
+; (S") ( --  c-addr u ) - INTERNAL
+; returns the address and count of the string encoded in the word list, and advances the IP past it
+wordEntry <(S")>, 4, IMP_S_QUOTE ; "
+;   R> COUNT 2DUP + <R ;
+    DW R_FROM                   ; Get the return address off the return stack        
+    DW COUNT                    ; Get the count of the string
+    DW TWO_DUP, PLUS            ; Make the new return address
+    DW TO_R, EXIT               ; Store in back on the return stack
+
+; S" ( "ccc<quote>" -- ) - CORE
+; Parse ccc delimited by " (double-quote). Append the run-time semantics given below to the current definition. 
+; ( -- c-addr u ) Return c-addr and u describing a string consisting of the characters ccc. A program shall not alter the returned string. 
+immWordEntry <S">, 2, S_QUOTE ; "
+    ; POSTPONE (S")              ( Write out the Implimentation word)
+    ; [CHAR] " WORD              ( Read the word (which also puts it right wher it should be, yay!)
+    ; C@ 1+                      ( Read the length, and add the count to it the lenght)
+    ; ALLOT                      ( And move everything forward)
+    DW LIT, IMP_S_QUOTE, COMPILE_COMMA
+    DW LIT, 34, WORD
+    DW C_FETCH, ONE_PLUS
+    DW ALLOT    
+    DW EXIT
+
+; ." ( "ccc<quote>" -- ) - CORE
+; Parse ccc delimited by " (double-quote). Append the run-time semantics given below to the current definition. 
+; ( -- ) Display ccc. 
+immWordEntry <.">, 2, DOT_QUOTE ; "
+    ; STATE @ IF
+    ;   POSTPONE S" POSTPONE TYPE ( Read the string and write it out, and compile TYPE)
+    ; ELSE
+    ;   [CHAR] " WORD COUNT TYPE ( Just like with LITERAL, every forth I've seen will print out the string when not compiling)
+    ; THEN
+    DW STATE, FETCH, IMP_QBRANCH, .else - $
+    DW S_QUOTE, LIT, TYPE, COMPILE_COMMA
+    DW IMP_BRANCH, .then - $
+.else:
+    DW LIT, 34, WORD, COUNT, TYPE
+.then:    
+    DW EXIT
+
+; .( ( "ccc<quote>" -- ) - CORE-EXT
+; Parse and display ccc delimited by ) (right parenthesis). .( is an immediate word. 
+immWordEntry ".(", 2, DOT_LEFT_PARAM 
+    ; [CHAR] ) WORD COUNT TYPE 
+    DW LIT, ')', WORD, COUNT, TYPE
+    DW EXIT
+
+
+; DUMP ( addr u -- ) - TOOLS
+; Display the contents of u consecutive addresses starting at addr.
+wordEntry "DUMP", 4
+    ; OVER + SWAP DO
+    ;   I @ . SPACE
+    ; 2 +LOOP
+    DW OVER, PLUS, SWAP, IMP_DO
+.doloop:
+    DW I_VALUE, FETCH, DOT, SPACE
+    DW LIT, 2, IMP_PLUS_LOOP, .doloop - $    
+    DW EXIT
+
+
+; CHAR ( "<spaces>name" -- char ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Put the value of its first character onto the stack. 
+wordEntry "CHAR", 4
+    ; BL WORD 1+ C@
+    DW BL, WORD, ONE_PLUS, C_FETCH
+    DW EXIT
+
+; [CHAR] ( "<spaces>name" -- ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Append the run-time semantics given below to the current definition. 
+; ( -- char ) Place char, the value of the first character of name, on the stack. 
+immWordEntry "[CHAR]", 6, BRACKETED_CHAR
+    ; CHAR ['] LIT COMPILE, ,
+    DW CHAR, LIT, LIT, COMPILE_COMMA, COMMA
+    DW EXIT
+
+
+; =============================================================================
+; Compiler words
+; =============================================================================
+
+; ?FIND ( "<spaces>name" -- xt 1|-1 ) - INTERNAL
+; Skip leading space delimiters. Parse name delimited by a space. Find name. If name is not found abort, otherwise return find value
+wordEntry "?FIND", 5, Q_FIND
+    ; BL WORD FIND DUP 0= ABORT" Unkown word"
+    DW BL, WORD, FIND, DUP, ZERO_EQUAL, IMP_ABORT_STRING
+    DB 12, "Unknown Word"
+    DW EXIT
+
+; POSTPONE ( "<spaces>name" -- ) 
+; Skip leading space delimiters. Parse name delimited by a space. Find name. Append the compilation semantics of name to the current definition.
+immWordEntry "POSTPONE", 8
+    ; BL WORD FIND DUP 0= ABORT" Unkown word"
+    ; 0< IF               ( if it's not an immediate, compile the code to compile the word)
+    ;                     ( What we want is "LIT, xt, COMPILE," in the resulting code )
+    ;   ['] LIT COMPILE,      ( Compile the LIT )
+    ;   COMPILE,              ( Comiple the XT )
+    ;   ['] COMPILE, COMPILE, (Compile the COMPILE,)
+    ; ELSE
+    ;   COMPILE,           ( If it's an immediate, compile it into the word)
+    ; THEN
+    DW BL, WORD, FIND, DUP, ZERO_EQUAL, IMP_ABORT_STRING
+    DB 11, "Unkown Word"
+    DW ZERO_LESSTHAN, IMP_QBRANCH, .else - $
+    DW LIT, LIT, COMPILE_COMMA
+    DW COMPILE_COMMA
+    DW LIT, COMPILE_COMMA, COMPILE_COMMA
+    DW IMP_BRANCH, .then - $
+.else:
+    DW COMPILE_COMMA
+.then:    
+    DW EXIT
+
+; TOGGLE (bitmask Address -- ) - Custom
+; Toggles the bits in the bitmask on the byte in address
+codeEntry "TOGGLE", 6
+    pop     HL  ; Address
+    pop     BC  ; Bitmask
+
+    ld      A, (HL)
+    xor     A, C
+    ld      (HL), A
+
+    NEXT
+
+; SMUDGE ( -- )
+; toggles the smudge flag on the last word dictonary entry
+wordEntry "SMUDGE", 6
+    ; 0x40 LATEST @ TOGGLE
+    DW LIT, 0x40, LATEST, FETCH, TOGGLE
+    DW EXIT
+
+; IMMEDIATE ( -- )
+; toggles the immediate flag on the last word dictonary entry
+wordEntry "IMMEDIATE", 9
+    ; 0x80 LATEST @ TOGGLE
+    DW LIT, 0x80, LATEST, FETCH, TOGGLE
+    DW EXIT
+
+
+; CFA! (address cfa -- ) - CUSTOM
+; Stores the CFA (with call opcode) at the providde address
+wordEntry "CFA!", 4, CFA_STORE
+    ; 0xCD OVER C!
+    ; 1+ !
+    DW LIT, 0xCD, OVER, C_STORE
+    DW ONE_PLUS, STORE
+    DW EXIT
+
+; (;CODE) ( -- ) ( R: nest-sys -- ) - INTERNAL 
+; Replace the execution semantics of the most recent definition with the name execution 
+; semantics that follow 
+; Return control to the calling definition specified by nest-sys
+wordEntry "(;CODE)", 7, IMP_CODE
+    ; R> LATEST @ NAME>XT CFA! 
+    DW R_FROM, LATEST, FETCH, NAME_TO_XT, CFA_STORE
+    DW EXIT
+
+; ;CODE ( C: colon-sys -- ) -- TOOLS-EXT
+; Append the run-time semantics below to the current definition. End the current definition, allow it to be 
+; found in the dictionary, and enter interpretation state, consuming colon-sys. 
+; Run-Time provided by (;CODE)
+immWordEntry ";CODE", 5, SEMI_CODE
+    ; POSTPONE (;CODE) SMUDGE POSTPONE [ 
+    DW LIT, IMP_CODE, COMPILE_COMMA, SMUDGE, LEFT_BRACKET
+    DW EXIT
+
+; DOES> ( C: colon-sys1 -- colon-sys2 ) 
+; Append the run-time semantics below to the current definition. Whether or not the current definition is 
+; rendered findable in the dictionary by the compilation of DOES> is implementation defined. Consume 
+; colon-sys1 and produce colon-sys2. Append the initiation semantics given below to the current definition. 
+immWordEntry "DOES>", 5, DOES_TO
+    ; POSTPONE (;CODE)  ( Output the Code implimentation word)
+    ; 0xCD C, DO_COL,  ( Output the 'call IMP_DOES' opcode)
+    DW LIT, IMP_CODE, COMPILE_COMMA
+    DW LIT, 0xCD, C_COMMA
+    DW LIT, DO_COL, COMMA
+    ;DW DOT_S
+    DW EXIT
+
+; [ ( -- ) - CORE
+; Enter interpretation state. [ is an immediate word. 
+immWordEntry "[", 1, LEFT_BRACKET
+    ; 0 STATE !
+    DW LIT, 0, STATE, STORE
+    DW EXIT
+
+; ] ( -- ) - CORE
+; Enter compilation state. 
+wordEntry "]", 1, RIGHT_BRACKET
+    ; 1 STATE !
+    DW LIT, 1, STATE, STORE
+    DW EXIT
+
+; CREATE ( "<spaces>name" -- ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Create a definition 
+; for name with the execution semantics defined below. If the data-space pointer is not 
+; aligned, reserve enough data space to align it.
+wordEntry "CREATE", 6
+    ; LATEST @ ,    ( Write the Link value)
+    ; HERE LATEST ! ( Update Latest to this word)
+    ; BL WORD       ( Read the word (which also puts it right wher it should be, yay!)
+    ; C@ 1+         ( Read the length, and add the count to it the length)
+    ; 3 + ALLOT     ( Add the length of the codefield, and allot the space)
+    ; ;CODE         ( set the Codepointer to the fololwing code)
+    ;   DO_NEXT: NEXT
+    DW LATEST, FETCH, COMMA
+    DW HERE, LATEST, STORE
+    DW BL, WORD, DUP, COUNT, TO_UPPERCASE
+    DW C_FETCH, ONE_PLUS
+    DW LIT, 3, PLUS, ALLOT
+    DW IMP_CODE
+DO_NEXT:    
+    NEXT
+
+; VARIABLE ( "<spaces>name" -- ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Create a definition for name with the 
+; execution semantics defined below. Reserve one cell of data space at an aligned address. 
+; ( -- a-addr ) a-addr is the address of the reserved cell. A program is responsible for initializing the 
+; contents of the reserved cell. 
+wordEntry "VARIABLE", 8
+    ; CREATE 2 ALLOT
+    DW CREATE, LIT, 2, ALLOT
+    DW EXIT
+
+; CONSTANT ( x "<spaces>name" -- ) - CORE
+; Skip leading space delimiters. Parse name delimited by a space. Create a definition for name with the 
+; execution semantics defined below. 
+; ( -- x ) Place x on the stack. 
+wordEntry "CONSTANT", 8
+    ; CREATE , 
+    ; ( DOES> @) ( Set the CFA to FETCH dircetly, effectivly the same but without the extra level of indirection)
+    ; ['] FETCH LATEST @ NAME>XT CFA, 
+    DW CREATE, COMMA
+    DW LIT, FETCH, LATEST, FETCH, NAME_TO_XT, CFA_STORE
+    DW EXIT
+
+; USER ( x "<spaces>name" -- ) - CUSTOM
+; Skip leading space delimiters. Parse name delimited by a space. Create a definition for name with the 
+; execution semantics defined below. 
+; ( -- a-addr ) a-addr is the address of a cell in the current user space, caluclated as USERBASE + x
+wordEntry "USER", 4
+    ; CREATE ,
+    ; ;CODE
+    DW CREATE, COMMA
+    DW IMP_CODE
+DO_USER:
+    pop     HL              ; Get the body address
+    ld      C, (HL)
+    inc     HL
+    ld      B, (HL)         ; Load the offset into BC
+    push    USERADDR        
+    pop     HL
+    add     HL, BC          ; Add it to the user base register
+    push    HL              ; and stick the result into the stack
+    NEXT
+    
+
+wordEntry ":", 1, COLON
+    ; CREATE SMUDGE ] ;CODE
+    DW CREATE, SMUDGE, RIGHT_BRACKET, IMP_CODE
+DO_COL:
+    ; push the old IP onto the return stack
+    dec     RSP
+    ld      (RSP), IPH
+    dec     RSP
+    ld      (RSP), IPL
+
+    ; Pop the the new IP
+    pop     IP
+
+    NEXT
+
+wordEntry "?COMP", 5, Q_COMP
+    ; STATE @ INVERT (ABORT") Compile only" 
+    DW STATE, FETCH, ZERO_EQUAL, IMP_ABORT_STRING
+    DB 12, "Compile only"
+    DW EXIT
+
+
+immWordEntry ";", 1, SEMICOLON
+    ; ?COMP POSTPONE EXIT SMUDGE POSTPONE [
+    DW Q_COMP, LIT, EXIT, COMPILE_COMMA, SMUDGE, LEFT_BRACKET
+    DW EXIT
+
+LinkPointer equ LINK
+EndPointer equ $
+
+    .org 0BFFFH
+    DB 0
+
+    .end
