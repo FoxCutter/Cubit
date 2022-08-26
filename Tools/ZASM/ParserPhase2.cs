@@ -7,8 +7,19 @@ using System.IO;
 
 namespace ZASM
 {
-    partial class Parser
+    class ParserPhase2
     {
+        List<LineInformation> ParseData;
+        SymbolTable SymbolTable;
+        Parser Parser;
+
+        public ParserPhase2(Parser Parser, SymbolTable SymbolTable, List<LineInformation> ParseData)
+        {
+            this.ParseData = ParseData;
+            this.SymbolTable = SymbolTable;
+            this.Parser = Parser;
+        }
+
         void OutputListingData(TextWriter OutputStream, string Cycles = "", short? Address = null, byte[] Bytes = null)
         {
             // Cycles
@@ -121,7 +132,7 @@ namespace ZASM
             }
         }
 
-        bool Phase2(FileInformation File, bool ListingOnly, TextWriter OutputStream, IEnumerator<LineInformation> DataSet)
+        public bool Phase2(FileInformation File, bool ListingOnly, TextWriter OutputStream, IEnumerator<LineInformation> DataSet)
         {
             bool Success = true;
             if (File.Stream == null)

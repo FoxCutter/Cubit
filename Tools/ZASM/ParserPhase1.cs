@@ -7,9 +7,49 @@ using System.IO;
 
 namespace ZASM
 {
-    partial class Parser
+    class ConditionalInformation
     {
-        private const Setting off = Setting.Off;
+        public LineInformation Line;
+        public bool SavedParse;
+        public bool Result;
+    }
+
+    class ParserPhase1
+    {
+        List<LineInformation> ParseData;
+        SymbolTable SymbolTable;
+        Parser Parser;
+
+        Stack<ConditionalInformation> ConditionalStack;
+        Tokenizer InputTokenizer;
+        short CurrentAddress;
+        int CycleCount;
+
+        public ParserPhase1(Parser Parser, SymbolTable SymbolTable, List<LineInformation> ParseData)
+        {
+            ConditionalStack = new Stack<ConditionalInformation>();
+            CurrentAddress = 0;
+
+            this.ParseData = ParseData;
+            this.SymbolTable = SymbolTable;
+            this.Parser = Parser;
+        }
+
+        public ParserPhase1(ParserPhase1 Clone)
+        {
+            ConditionalStack = new Stack<ConditionalInformation>();
+            CurrentAddress = 0;
+
+            this.ParseData = Clone.ParseData;
+            this.SymbolTable = Clone.SymbolTable;
+            this.Parser = Clone.Parser;
+        }
+
+        void AddMessage(LineInformation CurrentLine, Token CurrentToken, MessageCode Code, string Details = "")
+        {
+            Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken?.Character ?? 0, Code, Details);
+        }
+
 
         bool IsBreakType(Token CurrentToken)
         {
@@ -19,7 +59,7 @@ namespace ZASM
             return false;
         }
 
-        void FlushLine(Token CurrentToken, Tokenizer InputTokenizer)
+        void FlushLine(Token CurrentToken)
         {
             if (CurrentToken.Type == TokenType.LineBreak || CurrentToken.Type == TokenType.End)
                 return;
@@ -27,7 +67,7 @@ namespace ZASM
             InputTokenizer.FlushLine();
         }
 
-        void ParseConditional(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer, FunctionID Command)
+        void ParseConditional(LineInformation CurrentLine, Token CurrentToken, FunctionID Command)
         {            
             ConditionalObject CurrentObject = new ConditionalObject(CurrentLine, Command);
             CurrentLine.Object = CurrentObject;
@@ -48,11 +88,11 @@ namespace ZASM
                     CurrentToken = InputTokenizer.GetNextToken();
 
                     if (!IsBreakType(CurrentToken))
-                        Paramater = ParseParam(CurrentLine, CurrentToken, InputTokenizer);
+                        Paramater = ParseParam(CurrentLine, CurrentToken);
 
                     if (Paramater == null)
                     {
-                        Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "Paramater missing");
+                        AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "Paramater missing");
                         CurrentLine.Success = false;
                         CurrentObject.Error = true;
                     }
@@ -61,15 +101,16 @@ namespace ZASM
 
                     if (!IsBreakType(CurrentToken))
                     {
-                        Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "To many Paramaters");
+                        AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "To many Paramaters");
                         CurrentLine.Success = false;
                         CurrentObject.Error = true;
 
                     }
 
-                    if (Paramater.Tokens[0].Type == TokenType.Number)
+                    // TODO Real Params
+                    if (Paramater.Tokens[0].Token.Type == TokenType.Number)
                     {
-                        CurrentLine.ParseEnabled = Paramater.Tokens[0].NumericValue != 0;
+                        CurrentLine.ParseEnabled = Paramater.Tokens[0].Token.NumericValue != 0;
                         Debug.Write($" TRUE");
                     }
                     else
@@ -84,31 +125,31 @@ namespace ZASM
                 }
 
                 CurrentObject.Conditional = CurrentIfDef;
-                _ConditionalStack.Push(CurrentIfDef);
+                ConditionalStack.Push(CurrentIfDef);
 
                 CurrentObject.ParseEnabled = CurrentLine.ParseEnabled;
-                CurrentObject.Level = _ConditionalStack.Count;
+                CurrentObject.Level = ConditionalStack.Count;
             }
             else if (Command == FunctionID.ELSE)
             {
-                if (_ConditionalStack.Count == 0)
+                if (ConditionalStack.Count == 0)
                 {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "ELSE without matching IF");
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "ELSE without matching IF");
                     CurrentLine.Success = false;
                     CurrentObject.Error = true;
                 }
                 else
                 {
-                    CurrentObject.Conditional = _ConditionalStack.First();
+                    CurrentObject.Conditional = ConditionalStack.First();
 
-                    if (!_ConditionalStack.First().SavedParse)
+                    if (!ConditionalStack.First().SavedParse)
                         CurrentLine.ParseEnabled = false;
 
                     else
                         CurrentLine.ParseEnabled = !CurrentLine.ParseEnabled;
                 }
 
-                CurrentObject.Level = _ConditionalStack.Count;
+                CurrentObject.Level = ConditionalStack.Count;
                 CurrentObject.ParseEnabled = CurrentLine.ParseEnabled;
 
                 if (!CurrentObject.ParseEnabled)
@@ -117,19 +158,19 @@ namespace ZASM
             }
             else if (Command == FunctionID.ENDIF)
             {
-                CurrentObject.Level = _ConditionalStack.Count;
+                CurrentObject.Level = ConditionalStack.Count;
 
-                if (_ConditionalStack.Count == 0)
+                if (ConditionalStack.Count == 0)
                 {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "ENDIF without matching IF");
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "ENDIF without matching IF");
                     CurrentLine.Success = false;
                     CurrentObject.Error = true;
                 }
                 else
                 {
-                    CurrentObject.Conditional = _ConditionalStack.First();
-                    CurrentLine.ParseEnabled = _ConditionalStack.First().SavedParse;
-                    _ConditionalStack.Pop();
+                    CurrentObject.Conditional = ConditionalStack.First();
+                    CurrentLine.ParseEnabled = ConditionalStack.First().SavedParse;
+                    ConditionalStack.Pop();
                 }
 
                 CurrentObject.ParseEnabled = CurrentLine.ParseEnabled;
@@ -138,10 +179,10 @@ namespace ZASM
                     Debug.Write($" Skipping");
             }
 
-            FlushLine(CurrentToken, InputTokenizer);
+            FlushLine(CurrentToken);
         }
 
-        void ProcessInclude(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer, FunctionID Command)
+        void ProcessInclude(LineInformation CurrentLine, Token CurrentToken, FunctionID Command)
         {
             IncludeObject NewObject = new IncludeObject();
             CurrentLine.Object = NewObject;
@@ -150,8 +191,8 @@ namespace ZASM
 
             if (IsBreakType(CurrentToken))
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "Missing file name in INCLUDE command");
-                FlushLine(CurrentToken, InputTokenizer);
+                AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "Missing file name in INCLUDE command");
+                FlushLine(CurrentToken);
 
                 NewObject.Error = true;
                 CurrentLine.Success = false;
@@ -162,18 +203,18 @@ namespace ZASM
 
             CurrentToken = InputTokenizer.GetNextToken();
 
-            FlushLine(CurrentToken, InputTokenizer);
+            FlushLine(CurrentToken);
 
             if (!IsBreakType(CurrentToken))
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "Extra parameters in INCLUDE command");
+                AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "Extra parameters in INCLUDE command");
 
                 NewObject.Error = true;
                 CurrentLine.Success = false;
                 return;
             }
 
-            FileInformation NewFile = FindFile(FileName);
+            FileInformation NewFile = Parser.FindFile(FileName);
             if (NewFile == null)
             {
                 Message.Add("Include", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.FileNotFound, FileName);
@@ -183,9 +224,9 @@ namespace ZASM
                 return;
             }
 
-            if (FileStack.Where(e => e.FileName.Equals(FileName, StringComparison.OrdinalIgnoreCase)).Count() != 0)
+            if (Parser.CurrentlyInFile(NewFile))
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, string.Format("Recursive include of {0}", FileName));
+                AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, string.Format("Recursive include of {0}", FileName));
 
                 NewObject.Error = true;
                 CurrentLine.Success = false;
@@ -205,21 +246,21 @@ namespace ZASM
             NewObject.IncludeFile = NewFile;
         }
 
-        void ParseCommand(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer, FunctionID Command)
+        void ParseCommand(LineInformation CurrentLine, Token CurrentToken, FunctionID Command)
         {
             bool Success = true;
 
             // IF, ELSE and ENDIF always get processed even if we're skipping a line.
             if (Command >= FunctionID.IF && Command <= FunctionID.ENDIF)
             {
-                ParseConditional(CurrentLine, CurrentToken, InputTokenizer, Command);
+                ParseConditional(CurrentLine, CurrentToken, Command);
                 return;
             }
 
             if (!CurrentLine.ParseEnabled)
             {
                 Debug.Write($" Skipping");
-                FlushLine(CurrentToken, InputTokenizer);
+                FlushLine(CurrentToken);
                 return;
             }
 
@@ -228,7 +269,7 @@ namespace ZASM
             switch (Command)
             {
                 case FunctionID.INCLUDE:
-                    ProcessInclude(CurrentLine, CurrentToken, InputTokenizer, Command);
+                    ProcessInclude(CurrentLine, CurrentToken, Command);
                     return;
 
                 case FunctionID.Z80:
@@ -252,6 +293,11 @@ namespace ZASM
                     DataTables.ParameterList = OpcodeData.z80Data.ParameterList;
                     break;
 
+                case FunctionID.END:
+                    // TODO: Parse entry point label
+                    Debug.Write(" Ending File Processing");
+                    break;
+
                 case FunctionID.EXTERN:
                     Debug.Write(" Not Implemented");
                     break;
@@ -261,10 +307,6 @@ namespace ZASM
                     break;
 
                 case FunctionID.ORG:
-                    Debug.Write(" Not Implemented");
-                    break;
-
-                case FunctionID.END:
                     Debug.Write(" Not Implemented");
                     break;
 
@@ -285,7 +327,7 @@ namespace ZASM
                     break;
 
                 default:
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.InternalError, "Unknown Command Value!");
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.InternalError, "Unknown Command Value!");
                     CurrentLine.Success = false;
                     break;
             }
@@ -297,24 +339,24 @@ namespace ZASM
                 CurrentLine.Object = NewObject;
             }
 
-            FlushLine(CurrentToken, InputTokenizer);
+            FlushLine(CurrentToken);
         }
 
-        void ParseLabel(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer)
+        void ParseLabel(LineInformation CurrentLine, Token CurrentToken)
         {
             Debug.Write($" {CurrentToken.StringValue}");
 
             LabelObject NewObject = new LabelObject();
-            NewObject.Address = _CurrentAddress;
+            NewObject.Address = CurrentAddress;
             CurrentLine.Label = NewObject;
 
-            SymbolTableEntry Symbol = _SymbolTable[CurrentToken.StringValue];
+            SymbolTableEntry Symbol = SymbolTable[CurrentToken.StringValue];
             Symbol.ReferencedLines.Add(CurrentLine);
             NewObject.Symbol = Symbol;
 
             if (Symbol.State != SymbolState.Undefined)
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, InputTokenizer.CurrentCharacter, MessageCode.SyntaxError, string.Format("{0} redefined", Symbol.Name));
+                AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, string.Format("{0} redefined", Symbol.Name));
                 CurrentLine.Success = false;
             }
             else
@@ -322,7 +364,7 @@ namespace ZASM
                 Symbol.Type = SymbolType.Address;
                 Symbol.State = SymbolState.Set;
                 Symbol.DefiendLine = CurrentLine;
-                Symbol.Value = _CurrentAddress;
+                Symbol.Value = CurrentAddress;
             }
 
             // If we have a double Colon, mark it as exported
@@ -332,7 +374,7 @@ namespace ZASM
                 Symbol.Visability = SymbolVisability.Public;
             }
 
-            CurrentToken = GetFirstToken(InputTokenizer);
+            CurrentToken = GetFirstToken();
 
             if (CurrentToken.Type == TokenType.End || CurrentToken.Type == TokenType.LineBreak)
             {
@@ -340,13 +382,13 @@ namespace ZASM
             }
             else if (CurrentToken.Type != TokenType.PsudoOpcode && CurrentToken.Type != TokenType.Opcode && CurrentToken.Type != TokenType.Comment)
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.UnknownCommand, CurrentToken.StringValue);
-                FlushLine(CurrentToken, InputTokenizer);
+                AddMessage(CurrentLine, CurrentToken, MessageCode.UnknownCommand, CurrentToken.StringValue);
+                FlushLine(CurrentToken);
                 CurrentLine.Success = false;
             }
             else
             {
-                ParseToken(CurrentLine, CurrentToken, InputTokenizer);
+                ParseToken(CurrentLine, CurrentToken);
             }
 
             return;
@@ -368,7 +410,7 @@ namespace ZASM
 
         bool ImplicitA(OpcodeData.CommandID CommandID)
         {
-            if (Settings.ImplicitA == Setting.Off)
+            if(Settings.OpcodeSet == OpcodeType.i8080 || Settings.OpcodeSet == OpcodeType.i8085)
                 return false;
 
             if (CommandID == OpcodeData.CommandID.ADC || CommandID == OpcodeData.CommandID.ADD ||
@@ -381,7 +423,7 @@ namespace ZASM
             return false;
         }
 
-        Token GetIdentifierToken(Tokenizer InputTokenizer, Token CurrentToken)
+        Token GetIdentifierToken(Tokenizer InputTokenizer, Token CurrentToken, bool ParseCommands = true)
         {
             if (CurrentToken.Type == TokenType.Identifier)
             {
@@ -391,7 +433,7 @@ namespace ZASM
                 {
                     CurrentToken.Type = TokenType.PsudoOpcode;
                 }
-                else if (Settings.CommandRequiresDot != Setting.On && DataTables.Commands.ContainsKey(Command))
+                else if (ParseCommands && Settings.CommandRequiresDot != Setting.On && DataTables.Commands.ContainsKey(Command))
                 {
                     CurrentToken.Type = TokenType.Command;
                 }
@@ -413,7 +455,7 @@ namespace ZASM
                     else if (CurrentToken.ParameterID <= OpcodeData.ParameterID.FlagsMax)
                     {
                         // Only "CY" maps to FLAG_CY where "C" maps to the ParamaterID.Reg_C, so if CY as Carry is off let CY fall back to an identifier
-                        if (CurrentToken.ParameterID == OpcodeData.ParameterID.Flag_CY && Settings.CYAsCarry == off)
+                        if (CurrentToken.ParameterID == OpcodeData.ParameterID.Flag_CY && Settings.CYAsCarry == Setting.Off)
                         {
                             CurrentToken.ParameterID = OpcodeData.ParameterID.None;
                         }
@@ -428,116 +470,202 @@ namespace ZASM
             return CurrentToken;
         }
 
-
-        ParameterInformation ParseParam(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer)
+        char MatchingBrace(TokenType Type)
         {
-            ParameterInformation NewParam = new ParameterInformation();
+            switch(Type)
+            {
+                case TokenType.ArrayLeft:
+                    return ']';
 
-            // Just to keep track of group openings so we can close them in order
-            Stack<TokenType> GroupStack = new Stack<TokenType>();
+                case TokenType.ArrayRight:
+                    return '[';
+
+                case TokenType.GroupLeft:
+                    return ')';
+
+                case TokenType.GroupRight:
+                    return '(';
+            }
+
+            return '?';
+        }
+
+        ParameterToken ParseParameterGroup(ParameterInformation ParamInformation, LineInformation CurrentLine, Token CurrentToken)
+        {
+            ParameterToken NewParam = new ParameterToken();
+            NewParam.GroupTokens = new List<ParameterToken>();
 
             while (true)
             {
-                CurrentToken = GetIdentifierToken(InputTokenizer, CurrentToken);
-
-                switch (CurrentToken.Type)
+                if (CurrentToken.Type == TokenType.GroupLeft || CurrentToken.Type == TokenType.ArrayLeft)
                 {
-                    case TokenType.Identifier:
-                        break;
-
-                    case TokenType.GroupLeft:
-                    case TokenType.ArrayLeft:
-                        GroupStack.Push(CurrentToken.Type);
-                        break;
-
-                    case TokenType.GroupRight:
-                    case TokenType.ArrayRight:
-                        if (GroupStack.Count == 0)
-                        {
-                            if (CurrentToken.Type == TokenType.GroupRight)
-                            {
-                                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Opening '('");
-                                NewParam.Error = true;
-                            }
-                            else if (CurrentToken.Type == TokenType.ArrayRight)
-                            {
-                                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Opening '['");
-                                NewParam.Error = true;
-                            }
-                        }
-                        else
-                        {
-                            TokenType OldGroup = GroupStack.Pop();
-
-                            // Make sure the groups match.
-                            if (OldGroup == TokenType.GroupLeft && CurrentToken.Type != TokenType.GroupRight)
-                            {
-                                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Expected ')' found ']'");
-                                NewParam.Error = true;
-                            }
-                            else if (OldGroup == TokenType.ArrayLeft && CurrentToken.Type != TokenType.ArrayRight)
-                            {
-                                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Expected ']' found ')'");
-                                NewParam.Error = true;
-                            }
-                        }
-                        break;
-
-                    case TokenType.Command:
-                    case TokenType.Opcode:
-                    case TokenType.PsudoOpcode:
-                        Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.ReservedWord, CurrentToken.StringValue);
-                        NewParam.Error = true;
-                        break;
-
-                    case TokenType.Plus:
-                        if (NewParam.Tokens.Count == 0)
-                        {
-                            CurrentToken.Type = TokenType.UnarrayPlus;
-                        }
-                        else
-                        {
-                            Token LastToken = NewParam.Tokens.Last();
-
-                            // Check for HL+ on the gameboy
-                            if (LastToken.ParameterID == OpcodeData.ParameterID.WordReg_HL && Settings.OpcodeSet == OpcodeType.GameBoy)
-                            {
-                                LastToken.ParameterID = OpcodeData.ParameterID.WordReg_HLI;
-                                CurrentToken.Type = TokenType.None;
-                            }
-
-                            if (LastToken.Type != TokenType.Number && LastToken.Type != TokenType.Identifier && LastToken.Type != TokenType.Register && LastToken.Type != TokenType.String)
-                                CurrentToken.Type = TokenType.UnarrayPlus;
-                        }
-                        break;
-
-                    case TokenType.Minus:
-                        if (NewParam.Tokens.Count == 0)
-                        {
-                            CurrentToken.Type = TokenType.UnarrayMinus;
-                        }
-                        else
-                        {
-                            Token LastToken = NewParam.Tokens.Last();
-
-                            // Check for HL- on the gameboy
-                            if (LastToken.ParameterID == OpcodeData.ParameterID.WordReg_HL && Settings.OpcodeSet == OpcodeType.GameBoy)
-                            {
-                                LastToken.ParameterID = OpcodeData.ParameterID.WordReg_HLD;
-                                CurrentToken.Type = TokenType.None;
-                            }
-
-                            if (LastToken.Type != TokenType.Number && LastToken.Type != TokenType.Identifier && LastToken.Type != TokenType.Register && LastToken.Type != TokenType.String)
-                                CurrentToken.Type = TokenType.UnarrayMinus;
-                        }
-                        break;
+                    if (NewParam.GroupTokens.Count != 0)
+                    {
+                        NewParam.GroupTokens.Add(ParseParameterGroup(ParamInformation, CurrentLine, CurrentToken));
+                        CurrentToken = new Token();
+                    }
                 }
-
 
                 if (CurrentToken.Type != TokenType.None)
                 {
-                    NewParam.Tokens.Add(CurrentToken);
+                    CurrentToken = GetIdentifierToken(InputTokenizer, CurrentToken, false);
+
+                    switch (CurrentToken.Type)
+                    {
+                        case TokenType.Register:
+                            if (CurrentToken.ParameterID <= OpcodeData.ParameterID.ByteReg)
+                            {
+                                if (IsIndexRegister(CurrentToken.ParameterID))
+                                    ParamInformation.Type = OpcodeData.ParameterType.ByteIndexRegister;
+                                else
+                                    ParamInformation.Type = OpcodeData.ParameterType.ByteRegister;
+                            }
+
+                            else if (CurrentToken.ParameterID <= OpcodeData.ParameterID.WordReg)
+                            {
+                                if (IsIndexRegister(CurrentToken.ParameterID))
+                                    ParamInformation.Type = OpcodeData.ParameterType.WordIndexRegister;
+                                else
+                                    ParamInformation.Type = OpcodeData.ParameterType.WordRegister;
+                            }
+
+                            else if (CurrentToken.ParameterID <= OpcodeData.ParameterID.ContextReg)
+                                ParamInformation.Type = OpcodeData.ParameterType.ContextRegister;
+
+                            break;
+
+                        case TokenType.Command:
+                        case TokenType.Opcode:
+                        case TokenType.PsudoOpcode:
+                            AddMessage(CurrentLine, CurrentToken, MessageCode.ReservedWord, CurrentToken.StringValue);
+                            NewParam.Error = true;
+                            ParamInformation.Error = true;
+                            break;
+
+                        case TokenType.Plus:
+                            if (NewParam.GroupTokens.Count != 0)
+                            {
+                                ParameterToken LastToken = NewParam.GroupTokens.Last();
+
+                                // Check for HL+ on the gameboy
+                                if (LastToken.Token != null)
+                                {
+                                    if (LastToken.Token.ParameterID == OpcodeData.ParameterID.WordReg_HL && Settings.OpcodeSet == OpcodeType.GameBoy)
+                                    {
+                                        LastToken.Token.ParameterID = OpcodeData.ParameterID.WordReg_HLI;
+                                        CurrentToken.Type = TokenType.None;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case TokenType.Minus:
+                            if (NewParam.GroupTokens.Count != 0)
+                            {
+                                ParameterToken LastToken = NewParam.GroupTokens.Last();
+
+                                // Check for HL- on the gameboy
+                                if (LastToken.Token != null)
+                                {
+                                    if (LastToken.Token.ParameterID == OpcodeData.ParameterID.WordReg_HL && Settings.OpcodeSet == OpcodeType.GameBoy)
+                                    {
+                                        LastToken.Token.ParameterID = OpcodeData.ParameterID.WordReg_HLD;
+                                        CurrentToken.Type = TokenType.None;
+                                    }
+                                }
+                            }
+                            break;
+
+                        case TokenType.Number:
+                            if (ParamInformation.Type == OpcodeData.ParameterType.Unknown)
+                                ParamInformation.Type = OpcodeData.ParameterType.Value;
+                            break;
+
+                        case TokenType.String:
+                            if (ParamInformation.Type == OpcodeData.ParameterType.Unknown)
+                                ParamInformation.Type = OpcodeData.ParameterType.Value;
+                            break;
+
+                        case TokenType.Identifier:
+                            if (ParamInformation.Type == OpcodeData.ParameterType.Unknown)
+                                ParamInformation.Type = OpcodeData.ParameterType.Value;
+                            break;
+
+                        case TokenType.Flag:
+                            if (ParamInformation.Type == OpcodeData.ParameterType.Unknown)
+                                ParamInformation.Type = OpcodeData.ParameterType.Flag;
+                            break;
+                    }
+
+                    NewParam.GroupTokens.Add(new ParameterToken(CurrentToken));
                 }
+
+                if (CurrentToken.Type == TokenType.GroupRight || CurrentToken.Type == TokenType.ArrayRight)
+                {
+                    if (NewParam.GroupTokens.Count == 0)
+                    {
+                        AddMessage(CurrentLine, CurrentToken, MessageCode.MissingGroupSymbol, $"Opening '{MatchingBrace(CurrentToken.Type)}'");
+                        NewParam.Error = true;
+                        ParamInformation.Error = true;
+                    }
+                    else
+                    {
+                        TokenType OldGroup = NewParam.GroupTokens.First().Token.Type;
+
+                        // Make sure the groups match.
+                        if(OldGroup != TokenType.ArrayLeft && OldGroup != TokenType.GroupLeft)
+                        {
+                            AddMessage(CurrentLine, CurrentToken, MessageCode.MissingGroupSymbol, $"Opening '{MatchingBrace(CurrentToken.Type)}'");
+                            NewParam.Error = true;
+                            ParamInformation.Error = true;
+                        }
+                        else if (OldGroup == TokenType.GroupLeft && CurrentToken.Type != TokenType.GroupRight)
+                        {
+                            AddMessage(CurrentLine, CurrentToken, MessageCode.MissingGroupSymbol, "Expected ')' found ']'");
+                            NewParam.Error = true;
+                            ParamInformation.Error = true;
+                        }
+                        else if (OldGroup == TokenType.ArrayLeft && CurrentToken.Type != TokenType.ArrayRight)
+                        {
+                            AddMessage(CurrentLine, CurrentToken, MessageCode.MissingGroupSymbol, "Expected ']' found ')'");
+                            NewParam.Error = true;
+                            ParamInformation.Error = true;
+                        }
+
+                        break;
+                    }
+                }
+
+                InputType NextToken = InputTokenizer.PeekNextInputType();
+
+                if (NextToken == InputType.End || NextToken == InputType.CarriageReturn || NextToken == InputType.LineFeed || NextToken == InputType.Comma || NextToken == InputType.SemiColon)
+                {
+                    TokenType OldGroup = NewParam.GroupTokens.First().Token.Type;
+
+                    if (OldGroup == TokenType.GroupLeft || OldGroup == TokenType.ArrayLeft)
+                    {
+                        AddMessage(CurrentLine, CurrentToken, MessageCode.MissingGroupSymbol, $"Closing '{MatchingBrace(OldGroup)}'");
+                        NewParam.Error = true;
+                        ParamInformation.Error = true;
+                    }
+
+                    break;
+                }
+
+                CurrentToken = InputTokenizer.GetNextToken();
+            }
+
+            return NewParam;
+        }
+
+
+        ParameterInformation ParseParam(LineInformation CurrentLine, Token CurrentToken)
+        {
+            ParameterInformation NewParam = new ParameterInformation();
+
+            while(true)
+            {
+                NewParam.Tokens.Add(ParseParameterGroup(NewParam, CurrentLine, CurrentToken));
 
                 InputType NextToken = InputTokenizer.PeekNextInputType();
 
@@ -550,56 +678,42 @@ namespace ZASM
                     break;
             }
 
-            // Check for any groups there were opened bu never closed
-            while (GroupStack.Count != 0)
+            while (NewParam.Tokens.Count == 1 && NewParam.Tokens[0].Token == null)
+                NewParam.Tokens = NewParam.Tokens[0].GroupTokens;
+
+            if(NewParam.Tokens.First().Token != null && NewParam.Tokens.Last().Token != null)
             {
-                TokenType OldGroup = GroupStack.Pop();
-                if (OldGroup == TokenType.GroupLeft)
+                TokenType FirstToken = NewParam.Tokens.First().Token.Type;
+                TokenType LastToken = NewParam.Tokens.Last().Token.Type;
+
+                if ((FirstToken == TokenType.GroupLeft && LastToken == TokenType.GroupRight) || (FirstToken == TokenType.ArrayLeft && LastToken == TokenType.ArrayRight))
                 {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Closing ')'");
-                    NewParam.Error = true;
-                }
-                else if (OldGroup == TokenType.ArrayLeft)
-                {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.MissingGroupSymbol, "Closing ']'");
-                    NewParam.Error = true;
+                    NewParam.Pointer = true;
+                    NewParam.Type = OpcodeData.ParameterType.AddressPointer;
+                    NewParam.Tokens = NewParam.Tokens.GetRange(1, NewParam.Tokens.Count - 2);
                 }
             }
-
-            Debug.Write($" [{string.Join(" ", NewParam.Tokens)}]");
 
             if (NewParam.Error)
                 CurrentLine.Success = false;
 
+            Debug.Write($" [{NewParam.Type}:{string.Join(" ", NewParam.Tokens)}]");
+
             return NewParam;
         }
 
-        void ParsePsudoOpcode(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer, FunctionID Command)
+
+        void ParsePsudoOpcode(LineInformation CurrentLine, Token CurrentToken, FunctionID Command)
         {
             Debug.Write($" {Command}");
 
-            FlushLine(CurrentToken, InputTokenizer);
-        }
-
-        void ParseOpcode(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer, OpcodeData.CommandID Opcode)
-        {
-            Debug.Write($" {Opcode}");
-
-            var OpcodeList = DataTables.OpcodeTable.Where(e => e.Key == Opcode).FirstOrDefault();
-
-            if (OpcodeList.Value == null || OpcodeList.Value.Length == 0)
-            {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, InputTokenizer.CurrentCharacter, MessageCode.InternalError, "Opcode Table Entry Missing");
-                FlushLine(CurrentToken, InputTokenizer);
-                CurrentLine.Success = false;
-                return;
-            }
-
-            OpcodeObject NewObject = new OpcodeObject();
+            DataObject NewObject = new DataObject();
             CurrentLine.Object = NewObject;
 
-            NewObject.Address = _CurrentAddress;
-            NewObject.CycleCount = _CycleCount;
+            NewObject.DataType = Command;
+
+            NewObject.Address = CurrentAddress;
+            NewObject.CycleCount = CycleCount;
 
             while (true)
             {
@@ -607,47 +721,80 @@ namespace ZASM
                 if (IsBreakType(CurrentToken))
                     break;
 
-                NewObject.ParamterList.Add(ParseParam(CurrentLine, CurrentToken, InputTokenizer));
+                NewObject.ParamterList.Add(ParseParam(CurrentLine, CurrentToken));
             }
 
-            if (Settings.OpcodeSet != OpcodeType.i8080 && ImplicitA(Opcode) && NewObject.ParamterList.Count <= 1)
+            // TODO: Add length of Data
+
+            //_CurrentAddress += OpcodeList.Value[0].Length;
+
+            FlushLine(CurrentToken);
+        }
+
+        void ParseOpcode(LineInformation CurrentLine, Token CurrentToken, OpcodeData.CommandID Opcode)
+        {
+            Debug.Write($" {Opcode}");
+
+            var OpcodeList = DataTables.OpcodeTable.Where(e => e.Key == Opcode).FirstOrDefault();
+
+            if (OpcodeList.Value == null || OpcodeList.Value.Length == 0)
             {
-                ParameterInformation NewParam = new ParameterInformation();
-                NewParam.Parameter = OpcodeData.ParameterID.ByteReg_A;
-                NewParam.Type = OpcodeData.ParameterType.ByteRegister;
-
-                Token NewToken = new Token();
-                NewToken.Type = TokenType.Register;
-                NewToken.ParameterID = OpcodeData.ParameterID.ByteReg_A;
-
-                NewParam.Tokens.Add(NewToken);
-
-                NewObject.ParamterList.Insert(0, NewParam);
-
-                if (Settings.ImplicitA == Setting.Warning)
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.ImplicitA);
+                AddMessage(CurrentLine, CurrentToken, MessageCode.InternalError, "Opcode Table Entry Missing");
+                FlushLine(CurrentToken);
+                CurrentLine.Success = false;
+                return;
             }
 
+            OpcodeObject NewObject = new OpcodeObject();
+            CurrentLine.Object = NewObject;
+
+            NewObject.Address = CurrentAddress;
+            NewObject.CycleCount = CycleCount;
+
+            while (true)
+            {
+                CurrentToken = InputTokenizer.GetNextToken();
+                if (IsBreakType(CurrentToken))
+                    break;
+
+                NewObject.ParamterList.Add(ParseParam(CurrentLine, CurrentToken));
+            }
+
+            if (ImplicitA(Opcode) && NewObject.ParamterList.Count <= 1)
+            {
+                if (Settings.ImplicitA == Setting.Off)
+                {
+                    // TODO: A proper error in this case 
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.InvalidParamaterForOpcode, "Paramater Missing");
+                    FlushLine(CurrentToken);
+                    CurrentLine.Success = false;
+                    return;
+                }
+                else if (Settings.ImplicitA == Setting.Warning)
+                {
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.ImplicitA);
+                }
+            }
 
             NewObject.Opcode = OpcodeList.Value[0];
 
-            _CurrentAddress += OpcodeList.Value[0].Length;
-            _CycleCount += NewObject.Opcode.TStates;
+            CurrentAddress += OpcodeList.Value[0].Length;
+            CycleCount += NewObject.Opcode.TStates;
 
-            FlushLine(CurrentToken, InputTokenizer);
+            FlushLine(CurrentToken);
         }
 
-        void ParseAssignment(LineInformation CurrentLine, Token LabelToken, Token CurrentToken, Tokenizer InputTokenizer, FunctionID CommandID)
+        void ParseAssignment(LineInformation CurrentLine, Token LabelToken, Token CurrentToken, FunctionID CommandID)
         {
             Debug.Write($"   {CurrentToken.TokenData}");
 
-            SymbolTableEntry Symbol = _SymbolTable[LabelToken.StringValue];
+            SymbolTableEntry Symbol = SymbolTable[LabelToken.StringValue];
             Symbol.ReferencedLines.Add(CurrentLine);
 
             ValueObject CurrentObject = new ValueObject();
             CurrentLine.Object = CurrentObject;
 
-            CurrentObject.Address = _CurrentAddress;
+            CurrentObject.Address = CurrentAddress;
             CurrentObject.Symbol = Symbol;
 
             if (Symbol.State == SymbolState.Undefined)
@@ -659,24 +806,24 @@ namespace ZASM
             }
             else if (Symbol.Type == SymbolType.Constant)
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, InputTokenizer.CurrentCharacter, MessageCode.SyntaxError, string.Format("{0} redefined", Symbol.Name));
+                AddMessage(CurrentLine, LabelToken, MessageCode.SyntaxError, string.Format("{0} redefined", Symbol.Name));
 
                 CurrentObject.Error = true;
                 CurrentLine.Success = false;
-                FlushLine(CurrentToken, InputTokenizer);
+                FlushLine(CurrentToken);
                 return;
             }
 
             CurrentToken = InputTokenizer.GetNextToken();
             if (!IsBreakType(CurrentToken))
-                CurrentObject.Parameter = ParseParam(CurrentLine, CurrentToken, InputTokenizer);
+                CurrentObject.Parameter = ParseParam(CurrentLine, CurrentToken);
 
             if (CurrentObject.Parameter == null)
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "Paramater missing");
+                AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "Paramater missing");
                 CurrentObject.Error = true;
                 CurrentLine.Success = false;
-                FlushLine(CurrentToken, InputTokenizer);
+                FlushLine(CurrentToken);
                 return;
             }
             else
@@ -685,7 +832,7 @@ namespace ZASM
 
                 if (!IsBreakType(CurrentToken))
                 {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxError, "To many Paramaters");
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxError, "To many Paramaters");
                     CurrentLine.Success = false;
                     CurrentObject.Error = true;
                 }
@@ -694,16 +841,16 @@ namespace ZASM
 
             Symbol.State = SymbolState.Pending;
 
-            if (CurrentObject.Parameter.Tokens[0].Type == TokenType.Number)
+            if (CurrentObject.Parameter.Tokens[0].Token.Type == TokenType.Number)
             {
                 Symbol.State = SymbolState.Set;
-                Symbol.Value = (short)CurrentObject.Parameter.Tokens[0].NumericValue;
+                Symbol.Value = (short)CurrentObject.Parameter.Tokens[0].Token.NumericValue;
             }
 
-            FlushLine(CurrentToken, InputTokenizer);
+            FlushLine(CurrentToken);
         }
 
-        void ParseIdentifier(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer)
+        void ParseIdentifier(LineInformation CurrentLine, Token CurrentToken)
         {
             Debug.Write($" {CurrentToken.StringValue}");
 
@@ -743,8 +890,8 @@ namespace ZASM
                     }
                     else
                     {
-                        Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, NextToken.Character, MessageCode.ReservedWord, NextToken.StringValue);
-                        FlushLine(NextToken, InputTokenizer);
+                        AddMessage(CurrentLine, NextToken, MessageCode.ReservedWord, NextToken.StringValue);
+                        FlushLine(NextToken);
                         CurrentLine.Success = false;
                         return;
                     }
@@ -764,9 +911,9 @@ namespace ZASM
 
                 if (Settings.LabelsRequireColon != Setting.On)
                 {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, NextToken.Character, MessageCode.UnexpectedSymbol, NextToken.TokenData);
+                    AddMessage(CurrentLine, NextToken, MessageCode.UnexpectedSymbol, NextToken.TokenData);
 
-                    FlushLine(NextToken, InputTokenizer);
+                    FlushLine(NextToken);
 
                     CurrentLine.Success = false;
                     return;
@@ -779,42 +926,42 @@ namespace ZASM
                 {
                     if (Settings.LabelsRequireColon == Setting.Warning)
                     {
-                        Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.SyntaxWarning, "Label defined without a ':'");
+                        AddMessage(CurrentLine, CurrentToken, MessageCode.SyntaxWarning, "Label defined without a ':'");
                     }
 
                     InputTokenizer.UnGetNextToken(NextToken);
 
                     Debug.Write($"->{CurrentToken.Type}");
 
-                    ParseLabel(CurrentLine, CurrentToken, InputTokenizer);
+                    ParseLabel(CurrentLine, CurrentToken);
                 }
                 else
                 {
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.UnknownCommand, CurrentToken.StringValue);
-                    FlushLine(NextToken, InputTokenizer);
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.UnknownCommand, CurrentToken.StringValue);
+                    FlushLine(NextToken);
                     CurrentLine.Success = false;
                 }
             }
             else if (CurrentToken.Type == TokenType.Identifier && NextToken.Type == TokenType.Assignment)
             {
-                ParseAssignment(CurrentLine, CurrentToken, NextToken, InputTokenizer, CommandID);
+                ParseAssignment(CurrentLine, CurrentToken, NextToken, CommandID);
             }
             else
             {
-                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.InternalError, "Identifier Parsing failed");
-                FlushLine(NextToken, InputTokenizer);
+                AddMessage(CurrentLine, CurrentToken, MessageCode.InternalError, "Identifier Parsing failed");
+                FlushLine(NextToken);
                 CurrentLine.Success = false;
             }
         }
 
         // Gets the first token for a line
-        Token GetFirstToken(Tokenizer InputTokenizer)
+        Token GetFirstToken()
         {
             Token CurrentToken = InputTokenizer.GetNextToken();
-            return GetFirstToken(InputTokenizer, CurrentToken);
+            return GetFirstToken(CurrentToken);
         }
 
-        Token GetFirstToken(Tokenizer InputTokenizer, Token CurrentToken)
+        Token GetFirstToken(Token CurrentToken)
         {
             if (CurrentToken.Type == TokenType.Identifier)
             {
@@ -837,25 +984,25 @@ namespace ZASM
             return CurrentToken;
         }
         
-        bool Phase1(FileInformation InputFile)
+        public bool Phase1(FileInformation InputFile)
         {
             bool Success = true;
             bool ParseEnabled = true;
 
             if (InputFile.Stream == null)
             {
-                Message.Add("Pass 1", InputFile.FileID, 0, 0, MessageCode.InternalError, "File Stream Missing");
+                Message.Add("Parser", InputFile.FileID, 0, 0, MessageCode.InternalError, "File Stream Missing");
                 return false;
             }
 
             Debug.WriteLine($" {InputFile.FileID}: Input {InputFile.FileName}");
 
-            Tokenizer InputTokenizer = new Tokenizer(InputFile.FileID, InputFile.Stream);
+            InputTokenizer = new Tokenizer(InputFile.FileID, InputFile.Stream);
             InputFile.LineCount = 0;
 
             while (true)
             {
-                Token CurrentToken = GetFirstToken(InputTokenizer);
+                Token CurrentToken = GetFirstToken();
 
                 if (CurrentToken.Type == TokenType.End)
                     break;
@@ -865,7 +1012,7 @@ namespace ZASM
 
                 Debug.Write($"  Parsing Line {InputTokenizer.CurrentLine}");
 
-                LineInformation CurrentLine = ParseLine(CurrentToken, InputTokenizer, ParseEnabled);
+                LineInformation CurrentLine = ParseLine(CurrentToken, ParseEnabled);
 
                 if (CurrentLine == null)
                 {
@@ -874,7 +1021,9 @@ namespace ZASM
                 }
                 else
                 {
-                    Success = CurrentLine.Success;
+                    if(Success == true)
+                        Success = CurrentLine.Success;
+
                     ParseEnabled = CurrentLine.ParseEnabled;
 
                     CurrentLine.FileID = InputFile.FileID;
@@ -886,17 +1035,24 @@ namespace ZASM
                         if (CurrentLine.Object.Type == ObjectType.Include && !CurrentLine.Object.Error)
                         {
                             IncludeObject Include = CurrentLine.Object as IncludeObject;
-                            FileStack.Push(Include.IncludeFile);
-                            Success = Phase1(Include.IncludeFile);
+                            Parser.EnterFile(Include.IncludeFile);
 
-                            if (FileStack.First() != Include.IncludeFile)
+                            ParserPhase1 Phase1 = new ParserPhase1(this);
+
+                            Success = Phase1.Phase1(Include.IncludeFile);
+
+                            if (!Parser.ExitFile(Include.IncludeFile))
                             {
-                                Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, 0, MessageCode.InternalError, "File Stack desync");
+                                AddMessage(CurrentLine, null, MessageCode.InternalError, "File Stack desync");
                             }
-                            else
-                            {
-                                FileStack.Pop();
-                            }
+                        }
+
+                        else if (CurrentLine.Object.Type == ObjectType.Command)
+                        {
+                            CommandObject Command = CurrentLine.Object as CommandObject;
+
+                            if (Command.Command == FunctionID.END)
+                                break;
                         }
                     }
                 }
@@ -910,19 +1066,19 @@ namespace ZASM
 
             //    if (CurrentLine.LineNumber != InputFile.LineCount)
             //    {
-            //        Message.Add("Parser", InputFile.FileID, CurrentLine.LineNumber, InputTokenizer.CurrentCharacter, MessageCode.InternalError, "File Input Dysync");
+            //        Message.Add("Parser", InputFile.FileID, CurrentLine.LineNumber.CurrentCharacter, MessageCode.InternalError, "File Input Dysync");
             //        Success = false;
             //    }
             //    else
             //    {
-            //        Success = ParseNextToken(CurrentLine, CurrentToken, InputTokenizer);
+            //        Success = ParseNextToken(CurrentLine, CurrentToken);
             //    }
 
 
             return Success;
         }
 
-        LineInformation ParseLine (Token CurrentToken, Tokenizer InputTokenizer, bool ParseEnabled)
+        LineInformation ParseLine (Token CurrentToken, bool ParseEnabled)
         {
             LineInformation CurrentLine = new LineInformation()
             {
@@ -935,17 +1091,17 @@ namespace ZASM
             if (!CurrentLine.ParseEnabled && CurrentToken.Type != TokenType.Command)
             {
                 Debug.Write(" Skipping");
-                FlushLine(CurrentToken, InputTokenizer);
+                FlushLine(CurrentToken);
                 return CurrentLine;
             }
 
 
-            ParseToken(CurrentLine, CurrentToken, InputTokenizer);
+            ParseToken(CurrentLine, CurrentToken);
 
             return CurrentLine;
         }
 
-        void ParseToken(LineInformation CurrentLine, Token CurrentToken, Tokenizer InputTokenizer)
+        void ParseToken(LineInformation CurrentLine, Token CurrentToken)
         {
             Debug.Write($" {CurrentToken.Type}");
 
@@ -953,15 +1109,15 @@ namespace ZASM
             {
                 case TokenType.End:
                 case TokenType.LineBreak:
-                    FlushLine(CurrentToken, InputTokenizer);
+                    FlushLine(CurrentToken);
                     break;
 
                 case TokenType.Comment:
-                    FlushLine(CurrentToken, InputTokenizer);
+                    FlushLine(CurrentToken);
                     break;
 
                 case TokenType.Label:
-                    ParseLabel(CurrentLine, CurrentToken, InputTokenizer);
+                    ParseLabel(CurrentLine, CurrentToken);
                     break;
 
                 case TokenType.Command:
@@ -974,44 +1130,44 @@ namespace ZASM
                         }
                         else if (Settings.CommandRequiresDot == Setting.Warning)
                         {
-                            Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.CommandRequiresDotPrefix, CurrentToken.StringValue);
+                            AddMessage(CurrentLine, CurrentToken, MessageCode.CommandRequiresDotPrefix, CurrentToken.StringValue);
                         }
 
                         if (DataTables.Commands.ContainsKey(Command))
                         {
-                            ParseCommand(CurrentLine, CurrentToken, InputTokenizer, DataTables.Commands[Command]);
+                            ParseCommand(CurrentLine, CurrentToken, DataTables.Commands[Command]);
                         }
                         else
                         {
-                            Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.UnknownCommand, CurrentToken.StringValue);
-                            FlushLine(CurrentToken, InputTokenizer);
+                            AddMessage(CurrentLine, CurrentToken, MessageCode.UnknownCommand, CurrentToken.StringValue);
+                            FlushLine(CurrentToken);
                             CurrentLine.Success = false;
                         }
                     }
                     break;
 
                 case TokenType.PsudoOpcode:
-                    ParsePsudoOpcode(CurrentLine, CurrentToken, InputTokenizer, DataTables.PsudoOpcodes[CurrentToken.StringValue.ToUpper()]);
+                    ParsePsudoOpcode(CurrentLine, CurrentToken, DataTables.PsudoOpcodes[CurrentToken.StringValue.ToUpper()]);
                     break;
 
                 case TokenType.Identifier:
-                    ParseIdentifier(CurrentLine, CurrentToken, InputTokenizer);
+                    ParseIdentifier(CurrentLine, CurrentToken);
                     break;
 
                 case TokenType.Opcode:
-                    ParseOpcode(CurrentLine, CurrentToken, InputTokenizer, DataTables.OpcodeList[CurrentToken.StringValue.ToUpper()]);
+                    ParseOpcode(CurrentLine, CurrentToken, DataTables.OpcodeList[CurrentToken.StringValue.ToUpper()]);
                     break;
 
                 case TokenType.Register:
                 case TokenType.Flag:
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.ReservedWord, CurrentToken.TokenData);
-                    FlushLine(CurrentToken, InputTokenizer);
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.ReservedWord, CurrentToken.TokenData);
+                    FlushLine(CurrentToken);
                     CurrentLine.Success = false;
                     break;
 
                 default:
-                    Message.Add("Parser", CurrentLine.FileID, CurrentLine.LineNumber, CurrentToken.Character, MessageCode.UnexpectedSymbol, CurrentToken.TokenData);
-                    FlushLine(CurrentToken, InputTokenizer);
+                    AddMessage(CurrentLine, CurrentToken, MessageCode.UnexpectedSymbol, CurrentToken.TokenData);
+                    FlushLine(CurrentToken);
                     CurrentLine.Success = false;
                     break;
             }

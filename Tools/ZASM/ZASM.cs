@@ -8,11 +8,12 @@ using System.IO;
 /*
  * 
  * Options:
- * (IA) Implicit A - On (i808x), Off, Warn
- * (IX) Indexs - On (Z80), off (i808x, GB)
- * (AF) Array Offsets - On, off (i808x, GB, Z80)
- * (CY) CY as Carry - On (Z80, GB), off (i808x)
- * (DT) Commands Require Dot - On, off, Warn (def)
+ * (IA) Implicit A - On (Default), Off, Warn
+ * (IX) Indexs - On (Z80), off
+ * (AF) Array Offsets - On, off (Default)
+ * (CY) CY as Carry - On (Default), off
+ * (DT) Commands Require Dot - On, off, Warn (Default)
+ * (LB) Labels Require Colon - On, off, Warn (Default)
  * 
  * Command Line: -oXX:value 
  * Command: .Command XX, Value
@@ -39,13 +40,13 @@ using System.IO;
  *      Process remainer of line
  *      Symbol management
  *      Resolve values only if needed
- *  Sanity check all address symolos for values
+ *  Sanity check all address symbols for values
  *  Adjust symbol address for section and section placements.
  * 
  * Pass 2:
  *  For each line
- *      Read line from input file
  *      Resolve all calculations
+ *      Read line from input file
  *      Emite Code if needed
  *      Emite list file     
  *      
@@ -70,35 +71,17 @@ namespace ZASM
     {
         static void Main(string[] args)
         {
-            //FileStream InputFile = File.OpenRead(@"..\..\..\basic8k78-3.mac");
-            //FileStream InputFile = File.OpenRead(@"..\..\..\MasterV5.3.z80");
-
-            //string k = Path.GetFullPath(@"..\..\..\MasterV5.3.z80");
-
             Settings.CommandRequiresDot = Setting.Off;
             Settings.ArrayOffset = Setting.On;
             Settings.LabelsRequireColon = Setting.Warning;
-            Settings.ImplicitA = Setting.Warning;
+            Settings.ImplicitA = Setting.On;
+            Settings.Indexes = Setting.On;
 
             Settings.IncludePaths.Add(@"..\..\..\");
             
             Parser ParserData = new Parser();
             ParserData.ParseFile(@"..\..\..\Master.z80");
             //ParserData.ParseFile(@"..\..\..\Test.asm");
-
-            //Tokenizer Token = new Tokenizer(0, InputFile);
-
-            //while (true)
-            //{
-            //    Token Data = Token.GetNextToken();
-            //    if (Data.Type == TokenType.End)
-            //        break;
-
-            //    Console.Write(Data);
-
-            //    if (Data.Type == TokenType.LineBreak)
-            //        Console.WriteLine();
-            //}
 
             Message.Add("", 0, 0, 0, MessageCode.NoError, "");
             Console.WriteLine("ZASM Results: Messages: {0}, Warnings: {1}, Errors: {2}", Message.MessageCount(), Message.WarningCount(), Message.ErrorCount());
@@ -119,8 +102,8 @@ namespace ZASM
                 else
                     Console.Write("Message: ");
 
-                //if (CurrentMessage.FileID != 0)
-                Console.Write("{0} ", ParserData.LookupFileName(CurrentMessage.FileID));
+                if (CurrentMessage.FileID != 0)
+                    Console.Write("{0} ", ParserData.LookupFileName(CurrentMessage.FileID));
 
                 Console.Write("({0}, {1}): ", CurrentMessage.Line, CurrentMessage.Character);
                 Console.Write("{0} {1:X4}: ", CurrentMessage.Source, (int)CurrentMessage.Code);

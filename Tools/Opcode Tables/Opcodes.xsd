@@ -49,19 +49,19 @@
         </xs:complexType>
       </xs:element>
       <!--If this is an officaly documented opcode-->
-      <xs:element name="Status" type="statusEnum" minOccurs="0" maxOccurs="1" default="Documented" />
-      <!--Cycles(T states) count for execution (based on the longest execution)-->
-      <xs:element name="Cycles" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Status" type="statusEnum" minOccurs="0" maxOccurs="4" default="Documented" />
+      <!--Cycles(T states) count for execution non-jmp, Cycles(T states) count for execution of jmp-->
+      <xs:element name="Cycles" type="xs:string" minOccurs="1" maxOccurs="4"/>
       <!--Effected Flags-->
-      <xs:element name="Flags" type="xs:string" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="Flags" type="xs:string" minOccurs="0" maxOccurs="4"/>
       <!--Description of this opcode-->
-      <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="4"/>
     </xs:sequence>
 
     <!--This is the preferred encoding for this opcode-->
     <xs:attribute name="Preferred" type="xs:boolean" use="optional" default="true"/>
 
-    <!--The platform this encoding is for-->
+    <!--The platform this encoding is for, seperated by a comma -->
     <xs:attribute name="Platform" type="xs:string" use="required"/>
   </xs:complexType>
 
@@ -211,6 +211,8 @@
 
       <!--Any flag-->
       <xs:enumeration value="Flag"/>
+      
+      <!--C & Z tests only-->
       <xs:enumeration value="HalfFlag"/>
 
       <!--Specific Flag-->

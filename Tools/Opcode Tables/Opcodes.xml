@@ -30,6 +30,27 @@ This is the formula for the "XML" field ($Y = GFLAG)
  [Encoding XML] &
  if($Y3=FALSE, "</Opcode>", "")
 
+Flags:
+  C: Carry Flag (all)
+  Z: Zero Flag (all)
+  S: Sign Flag (all)
+  H: Half/Auxiliary Carry (all)
+
+  N: Add/Subtract (z80)
+  K: Signed Underflow Indicator (8085)
+
+  P: Parity (8080, 8085)
+  V: Overflow (8085)
+  P/V: Parity/Overflow (z80)
+
+  For z80 P/V is set from P or V (unless otherwise set)
+
+  flag:* As Defined
+  flag:- No changed
+  flag:0 Set to zero
+  flag:1 Set to one
+  flag:C Complemented
+
 -->
 
 <OpcodeData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="./Opcodes.xsd">
@@ -663,7 +684,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='ByteImmidate'>Displacment</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(13)</Cycles>
+      <Cycles>2(8), 3(13)</Cycles>
       <Flags>------</Flags>
       <Description>This instruction is similar to the conditional jump instructions except that a register value is used to determine branching. The B register is decremented, and if a non zero value remains, the value of the displacement e is added to the Program Counter (PC). The next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC.</Description>
     </Encoding>
@@ -875,7 +896,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='ByteImmidate'>Displacment</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
+      <Cycles>2(7), 3(12)</Cycles>
       <Flags>------</Flags>
       <Description>This instruction provides for conditional branching to other segments of a program depending on the results of a test on the Carry Flag. If the flag is equal to a 1, the value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC</Description>
     </Encoding>
@@ -886,7 +907,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='ByteImmidate'>Displacment</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
+      <Cycles>2(7), 3(12)</Cycles>
       <Flags>----</Flags>
       <Description>This instruction provides for conditional branching to other segments of a program depending on the results of a test on the Carry Flag. If the flag is equal to a 1, the value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC</Description>
     </Encoding>
@@ -2509,7 +2530,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-NZ</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2519,7 +2540,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-NZ</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2529,7 +2550,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Flag'>Flag</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>------</Flags>
       <Description>If condition cc is true, the byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is incremented and the byte at the memory location specified by the new contents of the SP are moved to the high order eight bits of the PC. The SP is incremented again. The next Op Code following this instruction is fetched from the memory location specified by the PC</Description>
     </Encoding>
@@ -2539,7 +2560,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='HalfFlag'>HalfFlag</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>----</Flags>
       <Description>If condition cc is true, the byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is incremented and the byte at the memory location specified by the new contents of the SP are moved to the high order eight bits of the PC. The SP is incremented again. The next Op Code following this instruction is fetched from the memory location specified by the PC</Description>
     </Encoding>
@@ -2594,7 +2615,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -2605,7 +2626,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -2616,7 +2637,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>------</Flags>
       <Description>If condition cc is true, the instruction loads operand nn to register pair PC (Program Counter), and the program continues with the instruction beginning at address nn. If condition cc is false, the Program Counter is incremented as usual, and the program continues with the next sequential instruction.</Description>
     </Encoding>
@@ -2627,7 +2648,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>----</Flags>
       <Description>If condition cc is true, the instruction loads operand nn to register pair PC (Program Counter), and the program continues with the instruction beginning at address nn. If condition cc is false, the Program Counter is incremented as usual, and the program continues with the next sequential instruction.</Description>
     </Encoding>
@@ -2682,7 +2703,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2693,7 +2714,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2704,7 +2725,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>------</Flags>
       <Description>If condition cc is true, this instruction pushes the current contents of the Program Counter (PC) onto the top of the external memory stack, then loads the operands nn to PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
     </Encoding>
@@ -2715,7 +2736,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>----</Flags>
       <Description>If condition cc is true, this instruction pushes the current contents of the Program Counter (PC) onto the top of the external memory stack, then loads the operands nn to PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
     </Encoding>
@@ -2857,7 +2878,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-Z</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2867,7 +2888,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-Z</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2910,7 +2931,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -2921,7 +2942,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -2933,7 +2954,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
@@ -2945,7 +2966,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Value-8</Arg>
       </Arguments>
       <Status>Undocumented</Status>
-      <Cycles>4(12)</Cycles>
+      <Cycles>2(5), 4(12)</Cycles>
       <Flags>-------</Flags>
       <Description>If V flag is set, execute RST 8</Description>
     </Encoding>
@@ -2974,7 +2995,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -2985,7 +3006,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3085,7 +3106,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-NC</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3095,7 +3116,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-NC</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3108,7 +3129,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3119,7 +3140,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3132,7 +3153,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>The content of register A is placed on the eight bit bi-directional data bus for transmission to the specified port.</Description>
     </Encoding>
@@ -3143,14 +3164,14 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>The content of register A is placed on the eight bit bi-directional data bus for transmission to the specified port.</Description>
     </Encoding>
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='ByteImmidate'>BytePtr</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
         <Arg encoding='Direct'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
@@ -3178,7 +3199,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3189,7 +3210,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3258,7 +3279,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-CY</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3268,7 +3289,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-CY</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3334,7 +3355,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3345,7 +3366,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3358,7 +3379,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>The data placed on the eight bit bi-directional data bus by the specified port is moved to register A</Description>
     </Encoding>
@@ -3377,7 +3398,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>IN</Mnemonic>
       <Arguments>
         <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='ByteImmidate'>BytePtr</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
@@ -3404,7 +3425,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3415,7 +3436,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3440,7 +3461,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Undocumented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>Jump to address if K flag is not set</Description>
     </Encoding>
@@ -3507,7 +3528,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-PO</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3517,7 +3538,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-PO</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3537,7 +3558,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDH</Mnemonic>
       <Arguments>
-        <Arg encoding='ByteImmidate'>BytePtr</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>
         <Arg encoding='Direct'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
@@ -3554,7 +3575,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3565,7 +3586,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3637,7 +3658,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3648,7 +3669,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3717,7 +3738,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-PE</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3727,7 +3748,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-PE</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3795,7 +3816,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3806,7 +3827,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -3867,7 +3888,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3878,7 +3899,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3983,7 +4004,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-P</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -3993,7 +4014,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-P</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4014,7 +4035,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>LDH</Mnemonic>
       <Arguments>
         <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='ByteImmidate'>BytePtr</Arg>
+        <Arg encoding='ByteImmidate'>Byte</Arg>>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
@@ -4072,7 +4093,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -4083,7 +4104,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -4150,7 +4171,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4161,7 +4182,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4272,7 +4293,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-M</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4282,7 +4303,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='Direct' hidden='true'>Flag-M</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
+      <Cycles>1(5), 3(11)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4365,7 +4386,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -4376,7 +4397,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
+      <Cycles>3(10), 3(10)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
@@ -4432,7 +4453,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-----</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4443,7 +4464,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
@@ -4468,7 +4489,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Undocumented</Status>
-      <Cycles>5(17)</Cycles>
+      <Cycles>3(10), 5(17)</Cycles>
       <Flags>-------</Flags>
       <Description>Jump to address if K flag is  set</Description>
     </Encoding>
@@ -4804,7 +4825,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     </Encoding>
   </Opcode>
   <Opcode Prefix='CB' Value='30' Function='SL-L' Group='Logical' Length='2'>
-    <Encoding Preferred='true' Platform='z80'>
+    <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SL1</Mnemonic>
       <Arguments>
         <Arg encoding='Source'>ByteReg</Arg>
@@ -4828,7 +4849,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     </Encoding>
   </Opcode>
   <Opcode Prefix='CB' Value='30' Function='SL-L' Group='Logical' Length='2'>
-    <Encoding Preferred='false' Platform='z80'>
+    <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='Source'>ByteReg</Arg>
@@ -4840,7 +4861,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     </Encoding>
   </Opcode>
   <Opcode Prefix='CB' Value='36' Function='SL-L' Group='Logical' Length='2'>
-    <Encoding Preferred='true' Platform='z80'>
+    <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SL1</Mnemonic>
       <Arguments>
         <Arg encoding='Direct'>WordRegPtr-HL</Arg>
@@ -4864,7 +4885,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     </Encoding>
   </Opcode>
   <Opcode Prefix='CB' Value='36' Function='SL-L' Group='Logical' Length='2'>
-    <Encoding Preferred='false' Platform='z80'>
+    <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='Direct'>WordRegPtr-HL</Arg>
@@ -5068,7 +5089,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>IN</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg</Arg>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Direct'>ByteReg-C</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
@@ -5091,7 +5112,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Direct'>ByteReg-C</Arg>
         <Arg encoding='Dest'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
@@ -5395,7 +5416,6 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>RRD</Mnemonic>
       <Arguments>
         <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
@@ -5406,7 +5426,6 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>RRD</Mnemonic>
       <Arguments>
         <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct' hidden='true'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
@@ -5452,7 +5471,6 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>RLD</Mnemonic>
       <Arguments>
         <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
@@ -5463,7 +5481,6 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Mnemonic>RLD</Mnemonic>
       <Arguments>
         <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct' hidden='true'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
@@ -5475,7 +5492,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Direct'>ByteReg-C</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(12)</Cycles>
@@ -5497,7 +5514,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Direct'>ByteReg-C</Arg>
         <Arg encoding='Direct'>Value-0</Arg>
       </Arguments>
       <Status>Undocumented</Status>
@@ -5659,7 +5676,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>LDIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>--000-</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the DE register pair. Both these register pairs are incremented and the BC (Byte Counter) register pair is decremented. If decrementing causes the BC to go to zero, the instruction is terminated. If BC is not zero, the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer. When BC is set to zero prior to instruction execution, the instruction loops through 64 Kbytes</Description>
     </Encoding>
@@ -5668,7 +5685,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>CPIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>SZHP1C</Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. HL is incremented and the Byte Counter (register pair BC) is decremented. If decrementing causes BC to go to zero or if A = (HL), the instruction is terminated. If BC is not zero and A ≠ (HL), the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer. If BC is set to zero before instruction execution, the instruction loops through 64 Kbytes if no match is found.</Description>
     </Encoding>
@@ -5677,7 +5694,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>INIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>?Z??1-</Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B is used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Then register pair HL is incremented, the byte counter is decremented. If decrementing causes B to go to zero, the instruction is terminated. If B is not zero, the PC is decremented by two and the instruction repeated. Interrupts are recognized and two refresh cycles execute after each data transfer.</Description>
     </Encoding>
@@ -5686,7 +5703,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>OTIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>?Z??1-</Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is tempo- rarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Then register pair HL is incremented. If the decremented B register is not zero, the Program Counter (PC) is decremented by two and the instruction is repeated. If B has gone to zero, the instruction is terminated. Interrupts are recognized and two refresh cycles are executed after each data transfer.</Description>
     </Encoding>
@@ -5695,7 +5712,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>LDDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>--000-</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the contents of the DE register pair. Then both of these registers, as well as the BC (Byte Counter), are decremented. If decrementing causes BC to go to zero, the instruction is terminated. If BC is not zero, the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles execute after each data transfer. When BC is set to zero, prior to instruction execution, the instruction loops through 64 Kbytes.</Description>
     </Encoding>
@@ -5704,7 +5721,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>CPDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>SZH01C</Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. The HL and BC (Byte Counter) register pairs are decremented. If decrementing causes the BC to go to zero or if A = (HL), the instruction is terminated. If BC is not zero and A = (HL), the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles execute after each data transfer. When BC is set to zero, prior to instruction execution, the instruction loops through 64 Kbytes if no match is found.</Description>
     </Encoding>
@@ -5713,7 +5730,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>INDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>?Z??1-</Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B is used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Then HL and the byte counter are decremented. If decrementing causes B to go to zero, the instruction is terminated. If B is not zero, the PC is decremented by two and the instruction repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer</Description>
     </Encoding>
@@ -5722,7 +5739,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     <Encoding Platform='z80'>
       <Mnemonic>OTDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
+      <Cycles>4(16), 5(21)</Cycles>
       <Flags>?Z??1-</Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is tempo- rarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Regis- ter B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Then, register pair HL is decremented and if the decremented B register is not zero, the Program Counter (PC) is decremented by two and the instruction is repeated. If B has gone to zero, the instruction is termi- nated. Interrupts are recognized and two refresh cycles are executed after each data transfer.</Description>
     </Encoding>
@@ -5892,10 +5909,23 @@ This is the formula for the "XML" field ($Y = GFLAG)
   </Opcode>
   <Opcode Index='true' Value='40' Function='LOAD' Group='8-Bit Load' Length='2'>
     <Encoding Platform='z80'>
-      <Mnemonic>LD</Mnemonic>
+      <Mnemonic>LDx</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg</Arg>
+        <Arg encoding='Source'>ByteReg-Izb</Arg>
+      </Arguments>
+      <Status>Undocumented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags>------</Flags>
+      <Description>The contents of any register r' are loaded to any other register r.</Description>
+    </Encoding>
+  </Opcode>
+  <Opcode Index='true' Value='40' Function='LOAD' Group='8-Bit Load' Length='2'>
+    <Encoding Platform='z80'>
+      <Mnemonic>LDx</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg-Izb</Arg>
-        <Arg encoding='Source'>ByteReg-Izb</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
@@ -6438,7 +6468,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     </Encoding>
   </Opcode>
   <Opcode Index='true' Prefix='CB' Value='30' Function='SL-L' Group='Logical' Length='4'>
-    <Encoding Preferred='true' Platform='z80'>
+    <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SL1</Mnemonic>
       <Arguments>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
@@ -6449,7 +6479,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Flags>SZ0P0C</Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
     </Encoding>
-    <Encoding Preferred='false' Platform='z80'>
+    <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
@@ -6462,7 +6492,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
     </Encoding>
   </Opcode>
   <Opcode Index='true' Prefix='CB' Value='36' Function='SL-L' Group='Logical' Length='4'>
-    <Encoding Preferred='true' Platform='z80'>
+    <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SL1</Mnemonic>
       <Arguments>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
@@ -6472,7 +6502,7 @@ This is the formula for the "XML" field ($Y = GFLAG)
       <Flags>SZ0P0C</Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
-    <Encoding Preferred='false' Platform='z80'>
+    <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>

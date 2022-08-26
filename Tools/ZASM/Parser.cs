@@ -20,7 +20,7 @@ namespace ZASM
         public int FileID = 0;
         public int LineCount = 0;
         
-        public FileStream Stream = null;
+        public Stream Stream = null;
     }
 
     class LineInformation
@@ -40,36 +40,24 @@ namespace ZASM
         }
     }
 
-    class ConditionalInformation
-    {
-        public LineInformation Line;
-        public bool SavedParse;
-        public bool Result;
-    }
-
     partial class Parser
     {
-        Dictionary<string, FileInformation> _Files;
+        Dictionary<string, FileInformation> Files;
         List<LineInformation> ParseData;
         Stack<FileInformation> FileStack;
-        Stack<ConditionalInformation> _ConditionalStack;
-        SymbolTable _SymbolTable;
-        short _CurrentAddress;
-        int _CycleCount;
+        SymbolTable SymbolTable;
         
         public Parser()
         {
-            _Files = new Dictionary<string, FileInformation>(StringComparer.OrdinalIgnoreCase);
+            Files = new Dictionary<string, FileInformation>(StringComparer.OrdinalIgnoreCase);
             ParseData = new List<LineInformation>();
             FileStack = new Stack<FileInformation>();
-            _ConditionalStack = new Stack<ConditionalInformation>();
-            _SymbolTable = new SymbolTable();
-            _CurrentAddress = 0;
+            SymbolTable = new SymbolTable();
         }
 
         public string LookupFileName(int FileID)
         {
-            FileInformation File = _Files.Where(e => e.Value.FileID == FileID).FirstOrDefault().Value;
+            FileInformation File = Files.Where(e => e.Value.FileID == FileID).FirstOrDefault().Value;
 
             if (File == null)
                 return "";
@@ -104,21 +92,46 @@ namespace ZASM
                 return null;
             }
             
-            if (_Files.ContainsKey(FullPath))
-                return _Files[FullPath];
+            if (Files.ContainsKey(FullPath))
+                return Files[FullPath];
 
             FileInformation NewFile = new FileInformation();
 
-            NewFile.FileID = _Files.Count;
+            NewFile.FileID = Files.Count;
             NewFile.Name = FilePath;
             NewFile.Path = FullPath;
             NewFile.FileName = Path.GetFileName(FullPath);
 
-            _Files.Add(FullPath, NewFile);
+            Files.Add(FullPath, NewFile);
 
             return NewFile;
         }
-            
+
+        public bool CurrentlyInFile(FileInformation FileInformation)
+        {
+            if (FileStack.Where(e => e.FileName.Equals(FileInformation.FileName, StringComparison.OrdinalIgnoreCase)).Count() != 0)
+                return true;
+
+            return false;
+        }
+
+        public bool EnterFile(FileInformation FileInformation)
+        {
+            FileStack.Push(FileInformation);
+
+            return true;
+        }
+
+        public bool ExitFile(FileInformation FileInformation)
+        {
+            if (FileStack.First() != FileInformation)
+                return false;
+
+            FileStack.Pop();
+
+            return true;
+        }
+
         public bool ParseFile(string InputFile)
         {
             FileInformation RootFile = FindFile(InputFile, false);
@@ -130,12 +143,14 @@ namespace ZASM
             }
 
             RootFile.Stream = File.OpenRead(RootFile.Path);
-
             FileStack.Push(RootFile);
 
             bool Success = true;
             Debug.WriteLine("Phase 1");
-            Success = Phase1(RootFile);
+            ParserPhase1 Phase1 = new ParserPhase1(this, SymbolTable, ParseData);
+
+
+            Success = Phase1.Phase1(RootFile);
 
             // Open the listing file
             //string ListingFile = System.IO.Path.ChangeExtension(RootFile.Path, "lst");

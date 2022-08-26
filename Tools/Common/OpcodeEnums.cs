@@ -75,6 +75,7 @@ namespace OpcodeData
         LDI, 
         LDIR, 
         LDSI, 
+        LDX, 
         LHLD, 
         LHLDE, 
         LHLX, 

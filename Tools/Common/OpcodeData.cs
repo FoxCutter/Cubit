@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace OpcodeData
 {
@@ -25,6 +26,8 @@ namespace OpcodeData
         // Index High and Low, can be IXL/H or IYL/H depending on prefix
         ByteReg_Izb, ByteReg_IzH, ByteReg_IzL,
 
+        ByteReg,
+
         // 16-bit Registers
         Word = 0x40,
         WordReg_BC = Word + ByteReg_B,
@@ -48,6 +51,8 @@ namespace OpcodeData
         WordReg_HLI,    // HL Increment
         WordReg_HLD,    // HL Decrement
 
+        WordReg,
+
         RegisterAny,
 
         // These registers have more context based meanings
@@ -57,6 +62,7 @@ namespace OpcodeData
         Reg_H,  // ByteReg_H or WordReg_HL on 808x
         Reg_M,  // Flag_M or WordReg_HL on 808x
 
+        ContextReg, 
         RegisterMax = 0x80,
 
         // Flags
@@ -105,6 +111,8 @@ namespace OpcodeData
         WordRegister,
         WordRegisterAF,
 
+        ContextRegister,
+        
         // IXL, IXH, IYL, IYH
         ByteIndexRegister,
 
@@ -184,12 +192,21 @@ namespace OpcodeData
         Undocumented,
     }
 
-    public class ParamEntry
+    public class ParamEntry : IEquatable<ParamEntry>
     {
         public ParameterID Param;
         public ParameterType Type;
         public EncodingType Encoding;
         public bool Implicit;
+        public bool Expanded;
+
+        public bool Equals(ParamEntry other)
+        {
+            if (Param == other.Param && Type == other.Type && Encoding == other.Encoding && Implicit == other.Implicit)
+                return true;
+
+            return false;
+        }
 
         public string ParamString()
         {
@@ -210,5 +227,48 @@ namespace OpcodeData
             return ParamString();
 
         }
+    }
+
+    public class ArgumentList : List<ParamEntry>, IEquatable<ArgumentList>
+    {
+        public ArgumentList() : base()
+        {
+
+        }
+
+        public ArgumentList(IEnumerable<ParamEntry> arg) : base(arg)
+        {
+
+        }
+
+        public bool Equals(ArgumentList other)
+        {
+            if (Count != other.Count)
+                return false;
+
+            for (int x = 0; x < Count; x++)
+            {
+                if (!this[x].Equals(other[x]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public override string ToString()
+        {
+            
+            StringBuilder output = new StringBuilder();
+            foreach(var s in this)
+            {
+                output.Append(s.ToString());
+                output.Append(' ');
+            }
+
+            return output.ToString();
+        }
+
     }
 }

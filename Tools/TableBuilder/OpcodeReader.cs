@@ -21,11 +21,18 @@ namespace TableBuilder
         public bool Index;
         public byte Prefix;
         public byte Encoding;
-        public OpcodeData.ParamEntry[] Arguments;
+        public OpcodeData.ArgumentList Arguments;
         public Opcodes.statusEnum Status;
 
         public int Cycles;
         public short TStates;
+
+        public int Conditonal_Cycles;
+        public short Conditonal_TStates;
+
+        public int Index_Cycles;
+        public short Index_TStates;
+
         public byte Length;
 
         public bool Prefered;
@@ -43,6 +50,7 @@ namespace TableBuilder
             Menmontic = "";
             FunctionName = "";
             Cycles = 0;
+            Conditonal_Cycles = 0;
             i8080 = false;
         }
 
@@ -51,9 +59,11 @@ namespace TableBuilder
             Index = Clone.Index;
             Prefix = Clone.Prefix;
             Encoding = Clone.Encoding;
-            Arguments = (OpcodeData.ParamEntry[])Clone.Arguments.Clone();
+            Arguments = new OpcodeData.ArgumentList(Clone.Arguments);
             Status = Clone.Status;
             TStates = Clone.TStates;
+            Conditonal_TStates = Clone.Conditonal_TStates;
+            Index_TStates = Clone.Index_TStates;
             Length = Clone.Length;
 
             Prefered = Clone.Prefered;
@@ -61,6 +71,9 @@ namespace TableBuilder
             Menmontic = Clone.Menmontic;
             FunctionName = Clone.FunctionName;
             Cycles = Clone.Cycles;
+            Conditonal_Cycles = Clone.Conditonal_Cycles;
+            Index_Cycles = Clone.Index_Cycles;
+
 
             i8080 = Clone.i8080;
         }
@@ -116,24 +129,32 @@ namespace TableBuilder
             }
             else
             {
-                var Cycles = ParceCycles.Match(Encoding.Cycles);
-                Entry.Cycles = short.Parse(Cycles.Groups[1].Value);
-                Entry.TStates = short.Parse(Cycles.Groups[2].Value);
+                var Cycles = ParceCycles.Matches(Encoding.Cycles);
+                Entry.Cycles = short.Parse(Cycles[0].Groups[1].Value);
+                Entry.TStates = short.Parse(Cycles[0].Groups[2].Value);
+
+                if(Cycles.Count > 1)
+                {
+                    Entry.Conditonal_Cycles = short.Parse(Cycles[1].Groups[1].Value);
+                    Entry.Conditonal_TStates = short.Parse(Cycles[1].Groups[2].Value);
+
+                }
             }
+
+            Entry.Index_Cycles = 0;
+            Entry.Index_TStates = 0;
 
             Entry.Status = Encoding.Status;
 
-            List<OpcodeData.ParamEntry> ArgList = new List<OpcodeData.ParamEntry>();
+            Entry.Arguments = new OpcodeData.ArgumentList();
 
             if (Encoding.Arguments != null)
             {
                 foreach (Opcodes.argType Arg in Encoding.Arguments)
                 {
-                    ArgList.Add(GetParamInfo(Arg));
+                    Entry.Arguments.Add(GetParamInfo(Arg));
                 }
             }
-
-            Entry.Arguments = ArgList.ToArray();
 
             return Entry;
         }
@@ -144,6 +165,7 @@ namespace TableBuilder
             OpcodeData.ParamEntry Ret = new OpcodeData.ParamEntry();
 
             Ret.Implicit = Arg.hidden;
+            Ret.Expanded = false;
 
             switch (Arg.Value)
             {
@@ -547,6 +569,7 @@ namespace TableBuilder
                 OpcodeData.ParamEntry NewParam = new OpcodeData.ParamEntry();
 
                 NewParam.Param = ParamList[x];
+                NewParam.Expanded = true;
 
                 NewParam.Type = Param.Type;
                 NewParam.Implicit = Param.Implicit;
@@ -645,7 +668,7 @@ namespace TableBuilder
 
         public static byte ExpandIndex(LocalOpcodeEntry Opcode)
         {
-            for (byte x = 0; x < Opcode.Arguments.Length; x++)
+            for (byte x = 0; x < Opcode.Arguments.Count; x++)
             {
                 if (CanExpand(Opcode.Arguments[x]))
                     return x;

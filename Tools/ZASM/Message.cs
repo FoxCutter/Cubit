@@ -136,14 +136,11 @@ namespace ZASM
 
     static class Message
     {
-        //public static Message Log = new Message();
-        static List<MessageInformation> _ErrorList;
-
-        public static List<MessageInformation> ErrorList { get { return _ErrorList; } }
+        public static List<MessageInformation> ErrorList { get; private set; }
 
         static Message()
         {
-            _ErrorList = new List<MessageInformation>();
+            ErrorList = new List<MessageInformation>();
         }
 
         public static void Add(string Source, int FileID, int Line, int Character, MessageCode Code, string Details = "")
@@ -159,22 +156,22 @@ namespace ZASM
         public static void Add(MessageInformation Error)
         {
             if (!Settings.Messages.ContainsKey(Error.Code) || Settings.Messages[Error.Code] == Setting.On)
-                _ErrorList.Add(Error);
+                ErrorList.Add(Error);
         }
 
         public static int MessageCount()
         {
-            return _ErrorList.Count(e => e.Code < MessageCode.Warning);
+            return ErrorList.Count(e => e.Code < MessageCode.Warning);
         }
 
         public static int WarningCount()
         {
-            return _ErrorList.Count(e => e.Code >= MessageCode.Warning && e.Code < MessageCode.Error);
+            return ErrorList.Count(e => e.Code >= MessageCode.Warning && e.Code < MessageCode.Error);
         }
 
         public static int ErrorCount()
         {
-            return _ErrorList.Count(e => e.Code >= MessageCode.Error);
+            return ErrorList.Count(e => e.Code >= MessageCode.Error);
         }
     }
 }

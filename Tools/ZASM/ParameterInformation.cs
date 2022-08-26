@@ -6,20 +6,55 @@ using System.Threading.Tasks;
 
 namespace ZASM
 {
-    class ParameterInformation
+    class ParameterToken
     {
-        public List<Token> Tokens;
+        public Token Token;
         public bool Error;
 
+        public List<ParameterToken> GroupTokens;
+
+        public ParameterToken()
+        {
+            Token = null;
+            Error = false;
+            GroupTokens = null;
+        }
+
+        public ParameterToken(Token CurrentToken, bool Error = false)
+        {
+            Token = CurrentToken;
+            this.Error = Error;
+            GroupTokens = null;
+        }
+
+        public override string ToString()
+        {
+            if(Token != null)
+                return Token.ToString();
+
+            if (GroupTokens != null)
+                return string.Join(" ", GroupTokens);
+
+            return "ERROR";
+        }
+    }
+
+
+    class ParameterInformation
+    {
+        public List<ParameterToken> Tokens;
+        public bool Error;
+        public bool Pointer;
+
         public OpcodeData.ParameterType Type;
-        public OpcodeData.ParameterID Parameter;
+        //public OpcodeData.ParameterID Parameter;
 
         public ParameterInformation()
         {
-            Tokens = new List<Token>();
+            Tokens = new List<ParameterToken>();
             Error = false;
 
-            Parameter = OpcodeData.ParameterID.None;
+            //Parameter = OpcodeData.ParameterID.None;
             Type = OpcodeData.ParameterType.Unknown;
         }
 

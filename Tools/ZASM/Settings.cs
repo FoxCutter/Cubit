@@ -17,14 +17,15 @@ namespace ZASM
     {
         z80,
         i8080,
+        i8085,
         GameBoy,
     }
     
     static class Settings
     {
-        public static Setting ImplicitA = Setting.Warning;
+        public static Setting ImplicitA = Setting.On;
         public static Setting Indexes = Setting.On;
-        public static Setting ArrayOffset = Setting.On;
+        public static Setting ArrayOffset = Setting.Off;
         public static Setting CYAsCarry = Setting.On;
         public static Setting CommandRequiresDot = Setting.Warning;
         public static Setting LabelsRequireColon = Setting.Warning;
@@ -39,7 +40,6 @@ namespace ZASM
             ImplicitA = Setting.Off;
             CommandRequiresDot = Setting.On;
             LabelsRequireColon = Setting.On;
-            CYAsCarry = Setting.On;
         }
 
         public static List<string> IncludePaths = new List<string>()

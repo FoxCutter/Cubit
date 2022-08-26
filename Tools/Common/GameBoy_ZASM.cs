@@ -159,8 +159,8 @@ namespace OpcodeData
             {
                CommandID.LDH, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Encoding = 0xE0, Name = CommandID.LDH, Length = 2, Cycles = 3, TStates = 12, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.BytePointer, Encoding = EncodingType.ByteImmidate}, new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister}, }, }, // E0nn: LDH (nn), A
-                  new OpcodeEntry { Encoding = 0xF0, Name = CommandID.LDH, Length = 2, Cycles = 3, TStates = 12, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.BytePointer, Encoding = EncodingType.ByteImmidate}, }, }, // F0nn: LDH A, (nn)
+                  new OpcodeEntry { Encoding = 0xE0, Name = CommandID.LDH, Length = 2, Cycles = 3, TStates = 12, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister}, }, }, // E0nn: LDH nn, A
+                  new OpcodeEntry { Encoding = 0xF0, Name = CommandID.LDH, Length = 2, Cycles = 3, TStates = 12, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.ByteReg_A, Type = ParameterType.ByteRegister}, new ParamEntry { Param = ParameterID.ImmediateByte, Type = ParameterType.Value, Encoding = EncodingType.ByteImmidate}, }, }, // F0nn: LDH A, nn
                }
             },
             {

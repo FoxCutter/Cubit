@@ -15,9 +15,9 @@
 ; +5v     | 07 VCC     GND 22 | GND
 ; GND     | 08 GND     PC7 21 | IRQ7
 ; D6      | 09 PB6    AVCC 20 | +5v
-; D7      | 10 PB7     PB5 19 | D5
-; /WAIT   | 11 PD5     PB4 18 | D4
-; IRQ6    | 12 PD6     PB3 17 | D3
+; D7      | 10 PB7     PB5 19 | D5 / SCK
+; /WAIT   | 11 PD5     PB4 18 | D4 / MISO
+; IRQ6    | 12 PD6     PB3 17 | D3 / MOSI
 ; RD/WD   | 13 PD7     PB2 16 | D2
 ; D0      | 14 PB0     PB1 15 | D1
 ;         =====================
@@ -47,19 +47,19 @@
 ; A0-A1: Selects the port to address, IN
 ; D0-D7: Data Bus, I/O
 ; /IRQ0-/IRQ7: Interrupt Request lines, edge triggered low, IN
-; /CE: Chip enable, IN
+; /CS: Chip Select, IN
 ; RD/WD: 1: Read, 0: Write, IN
 ; /WAIT: Set to low when the MCU is Reading/Writing the databus, OUT
 ; /INTREQ: Output line, goes low when the MCU wants to deliver an interrupt, OUT
 ; /INTACK: Sent from the CPU when it's time to write out the vector data to the bus, IN
 ;
 ; Future plans:
-;  * 3 Different INTA modes
+;  * Different INTA modes
 ;    * Mode 0 = Z80 (Send Vector on INTA)
 ;    * Mode 1 = 8086/8088 (Set ISR on INTA1, second vector on INTA2)
 ;    * Mode 2 = 8080 (Jump on INTA1, Low Byte on INTA2, High Byte on INTA3)
 ;    * Mode 3 = Multi Byte data, one byte per an INTA
-;    * Mode 4 = Polling Mode (Next RD will be treated as the INTA)
+;    * Mode 7 = Poll Mode
 ;  * INTREQ Active Level select (0 = Low, 1 = High)
 ;  * IRQ Active Level select (0 = Low, 1 = High)
 ;  * Edge or Level tiggered mode on IRQs
@@ -70,7 +70,7 @@
 ;
 ; CS | A0 | A1 | Read (1)    | Write (0)
 ; ------------------------------------------
-;  0 |  0 |  0 | ISR         | Command
+;  0 |  0 |  0 | ISR/POLL    | Command
 ;  0 |  0 |  1 | IMR         | IMR
 ;  0 |  1 |  0 | Register ID | Register ID
 ;  0 |  1 |  1 | Data        | Data
@@ -81,35 +81,61 @@
 ; All undefined bit values should be 0
 ;
 ; ISR         : *7-*0: IRQx is (1) In Service, (0) Not in service
+; POLL        : *7-*0: IRQx that triggered the INT request in POLL mode, reading will act as the INTA.
 ; IMR         : *7-*0: IRQx is (1) Enabled, (0) Disabled
 ; Command     :
 ;              7|6|5|4|3|2|1|0
 ;              c|c|c|x|x|x|x|x: ccc = Command, xxx = data
 ;              0|0|0|-|-|-|-|X: Master Enable, Sets the master interrupt enable to X
-;              1|0|0|m|m|v|v|v: End of Interrupt (MM = mode, 00 = all, 01 = Specific. VVV Specific Interrupt)
+;              1|0|0|m|m|v|v|v: End of Interrupt (mm = mode, 00 = higest, 01 = Specific vvv vector)
 ;              1|1|0|x|x|x|x|x: Debug Commands
 ;              1|1|1|-|-|-|-|-: Soft Reset
 ; Register ID : Register to edit
 ; Data        : Register data
 ;
+; 
 ; Register     (ID)
 ; Status       (00) ---- Read Only
 ;                   : *7: Master Interrupts Enabled
+; IRR          (01) : *7-*0: IRQx has (1) Requested service (0) Not requested service. Read Only
+; IRS          (02) : *7-*0: IRQx is (1) Enabled, (0) Disabled Read Only
+; POLL         (03) : *7-*0: IRQx that triggered the INT request, reading will act as the INTA. Read Only
 ;
-; Configure:   (01)
-;                   : *6: INTREQ Low/High
-;                   : *5: IRQ Low/High
+; Configure:   (10)
+;                   :  7: -----
+;                   : *6: INTREQ Low/High --- Not Yet Implemented
+;                   : *5: IRQ Low/High --- Not Yet Implemented
 ;                   : *4: IRQ Trigger: (0) Level Triggered, (1) Edge Triggered --- Not Yet Implemented
-;                   ; *3: Priority mode (0) Fixed (1) Rotating  --- Not Yet Implemented
-;                     *2-0: Mode                  -- Not Yet Implemented
-; IRR          (02) : *7-*0 IRQx has (1) Requested service (0) Not requested service. Read Only
-; AUTO EOI     (03) : *7-*0 IRQx will (1) auto EOI (0) not auto EOI
+;                   : *3: Priority mode (0) Fixed (1) Rotating  --- Not Yet Implemented
+;                   : *2-0: Mode
+;                        : 000: Z80 (Send Vector on INTA - One Byte)
+;                        : 001: 8086/8088 (Send vector on INTA2 - One Byte) --- Not Yet Implemented
+;                        : 010: 8080 (Jump opcode INTA1, Byte[0] on INTA2, Byte [1] on INTA3 - Two Bytes) --- Not Yet Implemented
+;                        : 011: Multi Byte data, one byte per an INTA (Byte Count in Vector Register) --- Not Yet Implemented
+;                        : 100: -----
+;                        : 101: -----
+;                        : 110: -----
+;                        : 111: Polling Mode (Next POLL will be treated as the INTA) --- Not Yet Implemented
+; Vectors      (11) : *7   : (0) Vector Range, (1) Individual Vectors
+;                      6- 5: In Multi-Byte mode, this is the number of bytes in each vector - 1
+;                     *3-*0: Vector Skip value, when Bit 7 is 0, this value (+1) is used to build the vector table
+; Auto EOI     (12) : *7-*0 IRQx will (1) auto EOI (0) not auto EOI
 ;
-; Vectors      (08) : *3: (0) Vector Range, (1) Individual Vectors
-;                     *0-*2: Vector Skip value, when Bit 3 is 0, this value (+1) is used to build the vector table
-; IRQx Vector  (1x) : Vector for given IRQ, if Vectors[3] is 0, this is the base vector all the other vectors are built on.
-;                   : When Vectors[3] is 0 you can still read from all registers to get the current vector
-; Spurious Int (1F) : Vector to give in the case of a Spurious Interrupt
+; Cascade Mode (20) : *7   : Chip is in casade mode --- Not Yet Implemented
+;                     *0   : Handle Spurious Int  --- Not Yet Implemented
+;
+;
+; IRQx Vector  (8x) : Vectors.7 == 0
+;   1|0|0|0|0|0|b|b : The base vector all the other vectors are built on, bb is the vector byte, depending on mode
+;                     All other vector registers are read only, returning the current values based on this one
+;                     Adding the (vector * Vector Skip value) to the last byte
+;
+; IRQx Vector  (8x) : Vectors.7 == 1
+;   1|0|0|v|v|v|b|b : Vector for IRQ vvv. bb is the vector byte, depending on mode
+;
+; Spurious Int (Fx) 
+;   1|1|1|1|0|0|b|b : Vector to give in the case of a Spurious Interrupt. bb is the vector byte, depending on mode
+;
 ;
 ; Reset Values:
 ;  IRQ0 = 0x80
@@ -121,8 +147,9 @@
 ;  IRQ6 = 0x8C
 ;  IRQ7 = 0x8E
 ;  Spurious Int = 0xF0
+;  Vectors = 0x01
 ;  All other registers are set to 0x00
-; Mode 0, INTREQ Low, IRQ Low, Level Tiggered
+; Mode Z80 (0), INTREQ Low, IRQ Low, Level Tiggered
 ; INTREQ and WAIT will be floating until activated
 ; Master Interupts off, all masked off
 ;
@@ -133,9 +160,9 @@
 ; * Recive the INTA
 ;   Mode 0=Set the ISR bit and write out the vector. Auto EIO if selecetd
 ;   Mode 1=INTA1, set the ISR bit. INTA2 Write out the vector Auto EIO if selecetd
-;   Mode 2=INTA1, Set the ISR bit, write out Jump. INTA2=Low Byte, INTA3=High Byte, Auto EIO if selecetd
-;   Mode 3=INTA1, Set the ISR bit Write out first byte of data, INTAx, write out remaining bytes, one per INTA,last INTA Auto EIO if selecetd
-;   Mode 4=INTA is ignored, the next Read will be treated as INTA and set the related ISR bit.
+;   Mode 2=INTA1, Set the ISR bit, write out Jump. INTA2=Byte[0], INTA3=Byte[1], Auto EIO if selecetd
+;   Mode 3=INTA1, Set the ISR bit Write out first byte of data, INTA2-4, write out remaining bytes, one per INTA,last INTA Auto EIO if selecetd
+;   Mode 7=INTA is ignored, the reading the POLL register will be treated as INTA and set the related ISR bit.
 ; * EIO/Auto EIO, if level, check if the IRQ line is still active, and if true reset it in the IRR.
 
 ;
@@ -143,71 +170,21 @@
 ; With the lack of free pins on the DIP Tiny48, we don't have a huge number of options on how to
 ;  cascade them together.
 ;
-; The best choice is probably to use the TWI interface to connect all the chips together, and the INTREQ
+; The best choice is to use the TWI interface to connect all the chips together, and the INTREQ
 ; line on the child will connect to an IRQ line on the parent. This will give us 6 IRQs per a chip, and allow
 ; for 64 total IRQs. We would lose IRQ 4 and 5 on each chip as a side effect, but I think it works in balance.
 ; An upshot, you can have all the commands going to the master and being sent to all the child chips so you
 ; set them up indivitualy, but control them via a single point.
 ;
-; Old options
+; In Cascade mode, IRQ7 becomes IEI and IRQ6 Is IEO. Each IEO is chained to the next (lower priority) IEI
+; IEI - Interrupt Enable In: When this pin goes active, it means that somethnig higher up the chain is going to be services the next interupt.
+; IEO - Goes high if a chip is services an interupt, futher chips down the line will pass the value through if it's high.
+; When an IRQ happens, the chip will check if IEI is not active. If it isn't, it will activate IEO and set INTREQ
+; When INTACK goes high, respond of IEI is not active and the chip has a pending interrupt.
+; the current IEI state says the same until the EOI happens,
+; The moment INTACK goes active, the current state of the chain should be conisdered locked until the sequence for the vector has been finished. 
+; After that higher priority interupt can be fired.
 ;
-;  1 Each slave is connected only to the IRQx pin on the master, but duplexed between the
-;    /INTREQ (out) and /INTACK (in) on the slave. This will allow 64 Ints
-;
-;  2 Each slave is connected to two IRQ pins, one to /INTREQ and the other to /INTACK.
-;    (IRQ0,1 for Slave 0, IRQ2,3 for Slave 1) This will gives us a max of 32 ints.
-;
-;  3 Each slave is connected to a single IRQ pin, but every chip is on a private I2C Bus. This
-;    Uses two extra IRQ pins on each chip, but the /INTACK pin on the slave chips would not be used
-;    which can allow us to snag it for an extra IRQ. This will give us between 36 and 42 ints.
-;
-;    Using the I2C bus also allows an extra level of comunication between each chip, but at an extra
-;    setup cost. It could also in theroy allow us to have more complicated cascading, or even have
-;    more then one Slave on a master IRQ line.
-;
-; If we require the use of the 32-pin quad package of the Tiny48 (with 4 more pins) to cascade
-;  we have a couple more options.
-;
-;  4 Each Slave is connected to the master IRQ line, and one of the new pins, this will only allow
-;    4 slave chips, providing 36 total ints.
-;
-;  5 Each slave is connected to a master IRQ line. Three of the new pins are connected to every chip
-;    while the 4th extra pin is connected to each slaves /INTACK line. When sending INTACK to the
-;    slaves it will put the ID of the acutal slave to talk onto the three pins, allowing it to
-;    select one slave. This gives up 64 possible ints.
-;
-;  6 The same as option 3 above, but use two of the new pins to replace the missing IRQ pins, this
-;    will leave us with the usual 64 ints.
-;
-; If we only want to support a single slave (allowing for 15 ints) to mimic the PC-AT we have two more
-;  options;
-;
-;  7 Like 2 above, allowing the outgoing IRQ line to be sellected.
-;
-;  8 Like 4 above, but connect one free pin to the slaves INTACK line.
-;
-; And just one Crazy idea
-;
-;  9 Like 3 above, but insted of other Controlers connect the private I2C bus to a number of
-;    I/O extenders. Each extender (up to 6) will connect to the IRQ line on the master and the master
-;    will manage them. As you can get I/O extenders with 16 pins, this can allow for up to 96 ints
-;    at the cost of making the master manage a lot more data. This would probably need a full k of
-;    RAM to work at the max.
-;
-; My prefence is for choice 1, simply because it's the easist to make work with the existing code
-; and while it does have a problem with the duplexed line, I don't think it's insurmountable. I think
-; if the slave sets the IRQ line low to indicate it has a pending int, the master can then pull it back
-; high for the ACK. The slave would have to know it's state and couldn't set the IRQ line high until
-; EOI has been recived.
-;
-; There can be up to 9 chips. the Master, and 8 Slave chips.
-; Each slave's INTREQ line will be connected to an IRQ line on the master, this will dictate
-;  the priority of slaves. (IE, Slave0 > Slave1 > Slave2). Internally this works the same
-;  with or without a slave.
-; The IntAck is only connected to the Master chip.
-;
-
-
 ; ===================================================================================
 ;
 ; The official Assembler knows YH, YL, ZH, ZL, but gavrasm doesn't when using the .device directive.
