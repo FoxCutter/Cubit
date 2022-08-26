@@ -9,7 +9,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -22,7 +22,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>Byte 3 of the instruction is moved into the high-order register (rh) of the register pair rp. Byte 2 of the instruction is moved into the low-order register (rl) of the register pair rp</Description>
     </Encoding>
   </Opcode>
@@ -31,11 +31,11 @@
       <Mnemonic>STAX</Mnemonic>
       <Arguments>
         <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register A is moved to the memory location whose address is in the register pair rp. Note: only register pairs rp=B (registers B and C) or rp=D (registers D and E) may be specified.</Description>
     </Encoding>
   </Opcode>
@@ -47,7 +47,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the register pair rp is incremented by one. Note: No condition flags are affected.</Description>
     </Encoding>
   </Opcode>
@@ -59,7 +59,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>SZAP-</Flags>
+      <Flags>S=* Z=* P=* AC=*</Flags>
       <Description>The content of register r is incremented by one. Note: All condition flags except CY are affected.</Description>
     </Encoding>
   </Opcode>
@@ -71,7 +71,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>SZAP-</Flags>
+      <Flags>S=* Z=* P=* AC=*</Flags>
       <Description>The content of register r is decremented by one. Note: All condition flag: except CY are affected.</Description>
     </Encoding>
   </Opcode>
@@ -84,7 +84,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of byte 2 of the instruction is moved to register r</Description>
     </Encoding>
   </Opcode>
@@ -92,11 +92,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RLC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The content of the accumulator is rotated left one position. The low order bit and the CY flag are both set to the value shifted out of the high order bit position. Only the CY flag is affected</Description>
     </Encoding>
   </Opcode>
@@ -105,7 +105,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -113,12 +113,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>DAD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The content of the register pair rp is added to the content of the register pair Hand L. The result is placed in the register pair Hand L. Note: Only the CY flag is affected. It is set if there is a carry out of the double precision add; otherwise it is reset.</Description>
     </Encoding>
   </Opcode>
@@ -126,12 +126,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>LDAX</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location, whose address is in the register pair rp, is moved to register A. Note: only register pairs rp=B (registers B and C·) or rp=D (registers D and E) may be specified.</Description>
     </Encoding>
   </Opcode>
@@ -143,7 +143,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the register pair rp is decremented by one. Note: No condition flags are affected.</Description>
     </Encoding>
   </Opcode>
@@ -151,11 +151,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RRC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The content of the accumulator is rotated right one position. The high order bit and the CY flag are both set to the value shifted out of the low order bit position. Only the CY flag is affected.</Description>
     </Encoding>
   </Opcode>
@@ -164,7 +164,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -172,11 +172,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RAL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The content of the accumulator is rotated left one position through the CY flag. The low order bit is set equal to the CY flag and the CY flag is set to the value shifted out of the high order bit. Only the CY flag is affected</Description>
     </Encoding>
   </Opcode>
@@ -185,7 +185,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -193,11 +193,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RAR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The content of the accumulator is rotated right one position through the CY flag. The high order bit is set to the CY flag and the CY flag is set to the value shifted out of the low order bit. Only the CY flag is affected.</Description>
     </Encoding>
   </Opcode>
@@ -206,7 +206,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -215,11 +215,11 @@
       <Mnemonic>SHLD</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(16)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register L is moved to the memory location whose address is specified in byte 2 and byte 3. The content of register H is moved to the succeeding memory location.</Description>
     </Encoding>
   </Opcode>
@@ -227,11 +227,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>DAA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The eight-bit number in the accumulator is adjusted to form two four-bit Binary-Coded-Decimal digits</Description>
     </Encoding>
   </Opcode>
@@ -240,7 +240,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -248,12 +248,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>LHLD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
-        <Arg encoding='WordImmidate'>AddressPtr</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>AddressPtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(16)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location, whose address is specified in byte 2 and byte 3 of the instruction, is moved to register L. The content of the memory location at the succeeding address is moved to tion at the succeeding address is moved to register H.</Description>
     </Encoding>
   </Opcode>
@@ -261,11 +261,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CMA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The contents of the accumulator are complemented (zero bits become 1, one bits become 0). No flags are affected.</Description>
     </Encoding>
   </Opcode>
@@ -274,7 +274,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -283,11 +283,11 @@
       <Mnemonic>STA</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(13)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the accumulator is moved to the memory location whose address is specified in byte 2 and byte 3 of the instruction.</Description>
     </Encoding>
   </Opcode>
@@ -295,11 +295,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>INR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>SZAP-</Flags>
+      <Flags>S=* Z=* P=* AC=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is incremented by one. Note: All condition flags except CY are affected.</Description>
     </Encoding>
   </Opcode>
@@ -307,11 +307,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>DCR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>SZAP-</Flags>
+      <Flags>S=* Z=* P=* AC=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is decremented by one. Note: All condition flags except CY are affected.</Description>
     </Encoding>
   </Opcode>
@@ -319,12 +319,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>MVI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of byte 2 of the instruction is moved to the memory location whose address is in registers H and L.</Description>
     </Encoding>
   </Opcode>
@@ -333,7 +333,7 @@
       <Mnemonic>STC</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The CY flag is set to 1. No other flags are affected.</Description>
     </Encoding>
   </Opcode>
@@ -342,7 +342,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>No operation is performed. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -350,12 +350,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>LDA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(13)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location, whose address is specified in byte 2 and byte 3 of the instruction, is moved to register A.</Description>
     </Encoding>
   </Opcode>
@@ -364,7 +364,7 @@
       <Mnemonic>CMC</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The CY flag is complemented. No other flags are affected.</Description>
     </Encoding>
   </Opcode>
@@ -377,7 +377,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register r2 is moved to register r1.</Description>
     </Encoding>
   </Opcode>
@@ -386,11 +386,11 @@
       <Mnemonic>MOV</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location, whose address is in registers Hand L, is moved to register r</Description>
     </Encoding>
   </Opcode>
@@ -398,12 +398,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>MOV</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register r is moved to the memory location whose address is in registers H and L.</Description>
     </Encoding>
   </Opcode>
@@ -412,7 +412,7 @@
       <Mnemonic>HLT</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(7)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The processor is stopped. The registers and flags are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -420,12 +420,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of register r is added to the content of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -433,12 +433,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is added to the content of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -446,12 +446,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of register r and the content of the carry bit are added to the content of the accumulator. The result is placed in the accumulator</Description>
     </Encoding>
   </Opcode>
@@ -459,12 +459,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers and the content of the CY flag are added to the accumulator. The result is placed in the accumulator</Description>
     </Encoding>
   </Opcode>
@@ -472,12 +472,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of register r is subtracted from the content of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -485,12 +485,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is subtracted from the content of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -498,12 +498,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SBB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of register r and the content of the CY flag are both subtracted from the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -511,12 +511,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SBB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers and the content of the CY flag are both subtracted from the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -524,12 +524,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ANA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAP0</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=0</Flags>
       <Description>The content of register r is logically anded with the content of the accumulator. The result is placed in the accumulator. The CY flag is cleared.</Description>
     </Encoding>
   </Opcode>
@@ -537,12 +537,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ANA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAP0</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=0</Flags>
       <Description>The contents of the memory location whose address is contained in the Hand L registers is logically anded with the content of the accumulator. The result is placed in the accumulator. The CY flag is cleared.</Description>
     </Encoding>
   </Opcode>
@@ -550,12 +550,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>XRA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of register r is exclusive-or'd with the content of the accumulator. The result is placed in the accumulator. The CY and AC flags are cleared</Description>
     </Encoding>
   </Opcode>
@@ -563,12 +563,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>XRA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is exclusive-O R'd with the content of the accumulator. The result is placed in the accumulator. The CY and AC flags are cleared.</Description>
     </Encoding>
   </Opcode>
@@ -576,12 +576,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ORA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of register r is inclusive-OR'd with the content of the accumulator. The result is placed in the accumulator. The CY and AC flags are cleared</Description>
     </Encoding>
   </Opcode>
@@ -589,12 +589,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ORA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is inclusive-OR'd with the content of the accumu lator. The result is placed in the accumulator. The CY and AC flags are cleared.</Description>
     </Encoding>
   </Opcode>
@@ -602,12 +602,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CMP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of register r is subtracted from the accumulator. The accumulator remains unchanged. The condition flags are set as a result of the subtraction. The Z flag is set to 1 if (A) = (r). The CY flag is set to 1 if (A) &lt; (r) </Description>
     </Encoding>
   </Opcode>
@@ -615,12 +615,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CMP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-M</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the memory location whose address is contained in the Hand L registers is subtracted from the accumulator. The accumulator remains unchanged. The condition flags are set as a result of the subtraction. The Z flag is set to 1 if (A) = ((H) (L)). The CY flag is set to 1 if (A) &lt; ((H) (L)).</Description>
     </Encoding>
   </Opcode>
@@ -628,11 +628,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RNZ</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-NZ</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-NZ</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -644,7 +644,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location, whose address is specified by the content of register SP, is moved to the low-order register of register pair rp. The content of the memory location, whose address is one more than the content of register SP, is moved to the high-order register of register pair rp. The content of register SP is incremented by 2. Note: Register pair rp=SP may not be specified.</Description>
     </Encoding>
   </Opcode>
@@ -652,12 +652,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JNZ</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-NZ</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-NZ</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -669,7 +669,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
   </Opcode>
@@ -677,12 +677,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CNZ</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-NZ</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-NZ</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -694,7 +694,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the high-order register of register pair rp is moved to the memory location whose address is one less than the content of register SP. The content of the low-order register of register pair rp is moved to the memory location whose address is two less than the content of register SP. The cont~nt of register SP is decremented by 2. Note: Register pair rp = SP may not be specified.</Description>
     </Encoding>
   </Opcode>
@@ -702,12 +702,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ADI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the second byte of the instruction is added to the content of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -719,7 +719,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The high-order eight bits of the next instruction address are moved to the memory location whose address is one less than the content of register SP. The low-order eight bits of the next instruction address are moved to the memory location whose address is two less than the content of register SP. The content of register SP is decremented by two. Control is transferred to the instruction whose address is eight times the content of NNN.</Description>
     </Encoding>
   </Opcode>
@@ -727,11 +727,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RZ</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-Z</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-Z</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -740,7 +740,7 @@
       <Mnemonic>RET</Mnemonic>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location whose address is specified in register SP is moved to the low-order eight bits of register PC. The content of the memory location whose address is one more than the content of register SP is moved to the high-order eight bits of register PC. The content of register SP is incremented by 2.</Description>
     </Encoding>
   </Opcode>
@@ -748,12 +748,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JZ</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-Z</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-Z</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -765,7 +765,7 @@
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
   </Opcode>
@@ -773,12 +773,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CZ</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-Z</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-Z</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -790,7 +790,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The high-order eight bits of the next instruction address are moved to the memory location whose address is one less than the content of register SP. The low-order eight bits of the next instruction address are moved to the memory location whose address is two less than the content of register SP. The content of register SP is decremented by 2. Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
   </Opcode>
@@ -798,12 +798,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ACI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the second byte of the instruction and the content of the CY flag are added to the contents of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -811,11 +811,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RNC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-NC</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-NC</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -823,12 +823,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JNC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-NC</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-NC</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -837,11 +837,11 @@
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
         <Arg encoding='ByteImmidate'>Byte</Arg>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register A is placed on the eight bit bi-directional data bus for transmission to the specified port.</Description>
     </Encoding>
   </Opcode>
@@ -849,12 +849,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CNC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-NC</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-NC</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -862,12 +862,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SUI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the second byte of the instruction is subtracted from the content of the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -875,11 +875,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-CY</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-CY</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -888,7 +888,7 @@
       <Mnemonic>RET</Mnemonic>
       <Status>ExecuteOnly</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the memory location whose address is specified in register SP is moved to the low-order eight bits of register PC. The content of the memory location whose address is one more than the content of register SP is moved to the high-order eight bits of register PC. The content of register SP is incremented by 2.</Description>
     </Encoding>
   </Opcode>
@@ -896,12 +896,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-CY</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-CY</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -909,12 +909,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The data placed on the eight bit bi-directional data bus by the specified port is moved to register A</Description>
     </Encoding>
   </Opcode>
@@ -922,12 +922,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-CY</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-CY</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -939,7 +939,7 @@
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The high-order eight bits of the next instruction address are moved to the memory location whose address is one less than the content of register SP. The low-order eight bits of the next instruction address are moved to the memory location whose address is two less than the content of register SP. The content of register SP is decremented by 2. Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
   </Opcode>
@@ -947,12 +947,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SBI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The contents of the second byte of the instruction and the contents of the CY flag are both subtracted from the accumulator. The result is placed in the accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -960,11 +960,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RPO</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-PO</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-PO</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -972,12 +972,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JPO</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-PO</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-PO</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -985,12 +985,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>XTHL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>WordRegPtr-SP</Arg>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordRegPtr-SP</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of the L register is exchanged with the content of the memory location whose address is specified by the content of register SP. The content of the H register is exchanged with the content of the memory location whose address is one more than the content of register SP.</Description>
     </Encoding>
   </Opcode>
@@ -998,12 +998,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CPO</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-PO</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-PO</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1011,12 +1011,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ANI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of the second byte of the instruction is logicaly anded with the contents of the accumu lator. The result is placed in the accumulator. The CY and AC flags are cleared</Description>
     </Encoding>
   </Opcode>
@@ -1024,11 +1024,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RPE</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-PE</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-PE</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1036,11 +1036,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>PCHL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register H is moved to the high-order eight bits of register PC. The content of register l is moved to the low-order eight bits of register PC.</Description>
     </Encoding>
   </Opcode>
@@ -1048,12 +1048,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JPE</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-PE</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-PE</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -1061,12 +1061,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>XCHG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>WordReg-DE</Arg>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-DE</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The contents of registers Hand L are exchanged with the contents of registers D and E.</Description>
     </Encoding>
   </Opcode>
@@ -1074,12 +1074,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CPE</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-PE</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-PE</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1091,7 +1091,7 @@
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The high-order eight bits of the next instruction address are moved to the memory location whose address is one less than the content of register SP. The low-order eight bits of the next instruction address are moved to the memory location whose address is two less than the content of register SP. The content of register SP is decremented by 2. Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
   </Opcode>
@@ -1099,12 +1099,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>XRI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of the second byte of the instruction is exclusive-O R'd with the content of the accumu lator. The result is placed in the accumulator. The CY and AC flags are cleared.</Description>
     </Encoding>
   </Opcode>
@@ -1112,11 +1112,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-P</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-P</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1124,11 +1124,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>POP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-PSW</Arg>
+        <Arg encoding='Implicit'>WordReg-PSW</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the memory location whose address is specified by the content of register SP is used to restore the condition flags. The content of the memory location whose address is one more than the content of register SP is moved to register A. The content of register SP is incremented by 2.</Description>
     </Encoding>
   </Opcode>
@@ -1136,12 +1136,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-P</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-P</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -1150,7 +1150,7 @@
       <Mnemonic>DI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The interrupt system is disabled immediately following the execution of the 01 instruction.</Description>
     </Encoding>
   </Opcode>
@@ -1158,12 +1158,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-P</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-P</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1171,11 +1171,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>PUSH</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-PSW</Arg>
+        <Arg encoding='Implicit'>WordReg-PSW</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The content of register A is moved to the memory location whose address is one less than register SP. The contents of the condition flags are assembled into a processor status word and the word is moved to the memory location whose address is two less than the content of register SP. The content of register SP is decremented by two.</Description>
     </Encoding>
   </Opcode>
@@ -1183,12 +1183,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>ORI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P0</Flags>
+      <Flags>S=* Z=* AC=0 P=* CY=0</Flags>
       <Description>The content of the second byte of the instruction is inclusive-OR'd with the content of the accumulator. The result is placed in the accumulator. The CY and AC flags are cleared.</Description>
     </Encoding>
   </Opcode>
@@ -1196,11 +1196,11 @@
     <Encoding Platform='i8080'>
       <Mnemonic>RM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-M</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the RET instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1208,12 +1208,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>SPHL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>WordReg-SP</Arg>
-        <Arg encoding='Direct' hidden='true'>WordReg-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-SP</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(5)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The contents of registers Hand L (16 bits) are moved to register SP.</Description>
     </Encoding>
   </Opcode>
@@ -1221,12 +1221,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>JM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-M</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>If the specified condition is true, control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction; otherwise, control continues sequentially.</Description>
     </Encoding>
   </Opcode>
@@ -1235,7 +1235,7 @@
       <Mnemonic>EI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The interrupt system is enabled following the execution of the next instruction.</Description>
     </Encoding>
   </Opcode>
@@ -1243,12 +1243,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>Flag-M</Arg>
+        <Arg encoding='Implicit' hidden='true'>Flag-M</Arg>
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Cycles>3(11), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If the specified condition is true, the actions specified in the CAll instruction (see above) are performed; otherwise, control continues sequentially</Description>
     </Encoding>
   </Opcode>
@@ -1260,7 +1260,7 @@
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>5(17)</Cycles>
-      <Flags>-----</Flags>
+      <Flags></Flags>
       <Description>The high-order eight bits of the next instruction address are moved to the memory location whose address is one less than the content of register SP. The low-order eight bits of the next instruction address are moved to the memory location whose address is two less than the content of register SP. The content of register SP is decremented by 2. Control is transferred to the instruction whose address is specified in byte 3 and byte 2 of the current instruction.</Description>
     </Encoding>
   </Opcode>
@@ -1268,12 +1268,12 @@
     <Encoding Platform='i8080'>
       <Mnemonic>CPI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZAPC</Flags>
+      <Flags>S=* Z=* AC=* P=* CY=*</Flags>
       <Description>The content of the second byte of the instruction is subtracted from the accumulator. The condition flags are set by the result of the subtraction. The Z flag is set to 1 if (A) = (byte 2). The CY flag is set to 1 if (A) &lt; (byte 2).</Description>
     </Encoding>
   </Opcode>

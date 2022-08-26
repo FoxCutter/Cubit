@@ -278,13 +278,13 @@ namespace Opcodes {
         private argTypeEnum valueField;
         
         public argType() {
-            this.encodingField = encodingEnum.Direct;
+            this.encodingField = encodingEnum.Implicit;
             this.hiddenField = false;
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        [System.ComponentModel.DefaultValueAttribute(encodingEnum.Direct)]
+        [System.ComponentModel.DefaultValueAttribute(encodingEnum.Implicit)]
         public encodingEnum encoding {
             get {
                 return this.encodingField;
@@ -349,9 +349,9 @@ namespace Opcodes {
         
         /// <remarks/>
         IndexOffset,
-        
+
         /// <remarks/>
-        Direct,
+        Implicit,
     }
     
     /// <remarks/>

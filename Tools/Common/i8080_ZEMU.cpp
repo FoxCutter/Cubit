@@ -196,65 +196,65 @@ namespace z80
 		{ L"CMP", Function::CMP, Addressing::ByteReg_A, Addressing::ByteReg_A, 4, 0, 0, }, // BF: CMP |A, A
 		{ L"RNZ", Function::RET, Addressing::#Flag_NZ, Addressing::None, 5, 11, 0, }, // C0: RNZ |NZ
 		{ L"POP", Function::POP, Addressing::WordReg_BC, Addressing::None, 10, 0, 0, }, // C1: POP B
-		{ L"JNZ", Function::JMP, Addressing::#Flag_NZ, Addressing::Address, 10, 10, 0, }, // C2nnnn: JNZ |NZ, nnnn
+		{ L"JNZ", Function::JMP, Addressing::#Flag_NZ, Addressing::Address, 10, 0, 0, }, // C2nnnn: JNZ |NZ, nnnn
 		{ L"JMP", Function::JMP, Addressing::Address, Addressing::None, 10, 0, 0, }, // C3nnnn: JMP nnnn
-		{ L"CNZ", Function::CALL, Addressing::#Flag_NZ, Addressing::Address, 10, 17, 0, }, // C4nnnn: CNZ |NZ, nnnn
+		{ L"CNZ", Function::CALL, Addressing::#Flag_NZ, Addressing::Address, 11, 17, 0, }, // C4nnnn: CNZ |NZ, nnnn
 		{ L"PUSH", Function::PUSH, Addressing::WordReg_BC, Addressing::None, 11, 0, 0, }, // C5: PUSH B
 		{ L"ADI", Function::ADD, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // C6nn: ADI |A, nn
 		{ L"RST", Function::RST, Addressing::Value0, Addressing::None, 11, 0, 0, }, // C7: RST 0
 		{ L"RZ", Function::RET, Addressing::#Flag_Z, Addressing::None, 5, 11, 0, }, // C8: RZ |Z
 		{ L"RET", Function::RET, Addressing::None, Addressing::None, 10, 0, 0, }, // C9: RET
-		{ L"JZ", Function::JMP, Addressing::#Flag_Z, Addressing::Address, 10, 10, 0, }, // CAnnnn: JZ |Z, nnnn
-		{ L"JMP", Function::JMP, Addressing::Address, Addressing::None, 10, 10, 0, }, // CBnnnn: JMP nnnn
-		{ L"CZ", Function::CALL, Addressing::#Flag_Z, Addressing::Address, 10, 17, 0, }, // CCnnnn: CZ |Z, nnnn
+		{ L"JZ", Function::JMP, Addressing::#Flag_Z, Addressing::Address, 10, 0, 0, }, // CAnnnn: JZ |Z, nnnn
+		{ L"JMP", Function::JMP, Addressing::Address, Addressing::None, 10, 0, 0, }, // CBnnnn: JMP nnnn
+		{ L"CZ", Function::CALL, Addressing::#Flag_Z, Addressing::Address, 11, 17, 0, }, // CCnnnn: CZ |Z, nnnn
 		{ L"CALL", Function::CALL, Addressing::Address, Addressing::None, 17, 0, 0, }, // CDnnnn: CALL nnnn
 		{ L"ACI", Function::ADD_CY, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // CEnn: ACI |A, nn
 		{ L"RST", Function::RST, Addressing::Value1, Addressing::None, 11, 0, 0, }, // CF: RST 1
 		{ L"RNC", Function::RET, Addressing::#Flag_NC, Addressing::None, 5, 11, 0, }, // D0: RNC |NC
 		{ L"POP", Function::POP, Addressing::WordReg_DE, Addressing::None, 10, 0, 0, }, // D1: POP D
-		{ L"JNC", Function::JMP, Addressing::#Flag_NC, Addressing::Address, 10, 10, 0, }, // D2nnnn: JNC |NC, nnnn
-		{ L"OUT", Function::OUT, Addressing::ImmediateByte, Addressing::ByteReg_A, 10, 10, 0, }, // D3nn: OUT nn, |A
-		{ L"CNC", Function::CALL, Addressing::#Flag_NC, Addressing::Address, 10, 17, 0, }, // D4nnnn: CNC |NC, nnnn
+		{ L"JNC", Function::JMP, Addressing::#Flag_NC, Addressing::Address, 10, 0, 0, }, // D2nnnn: JNC |NC, nnnn
+		{ L"OUT", Function::OUT, Addressing::ImmediateByte, Addressing::ByteReg_A, 10, 0, 0, }, // D3nn: OUT nn, |A
+		{ L"CNC", Function::CALL, Addressing::#Flag_NC, Addressing::Address, 11, 17, 0, }, // D4nnnn: CNC |NC, nnnn
 		{ L"PUSH", Function::PUSH, Addressing::WordReg_DE, Addressing::None, 11, 0, 0, }, // D5: PUSH D
 		{ L"SUI", Function::SUB, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // D6nn: SUI |A, nn
 		{ L"RST", Function::RST, Addressing::Value2, Addressing::None, 11, 0, 0, }, // D7: RST 2
 		{ L"RC", Function::RET, Addressing::#Flag_CY, Addressing::None, 5, 11, 0, }, // D8: RC |CY
 		{ L"RET", Function::RET, Addressing::None, Addressing::None, 10, 0, 0, }, // D9: RET
-		{ L"JC", Function::JMP, Addressing::#Flag_CY, Addressing::Address, 10, 10, 0, }, // DAnnnn: JC |CY, nnnn
-		{ L"IN", Function::IN, Addressing::ByteReg_A, Addressing::ImmediateByte, 10, 10, 0, }, // DBnn: IN |A, nn
-		{ L"CC", Function::CALL, Addressing::#Flag_CY, Addressing::Address, 10, 17, 0, }, // DCnnnn: CC |CY, nnnn
+		{ L"JC", Function::JMP, Addressing::#Flag_CY, Addressing::Address, 10, 0, 0, }, // DAnnnn: JC |CY, nnnn
+		{ L"IN", Function::IN, Addressing::ByteReg_A, Addressing::ImmediateByte, 10, 0, 0, }, // DBnn: IN |A, nn
+		{ L"CC", Function::CALL, Addressing::#Flag_CY, Addressing::Address, 11, 17, 0, }, // DCnnnn: CC |CY, nnnn
 		{ L"CALL", Function::CALL, Addressing::Address, Addressing::None, 17, 0, 0, }, // DDnnnn: CALL nnnn
 		{ L"SBI", Function::SUB_CY, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // DEnn: SBI |A, nn
 		{ L"RST", Function::RST, Addressing::Value3, Addressing::None, 11, 0, 0, }, // DF: RST 3
 		{ L"RPO", Function::RET, Addressing::#Flag_PO, Addressing::None, 5, 11, 0, }, // E0: RPO |PO
 		{ L"POP", Function::POP, Addressing::WordReg_HL, Addressing::None, 10, 0, 0, }, // E1: POP H
-		{ L"JPO", Function::JMP, Addressing::#Flag_PO, Addressing::Address, 10, 10, 0, }, // E2nnnn: JPO |PO, nnnn
+		{ L"JPO", Function::JMP, Addressing::#Flag_PO, Addressing::Address, 10, 0, 0, }, // E2nnnn: JPO |PO, nnnn
 		{ L"XTHL", Function::EX, Addressing::WordReg_SPRef, Addressing::WordReg_HL, 18, 0, 0, }, // E3: XTHL |(SP), |H
-		{ L"CPO", Function::CALL, Addressing::#Flag_PO, Addressing::Address, 10, 17, 0, }, // E4nnnn: CPO |PO, nnnn
+		{ L"CPO", Function::CALL, Addressing::#Flag_PO, Addressing::Address, 11, 17, 0, }, // E4nnnn: CPO |PO, nnnn
 		{ L"PUSH", Function::PUSH, Addressing::WordReg_HL, Addressing::None, 11, 0, 0, }, // E5: PUSH H
 		{ L"ANI", Function::AND, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // E6nn: ANI |A, nn
 		{ L"RST", Function::RST, Addressing::Value4, Addressing::None, 11, 0, 0, }, // E7: RST 4
 		{ L"RPE", Function::RET, Addressing::#Flag_PE, Addressing::None, 5, 11, 0, }, // E8: RPE |PE
 		{ L"PCHL", Function::JMP, Addressing::WordReg_HL, Addressing::None, 5, 0, 0, }, // E9: PCHL |H
-		{ L"JPE", Function::JMP, Addressing::#Flag_PE, Addressing::Address, 10, 10, 0, }, // EAnnnn: JPE |PE, nnnn
+		{ L"JPE", Function::JMP, Addressing::#Flag_PE, Addressing::Address, 10, 0, 0, }, // EAnnnn: JPE |PE, nnnn
 		{ L"XCHG", Function::EX, Addressing::WordReg_DE, Addressing::WordReg_HL, 4, 0, 0, }, // EB: XCHG |D, |H
-		{ L"CPE", Function::CALL, Addressing::#Flag_PE, Addressing::Address, 10, 17, 0, }, // ECnnnn: CPE |PE, nnnn
+		{ L"CPE", Function::CALL, Addressing::#Flag_PE, Addressing::Address, 11, 17, 0, }, // ECnnnn: CPE |PE, nnnn
 		{ L"CALL", Function::CALL, Addressing::Address, Addressing::None, 17, 0, 0, }, // EDnnnn: CALL nnnn
 		{ L"XRI", Function::XOR, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // EEnn: XRI |A, nn
 		{ L"RST", Function::RST, Addressing::Value5, Addressing::None, 11, 0, 0, }, // EF: RST 5
 		{ L"RP", Function::RET, Addressing::#Flag_P, Addressing::None, 5, 11, 0, }, // F0: RP |P
 		{ L"POP", Function::POP, Addressing::WordReg_PSW, Addressing::None, 10, 0, 0, }, // F1: POP PSW
-		{ L"JP", Function::JMP, Addressing::#Flag_P, Addressing::Address, 10, 10, 0, }, // F2nnnn: JP |P, nnnn
+		{ L"JP", Function::JMP, Addressing::#Flag_P, Addressing::Address, 10, 0, 0, }, // F2nnnn: JP |P, nnnn
 		{ L"DI", Function::DI, Addressing::None, Addressing::None, 4, 0, 0, }, // F3: DI
-		{ L"CP", Function::CALL, Addressing::#Flag_P, Addressing::Address, 10, 17, 0, }, // F4nnnn: CP |P, nnnn
+		{ L"CP", Function::CALL, Addressing::#Flag_P, Addressing::Address, 11, 17, 0, }, // F4nnnn: CP |P, nnnn
 		{ L"PUSH", Function::PUSH, Addressing::WordReg_PSW, Addressing::None, 11, 0, 0, }, // F5: PUSH PSW
 		{ L"ORI", Function::OR, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // F6nn: ORI |A, nn
 		{ L"RST", Function::RST, Addressing::Value6, Addressing::None, 11, 0, 0, }, // F7: RST 6
 		{ L"RM", Function::RET, Addressing::#Flag_M, Addressing::None, 5, 11, 0, }, // F8: RM |M
 		{ L"SPHL", Function::LOAD, Addressing::WordReg_SP, Addressing::WordReg_HL, 5, 0, 0, }, // F9: SPHL |SP, |H
-		{ L"JM", Function::JMP, Addressing::#Flag_M, Addressing::Address, 10, 10, 0, }, // FAnnnn: JM |M, nnnn
+		{ L"JM", Function::JMP, Addressing::#Flag_M, Addressing::Address, 10, 0, 0, }, // FAnnnn: JM |M, nnnn
 		{ L"EI", Function::EI, Addressing::None, Addressing::None, 4, 0, 0, }, // FB: EI
-		{ L"CM", Function::CALL, Addressing::#Flag_M, Addressing::Address, 10, 17, 0, }, // FCnnnn: CM |M, nnnn
+		{ L"CM", Function::CALL, Addressing::#Flag_M, Addressing::Address, 11, 17, 0, }, // FCnnnn: CM |M, nnnn
 		{ L"CALL", Function::CALL, Addressing::Address, Addressing::None, 17, 0, 0, }, // FDnnnn: CALL nnnn
 		{ L"CPI", Function::CMP, Addressing::ByteReg_A, Addressing::ImmediateByte, 7, 0, 0, }, // FEnn: CPI |A, nn
 		{ L"RST", Function::RST, Addressing::Value7, Addressing::None, 11, 0, 0, }, // FF: RST 7

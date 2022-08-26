@@ -70,7 +70,7 @@
       <!--The type of the argument-->
       <xs:extension base="argTypeEnum">
         <!--How this argument is encoded into the opcode-->
-        <xs:attribute name="encoding" type="encodingEnum" use="optional" default="Direct"/>
+        <xs:attribute name="encoding" type="encodingEnum" use="optional" default="Implicit"/>
         <!--If true, the value is part of the encoded data, but not provided durring assambly-->
         <xs:attribute name="hidden" type="xs:boolean" use="optional" default="false"/>
       </xs:extension>
@@ -109,11 +109,11 @@
       <xs:enumeration value="ByteImmidate"/>
       <xs:enumeration value="WordImmidate"/>
 
-      <!--An index register (encoded via Direct) with an offset encoding after the first byte of the opcode-->
+      <!--An index register (encoded via Implicit) with an offset encoding after the first byte of the opcode-->
       <xs:enumeration value="IndexOffset"/>
 
       <!--The argument is already endcoded into the value-->
-      <xs:enumeration value="Direct"/>
+      <xs:enumeration value="Implicit"/>
     </xs:restriction>
   </xs:simpleType>
 

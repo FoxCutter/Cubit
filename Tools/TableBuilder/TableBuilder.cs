@@ -92,6 +92,7 @@ namespace TableBuilder
                 {
                     Match = OpcodeMaps["z80"].Where(e => e.Prefix == Opcode.Prefix && e.Encoding == Opcode.Encoding && e.Index == true);
                 }
+
                 if (Match.Count() >= 1)
                 {
                     Opcode.Index_Cycles = Match.First().Cycles;
@@ -584,6 +585,10 @@ namespace TableBuilder
 
                     case OpcodeData.ParameterType.SPPlusOffset:
                         Output.Append("SPPlus");
+                        Output.Append(Param.Param);
+                        break;
+
+                    case OpcodeData.ParameterType.BytePointer:
                         Output.Append(Param.Param);
                         break;
 

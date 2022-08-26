@@ -255,7 +255,7 @@ namespace OpcodeData
             {
                CommandID.LHLD, new OpcodeEntry[]
                {
-                  new OpcodeEntry { Encoding = 0x2A, Name = CommandID.LHLD, Length = 3, Cycles = 5, TStates = 16, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.AddressPointer, Encoding = EncodingType.WordImmidate}, }, }, // 2Annnn: LHLD nnnn
+                  new OpcodeEntry { Encoding = 0x2A, Name = CommandID.LHLD, Length = 3, Cycles = 5, TStates = 16, Arguments = new ParamEntry[] {new ParamEntry { Param = ParameterID.WordReg_HL, Type = ParameterType.WordRegister, Implicit = true}, new ParamEntry { Param = ParameterID.ImmediateWord, Type = ParameterType.AddressPointer}, }, }, // 2Annnn: LHLD nnnn
                }
             },
             {

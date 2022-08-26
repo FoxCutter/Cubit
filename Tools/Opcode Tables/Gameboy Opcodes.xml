@@ -9,7 +9,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The CPU performs no operation during this machine cycle</Description>
     </Encoding>
   </Opcode>
@@ -21,8 +21,8 @@
         <Arg encoding='WordImmidate'>Word</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(10)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>3(12)</Cycles>
+      <Flags></Flags>
       <Description>The 2-byte integer nn is loaded to the dd register pair</Description>
     </Encoding>
   </Opcode>
@@ -31,11 +31,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of the Accumulator are loaded to the memory location specified by the contents of the register pair.</Description>
     </Encoding>
   </Opcode>
@@ -46,8 +46,8 @@
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>1(6)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are incremented.</Description>
     </Encoding>
   </Opcode>
@@ -59,7 +59,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z0H-</Flags>
+      <Flags>Z=* N=0 HC=*</Flags>
       <Description>Register r is incremented</Description>
     </Encoding>
   </Opcode>
@@ -71,7 +71,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z1H-</Flags>
+      <Flags>Z=* N=1 HC=*</Flags>
       <Description>The byte specified by the m operand is decremented</Description>
     </Encoding>
   </Opcode>
@@ -83,8 +83,8 @@
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The 8-bit integer n is loaded to any register r.</Description>
     </Encoding>
   </Opcode>
@@ -92,21 +92,21 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>RLCA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position. The sign bit (bit 7) is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>RLC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position. The sign bit (bit 7) is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -115,11 +115,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct'>WordReg-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-SP</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(20)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Save SP a the provided address</Description>
     </Encoding>
   </Opcode>
@@ -127,12 +127,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>-0HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>N=0 HC=* CY=*</Flags>
       <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are added to the contents of register pair HL and the result is stored in HL</Description>
     </Encoding>
   </Opcode>
@@ -140,12 +140,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of the memory location specified by the contents of the rr register pair are loaded to the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -156,8 +156,8 @@
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>1(6)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of register pair ss (any of the register pairs BC, DE, HL, or SP) are decremented.</Description>
     </Encoding>
   </Opcode>
@@ -165,11 +165,11 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>RRCA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -177,11 +177,11 @@
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>RRC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -190,7 +190,7 @@
       <Mnemonic>STOP</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Stop the CPU</Description>
     </Encoding>
   </Opcode>
@@ -198,21 +198,21 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>RLA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>RL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -224,7 +224,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>This instruction provides for unconditional branching to other segments of a program. The value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. This jump is measured from the address of the instruction Op Code and has a range of-126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC.</Description>
     </Encoding>
   </Opcode>
@@ -232,11 +232,11 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>RRA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -244,11 +244,11 @@
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>RR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>000C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -260,8 +260,8 @@
         <Arg encoding='ByteImmidate'>Displacment</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8), 3(12)</Cycles>
+      <Flags></Flags>
       <Description>This instruction provides for conditional branching to other segments of a program depending on the results of a test on the Carry Flag. If the flag is equal to a 1, the value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC</Description>
     </Encoding>
   </Opcode>
@@ -269,12 +269,12 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HLI</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HLI</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Writes the contents of A to the address pointed to by HL, then HL in incremented</Description>
     </Encoding>
   </Opcode>
@@ -282,12 +282,12 @@
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Writes the contents of A to the address pointed to by HL, then HL in incremented</Description>
     </Encoding>
   </Opcode>
@@ -295,11 +295,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>DAA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z-0C</Flags>
+      <Flags>Z=* HC=0 CY=*</Flags>
       <Description>This instruction conditionally adjusts the Accumulator for BCD addition and subtraction operations</Description>
     </Encoding>
   </Opcode>
@@ -307,12 +307,12 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HLI</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HLI</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Reads the address pointed to by HL, and stores it in A, then HL in incremented</Description>
     </Encoding>
   </Opcode>
@@ -320,12 +320,12 @@
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDI</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Reads the address pointed to by HL, and stores it in A, then HL in incremented</Description>
     </Encoding>
   </Opcode>
@@ -333,11 +333,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>CPL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-11-</Flags>
+      <Flags>N=1 HC=1</Flags>
       <Description>The contents of the Accumulator (register A) are inverted (one’s complement).</Description>
     </Encoding>
   </Opcode>
@@ -345,12 +345,12 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HLD</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HLD</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Writes the contents of A to the address pointed to by HL, then HL in decremented</Description>
     </Encoding>
   </Opcode>
@@ -358,12 +358,12 @@
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Writes the contents of A to the address pointed to by HL, then HL in decremented</Description>
     </Encoding>
   </Opcode>
@@ -371,11 +371,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>INC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>Z0H-</Flags>
+      <Cycles>3(12)</Cycles>
+      <Flags>Z=* N=0 HC=*</Flags>
       <Description>The byte contained in the address specified by the contents of the HL register pair is incremented.</Description>
     </Encoding>
   </Opcode>
@@ -383,11 +383,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>DEC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>Z1H-</Flags>
+      <Cycles>3(12)</Cycles>
+      <Flags>Z=* N=1 HC=*</Flags>
       <Description>The byte specified by the m operand is decremented</Description>
     </Encoding>
   </Opcode>
@@ -395,12 +395,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>3(12)</Cycles>
+      <Flags></Flags>
       <Description>Integer n is loaded to the memory address specified by the contents of the HL register pair.</Description>
     </Encoding>
   </Opcode>
@@ -409,7 +409,7 @@
       <Mnemonic>SCF</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-001</Flags>
+      <Flags>N=0 HC=0 CY=1</Flags>
       <Description>The Carry flag in the F register is set.</Description>
     </Encoding>
   </Opcode>
@@ -417,12 +417,12 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HLD</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HLD</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Reads the address pointed to by HL, and stores it in A, then HL in decremented</Description>
     </Encoding>
   </Opcode>
@@ -430,12 +430,12 @@
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Reads the address pointed to by HL, and stores it in A, then HL in decremented</Description>
     </Encoding>
   </Opcode>
@@ -444,7 +444,7 @@
       <Mnemonic>CCF</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-00C</Flags>
+      <Flags>N=0 HC=0 CY=*</Flags>
       <Description>The Carry flag in the F register is inverted.</Description>
     </Encoding>
   </Opcode>
@@ -457,7 +457,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The contents of any register r' are loaded to any other register r.</Description>
     </Encoding>
   </Opcode>
@@ -466,11 +466,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The 8-bit contents of memory location (HL) are loaded to register r</Description>
     </Encoding>
   </Opcode>
@@ -478,12 +478,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of register r are loaded to the memory location specified by the contents of the HL register pair.</Description>
     </Encoding>
   </Opcode>
@@ -492,7 +492,7 @@
       <Mnemonic>HALT</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The HALT instruction suspends CPU operation until a subsequent interruptor reset is received. While in the HALT state, the processor executes NOPs to maintain memory refresh logic</Description>
     </Encoding>
   </Opcode>
@@ -500,12 +500,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>The contents of register r are added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -513,12 +513,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>The byte at the memory address specified by the contents of the HL register pair is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -526,12 +526,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -539,12 +539,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -552,12 +552,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z1HC</Flags>
+      <Flags>Z=* N=1 HC=* CY=*</Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -565,12 +565,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z1HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=1 HC=* CY=*</Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -578,12 +578,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z1HC</Flags>
+      <Flags>Z=* N=1 HC=* CY=*</Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -591,12 +591,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z1HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=1 HC=* CY=*</Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -604,12 +604,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z010</Flags>
+      <Flags>Z=* N=0 HC=1 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -617,12 +617,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z010</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=1 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -630,12 +630,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z000</Flags>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -643,12 +643,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z000</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -656,12 +656,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z000</Flags>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -669,12 +669,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z000</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -682,12 +682,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>Z1H-</Flags>
+      <Flags>Z=* N=1 HC=*</Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -695,12 +695,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z1H-</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=1 HC=*</Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -711,8 +711,8 @@
         <Arg encoding='HalfFlag'>HalfFlag</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8), 5(20)</Cycles>
+      <Flags></Flags>
       <Description>If condition cc is true, the byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is incremented and the byte at the memory location specified by the new contents of the SP are moved to the high order eight bits of the PC. The SP is incremented again. The next Op Code following this instruction is fetched from the memory location specified by the PC</Description>
     </Encoding>
   </Opcode>
@@ -723,8 +723,8 @@
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>3(12)</Cycles>
+      <Flags></Flags>
       <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to register pair qq.</Description>
     </Encoding>
   </Opcode>
@@ -736,8 +736,8 @@
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>3(12), 4(16)</Cycles>
+      <Flags></Flags>
       <Description>If condition cc is true, the instruction loads operand nn to register pair PC (Program Counter), and the program continues with the instruction beginning at address nn. If condition cc is false, the Program Counter is incremented as usual, and the program continues with the next sequential instruction.</Description>
     </Encoding>
   </Opcode>
@@ -748,8 +748,8 @@
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>Operand nn is loaded to register pair PC (Program Counter). The next instruction is fetched from the location designated by the new contents of the PC.</Description>
     </Encoding>
   </Opcode>
@@ -761,8 +761,8 @@
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>3(12), 7(24)</Cycles>
+      <Flags></Flags>
       <Description>If condition cc is true, this instruction pushes the current contents of the Program Counter (PC) onto the top of the external memory stack, then loads the operands nn to PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
     </Encoding>
   </Opcode>
@@ -773,8 +773,8 @@
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>The contents of the register pair qq are pushed to the external memory LIFO (last-in, first-out) Stack. The Stack Pointer (SP) register pair holds the 16-bit address of the current top of the Stack.</Description>
     </Encoding>
   </Opcode>
@@ -782,12 +782,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>The integer n is added to the contents of the Accumulator, and the results are stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -798,8 +798,8 @@
         <Arg encoding='Dest'>RstValue</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>The current Program Counter (PC) contents are pushed onto the external memory stack, and the page zero memory location given by operand p is loaded to the PC. Program execution then begins with the Op Code in the address now pointed to by PC. The push is performed by first decrementing the contents of the Stack Pointer (SP), loading the high-order byte of PC to the memory address now pointed to by SP, decrementing SP again, and loading the low order byte of PC to the address now pointed to by SP. TheRestart instruction allows for a jump to one of eight addresses indicated in the table below.</Description>
     </Encoding>
   </Opcode>
@@ -807,8 +807,8 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>RET</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>The byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is now incremented and the byte at the memory location specified by the new contents of this instruction is fetched from the memory location specified by the PC.</Description>
     </Encoding>
   </Opcode>
@@ -816,8 +816,8 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>[None]</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>0</Cycles>
-      <Flags>----</Flags>
+      <Cycles></Cycles>
+      <Flags></Flags>
       <Description>Bit Instruction Prefix</Description>
     </Encoding>
   </Opcode>
@@ -828,8 +828,8 @@
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>7(24)</Cycles>
+      <Flags></Flags>
       <Description>The current contents of the Program Counter (PC) are pushed onto the top of the external memory stack. The operands nn are then loaded to the PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
     </Encoding>
   </Opcode>
@@ -837,12 +837,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -850,12 +850,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z1HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=1 HC=* CY=*</Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -864,7 +864,7 @@
       <Mnemonic>RETI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Return from Interupt</Description>
     </Encoding>
   </Opcode>
@@ -872,12 +872,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z1HC</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=1 HC=* CY=*</Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -886,22 +886,22 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='ByteImmidate'>HighMemPtr+Byte</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The value in A is writen to ($FF00+n)</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDH</Mnemonic>
       <Arguments>
         <Arg encoding='ByteImmidate'>BytePtr</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The value in A is writen to ($FF00+n)</Description>
     </Encoding>
   </Opcode>
@@ -909,23 +909,23 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>HighMemPtr+C</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>HighMemPtr+C</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The value in A is writen to ($FF00+C)</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteRegPtr-C</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The value in A is writen to ($FF00+C)</Description>
     </Encoding>
   </Opcode>
@@ -933,12 +933,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z010</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=1 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -946,12 +946,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-SP</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(16)</Cycles>
-      <Flags>Z0HC</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=* CY=*</Flags>
       <Description>Add signed offset to SP</Description>
     </Encoding>
   </Opcode>
@@ -959,11 +959,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>JP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The Program Counter (register pair PC) is loaded with the contents of the HL register pair. The next instruction is fetched from the location designated by the new contents of the PC</Description>
     </Encoding>
   </Opcode>
@@ -972,11 +972,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(16)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>Save A at given address</Description>
     </Encoding>
   </Opcode>
@@ -984,12 +984,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z000</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -997,23 +997,23 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>HighMemPtr+Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The value in ($FF00+n) is stored in A</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDH</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>BytePtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The value in ($FF00+n) is stored in A</Description>
     </Encoding>
   </Opcode>
@@ -1021,11 +1021,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>POP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-AF</Arg>
+        <Arg encoding='Implicit'>WordReg-AF</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>ZNHC</Flags>
+      <Cycles>3(12)</Cycles>
+      <Flags>Z=* N=* HC=* CY=*</Flags>
       <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to register pair qq.</Description>
     </Encoding>
   </Opcode>
@@ -1033,23 +1033,23 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>HighMemPtr+C</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>HighMemPtr+C</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The value in ($FF00+C) is stored in A</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteRegPtr-C</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The value in ($FF00+C) is stored in A</Description>
     </Encoding>
   </Opcode>
@@ -1058,7 +1058,7 @@
       <Mnemonic>DI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>DI disables the maskable interrupt by resetting the interrupt enable flip- flops (IFF1 and IFF2). Note that this instruction disables the maskable interrupt during its execution</Description>
     </Encoding>
   </Opcode>
@@ -1066,11 +1066,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>PUSH</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-AF</Arg>
+        <Arg encoding='Implicit'>WordReg-AF</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>The contents of the register pair qq are pushed to the external memory LIFO (last-in, first-out) Stack. The Stack Pointer (SP) register pair holds the 16-bit address of the current top of the Stack.</Description>
     </Encoding>
   </Opcode>
@@ -1078,12 +1078,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z000</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1091,23 +1091,23 @@
     <Encoding Preferred='true' Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
         <Arg encoding='ByteImmidate'>WordReg-SP+Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Store the value of SP+n in HL</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='GameBoy'>
       <Mnemonic>LDHL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-SP</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Store the value of SP+n in HL</Description>
     </Encoding>
   </Opcode>
@@ -1115,12 +1115,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-SP</Arg>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>1(6)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of the register pair HL are loaded to the Stack Pointer (SP).</Description>
     </Encoding>
   </Opcode>
@@ -1128,12 +1128,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Load A from given address</Description>
     </Encoding>
   </Opcode>
@@ -1142,7 +1142,7 @@
       <Mnemonic>EI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The enable interrupt instruction sets both interrupt enable flip flops (IFFI and IFF2) to a logic 1, allowing recognition of any maskable interrupt. Note that during the execution of this instruction and the following instruction, maskable interrupts are disabled.</Description>
     </Encoding>
   </Opcode>
@@ -1150,12 +1150,12 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(7)</Cycles>
-      <Flags>Z1H-</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=1 HC=*</Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1167,7 +1167,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>Z00C</Flags>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of register r are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -1175,11 +1175,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>RLC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of the memory address specified by the contents of register pair HL are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1191,7 +1191,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>Z00C</Flags>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1199,11 +1199,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>RRC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1214,8 +1214,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>8(4)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -1223,11 +1223,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>RL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>6(23)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -1238,8 +1238,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>8(4)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1247,11 +1247,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>RR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1263,7 +1263,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>Z00C</Flags>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1271,11 +1271,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SLA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1286,8 +1286,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(4)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1295,11 +1295,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SRA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>Z00C</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=*</Flags>
       <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1311,7 +1311,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>Z000</Flags>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>Swap High and Low Nibble of r</Description>
     </Encoding>
   </Opcode>
@@ -1319,11 +1319,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SWAP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Undocumented</Status>
-      <Cycles>3(16)</Cycles>
-      <Flags>Z000</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=0 CY=0</Flags>
       <Description>Swap High and Low Nibble of the byte pointed to by HL</Description>
     </Encoding>
   </Opcode>
@@ -1335,7 +1335,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1343,11 +1343,11 @@
     <Encoding Platform='GameBoy'>
       <Mnemonic>SRL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1360,7 +1360,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>Z01-</Flags>
+      <Flags>Z=* N=0 HC=1</Flags>
       <Description>This instruction tests bit b in register r and sets the Z flag accordingly</Description>
     </Encoding>
   </Opcode>
@@ -1369,11 +1369,11 @@
       <Mnemonic>BIT</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>Value</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
-      <Flags>Z01-</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags>Z=* N=0 HC=1</Flags>
       <Description>This instruction tests bit b in the memory location specified by the contents of the HL register pair and sets the Z flag accordingly.</Description>
     </Encoding>
   </Opcode>
@@ -1385,8 +1385,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(8)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Bit b in operand m is reset</Description>
     </Encoding>
   </Opcode>
@@ -1395,11 +1395,11 @@
       <Mnemonic>RES</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>Value</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>Bit b in operand m is reset</Description>
     </Encoding>
   </Opcode>
@@ -1412,7 +1412,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>----</Flags>
+      <Flags></Flags>
       <Description>Bit b in register r (any of registers B, C, D, E, H, L, or A) is set.</Description>
     </Encoding>
   </Opcode>
@@ -1421,11 +1421,11 @@
       <Mnemonic>SET</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>Value</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(15)</Cycles>
-      <Flags>----</Flags>
+      <Cycles>4(16)</Cycles>
+      <Flags></Flags>
       <Description>Bit b in the memory location addressed by the contents of register pair HL is set.</Description>
     </Encoding>
   </Opcode>

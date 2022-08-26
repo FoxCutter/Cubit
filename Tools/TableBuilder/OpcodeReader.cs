@@ -443,7 +443,7 @@ namespace TableBuilder
 
             switch (Arg.encoding)
             {
-                case Opcodes.encodingEnum.Direct:
+                case Opcodes.encodingEnum.Implicit:
                 case Opcodes.encodingEnum.None:
                     Ret.Encoding = OpcodeData.EncodingType.None;
                     break;

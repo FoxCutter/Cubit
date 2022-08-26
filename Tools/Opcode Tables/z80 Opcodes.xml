@@ -8,7 +8,7 @@
       <Mnemonic>NOP</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The CPU performs no operation during this machine cycle</Description>
     </Encoding>
   </Opcode>
@@ -21,7 +21,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 2-byte integer nn is loaded to the dd register pair</Description>
     </Encoding>
   </Opcode>
@@ -30,11 +30,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the Accumulator are loaded to the memory location specified by the contents of the register pair.</Description>
     </Encoding>
   </Opcode>
@@ -46,7 +46,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(6)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are incremented.</Description>
     </Encoding>
   </Opcode>
@@ -58,7 +58,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP0-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0</Flags>
       <Description>Register r is incremented</Description>
     </Encoding>
   </Opcode>
@@ -70,7 +70,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The byte specified by the m operand is decremented</Description>
     </Encoding>
   </Opcode>
@@ -83,7 +83,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 8-bit integer n is loaded to any register r.</Description>
     </Encoding>
   </Opcode>
@@ -91,21 +91,21 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>RLCA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position. The sign bit (bit 7) is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>RLC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position. The sign bit (bit 7) is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -113,12 +113,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>EX</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-AF</Arg>
-        <Arg encoding='Direct'>WordReg-AFAlt</Arg>
+        <Arg encoding='Implicit'>WordReg-AF</Arg>
+        <Arg encoding='Implicit'>WordReg-AFAlt</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 2-byte contents of the register pairs AF and AF' are exchanged.</Description>
     </Encoding>
   </Opcode>
@@ -126,12 +126,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>--H-0C</Flags>
+      <Flags>HC=* N=0 CY=*</Flags>
       <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are added to the contents of register pair HL and the result is stored in HL</Description>
     </Encoding>
   </Opcode>
@@ -139,12 +139,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='WordReg'>WordRegPtr-BD</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the memory location specified by the contents of the rr register pair are loaded to the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -156,7 +156,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(6)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register pair ss (any of the register pairs BC, DE, HL, or SP) are decremented.</Description>
     </Encoding>
   </Opcode>
@@ -164,11 +164,11 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>RRCA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -176,11 +176,11 @@
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>RRC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position. Bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -191,8 +191,8 @@
         <Arg encoding='ByteImmidate'>Displacment</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(13)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>2(8), 3(13)</Cycles>
+      <Flags></Flags>
       <Description>This instruction is similar to the conditional jump instructions except that a register value is used to determine branching. The B register is decremented, and if a non zero value remains, the value of the displacement e is added to the Program Counter (PC). The next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC.</Description>
     </Encoding>
   </Opcode>
@@ -200,21 +200,21 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>RLA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>RL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated left 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -226,7 +226,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction provides for unconditional branching to other segments of a program. The value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. This jump is measured from the address of the instruction Op Code and has a range of-126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC.</Description>
     </Encoding>
   </Opcode>
@@ -234,11 +234,11 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>RRA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -246,11 +246,11 @@
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>RR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-0C</Flags>
+      <Flags>HC=0 N=0 CY=*</Flags>
       <Description>The contents of the Accumulator (register A) are rotated right 1-bit position through the Carry flag. The previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -262,8 +262,8 @@
         <Arg encoding='ByteImmidate'>Displacment</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(12)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>2(7), 3(12)</Cycles>
+      <Flags></Flags>
       <Description>This instruction provides for conditional branching to other segments of a program depending on the results of a test on the Carry Flag. If the flag is equal to a 1, the value of the displacement e is added to the Program Counter (PC) and the next instruction is fetched from the location designated by the new contents of the PC. The jump is measured from the address of the instruction Op Code and has a range of -126 to +129 bytes. The assembler automatically adjusts for the twice incremented PC</Description>
     </Encoding>
   </Opcode>
@@ -272,11 +272,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(16)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the low order portion of register pair HL (register L) are loaded to memory address (nn), and the contents of the high order portion of HL (register H) are loaded to the next highest memory address (nn+1). The first n operand after the Op Code is the low order byte of nn</Description>
     </Encoding>
   </Opcode>
@@ -284,11 +284,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>DAA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP-C</Flags>
+      <Flags>S=* Z=* HC=* P=* CY=* </Flags>
       <Description>This instruction conditionally adjusts the Accumulator for BCD addition and subtraction operations</Description>
     </Encoding>
   </Opcode>
@@ -296,12 +296,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(16)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of memory address (nn) are loaded to the low order portion of register pair HL (register L), and the contents of the next highest memory address (nn+1) are loaded to the high order portion of HL (register H). The first n operand after the Op Code is the low order byte of nn.</Description>
     </Encoding>
   </Opcode>
@@ -309,21 +309,21 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>CPL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--1-1-</Flags>
+      <Flags>HC=1 CY=1</Flags>
       <Description>The contents of the Accumulator (register A) are inverted (one’s complement).</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>CPL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--1-1-</Flags>
+      <Flags>HC=1 CY=1</Flags>
       <Description>The contents of the Accumulator (register A) are inverted (one’s complement).</Description>
     </Encoding>
   </Opcode>
@@ -332,11 +332,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(13)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the Accumulator are loaded to the memory address specified by the operand nn. The first n operand after the Op Code is the low order byte of nn.</Description>
     </Encoding>
   </Opcode>
@@ -344,11 +344,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>INC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>SZHP0-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0</Flags>
       <Description>The byte contained in the address specified by the contents of the HL register pair is incremented.</Description>
     </Encoding>
   </Opcode>
@@ -356,11 +356,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>DEC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The byte specified by the m operand is decremented</Description>
     </Encoding>
   </Opcode>
@@ -368,12 +368,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Integer n is loaded to the memory address specified by the contents of the HL register pair.</Description>
     </Encoding>
   </Opcode>
@@ -382,7 +382,7 @@
       <Mnemonic>SCF</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>--0-01</Flags>
+      <Flags>HC=0 N=0 C=1</Flags>
       <Description>The Carry flag in the F register is set.</Description>
     </Encoding>
   </Opcode>
@@ -390,12 +390,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(13)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the memory location specified by the operands nn are loaded to the Accumulator. The first n operand after the Op Code is the low order byte of a 2-byte memory address.</Description>
     </Encoding>
   </Opcode>
@@ -404,7 +404,7 @@
       <Mnemonic>CCF</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>-----C</Flags>
+      <Flags>CY=*</Flags>
       <Description>The Carry flag in the F register is inverted.</Description>
     </Encoding>
   </Opcode>
@@ -417,7 +417,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of any register r' are loaded to any other register r.</Description>
     </Encoding>
   </Opcode>
@@ -426,11 +426,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 8-bit contents of memory location (HL) are loaded to register r</Description>
     </Encoding>
   </Opcode>
@@ -438,12 +438,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register r are loaded to the memory location specified by the contents of the HL register pair.</Description>
     </Encoding>
   </Opcode>
@@ -452,7 +452,7 @@
       <Mnemonic>HALT</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The HALT instruction suspends CPU operation until a subsequent interruptor reset is received. While in the HALT state, the processor executes NOPs to maintain memory refresh logic</Description>
     </Encoding>
   </Opcode>
@@ -460,12 +460,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The contents of register r are added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -473,12 +473,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The byte at the memory address specified by the contents of the HL register pair is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -486,12 +486,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -499,12 +499,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -512,23 +512,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -536,23 +536,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -560,12 +560,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -573,12 +573,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -586,23 +586,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -610,23 +610,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -634,12 +634,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -647,12 +647,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -660,23 +660,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -684,23 +684,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -708,23 +708,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -732,23 +732,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -759,8 +759,8 @@
         <Arg encoding='Flag'>Flag</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>1(5), 3(11)</Cycles>
+      <Flags></Flags>
       <Description>If condition cc is true, the byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is incremented and the byte at the memory location specified by the new contents of the SP are moved to the high order eight bits of the PC. The SP is incremented again. The next Op Code following this instruction is fetched from the memory location specified by the PC</Description>
     </Encoding>
   </Opcode>
@@ -772,7 +772,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to register pair qq.</Description>
     </Encoding>
   </Opcode>
@@ -784,8 +784,8 @@
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>3(10)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>3(10), 3(10)</Cycles>
+      <Flags></Flags>
       <Description>If condition cc is true, the instruction loads operand nn to register pair PC (Program Counter), and the program continues with the instruction beginning at address nn. If condition cc is false, the Program Counter is incremented as usual, and the program continues with the next sequential instruction.</Description>
     </Encoding>
   </Opcode>
@@ -797,7 +797,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Operand nn is loaded to register pair PC (Program Counter). The next instruction is fetched from the location designated by the new contents of the PC.</Description>
     </Encoding>
   </Opcode>
@@ -809,8 +809,8 @@
         <Arg encoding='WordImmidate'>Address</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(17)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>3(10), 5(17)</Cycles>
+      <Flags></Flags>
       <Description>If condition cc is true, this instruction pushes the current contents of the Program Counter (PC) onto the top of the external memory stack, then loads the operands nn to PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
     </Encoding>
   </Opcode>
@@ -822,7 +822,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the register pair qq are pushed to the external memory LIFO (last-in, first-out) Stack. The Stack Pointer (SP) register pair holds the 16-bit address of the current top of the Stack.</Description>
     </Encoding>
   </Opcode>
@@ -830,12 +830,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The integer n is added to the contents of the Accumulator, and the results are stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -847,7 +847,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The current Program Counter (PC) contents are pushed onto the external memory stack, and the page zero memory location given by operand p is loaded to the PC. Program execution then begins with the Op Code in the address now pointed to by PC. The push is performed by first decrementing the contents of the Stack Pointer (SP), loading the high-order byte of PC to the memory address now pointed to by SP, decrementing SP again, and loading the low order byte of PC to the address now pointed to by SP. TheRestart instruction allows for a jump to one of eight addresses indicated in the table below.</Description>
     </Encoding>
   </Opcode>
@@ -856,7 +856,7 @@
       <Mnemonic>RET</Mnemonic>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The byte at the memory location specified by the contents of the Stack Pointer (SP) register pair is moved to the low order eight bits of the Program Counter (PC). The SP is now incremented and the byte at the memory location specified by the new contents of this instruction is fetched from the memory location specified by the PC.</Description>
     </Encoding>
   </Opcode>
@@ -864,8 +864,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>[None]</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>0</Cycles>
-      <Flags>------</Flags>
+      <Cycles></Cycles>
+      <Flags></Flags>
       <Description>Bit Instruction Prefix</Description>
     </Encoding>
   </Opcode>
@@ -877,7 +877,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(17)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The current contents of the Program Counter (PC) are pushed onto the top of the external memory stack. The operands nn are then loaded to the PC to point to the address in memory where the first Op Code of a subroutine is to be fetched. </Description>
     </Encoding>
   </Opcode>
@@ -885,12 +885,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -899,22 +899,22 @@
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
         <Arg encoding='ByteImmidate'>BytePtr</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The operand n is placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of the Accumulator (register A) also appear on the top half (A8 through A15) of the address bus at this time. Then the byte contained in the Accumulator is placed on the data bus and written to the selected peripheral device</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
         <Arg encoding='ByteImmidate'>Byte</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The operand n is placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of the Accumulator (register A) also appear on the top half (A8 through A15) of the address bus at this time. Then the byte contained in the Accumulator is placed on the data bus and written to the selected peripheral device</Description>
     </Encoding>
   </Opcode>
@@ -922,23 +922,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -947,7 +947,7 @@
       <Mnemonic>EXX</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Each 2-byte value in register pairs BC, DE, and HL is exchanged with the 2-byte value in BC', DE', and HL', respectively.</Description>
     </Encoding>
   </Opcode>
@@ -955,23 +955,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>BytePtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The operand n is placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of the Accumulator also appear on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the Accumulator (register A) in the CPU.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The operand n is placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of the Accumulator also appear on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the Accumulator (register A) in the CPU.</Description>
     </Encoding>
   </Opcode>
@@ -979,8 +979,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>[None]</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>0</Cycles>
-      <Flags>------</Flags>
+      <Cycles></Cycles>
+      <Flags></Flags>
       <Description>IX Prefix</Description>
     </Encoding>
   </Opcode>
@@ -988,12 +988,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1001,12 +1001,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>EX</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-SP</Arg>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The low order byte contained in register pair HL is exchanged with the contents of the memory address specified by the contents of register pair SP (Stack Pointer), and the high order byte of HL is exchanged with the next highest memory address (SP+1).</Description>
     </Encoding>
   </Opcode>
@@ -1014,23 +1014,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -1038,11 +1038,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>JP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The Program Counter (register pair PC) is loaded with the contents of the HL register pair. The next instruction is fetched from the location designated by the new contents of the PC</Description>
     </Encoding>
   </Opcode>
@@ -1050,12 +1050,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>EX</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-DE</Arg>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-DE</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 2-byte contents of register pairs DE and HL are exchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1063,8 +1063,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>[None]</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>0</Cycles>
-      <Flags>------</Flags>
+      <Cycles></Cycles>
+      <Flags></Flags>
       <Description>Extended Instruction Prefix</Description>
     </Encoding>
   </Opcode>
@@ -1072,12 +1072,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1085,11 +1085,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>POP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-AF</Arg>
+        <Arg encoding='Implicit'>WordReg-AF</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(10)</Cycles>
-      <Flags>SZHPNC</Flags>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to register pair qq.</Description>
     </Encoding>
   </Opcode>
@@ -1098,7 +1098,7 @@
       <Mnemonic>DI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>DI disables the maskable interrupt by resetting the interrupt enable flip- flops (IFF1 and IFF2). Note that this instruction disables the maskable interrupt during its execution</Description>
     </Encoding>
   </Opcode>
@@ -1106,11 +1106,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>PUSH</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-AF</Arg>
+        <Arg encoding='Implicit'>WordReg-AF</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the register pair qq are pushed to the external memory LIFO (last-in, first-out) Stack. The Stack Pointer (SP) register pair holds the 16-bit address of the current top of the Stack.</Description>
     </Encoding>
   </Opcode>
@@ -1118,23 +1118,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1142,12 +1142,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-SP</Arg>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>1(6)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the register pair HL are loaded to the Stack Pointer (SP).</Description>
     </Encoding>
   </Opcode>
@@ -1156,7 +1156,7 @@
       <Mnemonic>EI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>1(4)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The enable interrupt instruction sets both interrupt enable flip flops (IFFI and IFF2) to a logic 1, allowing recognition of any maskable interrupt. Note that during the execution of this instruction and the following instruction, maskable interrupts are disabled.</Description>
     </Encoding>
   </Opcode>
@@ -1164,8 +1164,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>[None]</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>0</Cycles>
-      <Flags>------</Flags>
+      <Cycles></Cycles>
+      <Flags></Flags>
       <Description>IY Prefix</Description>
     </Encoding>
   </Opcode>
@@ -1173,23 +1173,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='ByteImmidate'>Byte</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(7)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1201,7 +1201,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of register r are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -1209,11 +1209,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>RLC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the memory address specified by the contents of register pair HL are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1225,7 +1225,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1233,11 +1233,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>RRC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1248,8 +1248,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>8(4)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -1257,11 +1257,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>RL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Cycles>4(15)</Cycles>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -1272,8 +1272,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>8(4)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1281,11 +1281,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>RR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1297,7 +1297,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1305,11 +1305,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>SLA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1320,8 +1320,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>2(4)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1329,11 +1329,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>SRA</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1345,7 +1345,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
@@ -1355,7 +1355,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1363,21 +1363,21 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SL1</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1389,7 +1389,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>0Z0P0C</Flags>
+      <Flags>S=0 Z=* HC=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1397,11 +1397,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>SRL</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>0Z0P0C</Flags>
+      <Flags>S=0 Z=* HC=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -1414,7 +1414,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>?Z1?0-</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0</Flags>
       <Description>This instruction tests bit b in register r and sets the Z flag accordingly</Description>
     </Encoding>
   </Opcode>
@@ -1423,11 +1423,11 @@
       <Mnemonic>BIT</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>Value</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>?Z1?0-</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0</Flags>
       <Description>This instruction tests bit b in the memory location specified by the contents of the HL register pair and sets the Z flag accordingly.</Description>
     </Encoding>
   </Opcode>
@@ -1439,8 +1439,8 @@
         <Arg encoding='Source'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>4(8)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>Bit b in operand m is reset</Description>
     </Encoding>
   </Opcode>
@@ -1449,11 +1449,11 @@
       <Mnemonic>RES</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>Value</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in operand m is reset</Description>
     </Encoding>
   </Opcode>
@@ -1466,7 +1466,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in register r (any of registers B, C, D, E, H, L, or A) is set.</Description>
     </Encoding>
   </Opcode>
@@ -1475,11 +1475,11 @@
       <Mnemonic>SET</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>Value</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in the memory location addressed by the contents of register pair HL is set.</Description>
     </Encoding>
   </Opcode>
@@ -1488,22 +1488,22 @@
       <Mnemonic>IN</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg</Arg>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Implicit'>ByteRegPtr-C</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to register r in the CPU.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
         <Arg encoding='Dest'>ByteReg</Arg>
-        <Arg encoding='Direct'>ByteReg-C</Arg>
+        <Arg encoding='Implicit'>ByteReg-C</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to register r in the CPU.</Description>
     </Encoding>
   </Opcode>
@@ -1511,23 +1511,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Implicit'>ByteRegPtr-C</Arg>
         <Arg encoding='Dest'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. Then the byte contained in register r is placed on the data bus and written to the selected peripheral device.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-C</Arg>
+        <Arg encoding='Implicit'>ByteReg-C</Arg>
         <Arg encoding='Dest'>ByteReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>3(12)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. Then the byte contained in register r is placed on the data bus and written to the selected peripheral device.</Description>
     </Encoding>
   </Opcode>
@@ -1535,12 +1535,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The contents of the register pair ss (any of register pairs BC, DE, HL, or SP) and the Carry Flag (C flag in the F register) are subtracted from the contents of register pair HL, and the result is stored in HL.</Description>
     </Encoding>
   </Opcode>
@@ -1553,7 +1553,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(20)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The low order byte of register pair dd is loaded to memory address (nn); the upper byte is loaded to memory address (nn+1).</Description>
     </Encoding>
   </Opcode>
@@ -1561,21 +1561,21 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1584,7 +1584,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1592,11 +1592,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-0</Arg>
+        <Arg encoding='Implicit'>Value-0</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 0 instruction sets interrupt mode 0. In this mode, the interrupting device can insert any instruction on the data bus for execution by the CPU. The first byte of a multi-byte instruction is read during the interrupt acknowledge cycle. Subsequent bytes are read in by a normal memory read sequence.</Description>
     </Encoding>
   </Opcode>
@@ -1604,12 +1604,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-I</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-I</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(9)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the Accumulator are loaded to the Interrupt Control Vector Register, I.</Description>
     </Encoding>
   </Opcode>
@@ -1617,12 +1617,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-HL</Arg>
+        <Arg encoding='Implicit'>WordReg-HL</Arg>
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The contents of register pair ss (any of register pairs BC, DE, HL, or SP) are added with the Carry flag (C flag in the F register) to the contents of register pair HL, and the result is stored in HL</Description>
     </Encoding>
   </Opcode>
@@ -1635,7 +1635,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(20)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of address (nn) are loaded to the low order portion of register pair dd, and the contents of the next highest memory address (nn+1) are loaded to the high order portion of dd.</Description>
     </Encoding>
   </Opcode>
@@ -1643,11 +1643,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1656,7 +1656,7 @@
       <Mnemonic>RETI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a maskable interrupt service</Description>
     </Encoding>
   </Opcode>
@@ -1664,11 +1664,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-0</Arg>
+        <Arg encoding='Implicit'>Value-0</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 0 instruction sets interrupt mode 0. In this mode, the interrupting device can insert any instruction on the data bus for execution by the CPU. The first byte of a multi-byte instruction is read during the interrupt acknowledge cycle. Subsequent bytes are read in by a normal memory read sequence.</Description>
     </Encoding>
   </Opcode>
@@ -1676,12 +1676,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-R</Arg>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-R</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(9)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the Accumulator are loaded to the Memory Refresh register R</Description>
     </Encoding>
   </Opcode>
@@ -1689,11 +1689,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1702,7 +1702,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1710,11 +1710,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-1</Arg>
+        <Arg encoding='Implicit'>Value-1</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 1 instruction sets interrupt mode 1. In this mode, the processor responds to an interrupt by executing a restart to location 0038H.</Description>
     </Encoding>
   </Opcode>
@@ -1722,12 +1722,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-I</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-I</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(9)</Cycles>
-      <Flags>SZ0?0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of the Interrupt Vector Register I are loaded to the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -1735,11 +1735,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1748,7 +1748,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1756,11 +1756,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-2</Arg>
+        <Arg encoding='Implicit'>Value-2</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 2 instruction sets the vectored interrupt mode 2. This mode allows an indirect call to any memory location by an 8-bit vector supplied from the peripheral device. This vector then becomes the least-significant eight bits of the indirect pointer, while the I register in the CPU provides the most- significant eight bits. This address points to an address in a vector table that is the starting address for the interrupt service routine</Description>
     </Encoding>
   </Opcode>
@@ -1768,12 +1768,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>ByteReg-R</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-R</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(9)</Cycles>
-      <Flags>SZ0?0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of Memory Refresh Register R are loaded to the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -1781,11 +1781,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1794,7 +1794,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1802,11 +1802,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-0</Arg>
+        <Arg encoding='Implicit'>Value-0</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 0 instruction sets interrupt mode 0. In this mode, the interrupting device can insert any instruction on the data bus for execution by the CPU. The first byte of a multi-byte instruction is read during the interrupt acknowledge cycle. Subsequent bytes are read in by a normal memory read sequence.</Description>
     </Encoding>
   </Opcode>
@@ -1814,23 +1814,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>RRD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of the low order four bits (bits 3, 2, 1, and 0) of memory location (HL) are copied to the low order four bits of the Accumulator (register A). The previous contents of the low order four bits of the Accumulator are copied to the high order four bits (7, 6, 5, and 4) of location (HL); and the previous contents of the high order four bits of (HL) are copied to the low order four bits of (HL). The contents of the high order bits of the Accumulator are unaffected.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>RRD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct' hidden='true'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of the low order four bits (bits 3, 2, 1, and 0) of memory location (HL) are copied to the low order four bits of the Accumulator (register A). The previous contents of the low order four bits of the Accumulator are copied to the high order four bits (7, 6, 5, and 4) of location (HL); and the previous contents of the high order four bits of (HL) are copied to the low order four bits of (HL). The contents of the high order bits of the Accumulator are unaffected.</Description>
     </Encoding>
   </Opcode>
@@ -1838,11 +1838,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1851,7 +1851,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1859,11 +1859,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-0</Arg>
+        <Arg encoding='Implicit'>Value-0</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 0 instruction sets interrupt mode 0. In this mode, the interrupting device can insert any instruction on the data bus for execution by the CPU. The first byte of a multi-byte instruction is read during the interrupt acknowledge cycle. Subsequent bytes are read in by a normal memory read sequence.</Description>
     </Encoding>
   </Opcode>
@@ -1871,23 +1871,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>RLD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
-        <Arg encoding='Direct'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of the low order four bits (bits 3, 2, 1, and 0) of the memory location (HL) are copied to the high order four bits (7, 6, 5, and 4) of that same memory location; the previous contents of those high order four bits are copied to the low order four bits of the Accumulator (register A); and the previous contents of the low order four bits of the Accumulator are copied to the low order four bits of memory location (HL). The contents of the high order bits of the Accumulator are unaffected</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>RLD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
-        <Arg encoding='Direct' hidden='true'>WordRegPtr-HL</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>WordRegPtr-HL</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(18)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of the low order four bits (bits 3, 2, 1, and 0) of the memory location (HL) are copied to the high order four bits (7, 6, 5, and 4) of that same memory location; the previous contents of those high order four bits are copied to the low order four bits of the Accumulator (register A); and the previous contents of the low order four bits of the Accumulator are copied to the low order four bits of memory location (HL). The contents of the high order bits of the Accumulator are unaffected</Description>
     </Encoding>
   </Opcode>
@@ -1895,21 +1895,21 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
+        <Arg encoding='Implicit'>ByteRegPtr-C</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(12)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. One byte from the port is then discarded</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>IN</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-C</Arg>
+        <Arg encoding='Implicit'>ByteReg-C</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(12)</Cycles>
-      <Flags>SZ0P0-</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0</Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. One byte from the port is then discarded</Description>
     </Encoding>
   </Opcode>
@@ -1917,23 +1917,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteRegPtr-C</Arg>
-        <Arg encoding='Direct'>Value-0</Arg>
+        <Arg encoding='Implicit'>ByteRegPtr-C</Arg>
+        <Arg encoding='Implicit'>Value-0</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(12)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. Then a zero is placed on a the data bus.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OUT</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-C</Arg>
-        <Arg encoding='Direct'>Value-0</Arg>
+        <Arg encoding='Implicit'>ByteReg-C</Arg>
+        <Arg encoding='Implicit'>Value-0</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(12)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. The contents of Register B are placed on the top half (A8 through A15) of the address bus at this time. Then a zero is placed on a the data bus.</Description>
     </Encoding>
   </Opcode>
@@ -1941,11 +1941,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1954,7 +1954,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1962,11 +1962,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-1</Arg>
+        <Arg encoding='Implicit'>Value-1</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 1 instruction sets interrupt mode 1. In this mode, the processor responds to an interrupt by executing a restart to location 0038H.</Description>
     </Encoding>
   </Opcode>
@@ -1974,11 +1974,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>NEG</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the Accumulator are negated (two’s complement). This is the same as subtracting the contents of the Accumulator from zero. Note that 80H is left unchanged.</Description>
     </Encoding>
   </Opcode>
@@ -1987,7 +1987,7 @@
       <Mnemonic>RETN</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>This instruction is used at the end of a non-maskable interrupts service routine to restore the contents of the Program Counter (PC) (analogous to the RET instruction). </Description>
     </Encoding>
   </Opcode>
@@ -1995,11 +1995,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>IM</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>Value-2</Arg>
+        <Arg encoding='Implicit'>Value-2</Arg>
       </Arguments>
       <Status>ExecuteOnly</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The IM 2 instruction sets the vectored interrupt mode 2. This mode allows an indirect call to any memory location by an 8-bit vector supplied from the peripheral device. This vector then becomes the least-significant eight bits of the indirect pointer, while the I register in the CPU provides the most- significant eight bits. This address points to an address in a vector table that is the starting address for the interrupt service routine</Description>
     </Encoding>
   </Opcode>
@@ -2008,7 +2008,7 @@
       <Mnemonic>LDI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>--0P0-</Flags>
+      <Flags>HC=0 P=* N=0</Flags>
       <Description>A byte of data is transferred from the memory location addressed, by the contents of the HL register pair to the memory location addressed by the contents of the DE register pair. Then both these register pairs are incremented and the BC (Byte Counter) register pair is decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2017,7 +2017,7 @@
       <Mnemonic>CPI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the memory location addressed by the HL register is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. Then HL is incremented and the Byte Counter (register pair BC) is decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2026,7 +2026,7 @@
       <Mnemonic>INI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are then placed on the address bus and the input byte is written to the corresponding location of memory. Finally, the byte counter is decremented and register pair HL is incremented</Description>
     </Encoding>
   </Opcode>
@@ -2035,7 +2035,7 @@
       <Mnemonic>OUTI</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is temporarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus. The byte to be output is placed on the data bus and written to a selected peripheral device. Finally, the register pair HL is incremented.</Description>
     </Encoding>
   </Opcode>
@@ -2044,7 +2044,7 @@
       <Mnemonic>LDD</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>--0P0-</Flags>
+      <Flags>HC=0 P=* N=0</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the contents of the DE register pair. Then both of these register pairs including the BC (Byte Counter) register pair are decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2053,7 +2053,7 @@
       <Mnemonic>CPD</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. The HL and Byte Counter (register pair BC) are decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2062,7 +2062,7 @@
       <Mnemonic>IND</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Finally, the byte counter and register pair HL are decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2071,7 +2071,7 @@
       <Mnemonic>OUTD</Mnemonic>
       <Status>Documented</Status>
       <Cycles>4(16)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is temporarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Finally, the register pair HL is decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2079,8 +2079,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>LDIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>--000-</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>HC=0 P=0 N=0</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the DE register pair. Both these register pairs are incremented and the BC (Byte Counter) register pair is decremented. If decrementing causes the BC to go to zero, the instruction is terminated. If BC is not zero, the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer. When BC is set to zero prior to instruction execution, the instruction loops through 64 Kbytes</Description>
     </Encoding>
   </Opcode>
@@ -2088,8 +2088,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>CPIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. HL is incremented and the Byte Counter (register pair BC) is decremented. If decrementing causes BC to go to zero or if A = (HL), the instruction is terminated. If BC is not zero and A ≠ (HL), the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer. If BC is set to zero before instruction execution, the instruction loops through 64 Kbytes if no match is found.</Description>
     </Encoding>
   </Opcode>
@@ -2097,8 +2097,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>INIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B is used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Then register pair HL is incremented, the byte counter is decremented. If decrementing causes B to go to zero, the instruction is terminated. If B is not zero, the PC is decremented by two and the instruction repeated. Interrupts are recognized and two refresh cycles execute after each data transfer.</Description>
     </Encoding>
   </Opcode>
@@ -2106,8 +2106,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>OTIR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is tempo- rarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Then register pair HL is incremented. If the decremented B register is not zero, the Program Counter (PC) is decremented by two and the instruction is repeated. If B has gone to zero, the instruction is terminated. Interrupts are recognized and two refresh cycles are executed after each data transfer.</Description>
     </Encoding>
   </Opcode>
@@ -2115,8 +2115,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>LDDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>--000-</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>HC=0 P=0 N=0</Flags>
       <Description>This 2-byte instruction transfers a byte of data from the memory location addressed by the contents of the HL register pair to the memory location addressed by the contents of the DE register pair. Then both of these registers, as well as the BC (Byte Counter), are decremented. If decrementing causes BC to go to zero, the instruction is terminated. If BC is not zero, the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles execute after each data transfer. When BC is set to zero, prior to instruction execution, the instruction loops through 64 Kbytes.</Description>
     </Encoding>
   </Opcode>
@@ -2124,8 +2124,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>CPDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>SZH01C</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>S=* Z=* HC=* P=* N=1 </Flags>
       <Description>The contents of the memory location addressed by the HL register pair is compared with the contents of the Accumulator. In case of a true compare, a condition bit is set. The HL and BC (Byte Counter) register pairs are decremented. If decrementing causes the BC to go to zero or if A = (HL), the instruction is terminated. If BC is not zero and A = (HL), the program counter is decremented by two and the instruction is repeated. Interrupts are recognized and two refresh cycles execute after each data transfer. When BC is set to zero, prior to instruction execution, the instruction loops through 64 Kbytes if no match is found.</Description>
     </Encoding>
   </Opcode>
@@ -2133,8 +2133,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>INDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Register B is used as a byte counter, and its contents are placed on the top half (A8 through A15) of the address bus at this time. Then one byte from the selected port is placed on the data bus and written to the CPU. The contents of the HL register pair are placed on the address bus and the input byte is written to the corresponding location of memory. Then HL and the byte counter are decremented. If decrementing causes B to go to zero, the instruction is terminated. If B is not zero, the PC is decremented by two and the instruction repeated. Interrupts are recognized and two refresh cycles are executed after each data transfer</Description>
     </Encoding>
   </Opcode>
@@ -2142,8 +2142,8 @@
     <Encoding Platform='z80'>
       <Mnemonic>OTDR</Mnemonic>
       <Status>Documented</Status>
-      <Cycles>5(21)</Cycles>
-      <Flags>?Z??1-</Flags>
+      <Cycles>4(16), 5(12)</Cycles>
+      <Flags>S=* Z=* HC=* P=* N=* CY=* </Flags>
       <Description>The contents of the HL register pair are placed on the address bus to select a location in memory. The byte contained in this memory location is tempo- rarily stored in the CPU. Then, after the byte counter (B) is decremented, the contents of register C are placed on the bottom half (A0 through A7) of the address bus to select the I/O device at one of 256 possible ports. Regis- ter B may be used as a byte counter, and its decremented value is placed on the top half (A8 through A15) of the address bus at this time. Next, the byte to be output is placed on the data bus and written to the selected peripheral device. Then, register pair HL is decremented and if the decremented B register is not zero, the Program Counter (PC) is decremented by two and the instruction is repeated. If B has gone to zero, the instruction is termi- nated. Interrupts are recognized and two refresh cycles are executed after each data transfer.</Description>
     </Encoding>
   </Opcode>
@@ -2155,7 +2155,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP0-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0</Flags>
       <Description>Register r is incremented</Description>
     </Encoding>
   </Opcode>
@@ -2167,7 +2167,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The byte specified by the m operand is decremented</Description>
     </Encoding>
   </Opcode>
@@ -2180,7 +2180,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>3(11)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 8-bit integer n is loaded to any register r.</Description>
     </Encoding>
   </Opcode>
@@ -2188,12 +2188,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
         <Arg encoding='WordReg'>WordReg</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>--H-0C</Flags>
+      <Flags>HC=* N=0 CY=*</Flags>
       <Description>The contents of register pair pp (any of register pairs BC, DE, IX, or SP) are added to the contents of the Index Register IX, and the results are stored in IX</Description>
     </Encoding>
   </Opcode>
@@ -2201,12 +2201,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
         <Arg encoding='WordImmidate'>Word</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Integer nn is loaded to the Index Register IX. The first n operand after the Op Code is the low order byte.</Description>
     </Encoding>
   </Opcode>
@@ -2215,11 +2215,11 @@
       <Mnemonic>LD</Mnemonic>
       <Arguments>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(20)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The low order byte in Index Register IX is loaded to memory address (nn); the upper order byte is loaded to the next highest address (nn+1). The first n operand after the Op Code is the low order byte of nn</Description>
     </Encoding>
   </Opcode>
@@ -2227,11 +2227,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>INC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the Index Register IX are incremented</Description>
     </Encoding>
   </Opcode>
@@ -2239,12 +2239,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(15)</Cycles>
-      <Flags>--H-0C</Flags>
+      <Flags>HC=* N=0 CY=*</Flags>
       <Description>The contents of register pair pp (any of register pairs BC, DE, IX, or SP) are added to the contents of the Index Register IX, and the results are stored in IX</Description>
     </Encoding>
   </Opcode>
@@ -2252,12 +2252,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
         <Arg encoding='WordImmidate'>AddressPtr</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(20)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of the address (nn) are loaded to the low order portion of Index Register IX, and the contents of the next highest memory address (nn+1) are loaded to the high order portion of IX. The first n operand after the Op Code is the low order byte of nn.</Description>
     </Encoding>
   </Opcode>
@@ -2265,11 +2265,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>DEC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of Index Register IX are decremented.</Description>
     </Encoding>
   </Opcode>
@@ -2281,7 +2281,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZHP0-</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0</Flags>
       <Description>The contents of the Index Register IX (register pair IX) are added to a two’s complement displacement integer d to point to an address in memory. The contents of this address are then incremented</Description>
     </Encoding>
   </Opcode>
@@ -2293,7 +2293,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The byte specified by the m operand is decremented</Description>
     </Encoding>
   </Opcode>
@@ -2306,7 +2306,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The n operand is loaded to the memory address specified by the sum of the Index Register IX and the two’s complement displacement operand d.</Description>
     </Encoding>
   </Opcode>
@@ -2314,12 +2314,23 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Dest'>ByteReg-Izb</Arg>
+        <Arg encoding='Dest'>ByteReg</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
+      <Description>The contents of any register r' are loaded to any other register r.</Description>
+    </Encoding>
+    <Encoding Platform='z80'>
+      <Mnemonic>LD</Mnemonic>
+      <Arguments>
+        <Arg encoding='Dest'>ByteReg-Izb</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Undocumented</Status>
+      <Cycles>2(8)</Cycles>
+      <Flags></Flags>
       <Description>The contents of any register r' are loaded to any other register r.</Description>
     </Encoding>
   </Opcode>
@@ -2332,7 +2343,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The operand (IX+d), (the contents of the Index Register IX summed with a two’s complement displacement integer d) is loaded to register r</Description>
     </Encoding>
   </Opcode>
@@ -2345,7 +2356,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The contents of register r are loaded to the memory address specified by the contents of Index Register IX summed with d, a two’s complement displacement integer.</Description>
     </Encoding>
   </Opcode>
@@ -2353,12 +2364,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The contents of register r are added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2366,12 +2377,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The contents of the Index Register (register pair IX) is added to a two’s complement displacement d to point to an address in memory. The contents of this address is then added to the contents of the Accumulator and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2379,12 +2390,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2392,12 +2403,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>ADC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZHP0C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=0 CY=* </Flags>
       <Description>The s operand, along with the Carry Flag (C in the F register) is added to the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2405,23 +2416,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2429,23 +2440,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SUB</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2453,12 +2464,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2466,12 +2477,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>SBC</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ0P1C</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=1 CY=* </Flags>
       <Description>The s operand, along with the Carry flag (C in the F register) is subtracted from the contents of the Accumulator, and the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2479,23 +2490,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -2503,23 +2514,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>AND</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ1P00</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0 CY=0</Flags>
       <Description>A logical AND operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator</Description>
     </Encoding>
   </Opcode>
@@ -2527,12 +2538,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2540,12 +2551,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>XOR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>The logical exclusive-OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2553,23 +2564,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2577,23 +2588,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>OR</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZ0P00</Flags>
+      <Flags>S=* Z=* HC=0 P=* N=0 CY=0</Flags>
       <Description>A logical OR operation is performed between the byte specified by the s operand and the byte contained in the Accumulator; the result is stored in the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2601,23 +2612,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='Source'>ByteReg-Izb</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2625,23 +2636,23 @@
     <Encoding Preferred='true' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>ByteReg-A</Arg>
+        <Arg encoding='Implicit'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
     <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>CP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct' hidden='true'>ByteReg-A</Arg>
+        <Arg encoding='Implicit' hidden='true'>ByteReg-A</Arg>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(19)</Cycles>
-      <Flags>SZHP1C</Flags>
+      <Flags>S=* Z=* HC=* P=* N=1 CY=* </Flags>
       <Description>The contents of the s operand are compared with the contents of the Accumulator. If there is a true compare, the Z flag is set. The execution of this instruction does not affect the contents of the Accumulator.</Description>
     </Encoding>
   </Opcode>
@@ -2649,11 +2660,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>POP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>4(14)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The top two bytes of the external memory LIFO (last-in, first-out) Stack are popped to Index Register IX.</Description>
     </Encoding>
   </Opcode>
@@ -2661,12 +2672,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>EX</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordRegPtr-SP</Arg>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordRegPtr-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The low order byte in Index Register IX is exchanged with the contents of the memory address specified by the contents of register pair SP (Stack Pointer), and the high order byte of IX is exchanged with the next highest memory address (SP+1).</Description>
     </Encoding>
   </Opcode>
@@ -2674,11 +2685,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>PUSH</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
-      <Cycles>5(15)</Cycles>
-      <Flags>------</Flags>
+      <Cycles>4(15)</Cycles>
+      <Flags></Flags>
       <Description>The contents of the Index Register IX are pushed to the external memory LIFO (last-in, first-out) Stack.</Description>
     </Encoding>
   </Opcode>
@@ -2686,11 +2697,11 @@
     <Encoding Platform='z80'>
       <Mnemonic>JP</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(8)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The Program Counter (register pair PC) is loaded with the contents of the IX Register Pair. The next instruction is fetched from the location designated by the new contents of the PC.</Description>
     </Encoding>
   </Opcode>
@@ -2698,12 +2709,12 @@
     <Encoding Platform='z80'>
       <Mnemonic>LD</Mnemonic>
       <Arguments>
-        <Arg encoding='Direct'>WordReg-SP</Arg>
-        <Arg encoding='Direct'>WordReg-Iz</Arg>
+        <Arg encoding='Implicit'>WordReg-SP</Arg>
+        <Arg encoding='Implicit'>WordReg-Iz</Arg>
       </Arguments>
       <Status>Documented</Status>
       <Cycles>2(10)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>The 2-byte contents of Index Register IX are loaded to the Stack Pointer (SP).</Description>
     </Encoding>
   </Opcode>
@@ -2716,7 +2727,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the memory address specified by the sum of the contents of the Index Register IX and a two’s complement displacement integer d, are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2728,7 +2739,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the memory address specified by the sum of the contents of the Index Register IX and a two’s complement displacement integer d, are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and also to bit 0. Bit 0 is the least-significant bit</Description>
     </Encoding>
   </Opcode>
@@ -2741,7 +2752,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2753,7 +2764,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated right 1-bit position. The content of bit 0 is copied to the Carry flag and also to bit 7. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -2766,7 +2777,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2778,7 +2789,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of the m operand are rotated left 1-bit position. The content of bit 7 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 0.</Description>
     </Encoding>
   </Opcode>
@@ -2791,7 +2802,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2803,7 +2814,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are rotated right 1-bit position through the Carry flag. The content of bit 0 is copied to the Carry flag and the previous content of the Carry flag is copied to bit 7. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -2816,7 +2827,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2828,7 +2839,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -2841,7 +2852,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2853,23 +2864,12 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift right 1-bit position is performed on the contents of operand m. The content of bit 0 is copied to the Carry flag and the previous content of bit 7 is unchanged. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
   <Opcode Index='true' Prefix='CB' Value='30' Function='SL-L' Group='Logical' Length='4'>
     <Encoding Preferred='true' Platform='z80'>
-      <Mnemonic>SL1</Mnemonic>
-      <Arguments>
-        <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
-        <Arg encoding='Source'>ByteReg</Arg>
-      </Arguments>
-      <Status>Undocumented</Status>
-      <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
-      <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
-    </Encoding>
-    <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
@@ -2877,29 +2877,40 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
+      <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='z80'>
+      <Mnemonic>SL1</Mnemonic>
+      <Arguments>
+        <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
+        <Arg encoding='Source'>ByteReg</Arg>
+      </Arguments>
+      <Status>Undocumented</Status>
+      <Cycles>6(23)</Cycles>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
   <Opcode Index='true' Prefix='CB' Value='36' Function='SL-L' Group='Logical' Length='4'>
     <Encoding Preferred='true' Platform='z80'>
-      <Mnemonic>SL1</Mnemonic>
-      <Arguments>
-        <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
-      </Arguments>
-      <Status>Undocumented</Status>
-      <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
-      <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
-    </Encoding>
-    <Encoding Preferred='false' Platform='z80'>
       <Mnemonic>SLL</Mnemonic>
       <Arguments>
         <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>SZ0P0C</Flags>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
+      <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
+    </Encoding>
+    <Encoding Preferred='false' Platform='z80'>
+      <Mnemonic>SL1</Mnemonic>
+      <Arguments>
+        <Arg encoding='IndexOffset'>WordRegPtr-Iz</Arg>
+      </Arguments>
+      <Status>Undocumented</Status>
+      <Cycles>6(23)</Cycles>
+      <Flags>S=* Z=* HR=0 P=* N=0 CY=* </Flags>
       <Description>An arithmetic shift left 1-bit position is performed on the contents of operand m. The content of bit 7 is copied to the Carry flag. Bit 0 is set. Bit 0 is the least-significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -2912,7 +2923,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>0Z0P0C</Flags>
+      <Flags>S=0 Z=* HC=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit. The result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2924,7 +2935,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>0Z0P0C</Flags>
+      <Flags>S=0 Z=* HC=0 P=* N=0 CY=* </Flags>
       <Description>The contents of operand m are shifted right 1-bit position. The content of bit 0 is copied to the Carry flag, and bit 7 is reset. Bit 0 is the least- significant bit.</Description>
     </Encoding>
   </Opcode>
@@ -2937,7 +2948,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>5(20)</Cycles>
-      <Flags>?Z1?0-</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0</Flags>
       <Description>This instruction tests bit b in the memory location specified by the contents of register pair IX combined with the two’s complement displacement d and sets the Z flag accordingly.</Description>
     </Encoding>
   </Opcode>
@@ -2950,7 +2961,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>5(20)</Cycles>
-      <Flags>?Z1?0-</Flags>
+      <Flags>S=* Z=* HC=1 P=* N=0</Flags>
       <Description>This instruction tests bit b in the memory location specified by the contents of register pair IX combined with the two’s complement displacement d and sets the Z flag accordingly.</Description>
     </Encoding>
   </Opcode>
@@ -2964,7 +2975,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in operand m is reset, result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -2977,7 +2988,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in operand m is reset</Description>
     </Encoding>
   </Opcode>
@@ -2991,7 +3002,7 @@
       </Arguments>
       <Status>Undocumented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in the memory location addressed by the sum of the contents of the IX register pair and the two’s complement integer d is set. Result is stored in register r.</Description>
     </Encoding>
   </Opcode>
@@ -3004,7 +3015,7 @@
       </Arguments>
       <Status>Documented</Status>
       <Cycles>6(23)</Cycles>
-      <Flags>------</Flags>
+      <Flags></Flags>
       <Description>Bit b in the memory location addressed by the sum of the contents of the IX register pair and the two’s complement integer d is set. </Description>
     </Encoding>
   </Opcode>
